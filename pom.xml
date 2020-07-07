@@ -10,6 +10,15 @@
     <description>未来小说网站项目</description>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
+
+    <repositories>
+        <repository>
+            <id>aliyunmaven</id>
+            <name>阿里云公共仓库</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+    </repositories>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -107,6 +116,46 @@
                 <directory>webapp</directory>
             </resource>
         </resources>
+
+        <!-- Cargo 插件，用于快速部署 -->
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.7.13</version>
+                <configuration>
+                    <container>
+                        <containerId>tomcat9x</containerId>
+                        <zipUrlInstaller>
+                            <url>https://maven.aliyun.com/repository/central/org/apache/tomcat/tomcat/9.0.37/tomcat-9.0.37.zip</url>
+                        </zipUrlInstaller>
+                    </container>
+                    <daemon>
+                        <properties>
+                            <cargo.daemon.url>http://localhost:18000</cargo.daemon.url>
+                            <cargo.daemon.handleid>${project.artifactId}</cargo.daemon.handleid>
+                        </properties>
+                    </daemon>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-container</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
     </build>
 
 </project>

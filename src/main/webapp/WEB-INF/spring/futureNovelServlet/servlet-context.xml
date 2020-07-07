@@ -43,6 +43,15 @@
 
     <context:component-scan base-package="net.wlgzs.futurenovel.controller" />
 
+    <beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <beans:constructor-arg ref="mysqlDataSource" />
+    </beans:bean>
+
+    <beans:bean id="accountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <beans:property name="mapperInterface" value="net.wlgzs.futurenovel.dao.AccountDao" />
+        <beans:property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </beans:bean>
+
     <beans:bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <beans:property name="prefix" value="/WEB-INF/thymeleaf/" />
         <beans:property name="suffix" value=".html" />

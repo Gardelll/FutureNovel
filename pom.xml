@@ -30,8 +30,10 @@
         <org.slf4j.version>1.7.30</org.slf4j.version>
         <jackson.databind.version>2.11.1</jackson.databind.version>
         <org.thymeleaf.version>3.0.11.RELEASE</org.thymeleaf.version>
-        <org.mybatis.version>2.0.5</org.mybatis.version>
+        <org.mybatis.version>3.5.5</org.mybatis.version>
+        <org.mybatis-spring.version>2.0.5</org.mybatis-spring.version>
         <org.mariadb.jdbc.version>2.6.1</org.mariadb.jdbc.version>
+        <org.projectlombok.version>1.18.12</org.projectlombok.version>
     </properties>
 
     <dependencies>
@@ -105,8 +107,47 @@
         <!-- Mybatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
+            <artifactId>mybatis</artifactId>
             <version>${org.mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${org.mybatis-spring.version}</version>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${org.projectlombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+         </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

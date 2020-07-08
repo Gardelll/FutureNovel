@@ -9,3 +9,6 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 .idea/
+
+# 数据库配置
+database_config.properties

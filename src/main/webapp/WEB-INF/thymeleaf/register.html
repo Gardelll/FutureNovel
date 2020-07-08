@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+
 <head>
     <meta charset="UTF-8">
     <title>账号注册|未来小说网</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="resources/css/all.css" type="text/css">
-    <link rel="stylesheet" href="resources/css/home.css" type="text/css">
+    <link rel="stylesheet" href="./css/all.css" type="text/css">
+    <link rel="stylesheet" href="./css/register.css" type="text/css" />
+    <script src="./js/reg_click_tip.js" type="text/javascript"></script>
+    <!-- <script src="" type="text/javascript"></script> -->
 </head>
 
 <body>
@@ -16,7 +19,7 @@
         <div class="box-center">
             <div class="logo cf">
                 <!-- <img src="./img/logo.jpg"> -->
-                <a href="FutureNovel.html">未来小说网</a>
+                <a href="./未来小说网.html">未来小说网</a>
                 <div class="spacer"></div>
                 <p>用户注册</p>
             </div>
@@ -25,7 +28,7 @@
     <!-- 整体中间开始 -->
     <div class="box-center" style="max-width: 507px;">
         <!-- 注册 -->
-        <div class="reg-wrap" style="border: 1px solid #bf2c24;border-radius: 5px 5px 0 0;">
+        <div class="reg-wrap">
             <!-- 注册进度 -->
             <div class="reg-step">
                 <p class="title"><i style="font-size:24px;margin-right: 5px;" class="fa"></i>注册</p>
@@ -34,68 +37,23 @@
                 <from action>
                     <div class="reg-form-list form-list">
                         <dl>
+                            <dd class="top" id="email">
+                                <p>邮箱</p>
+                                <input class="mid" type="text" placeholder="请输入邮箱" id="txtemailnumber">
+                            </dd>
+                            <dd id="emailcode">
+                                <p>邮箱验证</p>
+                                <input type="text" class="mid" placeholder="请输入验证码" id="textemailcode" style="width: 149px;" autocomplete="off">
+                                <a class="get-code stat" href="###" id="get-code">获取验证码</a>
+                            </dd>
                             <dd class="top" id="phone">
                                 <p>手机号</p>
-                                <select id="txtphonearea" style="display: none;">
-                                    <option>中国大陆&nbsp;&nbsp;&nbsp;&nbsp;+86</option>
-                                    <option>中国香港&nbsp;&nbsp;&nbsp;&nbsp;+852</option>
-                                    <option>中国澳门&nbsp;&nbsp;&nbsp;&nbsp;+853</option>
-                                    <option>中国台湾&nbsp;&nbsp;&nbsp;&nbsp;+886</option>
-                                    <option>马来西亚&nbsp;&nbsp;&nbsp;&nbsp;+60</option>
-                                    <option>澳大利亚&nbsp;&nbsp;&nbsp;&nbsp;+61</option>
-                                    <option>新西兰　&nbsp;&nbsp;&nbsp;&nbsp;+64</option>
-                                    <option>新加坡　&nbsp;&nbsp;&nbsp;&nbsp;+65</option>
-                                    <option>美国　　&nbsp;&nbsp;&nbsp;&nbsp;+1</option>
-                                    <option>阿富汗　&nbsp;&nbsp;&nbsp;&nbsp;+93</option>
-                                    <option>阿尔巴尼..&nbsp;&nbsp;+355</option>
-                                    <option>阿尔及利..&nbsp;&nbsp;+213</option>
-                                    <option>安道尔共..&nbsp;&nbsp;+376</option>
-                                    <option>安哥拉　&nbsp;&nbsp;&nbsp;&nbsp;+244</option>
-                                    <option>安圭拉岛&nbsp;&nbsp;&nbsp;&nbsp;+1264</option>
-                                    <option>安提瓜及..&nbsp;&nbsp;+1268</option>
-                                    <option>阿根廷　&nbsp;&nbsp;&nbsp;&nbsp;+54</option>
-                                    <option>阿鲁巴　&nbsp;&nbsp;&nbsp;&nbsp;+297</option>
-                                    <option>奥地利　&nbsp;&nbsp;&nbsp;&nbsp;+43</option>
-                                    <option>阿塞拜疆&nbsp;&nbsp;&nbsp;&nbsp;+994</option>
-                                    <option>埃及　　&nbsp;&nbsp;&nbsp;&nbsp;+20</option>
-                                    <option>爱沙尼亚&nbsp;&nbsp;&nbsp;&nbsp;+372</option>
-                                </select>
-                                <div class="ui-select" style="width: 160px;">
-                                    <a href="###" class="ui-select-button">
-                                        <span class="ui-select-text">中国大陆&nbsp;&nbsp;&nbsp;&nbsp;+86</span>
-                                        <i class="fa fa-angle-down ui-select-icon" style="font-size:17px"></i>
-                                    </a>
-                                    <ul class="ui-select-datalist" style="display: none;">
-                                        <li class="ui-select-datalist-li  selected" data-index="0">中国大陆&nbsp;&nbsp;&nbsp;&nbsp;+86</li>
-                                        <li class="ui-select-datalist-li " data-index="1">中国香港&nbsp;&nbsp;&nbsp;&nbsp;+852</li>
-                                        <li class="ui-select-datalist-li " data-index="2">中国澳门&nbsp;&nbsp;&nbsp;&nbsp;+853</li>
-                                        <li class="ui-select-datalist-li " data-index="3">中国台湾&nbsp;&nbsp;&nbsp;&nbsp;+886</li>
-                                        <li class="ui-select-datalist-li " data-index="4">马来西亚&nbsp;&nbsp;&nbsp;&nbsp;+60</li>
-                                        <li class="ui-select-datalist-li " data-index="5">澳大利亚&nbsp;&nbsp;&nbsp;&nbsp;+61</li>
-                                        <li class="ui-select-datalist-li " data-index="6">新西兰　&nbsp;&nbsp;&nbsp;&nbsp;+64</li>
-                                        <li class="ui-select-datalist-li " data-index="7">新加坡　&nbsp;&nbsp;&nbsp;&nbsp;+65</li>
-                                        <li class="ui-select-datalist-li " data-index="8">美国　　&nbsp;&nbsp;&nbsp;&nbsp;+1</li>
-                                        <li class="ui-select-datalist-li " data-index="9">阿富汗　&nbsp;&nbsp;&nbsp;&nbsp;+93</li>
-                                        <li class="ui-select-datalist-li " data-index="10">阿尔巴尼..&nbsp;&nbsp;+355</li>
-                                        <li class="ui-select-datalist-li " data-index="11">阿尔及利..&nbsp;&nbsp;+213</li>
-                                        <li class="ui-select-datalist-li " data-index="12">安道尔共..&nbsp;&nbsp;+376</li>
-                                        <li class="ui-select-datalist-li " data-index="13">安哥拉　&nbsp;&nbsp;&nbsp;&nbsp;+244</li>
-                                        <li class="ui-select-datalist-li " data-index="14">安圭拉岛&nbsp;&nbsp;&nbsp;&nbsp;+1264</li>
-                                        <li class="ui-select-datalist-li " data-index="15">安提瓜及..&nbsp;&nbsp;+1268</li>
-                                        <li class="ui-select-datalist-li " data-index="16">阿根廷　&nbsp;&nbsp;&nbsp;&nbsp;+54</li>
-                                        <li class="ui-select-datalist-li " data-index="17">阿鲁巴　&nbsp;&nbsp;&nbsp;&nbsp;+297</li>
-                                        <li class="ui-select-datalist-li " data-index="18">奥地利　&nbsp;&nbsp;&nbsp;&nbsp;+43</li>
-                                        <li class="ui-select-datalist-li " data-index="19">阿塞拜疆&nbsp;&nbsp;&nbsp;&nbsp;+994</li>
-                                        <li class="ui-select-datalist-li " data-index="20">埃及　　&nbsp;&nbsp;&nbsp;&nbsp;+20</li>
-                                        <li class="ui-select-datalist-li " data-index="21">爱沙尼亚&nbsp;&nbsp;&nbsp;&nbsp;+372</li>
-                                    </ul>
-                                </div>
-                                <input class="mid" type="text" placeholder="输入手机号码" id="txtphonenumber">
+                                <input class="mid" type="text" placeholder="请输入手机号码" id="txtphonenumber">
                             </dd>
                             <dd id="phonepwd">
                                 <p>密码</p>
                                 <input type="password" id="txtphonepwd" placeholder="6-18位大小写字母、符号或数字">
-                                <div class="password-tip" style="display:none">
+                                <div class="password-tip" style="width: 152px;display: none;">
                                     <span><cite></cite></span>
                                     <p id="pwdrule1">长度为6-18个字符</p>
                                     <p id="pwdrule2">不能是9位以下的纯数字</p>
@@ -120,4 +78,86 @@
     </div>
 </div>
 </body>
+
+</html><!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>账号注册|未来小说网</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="./css/all.css" type="text/css">
+    <link rel="stylesheet" href="./css/register.css" type="text/css" />
+    <script src="./js/reg_click_tip.js" type="text/javascript"></script>
+    <!-- <script src="" type="text/javascript"></script> -->
+</head>
+
+<body>
+<div>
+    <!-- 头部开始 -->
+    <div class="header reg-header">
+        <div class="box-center">
+            <div class="logo cf">
+                <!-- <img src="./img/logo.jpg"> -->
+                <a href="./未来小说网.html">未来小说网</a>
+                <div class="spacer"></div>
+                <p>用户注册</p>
+            </div>
+        </div>
+    </div>
+    <!-- 整体中间开始 -->
+    <div class="box-center" style="max-width: 507px;">
+        <!-- 注册 -->
+        <div class="reg-wrap">
+            <!-- 注册进度 -->
+            <div class="reg-step">
+                <p class="title"><i style="font-size:24px;margin-right: 5px;" class="fa"></i>注册</p>
+            </div>
+            <div class="reg-form-wrap">
+                <from action>
+                    <div class="reg-form-list form-list">
+                        <dl>
+                            <dd class="top" id="email">
+                                <p>邮箱</p>
+                                <input class="mid" type="text" placeholder="请输入邮箱" id="txtemailnumber">
+                            </dd>
+                            <dd id="emailcode">
+                                <p>邮箱验证</p>
+                                <input type="text" class="mid" placeholder="请输入验证码" id="textemailcode" style="width: 149px;" autocomplete="off">
+                                <a class="get-code stat" href="###" id="get-code">获取验证码</a>
+                            </dd>
+                            <dd class="top" id="phone">
+                                <p>手机号</p>
+                                <input class="mid" type="text" placeholder="请输入手机号码" id="txtphonenumber">
+                            </dd>
+                            <dd id="phonepwd">
+                                <p>密码</p>
+                                <input type="password" id="txtphonepwd" placeholder="6-18位大小写字母、符号或数字">
+                                <div class="password-tip" style="width: 152px;display: none;">
+                                    <span><cite></cite></span>
+                                    <p id="pwdrule1">长度为6-18个字符</p>
+                                    <p id="pwdrule2">不能是9位以下的纯数字</p>
+                                    <p id="pwdrule3">不能包含空格</p>
+                                </div>
+                                <div class="password-strong" style="display:none">
+                                    <p style="display:none"><span class="level-1"><b></b></span>弱</p>
+                                    <p style="display:none"><span class="level-2"><b></b></span>中</p>
+                                    <p style="display:none"><span class="level-3"><b></b></span>强</p>
+                                </div>
+                            </dd>
+                            <dd id="password2">
+                                <p>确认密码</p>
+                                <input type="password" id="txtphonepwd2" placeholder="再次输入密码">
+                            </dd>
+                        </dl>
+                        <a class="red-btn go-reg btn-qidian" href="###" id="btnPhoneRegister">立即注册</a>
+                    </div>
+                </from>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
 </html>

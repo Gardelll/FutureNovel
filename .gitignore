@@ -11,4 +11,4 @@ buildNumber.properties
 .idea/
 
 # 数据库配置
-src/main/webapp/WEB-INF/spring/futureNovelServlet/database_config.properties
+database_config.properties

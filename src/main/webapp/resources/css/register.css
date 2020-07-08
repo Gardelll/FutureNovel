@@ -1,0 +1,320 @@
+.reg-header {
+    border-bottom: none;
+    margin-bottom: 32px;
+}
+
+.header {
+    height: 99px;
+}
+
+.header .logo {
+    padding-top: 22px;
+}
+
+.logo a {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 55px;
+    font-size: 32px;
+    font-family: cursive;
+}
+
+.spacer {
+    overflow: hidden;
+    height: 24px;
+    margin: 15px 24px 0;
+    border-right: 1px solid #D8D8D8;
+    display: inline-block;
+}
+
+.reg-header p {
+    font-size: 24px;
+    line-height: 1;
+    margin-top: 15px;
+    display: inline;
+    top: 22px;
+    position: absolute;
+}
+
+.reg-step {
+    text-align: center;
+}
+
+.title {
+    background-color: #BF2C24;
+    border-radius: 5px 5px 0 0;
+    color: #FFF;
+    padding: 13px 17px;
+    vertical-align: bottom;
+    font-size: 20px;
+    width: 471px;
+}
+
+.reg-form-wrap {
+    padding: 40px 30px;
+}
+
+.reg-form-wrap .reg-form-list dd.top {
+    z-index: 10;
+}
+
+.reg-form-wrap .reg-form-list dd.top {
+    z-index: 10;
+}
+
+.reg-form-wrap .reg-form-list dd {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 32px;
+}
+
+.reg-form-wrap .reg-form-list dd:before,
+.reg-form-wrap .reg-form-list dd:after {
+    display: table;
+    content: '';
+}
+
+.reg-form-wrap .reg-form-list dd p {
+    min-width: 60px;
+    line-height: 46px;
+    /* font: 14px/44px "PingFangSC-Regular", "-apple-system", Simsun; */
+    float: left;
+    margin-right: 24px;
+    text-align: right;
+}
+
+.reg-form-wrap .reg-form-list dd select {
+    width: 160px;
+}
+
+
+/* select {
+    display: inline-block;
+    height: 40px;
+    margin: 0;
+    border: 1px solid #BFBFBF;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    vertical-align: middle;
+} */
+
+.reg-form-wrap .reg-form-list dd .ui-select {
+    float: left;
+}
+
+.ui-select {
+    display: inline-block;
+    height: 40px;
+    vertical-align: middle;
+    animation: fadeIn .2s;
+    font-size: 14px;
+    position: relative;
+}
+
+.reg-form-wrap .reg-form-list dd .ui-select-button {
+    border-radius: 0;
+    height: 22px;
+    border: 1px solid #E6E6E6;
+    border-right: none;
+}
+
+.ui-select-button {
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    padding: 9px 27px 9px 12px;
+    color: #4C5161;
+    border: 1px solid #BFBFBF;
+    border-radius: 4px;
+    background-color: #FFF;
+    transition: border-color .15s, background-color .15s;
+    cursor: pointer;
+}
+
+.ui-select-text {
+    display: block;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.reg-form-wrap .reg-form-list dd .ui-select-icon {
+    margin: 7px 5px 0 0;
+}
+
+.reg-form-wrap .reg-form-list dd i {
+    float: left;
+    margin: 10px 0 0 12px;
+}
+
+.ui-select-icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 0px;
+    top: 4px;
+}
+
+.reg-form-wrap .reg-form-list dd .ui-select-datalist {
+    border: 1px solid #E6E6E6;
+}
+
+.ui-select-datalist {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 39px;
+    display: none;
+    max-height: 304px;
+    padding: 0;
+    border: 1px solid #ED4259;
+    background-color: #FFF;
+    overflow: auto;
+}
+
+.ui-select-datalist {
+    background-color: #FFF1F3;
+}
+
+.ui-select-datalist-li {
+    display: block;
+    line-height: 20px;
+    padding: 9px 12px;
+    background-color: #FFF;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background-color .15s;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.reg-form-wrap .reg-form-list dd input[type=text].mid,
+.reg-form-wrap .reg-form-list dd input[type=password].mid {
+    width: 149px;
+}
+
+.reg-form-wrap .reg-form-list dd input[type=text],
+.reg-form-wrap .reg-form-list dd input[type=password] {
+    float: left;
+    padding: 0 16px;
+    width: 308px;
+    border: 1px solid #E6E6E6;
+    height: 40px;
+    /* font: 14px/42px "PingFangSC-Regular", "-apple-system", Simsun; */
+}
+
+.reg-form-wrap .reg-form-list dd:after {
+    clear: both;
+}
+
+.reg-form-wrap .reg-form-list dd .password-tip {
+    position: absolute;
+    top: 0;
+    left: 444px;
+    z-index: 1;
+    border: 1px solid #FFDC95;
+    background: #FFF7E7;
+    font: 12px/24px "PingFangSC-Regular", "-apple-system", Simsun;
+    color: #6B3612;
+    padding: 6px 12px 8px 8px;
+}
+
+.reg-form-wrap .reg-form-list dd .password-tip span {
+    position: absolute;
+    top: 5px;
+    left: -7px;
+    border-top: 7px solid transparent;
+    border-right: 7px solid #FFDC95;
+    border-bottom: 7px solid transparent;
+    border-left: 0 none;
+    width: 0;
+    height: 0;
+}
+
+.reg-form-wrap .reg-form-list dd .password-tip span cite {
+    position: absolute;
+    top: -7px;
+    left: 2px;
+    border-top: 7px solid transparent;
+    border-right: 7px solid #FFF7E7;
+    border-bottom: 7px solid transparent;
+    border-left: 0 none;
+    width: 0;
+    height: 0;
+}
+
+.reg-form-wrap .reg-form-list .password-strong {
+    float: left;
+    padding-left: 12px;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span b {
+    position: absolute;
+    left: 0;
+    height: 6px;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span {
+    position: relative;
+    display: inline-block;
+    height: 6px;
+    margin-right: 8px;
+    width: 118px;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-1 {
+    border: 1px solid #FC6C28;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-1 b {
+    width: 38px;
+    background: #FC6C28;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-2 {
+    border: 1px solid #FFCB00;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-2 b {
+    width: 78px;
+    background: #FFCB00;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-3 {
+    border: 1px solid #8CCD0A;
+}
+
+.reg-form-wrap .reg-form-list .password-strong p span.level-3 b {
+    width: 118px;
+    background: #8CCD0A;
+}
+
+.reg-form-wrap .reg-form-list dd.error input[type=text],
+.reg-form-wrap .reg-form-list dd.error input[type=password] {
+    border: 1px solid #ED4259;
+}
+
+.reg-form-wrap .reg-form-list .go-reg {
+    display: block;
+    width: 121px;
+    height: 40px;
+    line-height: 40px;
+    margin-left: 146px;
+}
+
+.red-btn {
+    position: relative;
+    z-index: 1;
+    border-color: #BF2C24;
+    background: #BF2C24;
+    color: white;
+    text-align: center;
+}
+
+.red-btn:hover {
+    border-color: #ED4259;
+    background: #ED4259;
+    color: white;
+}

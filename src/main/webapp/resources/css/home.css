@@ -1,0 +1,275 @@
+.logo-wrap {
+    overflow: hidden;
+    width: 100%;
+    height: 84px
+}
+
+.logo-wrap .box-center {
+    position: relative
+}
+
+
+/* .logo-wrap .left-link {
+    left: 224px;
+    width: 174px
+} */
+
+
+/* .logo-wrap .right-link {
+    right: 124px;
+    width: 282px
+}
+
+.logo-wrap .left-link,
+.logo-wrap .right-link {
+    position: absolute;
+    height: 84px
+} */
+
+.logo-wrap .logo {
+    width: 218px;
+    height: 55px;
+    margin: 14px 162px 0 0
+}
+
+.logo-wrap .logo a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 55px;
+    font-size: 32px;
+    font-family: cursive;
+}
+
+.logo-wrap .book-shelf,
+.logo-wrap .search-wrap {
+    margin-top: 22px
+}
+
+.logo-wrap .book-shelf p,
+.logo-wrap .search-wrap p {
+    float: left;
+    overflow: hidden;
+    width: 348px;
+    height: 38px;
+    border: 1px solid #dbdbdb;
+    border-right: none
+}
+
+.logo-wrap .book-shelf p:hover,
+.logo-wrap .search-wrap p:hover {
+    border-color: #c9c9c9
+}
+
+.logo-wrap .book-shelf .search-box,
+.logo-wrap .search-wrap .search-box {
+    font-size: 14px;
+    width: 326px;
+    height: 38px;
+    padding: 0 11px
+}
+
+.logo-wrap .book-shelf .search-box.placeholder,
+.logo-wrap .search-wrap .search-box.placeholder {
+    color: #ccc
+}
+
+.logo-wrap .book-shelf .search-btn,
+.logo-wrap .search-wrap .search-btn {
+    float: left;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #bf2c24
+}
+
+.logo-wrap .book-shelf :hover,
+.logo-wrap .search-wrap .search-btn:hover {
+    background-color: #ed4259
+}
+
+.submit-input {
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+
+.logo-wrap .book-shelf {
+    overflow: hidden;
+    width: 120px;
+    height: 40px;
+    background: #fff
+}
+
+.logo-wrap .book-shelf a,
+.logo-wrap .book-shelf i {
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.logo-wrap .book-shelf a {
+    font-size: 16px;
+    display: block;
+    width: 118px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    border: 1px solid #e6e6e6
+}
+
+.logo-wrap .book-shelf a:hover {
+    color: #fff;
+    border: 1px solid #ed4259;
+    background: #ed4259;
+}
+
+
+/* .logo-wrap .book-shelf a:hover span {
+    color: #ed4259;
+    background: #fff
+} */
+
+
+/* .logo-wrap .book-shelf em {
+  font-size: 16px;
+  line-height: 20px;
+  overflow: hidden;
+  width: 16px;
+  margin-right: 5px
+} */
+
+
+/* 导航栏 */
+
+#top-box-center {
+    margin: 0 auto;
+    height: 40px;
+}
+
+#first {
+    width: 216px;
+    background-color: rgb(49, 48, 53);
+}
+
+#first a {
+    color: white;
+    line-height: 40px;
+    text-decoration: none;
+    width: 100px;
+}
+
+.mainDiv li {
+    float: left;
+}
+
+.navs {
+    text-align: center;
+    transition: 0.5s;
+}
+
+.navs:hover {
+    background-color: rgb(49, 48, 53);
+}
+
+.navs a {
+    color: white;
+    line-height: 40px;
+    text-decoration: none;
+}
+
+#direction {
+    transition: 0.8s;
+}
+
+#first:hover #direction {
+    transform: rotateX(180deg);
+}
+
+
+/* 轮播图 */
+
+.focus-wrap {
+    position: relative;
+    z-index: 1;
+    height: 410px;
+}
+
+.classify-list {
+    position: relative;
+    width: 214px;
+    height: 420px;
+    border: 1px solid #e6e6e6;
+    border-top: none;
+}
+
+.classify-list dd {
+    float: left;
+    width: 50%;
+    height: 60px;
+    background: #f7f6f2;
+}
+
+.book-list-wrap .book-list li,
+.classify-list dd {
+    overflow: hidden;
+}
+
+.classify-list dd.even {
+    background: #fcfcfa;
+}
+
+.classify-list dd a {
+    display: block;
+    color: #333;
+}
+
+.classify-list dd a:hover cite svg {
+    margin: 0px 11px 0 -3px;
+}
+
+.classify-list dd.left cite {
+    padding-left: 17px;
+}
+
+.classify-list dd a cite {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    height: 43px;
+    padding-top: 17px;
+    padding-left: 10px;
+}
+
+.classify-list dd a cite svg {
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin: 0px 8px 0 0;
+    transition: margin ease-out .3s;
+}
+
+.iconfont {
+    font-family: qd_iconfont!important;
+    font-size: 24px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: .1px;
+}
+
+.classify-list dd a cite .info {
+    float: left;
+    max-width: 42px;
+}
+
+.classify-list dd a cite .info i {
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.classify-list dd a cite .info i {
+    display: block;
+    cursor: pointer;
+    text-align: left;
+}

@@ -3,9 +3,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:tx="http://www.springframework.org/schema/tx"
              xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- 启用 Spring 的注解处理器 -->
     <annotation-driven />
@@ -40,24 +42,23 @@
 
     <beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <beans:property name="dataSource" ref="mysqlDataSource" />
+        <beans:property name="typeAliasesPackage" value="net.wlgzs.futurenovel.model" />
+        <beans:property name="configLocation" value="WEB-INF/mybatis/mybatis-config.xml" />
     </beans:bean>
 
-    <context:component-scan base-package="net.wlgzs.futurenovel.controller" />
+    <context:component-scan base-package="net.wlgzs.futurenovel" />
 
     <beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <beans:constructor-arg ref="mysqlDataSource" />
     </beans:bean>
-
-    <beans:bean id="accountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-        <beans:property name="mapperInterface" value="net.wlgzs.futurenovel.dao.AccountDao" />
-        <beans:property name="sqlSessionFactory" ref="sqlSessionFactory" />
-    </beans:bean>
+    <!-- enable transaction demarcation with annotations -->
+    <tx:annotation-driven />
 
     <beans:bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <beans:property name="prefix" value="/WEB-INF/thymeleaf/" />
         <beans:property name="suffix" value=".html" />
         <beans:property name="characterEncoding" value="UTF-8"/>
-        <beans:property name="templateMode" value="LEGACYHTML5" />
+        <beans:property name="templateMode" value="HTML" />
         <!-- Template cache is set to false (default is true). -->
         <beans:property name="cacheable" value="false" />
     </beans:bean>

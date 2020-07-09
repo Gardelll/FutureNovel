@@ -1,5 +1,6 @@
 package net.wlgzs.futurenovel.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public class Account implements Serializable {
     private static final long serialVersionUID = -806044765486901910L;
 

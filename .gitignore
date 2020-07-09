@@ -14,5 +14,5 @@ buildNumber.properties
 FutureNovel.iml
 future-novel.iml
 
-# 数据库配置
-database_config.properties
+# 配置
+*_config.properties

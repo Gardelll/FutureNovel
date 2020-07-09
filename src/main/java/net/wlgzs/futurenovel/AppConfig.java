@@ -1,5 +1,11 @@
 package net.wlgzs.futurenovel;
 
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Properties;
+import java.util.TimeZone;
+import javax.sql.DataSource;
 import net.wlgzs.futurenovel.typehandler.UUIDTypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -12,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,12 +30,6 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.Properties;
-
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackageClasses = AppConfig.class)
@@ -35,6 +37,16 @@ import java.util.Properties;
 public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
     private ApplicationContext applicationContext;
 
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    // JSON
     @Bean
     public MappingJackson2HttpMessageConverter jsonMessageConverter() {
         return new MappingJackson2HttpMessageConverter();
@@ -47,12 +59,14 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         return ret;
     }
 
+    // ResourceHandler
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
                 .addResourceLocations("/resources/");
     }
 
+    // Thymeleaf
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -77,11 +91,13 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
     public ThymeleafViewResolver viewResolver(){
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
 
+    // MyBatis
     @Bean
-    DataSource dataSource() {
+    public DataSource dataSource() {
         try {
             Properties properties = new Properties();
             properties.load(applicationContext.getResource("/WEB-INF/database_config.properties").getInputStream());
@@ -97,12 +113,12 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
     }
 
     @Bean
-    PlatformTransactionManager transactionManager() {
+    public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean
-    SqlSessionFactoryBean sqlSessionFactory() {
+    public SqlSessionFactoryBean sqlSessionFactory() {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
         factoryBean.setTypeAliasesPackage("net.wlgzs.futurenovel.model");
@@ -116,8 +132,21 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         return factoryBean;
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    // Email
+    @Bean
+    public MailSender mailSender() {
+        try {
+            var mailSender = new JavaMailSenderImpl();
+            Properties properties = new Properties();
+            properties.load(applicationContext.getResource("/WEB-INF/mail_config.properties").getInputStream());
+            mailSender.setHost(properties.getProperty("email_host"));
+            mailSender.setPort(Integer.parseInt(properties.getProperty("email_port")));
+            mailSender.setUsername(properties.getProperty("email_username"));
+            mailSender.setPassword(properties.getProperty("email_password"));
+            mailSender.setJavaMailProperties(properties);
+            return mailSender;
+        } catch (IOException e) {
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
     }
 }

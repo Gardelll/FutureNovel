@@ -18,9 +18,7 @@
 >      - resources `前端相关资源文件`
 >      - WEB-INF `服务器配置文件`
 >        - mybatis `MyBatis 设置`
->        - spring `Spring 设置`
 >        - thymeleaf `Thymeleaf 模板`
->        web.xml `容器配置`
 >  - test  
 >    - java `测试相关的 Java 代码`  
 >    - resources `测试相关的资源与配置`  
@@ -34,7 +32,7 @@ git clone https://gitee.com/FutureNovel/FutureNovel.git
 
 + 修改数据库配置文件
 ```
-# src\main\webapp\WEB-INF\spring\futureNovelServlet\database_config.properties
+# src/main/webapp/WEB-INF/database_config.properties
 jdbc_driverClassName=org.mariadb.jdbc.Driver
 jdbc_url=[jdbc链接]
 jdbc_username=[数据库用户名]
@@ -51,6 +49,7 @@ mvn clean package
 ```bash
 mvn cargo:run
 ```
+然后在浏览器访问 `http://localhost:8080/future-novel/` 即可
 
 ## 调试前端页面
 

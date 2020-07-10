@@ -43,7 +43,7 @@ public class FutureNovelException extends RuntimeException {
         INVALID_PASSWORD(403, "用户名或密码错误"),
         HACK_DETECTED(423, "检测到违规行为"),
         ACCESS_DENIED(403, "拒绝访问"),
-        USER_EXIST(409, "用户名已存在"),
+        USER_EXIST(409, "用户已存在"),
         WRONG_ACTIVATE_CODE(400, "验证码错误");
         private final String msg;
         private final int statusCode;

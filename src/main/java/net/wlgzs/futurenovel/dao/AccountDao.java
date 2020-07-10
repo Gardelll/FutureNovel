@@ -28,10 +28,10 @@ public interface AccountDao {
     @Select("SELECT * FROM `novel_db`.`accounts` WHERE `accounts`.`email` = #{email}")
     Account getAccountByEmail(@Param("email") String email) throws DataAccessException;
 
-    @Select("SELECT COUNT(*) FROM novel_db`.`accounts` WHERE `accounts`.`userName` = #{userName}")
+    @Select("SELECT COUNT(*) FROM `novel_db`.`accounts` WHERE `accounts`.`userName` = #{userName}")
     int getAccountSizeByUsername(@Param("userName") String name) throws DataAccessException;
 
-    @Select("SELECT COUNT(*) FROM novel_db`.`accounts` WHERE `accounts`.`email` = #{email}")
+    @Select("SELECT COUNT(*) FROM `novel_db`.`accounts` WHERE `accounts`.`email` = #{email}")
     int getAccountSizeByEmail(@Param("email") String email) throws DataAccessException;
 
     @Select("SELECT * FROM `novel_db`.`accounts` WHERE `accounts`.`userName` = #{userName} OR `accounts`.`email` = #{userName}")

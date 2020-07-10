@@ -21,11 +21,65 @@
 |参数错误（包括请求体 json 解析失败）|400|ILLEGAL_ARGUMENT|参数格式错误（各异）|
 |登陆状态失效或未登录|403|INVALID_TOKEN|未登录|
 |用户名或密码错误|403|INVALID_PASSWORD|用户名或密码错误|
-|短时间内多次异常操作而被暂时禁止|403|HACK_DETECTED|检测到违规行为|
+|短时间内多次异常操作而被暂时禁止|423|HACK_DETECTED|检测到违规行为|
 |使用没有管理权限的账号进行管理操作|403|ACCESS_DENIED|拒绝访问|
-|注册或修改用户名时遇到冲突|400|USER_EXIST|用户名已存在|
+|注册或修改用户名、邮箱时遇到冲突|409|USER_EXIST|用户已存在|
+|验证码错误|400|WRONG_ACTIVATE_CODE|验证码错误|
 |未完待续| | | |
 
 ### 数据格式
 
-(剩下的待会写)
++ UUID: 长度为 36 的随机且唯一字符串，例如 `11de527f-8b56-494e-9a02-0c11f8f31482` ，存储为 Cookie 时键名为 `uid`
++ Token: 长度为 64 的随机且唯一十六进制字符串，用于持久化用户的登录状态，存储为 Cookie 时键名为 `token`
+
+-----------
+
+### 登录与注册相关接口
+
+#### 注册
+
+1. 检查用户名或邮箱是否存在
+
+```
+GET /api/checkUsername
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|Content-Type|Header|application/x-www-form-urlencoded|否|
+|name|GET 参数|用户名或邮箱|否
+|type|GET 参数|字符枚举，username/email，默认为 username|是
+
+若可以使用，服务端返回状态码 204 - No Content
+
+2. 请求注册验证码
+
+```
+POST /api/sendCaptcha
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|Content-Type|Header|application/json|否|
+|email|Json String|收件人|否|
+
+若发送成功，服务端返回状态码 204 - No Content
+
+3. 登录
+
+```
+POST /api/login
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|Content-Type|Header|application/json|否|
+|User-Agent|Header|浏览器 UA，自动发送|否|
+|userName|Json String|用户名或邮箱|否|
+|password|Json String|密码|否
+|redirectTo|Json String|登录完成后的跳转 Url|是
+
+登录成功后设置 Cookie 并跳转到请求参数中 redirectTo 所指向的页面，
+若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页。
+
+即若登录成功，服务端返回状态码 302 - Found

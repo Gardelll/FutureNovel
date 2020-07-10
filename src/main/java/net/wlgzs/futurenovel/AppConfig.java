@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 import javax.sql.DataSource;
 import net.wlgzs.futurenovel.typehandler.UUIDTypeHandler;
+import org.hibernate.validator.HibernateValidator;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
@@ -21,6 +22,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -149,4 +152,14 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
             throw new NullPointerException(e.getLocalizedMessage());
         }
     }
+
+    // Validation
+    @Override
+    @Bean(name = "defaultValidator")
+    public Validator getValidator() {
+        LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
+        validatorFactoryBean.setProviderClass(HibernateValidator.class);
+        return validatorFactoryBean;
+    }
+
 }

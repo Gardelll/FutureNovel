@@ -8,8 +8,11 @@
 >  - main
 >    - java  
 >      - net.wlgzs.futurenovel  
+>        - bean `Java DTO 类`  
 >        - controller `Spring 控制器`  
 >        - dao `数据库映射`  
+>        - exception `应用异常`
+>        - filter `过滤器`
 >        - model `数据模型`
 >        - service `Spring 数据服务`
 >        - typehandler `Mybatis 数据类型映射器`
@@ -17,7 +20,6 @@
 >    - webapp
 >      - resources `前端相关资源文件`
 >      - WEB-INF `服务器配置文件`
->        - mybatis `MyBatis 设置`
 >        - thymeleaf `Thymeleaf 模板`
 >  - test  
 >    - java `测试相关的 Java 代码`  
@@ -30,13 +32,25 @@
 git clone https://gitee.com/FutureNovel/FutureNovel.git
 ```
 
-+ 修改数据库配置文件
++ 修改配置文件
 ```
 # src/main/webapp/WEB-INF/database_config.properties
 jdbc_driverClassName=org.mariadb.jdbc.Driver
 jdbc_url=[jdbc链接]
 jdbc_username=[数据库用户名]
 jdbc_password=[密码]
+
+
+# src/main/webapp/WEB-INF/mail_config.properties
+email_host=[发件服务器]
+email_port=465
+email_username=[邮箱账号]
+email_password=[邮箱密码]
+mail.transport.protocol=smtp # 发件协议
+mail.smtp.auth=true
+mail.smtp.ssl.enable=true # 使用 ssl
+mail.smtp.starttls.enable=true # 使用 tls (二者选一个)
+mail.debug=false
 ```
 
 + 打包

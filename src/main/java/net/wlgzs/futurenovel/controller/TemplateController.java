@@ -17,12 +17,17 @@ import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -36,9 +41,17 @@ public class TemplateController {
 
     private final AccountService accountService;
 
-    public TemplateController(TokenStore tokenStore, AccountService accountService) {
+    private final Validator defaultValidator;
+
+    public TemplateController(TokenStore tokenStore, AccountService accountService, Validator defaultValidator) {
         this.tokenStore = tokenStore;
         this.accountService = accountService;
+        this.defaultValidator = defaultValidator;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(defaultValidator);
     }
 
     @GetMapping({"", "/", "/index"})
@@ -69,7 +82,7 @@ public class TemplateController {
 
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String register(Model m,
-                           @Valid @RequestBody RegisterRequest req,
+                           @RequestBody @Valid RegisterRequest req,
                            HttpServletRequest request,
                            HttpServletResponse response,
                            HttpSession session) {
@@ -77,7 +90,7 @@ public class TemplateController {
         try {
             if (req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
                 Optional.ofNullable((Long) session.getAttribute("activateBefore"))
-                    .map(value -> System.currentTimeMillis() > value).orElse(false)) {
+                    .map(value -> System.currentTimeMillis() < value).orElse(false)) {
                 var account = new Account(UUID.randomUUID(),
                     req.userName,
                     BCrypt.hashpw(req.password, BCrypt.gensalt()),
@@ -94,27 +107,44 @@ public class TemplateController {
                 accountService.register(account);
                 var uidCookie = new Cookie("uid", account.getUid().toString());
                 uidCookie.setMaxAge((int) Duration.ofDays(30).toSeconds());
+                uidCookie.setPath(request.getContextPath());
                 response.addCookie(uidCookie);
                 session.setAttribute("regSuccessRedirect", Boolean.TRUE);
                 if (req.redirectTo != null) session.setAttribute("redirectTo", req.redirectTo);
-                return "redirect:/index";
+                return "redirect:index";
             } else throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
         } catch (FutureNovelException e) {
             m.addAttribute("errorMessage", e.getLocalizedMessage());
             m.addAttribute("error", e.getError().toString());
             m.addAttribute("cause", e);
+            response.setStatus(e.getError().getStatusCode());
+            log.warn("注册失败，原因：{}", e.getLocalizedMessage());
         }
         return "register";
     }
 
     @ExceptionHandler(Exception.class)
     public String error(Model model, HttpServletResponse response, Exception e) {
-        log.error("error:", e);
+        log.error("error: {}", e.getLocalizedMessage());
+        if (e instanceof HttpMessageNotReadableException) {
+            e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        }
         model.addAttribute("errorMessage", e.getLocalizedMessage());
         model.addAttribute("cause", e);
         if (e instanceof FutureNovelException) {
             model.addAttribute("error", ((FutureNovelException) e).getError().toString());
             response.setStatus(((FutureNovelException) e).getError().getStatusCode());
+        } else if (e instanceof MethodArgumentNotValidException) {
+            var result = ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors();
+            var errMsgBuilder = new StringBuilder();
+            result.forEach(fieldError -> errMsgBuilder.append(fieldError.getField())
+                .append(": ")
+                .append(fieldError.getDefaultMessage())
+                .append(";\n"));
+            errMsgBuilder.delete(errMsgBuilder.length() - 2, errMsgBuilder.length());
+            model.addAttribute("errorMessage", errMsgBuilder.toString());
+            model.addAttribute("error", "ILLEGAL_ARGUMENT");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
         } else if (e instanceof ResponseStatusException) {
             model.addAttribute("error", ((ResponseStatusException) e).getStatus().name());
             response.setStatus(((ResponseStatusException) e).getStatus().value());

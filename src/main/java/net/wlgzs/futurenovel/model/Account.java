@@ -15,31 +15,23 @@ public class Account implements Serializable {
 
     final private UUID uid;
     @NonNull
-    @org.springframework.lang.NonNull
     private String userName;
     @NonNull
-    @org.springframework.lang.NonNull
     private String userPass; // 用户密码
     @NonNull
-    @org.springframework.lang.NonNull
     private String email;
     private String phone;
     @NonNull
-    @org.springframework.lang.NonNull
     private String registerIP; // 注册 IP
     private String lastLoginIP; // 上次登录操作的 IP
     @NonNull
-    @org.springframework.lang.NonNull
     private Date registerDate; // 注册日期与时间
     private Date lastLoginDate; // 上次登录操作的日期与时间
     @NonNull
-    @org.springframework.lang.NonNull
     private Status status; // 用户的状态
     @NonNull
-    @org.springframework.lang.NonNull
     private Permission permission; // 用户的权限组
     @NonNull
-    @org.springframework.lang.NonNull
     private long experience; // 经验/积分
     private String profileImgUrl; // 头像 Url
 

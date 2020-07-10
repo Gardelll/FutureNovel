@@ -9,7 +9,7 @@ CREATE TABLE `accounts`
     `phone`         varchar(15)                  DEFAULT NULL,
     `registerIP`    varchar(255)        NOT NULL,
     `lastLoginIP`   varchar(255)                 DEFAULT NULL,
-    `registerDate`  datetime            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+    `registerDate`  datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `lastLoginDate` datetime                     DEFAULT NULL,
     `status`        tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
     `permission`    tinyint(4)          NOT NULL DEFAULT '0',

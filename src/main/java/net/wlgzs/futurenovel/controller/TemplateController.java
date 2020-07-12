@@ -68,6 +68,7 @@ public class TemplateController {
                 session.setAttribute("currentAccount", a);
                 return a;
             });
+            log.info("LoggedIn, account={}", account.getEmail());
             // 已登录
             model.addAttribute("currentAccount", account);
         }
@@ -88,6 +89,8 @@ public class TemplateController {
                            HttpSession session) {
         m.addAttribute("errorMessage", "OK");
         try {
+            if (!req.password.equals(req.passwordRepeat))
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "密码输入不一致");
             if (req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
                 Optional.ofNullable((Long) session.getAttribute("activateBefore"))
                     .map(value -> System.currentTimeMillis() < value).orElse(false)) {
@@ -126,7 +129,7 @@ public class TemplateController {
     @ExceptionHandler(Exception.class)
     public String error(Model model, HttpServletResponse response, Exception e) {
         log.error("error: {}", e.getLocalizedMessage());
-        if (e instanceof HttpMessageNotReadableException) {
+        if (e instanceof HttpMessageNotReadableException || e instanceof IllegalArgumentException) {
             e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         }
         model.addAttribute("errorMessage", e.getLocalizedMessage());

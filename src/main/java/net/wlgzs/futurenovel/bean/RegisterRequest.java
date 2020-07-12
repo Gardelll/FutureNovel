@@ -10,6 +10,8 @@ public class RegisterRequest {
     @NotBlank
     public String password;
     @NotBlank
+    public String passwordRepeat;
+    @NotBlank
     @Email
     public String email;
     @NotBlank

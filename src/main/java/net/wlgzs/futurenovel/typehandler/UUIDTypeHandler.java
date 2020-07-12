@@ -10,11 +10,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import org.apache.ibatis.type.MappedTypes;
 
-@MappedJdbcTypes(JdbcType.BINARY)
+@MappedTypes(UUID.class)
 public class UUIDTypeHandler extends BaseTypeHandler<UUID> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, UUID parameter, JdbcType jdbcType) throws SQLException {
+        //if (jdbcType != null && jdbcType != JdbcType.BINARY) throw new SQLException("Database type is not compatible");
         ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
         bb.putLong(parameter.getMostSignificantBits());
         bb.putLong(parameter.getLeastSignificantBits());

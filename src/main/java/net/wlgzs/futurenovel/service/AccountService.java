@@ -69,6 +69,15 @@ public class AccountService {
     }
 
     @Transactional
+    public int updateAccountExperience(Account account) {
+        try {
+            return accountDao.updateExperience(account);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    @Transactional
     public int unRegister(Account account) {
         try {
             return accountDao.deleteAccount(account);

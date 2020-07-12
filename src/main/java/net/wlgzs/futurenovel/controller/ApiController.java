@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +31,7 @@ import org.springframework.mail.MailException;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -136,6 +138,25 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@CookieValue(name = "uid", defaultValue = "") String uid,
+                       @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                       @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                       HttpServletRequest request,
+                       HttpServletResponse response,
+                       HttpSession session) {
+        log.debug("uid={}, token={}, agent={}, ip={}", uid, tokenStr, userAgent, request.getRemoteAddr());
+        var token = uid.isEmpty() ? null : tokenStore.verifyToken(tokenStr, UUID.fromString(uid), request.getRemoteAddr(), userAgent);
+        if (token == null) throw new FutureNovelException(FutureNovelException.Error.INVALID_TOKEN);
+        session.setAttribute("currentAccount", null);
+        var tokenCookie = new Cookie("token", null);
+        tokenCookie.setMaxAge(0);
+        tokenCookie.setPath(request.getContextPath());
+        response.addCookie(tokenCookie);
+        tokenStore.removeToken(token);
+    }
+
     /**
      * 请求注册验证码
      * @param session Session 服务端变量
@@ -167,7 +188,7 @@ public class ApiController {
     @ResponseBody
     public ResponseEntity<Map<?, ?>> error(Exception e) {
         log.error("error: {}", e.getLocalizedMessage());
-        if (e instanceof HttpMessageNotReadableException) {
+        if (e instanceof HttpMessageNotReadableException || e instanceof IllegalArgumentException) {
             e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         }
         HashMap<String, String> body = new HashMap<>();

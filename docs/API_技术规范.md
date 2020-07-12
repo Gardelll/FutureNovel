@@ -65,7 +65,7 @@ POST /api/sendCaptcha
 
 若发送成功，服务端返回状态码 204 - No Content
 
-3. 登录
+#### 登录
 
 ```
 POST /api/login
@@ -83,3 +83,17 @@ POST /api/login
 若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页。
 
 即若登录成功，服务端返回状态码 302 - Found
+
+#### 注销
+
+```
+GET /api/logout
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uid|Cookie|用户 id，自动发送|否|
+|token|Cookie|登陆令牌，自动发送|否|
+|User-Agent|Header|浏览器 UA，自动发送|否|
+
+若注销成功，服务端返回状态码 204 - No Content

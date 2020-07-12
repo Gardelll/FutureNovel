@@ -53,4 +53,7 @@ public interface AccountDao {
 
     @Delete("DELETE `novel_db`.`accounts` WHERE `accounts`.`uid` = #{uid}")
     int deleteAccount(Account account) throws DataAccessException;
+
+    @Update("UPDATE `novel_db`.`accounts` SET `experience` = #{experience} WHERE `accounts`.`uid` = #{uid}")
+    int updateExperience(Account account);
 }

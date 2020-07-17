@@ -1,15 +1,17 @@
 package net.wlgzs.futurenovel;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
+import javax.activation.FileTypeMap;
 import javax.sql.DataSource;
+import net.wlgzs.futurenovel.typehandler.JsonNodeTypeHandler;
 import net.wlgzs.futurenovel.typehandler.UUIDTypeHandler;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.LongTypeHandler;
 import org.hibernate.validator.HibernateValidator;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -22,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.validation.Validator;
@@ -41,6 +43,10 @@ import org.thymeleaf.templatemode.TemplateMode;
 @ComponentScan(basePackageClasses = AppConfig.class)
 @MapperScan("net.wlgzs.futurenovel.dao")
 public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
+
+    // Shared ObjectMapper
+    public static final ObjectMapper objectMapper = new ObjectMapper();
+
     private ApplicationContext applicationContext;
 
     static {
@@ -63,6 +69,11 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         var ret = new RequestMappingHandlerAdapter();
         ret.setMessageConverters(List.of(jsonMessageConverter()));
         return ret;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return objectMapper;
     }
 
     // ResourceHandler
@@ -133,6 +144,7 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         reg.setDefaultEnumTypeHandler(org.apache.ibatis.type.EnumOrdinalTypeHandler.class);
         reg.register(RoundingMode.class, org.apache.ibatis.type.EnumOrdinalTypeHandler.class);
         reg.register(UUID.class, UUIDTypeHandler.class);
+        reg.register(JsonNode.class, JsonNodeTypeHandler.class);
         conf.addMappers("net.wlgzs.futurenovel.dao");
         factoryBean.setConfiguration(conf);
         return factoryBean;
@@ -140,7 +152,7 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     // Email
     @Bean
-    public MailSender mailSender() {
+    public JavaMailSender mailSender() {
         try {
             var mailSender = new JavaMailSenderImpl();
             Properties properties = new Properties();
@@ -150,6 +162,7 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
             mailSender.setUsername(properties.getProperty("email_username"));
             mailSender.setPassword(properties.getProperty("email_password"));
             mailSender.setJavaMailProperties(properties);
+            mailSender.setDefaultFileTypeMap(FileTypeMap.getDefaultFileTypeMap());
             return mailSender;
         } catch (IOException e) {
             throw new NullPointerException(e.getLocalizedMessage());

@@ -1,7 +1,6 @@
 package net.wlgzs.futurenovel.service;
 
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.dao.AccountDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
@@ -25,7 +24,7 @@ public class AccountService {
         try {
             return accountDao.getAccount(uid);
         } catch (DataAccessException e) {
-            throw new FutureNovelException(e.getLocalizedMessage(), e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
@@ -33,11 +32,11 @@ public class AccountService {
         try {
             return accountDao.getAccountByUsername(username);
         } catch (DataAccessException e) {
-            throw new FutureNovelException(e.getLocalizedMessage(), e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
-    public Account login(@NotNull String username, @NotNull String password) {
+    public Account login(@NonNull String username, @NonNull String password) {
         try {
             var account = accountDao.getAccountForLogin(username);
             if (BCrypt.checkpw(password, account.getUserPass()))
@@ -53,7 +52,7 @@ public class AccountService {
         try {
             int ret = accountDao.insertAccount(account);
             if (ret != 1)
-                throw new FutureNovelException("逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(e.getLocalizedMessage(), e);
         }
@@ -64,7 +63,7 @@ public class AccountService {
         try {
             return accountDao.updateAccount(account);
         } catch (DataAccessException e) {
-            throw new FutureNovelException(e.getLocalizedMessage(), e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
@@ -73,7 +72,7 @@ public class AccountService {
         try {
             return accountDao.updateExperience(account);
         } catch (DataAccessException e) {
-            throw new FutureNovelException(e.getLocalizedMessage(), e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
@@ -82,7 +81,7 @@ public class AccountService {
         try {
             return accountDao.deleteAccount(account);
         } catch (DataAccessException e) {
-            throw new FutureNovelException(e.getLocalizedMessage(), e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 

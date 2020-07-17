@@ -33,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * HTML 页面的控制器
+ */
 @Controller
 @Slf4j
 public class TemplateController {
@@ -54,6 +57,16 @@ public class TemplateController {
         binder.addValidators(defaultValidator);
     }
 
+    /**
+     * 主页路由
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @param session Http 响应
+     * @param model 模板属性
+     * @return 对应的视图
+     */
     @GetMapping({"", "/", "/index"})
     public String home(@CookieValue(name = "uid", defaultValue = "") String uid,
                        @CookieValue(name = "token", defaultValue = "") String tokenStr,
@@ -81,6 +94,14 @@ public class TemplateController {
         return "register";
     }
 
+    /**
+     * 注册表单路由
+     * @param m 模板属性
+     * @param req 请求参数，详见 {@link RegisterRequest}
+     * @param request Http 请求
+     * @param session Session 服务端变量
+     * @return 含有错误信息的视图或跳转响应
+     */
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String register(Model m,
                            @RequestBody @Valid RegisterRequest req,
@@ -91,9 +112,10 @@ public class TemplateController {
         try {
             if (!req.password.equals(req.passwordRepeat))
                 throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "密码输入不一致");
-            if (req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
-                Optional.ofNullable((Long) session.getAttribute("activateBefore"))
-                    .map(value -> System.currentTimeMillis() < value).orElse(false)) {
+            if (req.email.equals(session.getAttribute("activateEmail")) &&
+                    req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
+                    Optional.ofNullable((Long) session.getAttribute("activateBefore"))
+                            .map(value -> System.currentTimeMillis() < value).orElse(false)) {
                 var account = new Account(UUID.randomUUID(),
                     req.userName,
                     BCrypt.hashpw(req.password, BCrypt.gensalt()),
@@ -104,6 +126,7 @@ public class TemplateController {
                     new Date(),
                     null,
                     Account.Status.FINED,
+                    false,
                     Account.Permission.USER,
                     0,
                     null);
@@ -112,6 +135,9 @@ public class TemplateController {
                 uidCookie.setMaxAge((int) Duration.ofDays(30).toSeconds());
                 uidCookie.setPath(request.getContextPath());
                 response.addCookie(uidCookie);
+                session.setAttribute("activateCode", null);
+                session.setAttribute("activateBefore", null);
+                session.setAttribute("activateEmail", null);
                 session.setAttribute("regSuccessRedirect", Boolean.TRUE);
                 if (req.redirectTo != null) session.setAttribute("redirectTo", req.redirectTo);
                 return "redirect:index";

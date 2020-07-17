@@ -22,8 +22,9 @@ public class FutureNovelException extends RuntimeException {
         error = Error.UNDEFINED;
     }
 
-    public FutureNovelException() {
-        error = Error.UNDEFINED;
+    public FutureNovelException(Error error, String message, Throwable throwable) {
+        super(message, throwable);
+        this.error = error;
     }
 
     public FutureNovelException(Error error) {
@@ -44,7 +45,9 @@ public class FutureNovelException extends RuntimeException {
         HACK_DETECTED(423, "检测到违规行为"),
         ACCESS_DENIED(403, "拒绝访问"),
         USER_EXIST(409, "用户已存在"),
-        WRONG_ACTIVATE_CODE(400, "验证码错误");
+        WRONG_ACTIVATE_CODE(400, "验证码错误"),
+        DATABASE_EXCEPTION(500, "数据库异常"),
+        PERMISSION_DENIED(403, "无权操作");
         private final String msg;
         private final int statusCode;
         Error(int statusCode, String msg) {

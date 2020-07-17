@@ -212,8 +212,8 @@
             </resource>
         </resources>
 
-        <!-- Cargo 插件，用于快速部署 -->
         <plugins>
+            <!-- Cargo 插件，用于快速部署 -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
@@ -232,7 +232,7 @@
                         </properties>
                     </daemon>
                 </configuration>
-                <executions>
+<!--                <executions>
                     <execution>
                         <id>start-container</id>
                         <phase>pre-integration-test</phase>
@@ -247,8 +247,22 @@
                             <goal>stop</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
+
+            <!-- Java Doc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <show>private</show>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                </configuration>
+            </plugin>
+
         </plugins>
 
     </build>

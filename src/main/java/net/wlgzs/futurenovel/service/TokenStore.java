@@ -18,6 +18,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -87,6 +88,7 @@ public class TokenStore implements DisposableBean {
             .orElseThrow(() -> new FutureNovelException(FutureNovelException.Error.INVALID_TOKEN));
     }
 
+    @Transactional
     public void saveTokens() {
         synchronized (tokenMap) {
             if (executor.isShutdown()) return;

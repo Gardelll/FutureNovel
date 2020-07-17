@@ -3,6 +3,8 @@ package net.wlgzs.futurenovel.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,7 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.UUID;
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,13 +110,14 @@ public class ApiController {
         var token = tokenStore.acquireToken(account, request.getRemoteAddr(), userAgent);
         account.setLastLoginIP(request.getRemoteAddr());
         Optional.ofNullable(account.getLastLoginDate()).filter(date -> {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
             var lastLogin = Calendar.getInstance();
             lastLogin.setTime(date);
             int day = lastLogin.get(Calendar.DAY_OF_YEAR);
             int year = lastLogin.get(Calendar.YEAR);
             var now = Calendar.getInstance();
             now.setTimeInMillis(System.currentTimeMillis());
-            return now.get(Calendar.YEAR) != year && now.get(Calendar.DAY_OF_YEAR) != day;
+            return now.get(Calendar.YEAR) != year || now.get(Calendar.DAY_OF_YEAR) != day;
         }).ifPresent((date) -> account.setExperience(account.getExperience() + 3));
         account.setLastLoginDate(new Date());
         accountService.updateAccount(account);
@@ -164,7 +169,7 @@ public class ApiController {
      */
     @PostMapping(value = "/sendCaptcha", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void sendCaptcha(HttpSession session, @Valid @RequestBody SendCaptchaRequest req) {
+    public void sendCaptcha(HttpServletRequest request, HttpSession session, @Valid @RequestBody SendCaptchaRequest req) {
         // TODO 对此接口添加图片验证码
         String activateCode;
         var random = new Random();
@@ -174,12 +179,16 @@ public class ApiController {
         }
         activateCode = stringBuilder.toString();
         try {
-            emailService.sendEmail(req.email, "您注册 FutureNovel 的验证码[请勿回复]",
-                String.format("您的注册验证码为：%s, 10分钟内有效。\n" +
-                    "如果您未进行注册，请忽略此邮件", activateCode));
+            emailService.sendEmail(req.email, "FutureNovel 地址验证",
+                String.format("您好，<br /><p>您收到这封邮件，是由于在 `%s` 进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。如果您并没有访问过本站，或没有进行上述操作，请忽略这封邮件。您不需要退订或进行其他进一步的操作。</p><br />" +
+                        "----------------------------------------------------------------------<br />" +
+                        "<p>您的邮箱验证码为：<h3>%s</h3> 10分钟内有效。</p>" +
+                        "----------------------------------------------------------------------<br />" +
+                        "<p>请在表单中填写该信息</p>", new URI(request.getScheme(), null, request.getServerName(), request.getLocalPort(), request.getContextPath(), null, null).normalize().toString(), activateCode));
             session.setAttribute("activateCode", activateCode);
             session.setAttribute("activateBefore", System.currentTimeMillis() + Duration.ofMinutes(10).toMillis());
-        } catch (MailException e) {
+            session.setAttribute("activateEmail", req.email);
+        } catch (MailException | MessagingException | URISyntaxException e) {
             throw new FutureNovelException(e.getLocalizedMessage());
         }
     }

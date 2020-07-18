@@ -102,7 +102,7 @@ public class TemplateController {
     @GetMapping("/register")
     public String register(Model m) {
         m.addAttribute("errorMessage", "OK");
-        return "register-test";
+        return "register";
     }
 
     /**
@@ -161,7 +161,7 @@ public class TemplateController {
             response.setStatus(e.getError().getStatusCode());
             log.warn("注册失败，原因：{}", e.getLocalizedMessage());
         }
-        return "register-test";
+        return "register";
     }
 
     @ExceptionHandler(Exception.class)

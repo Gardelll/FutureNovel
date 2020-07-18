@@ -14,11 +14,10 @@
         th:if="${error}" th:text="'('+${error}+')'">error ...</span>
 </p>
 
-<!--/* ${ex} is set by ourSimpleMappingExceptionResolver,
-       ${exception} or ${message} are set internally by Spring Boot. */-->
 <div
         th:if="${cause} or ${e} or (${errorMessage} and ${errorMessage.length() != 0})">
-    <b>原因：</b> <span th:if="${cause}" th:text="${cause}">exception ...</span>
+    <b>原因：</b> <span th:if="${error}" th:text="${error}">exception ...</span>
+    <p></p>
     <span th:if="${cause}" th:text="${cause}">exception ...</span>
     <span th:if="${errorMessage} and ${errorMessage.length() != 0}"
           th:text="${errorMessage}">message ...</span>

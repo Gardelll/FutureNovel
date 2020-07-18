@@ -3,28 +3,33 @@ package net.wlgzs.futurenovel.bean;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.Data;
 
 /**
  * 注册请求
  */
+@Data
 public class RegisterRequest {
 
     /**
      * 用户名
      */
     @NotBlank
+    @Size(min = 3)
     public String userName;
 
     /**
      * 密码
      */
     @NotBlank
+    @Size(min = 6)
     public String password;
 
     /**
      * 再输一遍密码
      */
     @NotBlank
+    @Size(min = 6)
     public String passwordRepeat;
 
     /**

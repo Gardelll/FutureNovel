@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -91,20 +90,21 @@ public class TemplateController {
     @GetMapping("/register")
     public String register(Model m) {
         m.addAttribute("errorMessage", "OK");
-        return "register";
+        return "register-test";
     }
 
     /**
      * 注册表单路由
-     * @param m 模板属性
      * @param req 请求参数，详见 {@link RegisterRequest}
+     * @param m 模板属性
      * @param request Http 请求
+     * @param response Http 响应
      * @param session Session 服务端变量
      * @return 含有错误信息的视图或跳转响应
      */
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public String register(Model m,
-                           @RequestBody @Valid RegisterRequest req,
+    public String register(@Valid RegisterRequest req,
+                           Model m,
                            HttpServletRequest request,
                            HttpServletResponse response,
                            HttpSession session) {
@@ -149,7 +149,7 @@ public class TemplateController {
             response.setStatus(e.getError().getStatusCode());
             log.warn("注册失败，原因：{}", e.getLocalizedMessage());
         }
-        return "register";
+        return "register-test";
     }
 
     @ExceptionHandler(Exception.class)
@@ -159,7 +159,6 @@ public class TemplateController {
             e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         }
         model.addAttribute("errorMessage", e.getLocalizedMessage());
-        model.addAttribute("cause", e);
         if (e instanceof FutureNovelException) {
             model.addAttribute("error", ((FutureNovelException) e).getError().toString());
             response.setStatus(((FutureNovelException) e).getError().getStatusCode());
@@ -171,7 +170,7 @@ public class TemplateController {
                 .append(fieldError.getDefaultMessage())
                 .append(";\n"));
             errMsgBuilder.delete(errMsgBuilder.length() - 2, errMsgBuilder.length());
-            model.addAttribute("errorMessage", errMsgBuilder.toString());
+            model.addAttribute("cause", errMsgBuilder.toString());
             model.addAttribute("error", "ILLEGAL_ARGUMENT");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
         } else if (e instanceof ResponseStatusException) {

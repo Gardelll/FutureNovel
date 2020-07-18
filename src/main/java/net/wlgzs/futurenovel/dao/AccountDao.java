@@ -46,7 +46,7 @@ public interface AccountDao {
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} OR `accounts`.`email` = #{userName} LIMIT = 1"})
+            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} OR `accounts`.`email` = #{userName} LIMIT 1"})
     Account getAccountForLogin(@Param("userName") String userName) throws DataAccessException;
 
     @Update("UPDATE `accounts` SET `accounts`.`profileImgUrl` = #{profileImgUrl} WHERE `accounts`.`uid` = #{uid}")

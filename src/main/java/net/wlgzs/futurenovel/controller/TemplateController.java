@@ -25,17 +25,29 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * HTML 页面的控制器
  */
 @Controller
+@CrossOrigin(origins = "*",
+        methods = {
+                RequestMethod.POST,
+                RequestMethod.GET
+        },
+        allowedHeaders = {
+                "Authorization",
+                "Content-Type",
+                "*"
+        }) // TODO 临时解决分离调试跨域问题
 @Slf4j
 public class TemplateController {
 

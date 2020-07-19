@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <title>未来小说网</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{../../resources/css/all.css}">
-    <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{../../resources/css/home.css}">
-    <script src="../../resources/js/navs.js" type="text/javascript" th:src="@{../../resources/js/navs.js}"></script>
-    <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{../../resources/js/slider.js}"></script>
+    <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
+    <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
+    <script src="../../resources/js/navs.js" type="text/javascript" th:src="@{/resources/js/navs.js}"></script>
+    <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
@@ -211,13 +211,13 @@
                         <div class="sliderBW">
                             <div id="slider_con1">
                                 <div id="list1" style="left: -748px;">
-                                    <img src="../../resources/img/slider-5.jpg" alt="1" />
-                                    <img src="../../resources/img/slider-1.jpg" alt="1" />
-                                    <img src="../../resources/img/slider-2.jpg" alt="2" />
-                                    <img src="../../resources/img/slider-3.jpg" alt="3" />
-                                    <img src="../../resources/img/slider-4.jpg" alt="4" />
-                                    <img src="../../resources/img/slider-5.jpg" alt="5" />
-                                    <img src="../../resources/img/slider-1.jpg" alt="5" />
+                                    <img src="../../resources/img/slider-5.jpg" th:src="@{/resources/img/slider-5.jpg}" alt="1" />
+                                    <img src="../../resources/img/slider-1.jpg" th:src="@{/resources/img/slider-1.jpg}" alt="1" />
+                                    <img src="../../resources/img/slider-2.jpg" th:src="@{/resources/img/slider-2.jpg}" alt="2" />
+                                    <img src="../../resources/img/slider-3.jpg" th:src="@{/resources/img/slider-3.jpg}" alt="3" />
+                                    <img src="../../resources/img/slider-4.jpg" th:src="@{/resources/img/slider-4.jpg}" alt="4" />
+                                    <img src="../../resources/img/slider-5.jpg" th:src="@{/resources/img/slider-5.jpg}" alt="5" />
+                                    <img src="../../resources/img/slider-1.jpg" th:src="@{/resources/img/slider-1.jpg}" alt="5" />
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>
@@ -241,14 +241,14 @@
                     <div>
                         <div class="user_avatar">
                             <a class="user_avatar_lk">
-                                <img src="../../resources/img/logo.jpg" />
+                                <img src="../../resources/img/logo.jpg" th:src="@{/resources/img/logo.jpg}" />
                             </a>
                         </div>
                         <div class="user_show">
                             <a href="js">Hi~欢迎阅读</a>
                             <p>
-                                <a href="../../resources/login.html" class="user_login">登录</a> |
-                                <a href="../../resources/register.html" class="user_reg">注册</a>
+                                <a href="../../resources/login.html" th:href="@{/login}" class="user_login">登录</a> |
+                                <a href="../../resources/register.html" th:href="@{/register}" class="user_reg">注册</a>
                             </p>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -348,7 +348,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -363,7 +363,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}" />
                                 </a>
                             </div>
                             <div class="book-info">
@@ -378,7 +378,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -393,7 +393,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -408,7 +408,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -423,7 +423,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -438,7 +438,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -453,7 +453,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/book-hot-1.jpg">
+                                    <img src="../../resources/img/book-hot-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}">
                                 </a>
                             </div>
                             <div class="book-info">
@@ -559,17 +559,17 @@
                         <ul id="left-slide" class="roundabout-holder">
                             <li class="book1 roundabout-moveable-item" style="position: absolute;left: 64px;top: -13px;width: 84px;height: 112px;opacity: 1;z-index: 280;font-size: 16px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/hot-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/hot-work-slide-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                             <li class="book2 roundabout-moveable-item" style="position: absolute;left: 135px;top: -1px;width: 65.1px;height: 86.8px;opacity: 0.85;z-index: 145;font-size: 12.4px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/hot-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/hot-work-slide-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                             <li class="book3 roundabout-moveable-item" style="position: absolute;left: 15px;top: -1px;width: 65.1px;height: 86.8px;opacity: 0.85;z-index: 145;font-size: 12.4px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/hot-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/hot-work-slide-1.jpg" th:src="@{/resources/img/book-hot-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                         </ul>
@@ -919,17 +919,17 @@
                         <ul id="left-slide-2" class="roundabout-holder" style="display: block;padding: 0;position: relative;">
                             <li class="book1 roundabout-moveable-item" style="position: absolute;left: 64px;top: -13px;width: 84px;height: 112px;opacity: 1;z-index: 280;font-size: 16px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/finish-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/finish-work-slide-1.jpg" th:src="@{/resources/img/finish-work-slide-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                             <li class="book2 roundabout-moveable-item" style="position: absolute;left: 135px;top: -1px;width: 65.1px;height: 86.8px;opacity: 0.85;z-index: 145;font-size: 12.4px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/finish-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/finish-work-slide-1.jpg" th:src="@{/resources/img/finish-work-slide-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                             <li class="book3 roundabout-moveable-item" style="position: absolute;left: 15px;top: -1px;width: 65.1px;height: 86.8px;opacity: 0.85;z-index: 145;font-size: 12.4px;">
                                 <a href="###" target="_blank">
-                                    <img src="../../resources/img/finish-work-slide-1.jpg" style="display: inline;">
+                                    <img src="../../resources/img/finish-work-slide-1.jpg" th:src="@{/resources/img/finish-work-slide-1.jpg}" style="display: inline;">
                                 </a>
                             </li>
                         </ul>
@@ -988,7 +988,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1007,7 +1007,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1026,7 +1026,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1045,7 +1045,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1064,7 +1064,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1083,7 +1083,7 @@
                         <li>
                             <div class="book-img">
                                 <a href="###" target="_blank">
-                                    <img src="./img/finish-book-1.jpg" style="display: inline;">
+                                    <img src="./img/finish-book-1.jpg" th:src="@{/resources/img/finish-book-1.jpg}" style="display: inline;">
                                     <span>8.5</span>
                                 </a>
                             </div>
@@ -1121,7 +1121,7 @@
                                     </div>
                                     <div class="book-cover">
                                         <a class="link" href="###" target="_blank">
-                                            <img src="./img/finish-book-right.jpg">
+                                            <img src="./img/finish-book-right.jpg" th:src="@{/resources/img/finish-book-right.jpg}" />
                                         </a>
                                         <span></span>
                                     </div>
@@ -1184,7 +1184,7 @@
                             </div>
                             <div class="book-cover">
                                 <a class="link" href="###" target="_blank">
-                                    <img src="./img/update-book-1.jpg">
+                                    <img src="./img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
                                 </a>
                                 <span></span>
                             </div>
@@ -1204,7 +1204,7 @@
                             </div>
                             <div class="book-cover">
                                 <a class="link" href="###" target="_blank">
-                                    <img src="./img/update-book-1.jpg">
+                                    <img src="./img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
                                 </a>
                                 <span></span>
                             </div>
@@ -1585,7 +1585,7 @@
                         </div>
                         <div class="book-cover">
                             <a class="link" href="###" target="_blank">
-                                <img src="./img/update-book-1.jpg">
+                                <img src="./img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
                             </a>
                             <span></span>
                         </div>
@@ -1605,7 +1605,7 @@
                         </div>
                         <div class="book-cover">
                             <a class="link" href="###" target="_blank">
-                                <img src="./img/update-book-1.jpg">
+                                <img src="./img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
                             </a>
                             <span></span>
                         </div>
@@ -1625,7 +1625,7 @@
                         </div>
                         <div class="book-cover">
                             <a class="link" href="###" target="_blank">
-                                <img src="./img/update-book-1.jpg">
+                                <img src="./img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
                             </a>
                             <span></span>
                         </div>

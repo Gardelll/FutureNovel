@@ -192,7 +192,7 @@
 .focus-wrap {
     position: relative;
     z-index: 1;
-    height: 410px;
+    height: 421px;
 }
 
 .classify-list {
@@ -401,7 +401,7 @@
 /* 公告 */
 
 .focus_user {
-    height: 102px;
+    height: 103px;
     overflow: hidden;
     position: relative;
     top: 10px;
@@ -489,7 +489,8 @@
 .news2 {
     overflow: hidden;
     background: #dddddd38;
-    margin: 10px;
+    margin: 10px 0;
+    padding: 0 8px;
 }
 
 .news_hd {
@@ -555,13 +556,8 @@
 
 .hot-rec-wrap {
     overflow: hidden;
-    height: 493px;
+    height: 498px;
     border-radius: 6px;
-}
-
-.inner-wrap {
-    padding: 20px;
-    background: #fff;
 }
 
 .inner-wrap {
@@ -762,7 +758,7 @@
 /* 热门作品 */
 
 .hot-work {
-    width: 20%;
+    width: 216px;
     padding: 20px;
 }
 
@@ -957,25 +953,600 @@ h3.wrap-title {
     margin: 0 auto 33px;
 }
 
-.left-wrap {
+.left-wrap-2 {
     width: 954px;
-    padding: 20px;
+    padding: 20px 0 20px 20px;
 }
 
-.left-wrap .wrap-title {
+.left-wrap-2 .wrap-title {
     font-size: 22px;
     line-height: 27px;
     margin-top: -2px;
     padding-bottom: 6px;
 }
 
-.left-wrap .left-info {
+.left-wrap-2 .left-info {
     overflow: hidden;
     width: 216px;
     height: 395px;
     background: #dddddd38;
 }
 
-.left-wrap .left-info .slide-box {
+.left-wrap-2 .left-info .slide-box {
     padding: 24px 0;
+}
+
+.center-book-list {
+    position: relative;
+    width: 738px;
+}
+
+.center-book-list .line.line1 {
+    top: 138px;
+}
+
+.center-book-list .line {
+    position: absolute;
+    left: 30px;
+    width: 708px;
+}
+
+.center-book-list .line,
+.edit-rec-wrap .focus-today,
+.update-wrap .god-wrap .god-list ul li,
+.update-wrap .update-rec-list ul li {
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.center-book-list .line.line2 {
+    top: 276px;
+}
+
+.center-book-list .line {
+    position: absolute;
+    left: 30px;
+    width: 708px;
+}
+
+.center-book-list .line,
+.edit-rec-wrap .focus-today,
+.update-wrap .god-wrap .god-list ul li,
+.update-wrap .update-rec-list ul li {
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.center-book-list ul {
+    position: relative;
+    overflow: hidden;
+    width: 738px;
+    height: 375px;
+    padding: 20px 0 0 30px;
+}
+
+.center-book-list ul li {
+    float: left;
+    width: 339px;
+    height: 96px;
+    margin: 0 30px 43px 0;
+}
+
+.center-book-list ul li .book-img,
+.center-book-list ul li .book-info {
+    float: left;
+}
+
+.book-img {
+    width: 72px;
+    height: 96px;
+    margin-right: 12px;
+}
+
+.center-book-list ul li .book-info {
+    width: 250px;
+}
+
+.book-img a {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .35), 0 0 5px #f9f2e9 inset;
+}
+
+.book-img a img {
+    width: 100%;
+    height: 100%;
+    transition: transform .3s ease-out;
+    color: #fcfcfa;
+}
+
+.book-img a span {
+    font: 12px/18px Arial;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 17px;
+    padding: 0 3px 0 2px;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 5px 0 0;
+    background: #ed4259;
+}
+
+.center-book-list ul li .book-info h3 {
+    font-size: 16px;
+    overflow: hidden;
+    height: 21px;
+    margin-top: -3px;
+    margin-bottom: 8px;
+}
+
+.center-book-list ul li .book-info h3 a {
+    color: #1a1a1a;
+}
+
+.center-book-list ul li .book-info p {
+    font-size: 12px;
+    overflow: hidden;
+    height: 40px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.state-box {
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.state-box span {
+    max-width: 62px;
+    height: 18px;
+    color: #bf2c24;
+    border: 1px solid #df9591;
+}
+
+.state-box i {
+    max-width: 52px;
+    height: 18px;
+    margin-right: 8px;
+    color: #a6a6a6;
+    border: 1px solid #bfbfbf;
+}
+
+.state-box i,
+.state-box span {
+    float: right;
+    overflow: hidden;
+    padding: 0 3px;
+    text-align: center;
+    border-radius: 1px;
+}
+
+.state-box .author {
+    display: block;
+    overflow: hidden;
+    height: 18px;
+    margin-top: 2px;
+    padding-right: 10px;
+    color: #a6a6a6;
+}
+
+.state-box img {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: -2px 5px 0 0;
+    vertical-align: middle;
+}
+
+.right-wrap-2 {
+    position: relative;
+    z-index: 1;
+    width: 210px;
+    padding: 20px 0;
+}
+
+.score-list li.unfold {
+    overflow: visible;
+    height: 114px;
+}
+
+.score-list li.unfold {
+    border-top: none;
+}
+
+.book-wrap {
+    padding: 15px 0;
+}
+
+.recent-finish-wrap .book-wrap .book-info {
+    margin-top: 3px;
+}
+
+.book-wrap .book-info {
+    width: 110px;
+}
+
+.book-wrap .book-info h3 {
+    font-size: 14px;
+    width: 36px;
+    height: 18px;
+    margin-bottom: 3px;
+    text-align: center;
+    color: #fff;
+    background: #bf2c24;
+}
+
+.book-wrap .book-info h4 {
+    font-size: 15px;
+    overflow: hidden;
+    height: 24px;
+    color: #1a1a1a;
+}
+
+.score-list .book-wrap .book-info .score {
+    font-size: 12px;
+    overflow: hidden;
+    height: 16px;
+    padding: 2px 0;
+    color: #bf2c24;
+}
+
+.score-list .book-wrap .book-info .score cite {
+    margin: 0 3px;
+}
+
+.book-wrap .book-info p.author {
+    font-size: 12px;
+    overflow: hidden;
+    height: 16px;
+}
+
+.book-wrap .book-info p.author a {
+    color: #a6a6a6;
+}
+
+.book-wrap .book-cover {
+    position: relative;
+    z-index: 4;
+    float: left;
+    width: 52px;
+    height: 91px;
+    margin-top: -3px;
+    margin-right: 8px;
+    text-align: center;
+}
+
+:root .book-cover img {
+    width: 52px;
+    height: 87px;
+}
+
+.book-wrap .book-cover img {
+    width: 60px;
+    height: 87px;
+    outline: 1px solid transparent;
+}
+
+:root .book-cover span {
+    position: absolute;
+    z-index: 1;
+    top: 84.1%;
+    left: 7px;
+    width: 20px;
+    height: 10px;
+    content: '';
+    transform: perspective(74px) rotateX(-70deg) rotateY(-5deg);
+    box-shadow: 25px 0 5px 5px #adadad;
+}
+
+:root .book-cover:after {
+    position: absolute;
+    z-index: 2;
+    top: 2%;
+    left: 93%;
+    width: 10%;
+    height: 92%;
+    content: ' ';
+    transform: perspective(60px) rotateY(30deg);
+    background-color: #efefef;
+    box-shadow: inset 0 0 5px #333;
+}
+
+.score-list li {
+    border-top: 1px solid #e6e6e6;
+}
+
+.edit-rec-wrap .edit-rec-list,
+.hot-classify-wrap .hot-book-list dd,
+.score-list li {
+    overflow: hidden;
+}
+
+.score-list li .name {
+    font-size: 14px;
+    float: left;
+    overflow: hidden;
+    width: 140px;
+    height: 31px;
+}
+
+.score-list li i {
+    font-size: 12px;
+    float: right;
+    overflow: hidden;
+    width: 50px;
+    height: 16px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-align: right;
+    color: #a6a6a6;
+}
+
+.update-wrap .wrap-title {
+    font-size: 22px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    width: 216px;
+    height: 24px;
+    white-space: nowrap;
+}
+
+.update-wrap .update-rec-list {
+    overflow: hidden;
+    width: 216px;
+    height: 632px;
+    background: #dddddd38;
+}
+
+.update-wrap .update-rec-list ul {
+    width: 192px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.update-wrap .update-rec-list ul li {
+    height: 210px;
+}
+
+.update-wrap .update-rec-list .book-wrap {
+    padding: 25px 0 12px;
+}
+
+.update-wrap .update-rec-list .book-wrap .book-info {
+    margin-top: 22px;
+}
+
+.update-wrap .update-rec-list .book-wrap .book-info h4,
+.update-wrap .update-rec-list .book-wrap .book-info p {
+    text-align: right;
+}
+
+.update-wrap .update-rec-list .book-wrap .book-info h4 a {
+    color: #1a1a1a;
+}
+
+.update-wrap .update-rec-list .book-wrap .book-info .digital {
+    font-size: 0;
+    height: 20px;
+}
+
+.book-wrap .book-info p.author {
+    font-size: 12px;
+    overflow: hidden;
+    height: 16px;
+}
+
+.book-wrap .book-info p.author a {
+    color: #a6a6a6;
+}
+
+.update-wrap .update-rec-list .book-cover {
+    float: left;
+}
+
+:root .book-cover {
+    transform: perspective(60px) rotateY(-10deg);
+}
+
+.book-wrap .book-cover .link {
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+    transform: translateZ(50px);
+}
+
+:root .book-cover img {
+    width: 52px;
+    height: 87px;
+}
+
+.book-wrap .book-cover img {
+    width: 60px;
+    height: 87px;
+    outline: 1px solid transparent;
+}
+
+:root .book-cover span {
+    position: absolute;
+    z-index: 1;
+    top: 84.1%;
+    left: 7px;
+    width: 20px;
+    height: 10px;
+    content: '';
+    transform: perspective(74px) rotateX(-70deg) rotateY(-5deg);
+    box-shadow: 25px 0 5px 5px #adadad;
+}
+
+:root .book-cover:after {
+    position: absolute;
+    z-index: 2;
+    top: 2%;
+    left: 116%;
+    width: 10%;
+    height: 92%;
+    content: ' ';
+    transform: perspective(60px) rotateY(30deg);
+    background-color: #efefef;
+    box-shadow: inset 0 0 5px #333;
+}
+
+.update-wrap .update-rec-list p.info {
+    font-size: 12px;
+    overflow: hidden;
+    height: 60px;
+    color: #666;
+}
+
+.update-wrap .update-list-wrap {
+    width: 61%;
+}
+
+.update-wrap .update-list-wrap {
+    overflow: hidden;
+    height: 660px;
+}
+
+.update-wrap .update-list-wrap .update-more {
+    height: 24px;
+    padding-bottom: 4px;
+}
+
+.update-wrap .update-list-wrap .update-more {
+    border-bottom: 1px solid #666;
+}
+
+.update-wrap .update-list-wrap .update-list {
+    width: 708px;
+    margin-left: 30px;
+}
+
+.update-wrap .update-list-wrap .update-list table td {
+    height: 31px;
+}
+
+.hot-classify-wrap li .book-wrap.bd,
+.update-wrap .update-list-wrap .update-list table td {
+    border-bottom: 1px solid #ebebeb;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.classify {
+    margin-left: -7px;
+    color: grey;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.classify,
+.update-wrap .update-list-wrap .update-list table td a.name {
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.update-wrap .update-list-wrap .update-list table td a {
+    float: left;
+    overflow: hidden;
+    height: 30px;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.classify em {
+    font-size: 13px;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.classify,
+.update-wrap .update-list-wrap .update-list table td a.name {
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.update-wrap .update-list-wrap .update-list table td a {
+    float: left;
+    overflow: hidden;
+    height: 30px;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.author,
+.update-wrap .update-list-wrap .update-list table td a.section {
+    font-size: 12px;
+}
+
+.update-wrap .update-list-wrap .update-list table td a.section {
+    overflow: hidden;
+    max-width: 220px;
+    margin-right: 5px;
+    white-space: normal;
+    text-overflow: ellipsis;
+    color: #666;
+}
+
+.update-wrap .update-list-wrap .update-list table td a {
+    float: left;
+    overflow: hidden;
+    height: 30px;
+}
+
+.update-wrap .update-list-wrap .update-list table td i {
+    font-size: 12px;
+    float: right;
+    margin-top: 3px;
+    color: #666;
+}
+
+.footer {
+    text-align: center;
+    background: #fafafa;
+}
+
+.footer .box-center {
+    background: #fafafa;
+}
+
+.footer .footer-text {
+    padding: 20px 26px 0;
+}
+
+.footer .footer-text p {
+    font-size: 12px;
+    line-height: 20px;
+    color: #1a1a1a;
+}
+
+.footer .footer-menu {
+    padding: 0 0 4px;
+}
+
+.dib-wrap {
+    font-size: 0;
+}
+
+.footer .footer-menu a {
+    color: #666;
+}
+
+.footer .footer-menu a,
+.footer .friend-link a {
+    font-size: 12px;
+    line-height: 27px;
+    margin-right: 16px;
+    color: #1a1a1a;
+}
+
+.dib-wrap a,
+.dib-wrap span {
+    display: inline-block;
+    vertical-align: middle;
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+
+.footer .copy-right {
+    padding-bottom: 16px;
+}
+
+.footer .copy-right p {
+    font-size: 12px;
+    overflow: hidden;
+    height: 20px;
+    color: #a6a6a6;
 }

@@ -42,7 +42,7 @@
 }
 
 .title {
-    background-color: #BF2C24;
+    background-color: #2470bf;
     border-radius: 10px 10px 0 0;
     color: #FFF;
     padding: 13px 17px;
@@ -66,7 +66,7 @@
 .reg-form-wrap .reg-form-list dd {
     position: relative;
     z-index: 1;
-    margin-bottom: 32px;
+    margin-bottom: 22px;
 }
 
 .reg-form-wrap .reg-form-list dd:before,
@@ -95,13 +95,13 @@
     background: #F7F7F7;
 }
 
-.reg-form-wrap .reg-form-list dd input[type=text].mid,
-.reg-form-wrap .reg-form-list dd input[type=password].mid {
+.reg-form-wrap .reg-form-list dd input.mid,
+.reg-form-wrap .reg-form-list dd input.mid {
     width: 308px;
 }
 
-.reg-form-wrap .reg-form-list dd input[type=text],
-.reg-form-wrap .reg-form-list dd input[type=password] {
+.reg-form-wrap .reg-form-list dd input,
+.reg-form-wrap .reg-form-list dd input {
     float: left;
     padding: 0 16px;
     width: 308px;
@@ -150,6 +150,8 @@
     height: 0;
 }
 
+
+/*
 .reg-form-wrap .reg-form-list .password-strong {
     float: left;
     padding-left: 12px;
@@ -194,7 +196,7 @@
 .reg-form-wrap .reg-form-list .password-strong p span.level-3 b {
     width: 118px;
     background: #8CCD0A;
-}
+} */
 
 .reg-form-wrap .reg-form-list dd.error input[type=text],
 .reg-form-wrap .reg-form-list dd.error input[type=password] {
@@ -207,19 +209,4 @@
     height: 40px;
     line-height: 40px;
     margin-left: 146px;
-}
-
-.red-btn {
-    position: relative;
-    z-index: 1;
-    border-color: #BF2C24;
-    background: #BF2C24;
-    color: white;
-    text-align: center;
-}
-
-.red-btn:hover {
-    border-color: #ED4259;
-    background: #ED4259;
-    color: white;
 }

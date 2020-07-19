@@ -90,11 +90,6 @@ p {
     word-break: break-all
 }
 
-
-/* .lbf-combobox .lbf-combobox-label .lbf-combobox-icon:before {
-    visibility: hidden
-} */
-
 .box-center {
     width: 1200px;
     margin-right: auto;
@@ -150,4 +145,8 @@ p {
 .blue-btn:hover {
     background: #547ae2;
     color: white;
+}
+
+.blue {
+    color: #3f5a93;
 }

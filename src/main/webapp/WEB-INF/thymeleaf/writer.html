@@ -5,9 +5,9 @@
 		<meta charset="UTF-8">
 		<title>写小说</title>
 		<script src="../../resources/js/jquery-3.4.1.min.js"></script>
-		<link rel="stylesheet" href="../../resources/css/writer.css">
-		<script src="../../resources/js/writer.js"></script>
-		<script src="../../resources/tinymce/tinymce.min.js"></script>
+		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
+		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
+		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
 		<script>
 			tinymce.init({ 
 				selector:'textarea.content',
@@ -35,17 +35,9 @@
 			</div>
 			<div class="writer-body">
 				<form action="" method="">
-					<p><input type="text" name="book-name" placeholder="输入书名" id="book-name" class="writer-inputs"/></p>
-					<p><input type="text" name="title-name" placeholder="输入章节名称" id="title-name" class="writer-inputs"/></p>
-					<p>
-						<select class="writer-inputs" style="color: #7a7a7a">
-							<option selected>--请选择--</option>
-							<option>同人</option>
-							<option>公版</option>
-							<option>原创</option>
-							<option>转载</option>
-						</select>
-					</p>
+					<p><input type="text" name="bookName"  placeholder="输入书名" id="book-name" class="writer-inputs"/></p>
+					<p><input type="text" name="titleName" placeholder="输入章节名称" id="title-name" class="writer-inputs"/></p>
+
 					<p><textarea name="content" class="content"></textarea></p>
 					<!--先暂时写成button类型，等前后端交互再改成submit类型-->
 					<p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release"/></p>

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <html>
 	<head>
 		<meta charset="utf-8" />
 		<title>排行榜</title>
 		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-		<link rel="stylesheet" href="../../resources/css/all2.css">
-		<script src="../../resources/js/jquery-3.4.1.min.js"></script>
-		<link rel="stylesheet" href="../../resources/css/rank.css">
-		<script src="../../resources/js/rank.js"></script>
+		<link rel="stylesheet" href="../../resources/css/all2.css" th:href="@{/resources/css/all2.css}">
+		<script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
+		<link rel="stylesheet" href="../../resources/css/rank.css" th:href="@{/resources/css/rank.css}">
+		<script src="../../resources/js/rank.js" th:src="@{/resources/js/rank.js}"></script>
 
 	</head>
 	<body>
@@ -43,7 +44,7 @@
 					<li id="first">
 						<a href="##">作品分类</a>
 
-						<img src="../../resources/img/下 (1).png" height="200" width="200"style="width:20px;height: 20px;margin:10px;float:right;" id="direction"/></li>
+						<img src="../../resources/img/下 (1).png" th:src="@{/resources/img/下 (1).png}" height="200" width="200"style="width:20px;height: 20px;margin:10px;float:right;" id="direction"/></li>
 					<li class="navs" style="margin-left: 50px;width: 120px;"><a href="##">全部作品</a></li>
 					<li class="navs" style="width: 100px;"><a href="##">排行</a></li>
 					<li class="navs" style="width: 130px;"><a href="##">作家专区</a></li>
@@ -53,7 +54,7 @@
 						<a href="##">客户端</a>
 
 
-						<img src="../../resources/img/手机.png"  style="width:20px;height: 20px;margin:10px;float:left;"/></li>
+						<img src="../../resources/img/手机.png" th:src="@{/resources/img/手机.png}"  style="width:20px;height: 20px;margin:10px;float:left;"/></li>
 				</ul>
 			</div>
 		</div>
@@ -218,7 +219,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -243,7 +244,7 @@
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
 
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/></div>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/></div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
 									<p style="font-size: 10px;color: gray;margin-top: 10px;">
@@ -266,7 +267,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -290,7 +291,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -314,7 +315,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -338,7 +339,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -362,7 +363,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -386,7 +387,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -410,7 +411,7 @@
 						<li>
 							<div class="book-rank-list" style="overflow: hidden;">
 								<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
 									<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
@@ -435,7 +436,7 @@
 							<div class="book-rank-list" style="overflow: hidden;border-bottom: none;">
 								<div class="book-rank-img">
 									<div class="book-rank-img">
-									<img src="../../resources/img/150.jpg" style="width: 100px;float: left;"/>
+									<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
 								</div>
 								</div>
 								<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">

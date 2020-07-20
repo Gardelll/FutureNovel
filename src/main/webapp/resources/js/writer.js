@@ -72,7 +72,7 @@ window.onload = function() {
 //		-
 //	});
 	function createEle(shuming, zhangjie, text, time) {
-		var $xiaoshuo = $("<li><div class='writer-lis'><p>" + "" + shuming + "" + "</p>	<img src='../img/左.png' alt=''><p>" + "" + zhangjie + "" + "</p></div><div class='works-content'><span class='neirong'>" + "" + text + "" + "</span><span class='neirong'style='margin: 0;'>...</span><span id='writer-data'>" + "" + time + "" + "</span><span id='words-num' style='margin-left:15px;'>" + "" + "字数：" + "" + text.length + "" + "</span></div></li>")
+		var $xiaoshuo = $("<li><div class='writer-lis'><p>" + "" + shuming + "" + "</p><p>" + "" + zhangjie + "" + "</p></div><div class='works-content'><span class='neirong'>" + "" + text + "" + "</span><span class='neirong'style='margin: 0;'>...</span><span id='writer-data'>" + "" + time + "" + "</span><span id='words-num' style='margin-left:15px;'>" + "" + "字数：" + "" + text.length + "" + "</span></div></li>")
 		return $xiaoshuo;
 	}
 }

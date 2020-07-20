@@ -155,7 +155,7 @@
 
 .book-detail {
     position: relative;
-    top: 150px;
+    top: 130px;
     z-index: 10;
     min-height: 700px;
 }
@@ -343,7 +343,7 @@
 .content-nav {
     border-bottom: 1px solid #e6e6e6;
     background-color: #fff;
-    padding-top: 23px;
+    padding: 23px 20px 0;
 }
 
 .content-nav .nav-wrap li {
@@ -380,7 +380,7 @@
 }
 
 .left-wrap {
-    width: 700px;
+    width: 680px;
     padding-bottom: 40px;
 }
 
@@ -423,11 +423,6 @@
     width: 542px;
     padding: 20px 0;
     border-bottom: 1px solid #e6e6e6;
-}
-
-.book-state li .detail .tag-wrap {
-    font-size: 0;
-    padding: 10px 0;
 }
 
 .book-state li .detail .tag-wrap .tags {
@@ -495,4 +490,226 @@
     color: #115f96;
     border: 1px solid #115f96;
     border-radius: 100px;
+}
+
+
+/* 右边作者信息 */
+
+.right-wrap {
+    width: 250px;
+    padding-top: 6px;
+}
+
+.author-info {
+    width: 226px;
+    margin: 0 auto;
+    padding-bottom: 9px;
+    text-align: center;
+    background: #dddddd38;
+}
+
+.info-wrap {
+    padding: 20px 0;
+    border-top: none;
+}
+
+.author-info .author-photo {
+    position: relative;
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 16px;
+}
+
+.author-info .author-photo a,
+.author-info .author-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+
+.author-info .author-photo span.god {
+    background: #bf2c24;
+}
+
+.author-info .author-photo span {
+    font-size: 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: -5px;
+    left: 50%;
+    width: 28px;
+    height: 16px;
+    margin-left: -14px;
+    text-align: center;
+    color: #fff;
+    border-radius: 2px;
+}
+
+.author-info .author-photo+p {
+    font-size: 18px;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.author-info .author-photo+p a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.author-info .info-wrap .god-light {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: -1px;
+}
+
+.author-info .author-photo+p a+a {
+    position: absolute;
+    top: 4px;
+}
+
+.author-info .info-wrap .god-light {
+    width: 19px;
+    height: 16px;
+    background-image: url(../../resources/img/sprite-more.png);
+    background-repeat: no-repeat;
+    background-position: -299px -206px;
+    background-size: 335px;
+}
+
+.author-info .author-photo+p+p {
+    font-size: 12px;
+    overflow: hidden;
+    max-height: 72px;
+}
+
+.author-info .info-wrap {
+    padding: 20px 10px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.author-info.work-state {
+    padding-left: 12px;
+}
+
+.author-info .work-state li:first-child {
+    margin-left: 0;
+}
+
+.author-info .work-state li {
+    float: left;
+    width: 50px;
+    margin-left: 28px;
+}
+
+.author-info .work-state li span.book {
+    width: 48px;
+    height: 48px;
+    background-image: url(../../resources/img/sprite-more.png);
+    background-repeat: no-repeat;
+    background-position: -193px -80px;
+    background-size: 335px;
+}
+
+.author-info .work-state li span.word {
+    width: 48px;
+    height: 48px;
+    background-image: url(../../resources/img/sprite-more.png);
+    background-repeat: no-repeat;
+    background-position: -249px -150px;
+    background-size: 335px;
+}
+
+.author-info .work-state li span.coffee {
+    width: 48px;
+    height: 48px;
+    background-image: url(../../resources/img/sprite-more.png);
+    background-repeat: no-repeat;
+    background-position: -50px -222px;
+    background-size: 335px;
+}
+
+.author-info .work-state li span {
+    display: block;
+    margin-bottom: 9px;
+}
+
+.author-info .work-state li p {
+    font-size: 12px;
+    color: #666;
+}
+
+
+/* 目录 */
+
+.catalogue-content {
+    padding: 25px;
+    background-color: #fff;
+}
+
+.volume {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.volume h2 {
+    font: 700 18px;
+    overflow: hidden;
+    height: 24px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid #666;
+}
+
+.volume h2 .subscri {
+    font-size: 14px;
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    display: block;
+    width: 96px;
+    height: 28px;
+    transition: background-color .5s;
+    text-align: center;
+    color: #fff;
+    background: #2470bf;
+    padding: 4px;
+}
+
+.volume h2 span.free {
+    background: #8ccd0a;
+    font-weight: 100;
+    color: #fff;
+    font-size: 12px;
+    margin: 10px;
+    padding: 3px;
+}
+
+.volume ul {
+    overflow: hidden;
+    padding: 10px;
+}
+
+.volume li {
+    font-size: 14px;
+    float: left;
+    overflow: hidden;
+    width: 245px;
+    height: 40px;
+    padding-right: 60px;
+    border-bottom: 1px solid #ebebeb;
+    line-height: 40px;
+}
+
+.volume li a {
+    float: left;
+    overflow: hidden;
+    max-width: 240px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

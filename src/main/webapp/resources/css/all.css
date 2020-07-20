@@ -150,3 +150,64 @@ p {
 .blue {
     color: #3f5a93;
 }
+
+
+/* 底部 */
+
+.footer {
+    text-align: center;
+    background: #fafafa;
+}
+
+.footer .box-center {
+    background: #fafafa;
+}
+
+.footer .footer-text {
+    padding: 20px 26px 0;
+}
+
+.footer .footer-text p {
+    font-size: 12px;
+    line-height: 20px;
+    color: #1a1a1a;
+}
+
+.footer .footer-menu {
+    padding: 0 0 4px;
+}
+
+.dib-wrap {
+    font-size: 0;
+}
+
+.footer .footer-menu a {
+    color: #666;
+}
+
+.footer .footer-menu a,
+.footer .friend-link a {
+    font-size: 12px;
+    line-height: 27px;
+    margin-right: 16px;
+    color: #1a1a1a;
+}
+
+.dib-wrap a,
+.dib-wrap span {
+    display: inline-block;
+    vertical-align: middle;
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+
+.footer .copy-right {
+    padding-bottom: 16px;
+}
+
+.footer .copy-right p {
+    font-size: 12px;
+    overflow: hidden;
+    height: 20px;
+    color: #a6a6a6;
+}

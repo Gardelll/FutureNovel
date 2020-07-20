@@ -1,0 +1,120 @@
+*{
+	margin: 0;padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 14px
+}
+
+li,
+ol,
+ul {
+    list-style: none outside none
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse
+}
+
+fieldset,
+img {
+    border: 0 none
+}
+
+html {
+    min-width: 990px
+}
+
+body {
+    text-align: left;
+    color: #262626;
+    background: #fff;
+}
+
+input::-moz-focus-inner {
+    padding: 0;
+    border: none
+}
+
+a img {
+    border: none
+}
+
+a {
+    text-decoration: none;
+    color: #262626;
+    outline: 0
+}
+
+a:hover {
+    color: #ed4259
+}
+
+.loaded a {
+    transition: color .3s, background-color .3s
+}
+
+textarea {
+    font-size: 14px;
+    resize: none;
+    outline: 0
+}
+
+button,
+input {
+    border: none;
+    outline: 0
+}
+
+input::-ms-clear {
+    display: none
+}
+
+label {
+    cursor: pointer
+}
+
+i {
+    font-style: normal
+}
+
+p {
+    word-wrap: break-word;
+    word-break: break-all
+}
+
+.lbf-combobox .lbf-combobox-label .lbf-combobox-icon:before {
+    visibility: hidden
+}
+
+.box-center {
+    width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+.cf:after,
+.cf:before {
+    display: table;
+    content: '';
+}
+
+.cf:after {
+    clear: both;
+}
+
+.fr {
+    float: right;
+}
+
+.fl {
+    float: left;
+}
+

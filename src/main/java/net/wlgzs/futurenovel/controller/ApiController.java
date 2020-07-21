@@ -31,6 +31,7 @@ import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
 import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
+import net.wlgzs.futurenovel.filter.DefaultFilter;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
@@ -404,15 +405,27 @@ public class ApiController extends AbstractAppController {
         }
         activateCode = stringBuilder.toString();
         try {
-            emailService.sendEmail(req.email, "FutureNovel 地址验证",
-                String.format("您好，<br /><p>您收到这封邮件，是由于在 `%s` 进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。如果您并没有访问过本站，或没有进行上述操作，请忽略这封邮件。您不需要退订或进行其他进一步的操作。</p><br />" +
+            emailService.sendEmail(req.email, "FutureNovel 邮箱地址验证",
+                String.format("您好，<br /><p>您收到这封邮件，是由于在 `%s` 进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。" +
+                        "如果您并没有访问过本站，或没有进行上述操作，请忽略这封邮件。您不需要退订或进行其他进一步的操作。</p><br />" +
                         "----------------------------------------------------------------------<br />" +
                         "<p>您的邮箱验证码为：<h3>%s</h3> 10分钟内有效。</p>" +
                         "----------------------------------------------------------------------<br />" +
-                        "<p>请在表单中填写该信息</p>", new URI(request.getScheme(), null, request.getServerName(), request.getLocalPort(), request.getContextPath(), null, null).normalize().toString(), activateCode));
+                        "<p>请在表单中填写该信息</p>",
+                        new URI(request.getScheme(),
+                                null,
+                                request.getServerName(),
+                                request.getServerPort(),
+                                request.getContextPath(),
+                                null,
+                                null)
+                                .normalize()
+                                .toString(),
+                        activateCode));
             session.setAttribute("activateCode", activateCode);
             session.setAttribute("activateBefore", System.currentTimeMillis() + Duration.ofMinutes(10).toMillis());
             session.setAttribute("activateEmail", req.email);
+            DefaultFilter.blockIp(request.getRemoteAddr(), "/api/sendCaptcha", 30); // 30 秒后重试
         } catch (MailException | MessagingException | URISyntaxException e) {
             throw new FutureNovelException(e.getLocalizedMessage());
         }

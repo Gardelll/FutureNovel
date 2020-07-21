@@ -143,7 +143,7 @@ public class TemplateController extends AbstractAppController {
                     null,
                     new Date(),
                     null,
-                    Account.Status.FINED,
+                    Account.Status.FINE,
                     false,
                     Account.Permission.USER,
                     0,

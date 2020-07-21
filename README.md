@@ -32,15 +32,16 @@
 git clone https://gitee.com/FutureNovel/FutureNovel.git
 ```
 
-+ 修改配置文件
++ 修改配置文件 (没有的文件需要手动创建)
 ```
 # src/main/webapp/WEB-INF/database_config.properties
 jdbc_driverClassName=org.mariadb.jdbc.Driver
 jdbc_url=[jdbc链接]
 jdbc_username=[数据库用户名]
 jdbc_password=[密码]
+```
 
-
+```
 # src/main/webapp/WEB-INF/mail_config.properties
 email_host=[发件服务器]
 email_port=465
@@ -51,6 +52,22 @@ mail.smtp.auth=true
 mail.smtp.ssl.enable=true # 使用 ssl
 mail.smtp.starttls.enable=true # 使用 tls (二者选一个)
 mail.debug=false
+```
+
+```
+# src/main/webapp/WEB-INF/future-novel_config.properties
+
+# 文件上传目录，默认为 $HOME/future-novel/uploads
+future.uploadDir=default
+
+# token 保存间隔，单位 分钟
+future.token.savePeriod=10
+
+# token 过期时间，单位 天
+future.token.expire=7
+
+# token 浏览器 Cookie 过期时间，单位 天
+future.token.cookieExpire=30
 ```
 
 + 打包

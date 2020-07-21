@@ -29,7 +29,7 @@ public class DatabaseTest {
         account.setUserPass("not my password");
         account.setEmail("foo@bar.cn");
         account.setPhone("10086");
-        account.setStatus(Account.Status.FINED);
+        account.setStatus(Account.Status.FINE);
         account.setPermission(Account.Permission.USER);
         account.setRegisterIP("[::1]");
         account.setRegisterDate(new Date());

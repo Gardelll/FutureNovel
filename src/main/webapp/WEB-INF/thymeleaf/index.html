@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+    <title>Future book</title>
+</head>
+<!-- 作为公共部分分离 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<link rel="stylesheet" href="css/header.css" th:href="@{/resources/css/header.css}">
+<link rel="stylesheet" href="css/cut.css" th:href="@{/resources/css/cut.css}">
+<link rel="stylesheet" href="font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
+<!-- 作为公共部分分离/ -->
+<body>
+<!-- 作为公共部分分离 -->
+    <div class="shortcut">
+        <div class="w">
+            <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
+            <ul class="fl left" >
+                <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></a></i></li>
+                <li class="fl"><a href="javascript:"><i class="iconfont icon-earth"></a></i></li>
+            </ul>
+            <ul class="fr">
+                <li class="message fl"><i class="iconfont icon-Message"></i></li>
+                <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
+                <li class="s-name fl"></li>
+                <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
+                    <ul class="dropdown" id="dropdown" style="display: none;">
+                        <li><a href="javascript:">个人信息</a></li>
+                        <li><a href="javascript:">切换账号</a></li>
+                        <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    <div class="catalog" id="catalog">
+    <div class="side fl">
+        <div class="logo">
+            <span>future book</span>
+        </div>
+        <ul>
+            <li><a href="book.html">书籍管理</a></li>
+            <li><a href="">会员管理</a></li>
+            <li><a href="">评论管理</a></li>
+            <li><a href="">系统管理</a></li>
+        </ul>
+    </div>
+    </div>
+    <div class="contant" id="contant">
+        <span>欢迎来到future book</span>
+    </div>
+<!-- 作为公共部分分离/ -->
+</body>
+<!-- 作为公共部分分离 -->
+<script src="js/index.js">
+</script>
+<script src="js/index2.js"></script>
+<!-- 作为公共部分分离/ -->
+</html>

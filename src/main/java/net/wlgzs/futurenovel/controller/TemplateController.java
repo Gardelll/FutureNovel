@@ -3,6 +3,7 @@ package net.wlgzs.futurenovel.controller;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -10,19 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.service.AccountService;
+import net.wlgzs.futurenovel.service.EmailService;
+import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.TokenStore;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,8 +33,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * HTML 页面的控制器
@@ -49,18 +51,15 @@ import org.springframework.web.server.ResponseStatusException;
                 "*"
         }) // TODO 临时解决分离调试跨域问题
 @Slf4j
-public class TemplateController {
+public class TemplateController extends AbstractAppController {
 
-    private final TokenStore tokenStore;
-
-    private final AccountService accountService;
-
-    private final Validator defaultValidator;
-
-    public TemplateController(TokenStore tokenStore, AccountService accountService, Validator defaultValidator) {
-        this.tokenStore = tokenStore;
-        this.accountService = accountService;
-        this.defaultValidator = defaultValidator;
+    public TemplateController(TokenStore tokenStore,
+                              AccountService accountService,
+                              EmailService emailService,
+                              Validator defaultValidator,
+                              Properties futureNovelConfig,
+                              FileService fileService) {
+        super(tokenStore, accountService, emailService, defaultValidator, futureNovelConfig, fileService);
     }
 
     @InitBinder
@@ -74,7 +73,6 @@ public class TemplateController {
      * @param tokenStr Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
      * @param request Http 请求
-     * @param session Http 响应
      * @param model 模板属性
      * @return 对应的视图
      */
@@ -83,15 +81,9 @@ public class TemplateController {
                        @CookieValue(name = "token", defaultValue = "") String tokenStr,
                        @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                        HttpServletRequest request,
-                       HttpSession session,
                        Model model) {
-        var token = uid.isEmpty() ? null : tokenStore.verifyToken(tokenStr, UUID.fromString(uid), request.getRemoteAddr(), userAgent);
-        if (token != null) {
-            var account = Optional.ofNullable((Account) session.getAttribute("currentAccount")).orElseGet(() -> {
-                var a = accountService.getAccount(UUID.fromString(uid));
-                session.setAttribute("currentAccount", a);
-                return a;
-            });
+        var account = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, false);
+        if (account != null) {
             log.info("LoggedIn, account={}", account.getEmail());
             // 已登录
             model.addAttribute("currentAccount", account);
@@ -114,16 +106,30 @@ public class TemplateController {
      * @param session Session 服务端变量
      * @return 含有错误信息的视图或跳转响应
      */
-    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String register(@Valid RegisterRequest req,
+                           BindingResult bindingResult,
                            Model m,
                            HttpServletRequest request,
                            HttpServletResponse response,
                            HttpSession session) {
         m.addAttribute("errorMessage", "OK");
         try {
+            if (bindingResult.hasErrors()) {
+                var errMsgBuilder = new StringBuilder();
+                bindingResult.getFieldErrors().forEach(fieldError -> errMsgBuilder.append(fieldError.getField())
+                        .append(": ")
+                        .append(fieldError.getDefaultMessage())
+                        .append(";\n"));
+                errMsgBuilder.delete(errMsgBuilder.length() - 2, errMsgBuilder.length());
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errMsgBuilder.toString());
+            }
             if (!req.password.equals(req.passwordRepeat))
                 throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "密码输入不一致");
+            if (accountService.isEmailUsed(req.email, null))
+                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "邮箱地址(" + req.email + ")已被使用");
+            if (accountService.isEmailUsed(req.userName, null))
+                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "用户名(" + req.userName + ")已被使用");
             if (req.email.equals(session.getAttribute("activateEmail")) &&
                     req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
                     Optional.ofNullable((Long) session.getAttribute("activateBefore"))
@@ -144,7 +150,7 @@ public class TemplateController {
                     null);
                 accountService.register(account);
                 var uidCookie = new Cookie("uid", account.getUid().toString());
-                uidCookie.setMaxAge((int) Duration.ofDays(30).toSeconds());
+                uidCookie.setMaxAge((int) Duration.ofDays(365).toSeconds());
                 uidCookie.setPath(request.getContextPath());
                 response.addCookie(uidCookie);
                 session.setAttribute("activateCode", null);
@@ -164,34 +170,36 @@ public class TemplateController {
         return "register";
     }
 
+    @GetMapping("/novel/view")
+    public String bookView() {
+        return "look-book";
+    }
+
+    @GetMapping("/search")
+    public String search() {
+        return "rank";
+    }
+
+    @GetMapping("/novel/write")
+    public String novelWrite() {
+        return "writer";
+    }
+
     @ExceptionHandler(Exception.class)
     public String error(Model model, HttpServletResponse response, Exception e) {
         log.error("error: {}", e.getLocalizedMessage());
-        if (e instanceof HttpMessageNotReadableException || e instanceof IllegalArgumentException) {
-            e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
-        }
-        model.addAttribute("errorMessage", e.getLocalizedMessage());
-        if (e instanceof FutureNovelException) {
-            model.addAttribute("error", ((FutureNovelException) e).getError().toString());
-            response.setStatus(((FutureNovelException) e).getError().getStatusCode());
-        } else if (e instanceof MethodArgumentNotValidException) {
-            var result = ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors();
-            var errMsgBuilder = new StringBuilder();
-            result.forEach(fieldError -> errMsgBuilder.append(fieldError.getField())
-                .append(": ")
-                .append(fieldError.getDefaultMessage())
-                .append(";\n"));
-            errMsgBuilder.delete(errMsgBuilder.length() - 2, errMsgBuilder.length());
-            model.addAttribute("cause", errMsgBuilder.toString());
-            model.addAttribute("error", "ILLEGAL_ARGUMENT");
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-        } else if (e instanceof ResponseStatusException) {
-            model.addAttribute("error", ((ResponseStatusException) e).getStatus().name());
-            response.setStatus(((ResponseStatusException) e).getStatus().value());
-        } else {
-            model.addAttribute("error", e.getClass().getSimpleName());
-            response.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
-        }
+        ErrorResponse responseErr = buildErrorResponse(e);
+        model.addAttribute("status", responseErr.status);
+        model.addAttribute("error", responseErr.error);
+        model.addAttribute("cause", responseErr.cause);
+        model.addAttribute("errorMessage", responseErr.errorMessage);
+        response.setStatus(responseErr.status);
         return "error";
     }
+
+    @RequestMapping(path = "/error")
+    public void handle(HttpServletRequest request) {
+       super.handle(request);
+    }
+
 }

@@ -3,6 +3,7 @@ package net.wlgzs.futurenovel.service;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,13 +36,16 @@ public class TokenStore implements DisposableBean {
 
     private final ScheduledFuture<?> future;
 
-    public TokenStore(TokenDao tokenDao) {
+    private final Properties futureNovelConfig;
+
+    public TokenStore(TokenDao tokenDao, Properties futureNovelConfig) {
         this.tokenDao = tokenDao;
+        this.futureNovelConfig = futureNovelConfig;
         var tokens = this.tokenDao.getAll();
         tokens.forEach(token -> tokenMap.put(token.getToken(), token));
         executor = Executors.newScheduledThreadPool(1);
         // Save to database every 10min;
-        future = executor.scheduleAtFixedRate(this::saveTokens, 1, 10, TimeUnit.MINUTES);
+        future = executor.scheduleAtFixedRate(this::saveTokens, 1, Long.parseLong(futureNovelConfig.getProperty("future.token.savePeriod", "10")), TimeUnit.MINUTES);
     }
 
     public void removeToken(Token token) {
@@ -74,7 +78,7 @@ public class TokenStore implements DisposableBean {
         var token = tokenMap.getQuietly(tokenStr);
         if (token == null ||
                 !token.checkToken(clientIp, clientAgent, uid) ||
-                System.currentTimeMillis() - token.getLastUse() > Duration.ofDays(7).toMillis()) {
+                System.currentTimeMillis() - token.getLastUse() > Duration.ofDays(Long.parseLong(futureNovelConfig.getProperty("future.token.expire", "7"))).toMillis()) {
             if (token != null) removeToken(token);
             return null;
         }
@@ -96,7 +100,7 @@ public class TokenStore implements DisposableBean {
             if (tokenMap.isEmpty()) return;
             int result = tokenDao.insertAll(tokenMap.values()
                     .stream()
-                    .filter(token -> System.currentTimeMillis() - token.getLastUse() < Duration.ofDays(7).toMillis())
+                    .filter(token -> System.currentTimeMillis() - token.getLastUse() < Duration.ofDays(Long.parseLong(futureNovelConfig.getProperty("future.token.expire", "7"))).toMillis())
                     .collect(Collectors.toList()));
             log.debug("Saved {} token(s)", result);
         }

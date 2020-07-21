@@ -1,5 +1,7 @@
 package net.wlgzs.futurenovel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -31,6 +33,7 @@ public class Account implements Serializable {
      * 密码（已加密）
      */
     @NonNull
+    @JsonIgnore
     private String userPass;
 
     /**
@@ -59,11 +62,13 @@ public class Account implements Serializable {
      * 注册时间
      */
     @NonNull
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private Date registerDate;
 
     /**
      * 上次登陆时间
      */
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private Date lastLoginDate;
 
     /**

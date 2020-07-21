@@ -34,6 +34,7 @@
         <org.mybatis-spring.version>2.0.5</org.mybatis-spring.version>
         <org.mariadb.jdbc.version>2.6.1</org.mariadb.jdbc.version>
         <org.projectlombok.version>1.18.12</org.projectlombok.version>
+        <io.springfox.version>3.0.0</io.springfox.version>
     </properties>
 
     <dependencies>
@@ -166,6 +167,19 @@
             <version>1.4.2</version>
         </dependency>
 
+        <!-- API Doc 过于复杂，废弃 -->
+        <!--<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>-->
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -232,22 +246,6 @@
                         </properties>
                     </daemon>
                 </configuration>
-<!--                <executions>
-                    <execution>
-                        <id>start-container</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-container</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
             </plugin>
 
             <!-- Java Doc -->

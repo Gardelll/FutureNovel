@@ -1,6 +1,7 @@
 package net.wlgzs.futurenovel.bean;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class LoginRequest {
 
@@ -14,6 +15,7 @@ public class LoginRequest {
      * 密码
      */
     @NotBlank
+    @Size(min = 6)
     public String password;
 
     /**

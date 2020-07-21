@@ -15,7 +15,6 @@ public class RegisterRequest {
      * 用户名
      */
     @NotBlank
-    @Size(min = 3)
     public String userName;
 
     /**

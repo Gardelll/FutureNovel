@@ -35,6 +35,28 @@
 + UUID: 长度为 36 的随机且唯一字符串，例如 `11de527f-8b56-494e-9a02-0c11f8f31482` ，存储为 Cookie 时键名为 `uid`
 + Token: 长度为 64 的随机且唯一十六进制字符串，用于持久化用户的登录状态，存储为 Cookie 时键名为 `token`
 
++ Account: 用户信息，序列化内容如下  
+
+```json5
+{
+    "uid": "be0dcefb-52b2-4ed4-b161-51e45d7d50cb", // 用户 UID
+    "userName": "用户名",
+    "email": "邮箱",
+    "phone": "手机号",
+    "registerIP": "注册 IP",
+    "lastLoginIP": null, // 上次登陆 IP，从未登陆为 null
+    "registerDate": "2020年07月19日 14:59:28", // 注册时间
+    "lastLoginDate": null, // 上次登陆时间，从未登陆为 null
+    "status": "FINE", // 帐号状态，分为 正常 FINE, 未验证 UNVERIFIED, 封禁 BANED
+    "permission": "USER", // 帐号所属权限组，分为 USER, AUTHOR, ADMIN
+    "experience": 0, // 用户的积分
+    "profileImgUrl": null, // 头像 URL 地址
+    "level": 0, // 用户等级
+    "vip": false, // 是否为 会员
+    "uidNum": "be0dcefb52b24ed4b16151e45d7d50cb" // 用户 UID 的数字格式（十六进制）
+}
+```
+
 -----------
 
 ## 接口
@@ -84,10 +106,21 @@ POST $URL/api/login
 |password|String|密码|否|
 |redirectTo|String|登录完成后的跳转 Url|是|
 
-登录成功后设置 Cookie 并跳转到请求参数中 redirectTo 所指向的页面，
+登录成功后设置 Cookie，
 若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页。
 
-即若登录成功，服务端返回状态码 302 - Found
+若登录成功，服务端返回状态码 200 - OK
+
+返回参数：  
+
+```json5
+{
+  "redirectTo": "需要跳转的地址", 
+  "account": {
+    // 用户信息，见上方 #数据格式 Account
+  }
+}
+```
 
 >登陆成功后，浏览器会把 uid, token 保存到 Cookie，  
 >以及每次操作使用 token 时，要保证使用相同的 User-Agent  
@@ -201,21 +234,7 @@ GET $URL/admin/accounts/get
 ```json5
 [
   {
-    "uid": "be0dcefb-52b2-4ed4-b161-51e45d7d50cb", // 用户 UID
-    "userName": "用户名",
-    "email": "邮箱",
-    "phone": "手机号",
-    "registerIP": "注册 IP",
-    "lastLoginIP": null, // 上次登陆 IP，从未登陆为 null
-    "registerDate": "2020年07月19日 14:59:28", // 注册时间
-    "lastLoginDate": null, // 上次登陆时间，从未登陆为 null
-    "status": "FINE", // 帐号状态，分为 正常 FINE, 未验证 UNVERIFIED, 封禁 BANED
-    "permission": "USER", // 帐号所属权限组，分为 USER, AUTHOR, ADMIN
-    "experience": 0, // 用户的积分
-    "profileImgUrl": null, // 头像 URL 地址
-    "level": 0, // 用户等级
-    "vip": false, // 是否为 会员
-    "uidNum": "be0dcefb52b24ed4b16151e45d7d50cb" // 用户 UID 的数字格式（十六进制）
+     // 用户信息，见上方 #数据格式 Account
   },
   {
      // 还可能有更多

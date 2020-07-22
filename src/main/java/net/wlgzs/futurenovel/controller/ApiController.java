@@ -122,13 +122,16 @@ public class ApiController extends AbstractAppController {
      * @param session Session 服务端变量
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void login(@RequestBody @Valid LoginRequest req,
-                           @RequestHeader(value = "User-Agent") String userAgent,
-                           HttpServletRequest request,
-                           HttpServletResponse response,
-                           HttpSession session) {
+    @ResponseBody
+    public Map<String, ?> login(@RequestBody @Valid LoginRequest req,
+                                @RequestHeader(value = "User-Agent") String userAgent,
+                                HttpServletRequest request,
+                                HttpServletResponse response,
+                                HttpSession session) {
         var account = accountService.login(req.userName, req.password);
         var token = tokenStore.acquireToken(account, request.getRemoteAddr(), userAgent);
+
+        // 更新帐号属性
         account.setLastLoginIP(request.getRemoteAddr());
         Optional.ofNullable(account.getLastLoginDate()).filter(date -> {
             TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
@@ -142,6 +145,8 @@ public class ApiController extends AbstractAppController {
         }).ifPresent((date) -> account.setExperience(account.getExperience() + 3));
         account.setLastLoginDate(new Date());
         accountService.updateAccount(account);
+
+        // 保存到 session 和设置 cookie
         session.setAttribute("currentAccount", account);
         var uidCookie = new Cookie("uid", account.getUid().toString());
         uidCookie.setMaxAge((int) Duration.ofDays(365).toSeconds());
@@ -158,11 +163,10 @@ public class ApiController extends AbstractAppController {
                 .orElse(request.getContextPath()));
         session.setAttribute("redirectTo", null);
         //ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectTo).body(null);
-        try {
-            response.sendRedirect(redirectTo);
-        } catch (IOException e) {
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, e.getLocalizedMessage());
-        }
+        return Map.ofEntries(
+                Map.entry("redirectTo", redirectTo),
+                Map.entry("account", account)
+        );
     }
 
     /**

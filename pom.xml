@@ -245,6 +245,14 @@
                             <cargo.daemon.handleid>${project.artifactId}</cargo.daemon.handleid>
                         </properties>
                     </daemon>
+                    <configuration>
+                        <properties>
+                            <cargo.start.jvmargs>
+                                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+                            </cargo.start.jvmargs>
+                            <cargo.tomcat.uriencoding>UTF-8</cargo.tomcat.uriencoding>
+                        </properties>
+                    </configuration>
                 </configuration>
             </plugin>
 

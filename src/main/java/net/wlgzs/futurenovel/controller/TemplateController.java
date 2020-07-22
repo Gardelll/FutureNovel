@@ -106,6 +106,11 @@ public class TemplateController extends AbstractAppController {
         return "register";
     }
 
+    @GetMapping({"/login"})
+    public String login() {
+        return "login";
+    }
+
     /**
      * 注册表单路由
      * @param req 请求参数，详见 {@link RegisterRequest}
@@ -227,6 +232,17 @@ public class TemplateController extends AbstractAppController {
                               HttpSession session) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, true);
         return "WorkInformation";
+    }
+
+    @GetMapping({"/admin/", "/admin", "/admin/index"})
+    public String adminHome(@CookieValue(name = "uid", defaultValue = "") String uid,
+                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                            HttpServletRequest request,
+                            HttpSession session) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        return "index";
     }
 
     @ExceptionHandler(Exception.class)

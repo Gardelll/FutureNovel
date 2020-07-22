@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <title>Document</title>
 </head>
 <!-- 作为公共部分分离 -->
@@ -43,34 +43,33 @@
         </div>
     </div>
 </body>
-<!-- <script src="js/login.js" th:src="@{/resources/js/login.js}"></script> -->
+<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 <script th:inline="javascript" async>
     $(document).ready(function(){
         $('#login').on('click',function(){
         var us=$('#us').val(),
         ps=$('#ps').val();
         if(us=='' || ps==''){
-            alert('输入框内不能为空')
+            popup_over('icon-sad','#d81e06',"输入内容不能为空");
         }else if(us.length>=18 ||ps.length>=18){
-            alert('输入内容过多')
+            popup_over('icon-sad','#d81e06',"输入内容过多");
         }else {
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/sendCaptcha']]*/ "http://localhost:8080/future-novel/api/login" ,
+                url:/*[[${#request.getContextPath()} + '/api/login']]*/ "http://localhost:8080/future-novel/api/login" ,
                 type:'post',
                 datatype:"json",
                 data:JSON.stringify({
                     userName: us,
                     password: ps,
-                    //redirectTo: 'index.html'
                 }),
                 contentType:'application/json; charset=utf-8',
-                success: function(data){
-                    $(location).attr('href','index.html' /*[[${/index.html}]]*/);
-                    console.log('登录成功')
+                success: function(redirectTo,account){
+                    $(location).attr('href',redirectTo);
+                    console.log('登录成功');
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    const data = JSON.parse(jqXHR.responseText);
-                    alert("登录失败:" + data.errorMessage);
+                error: function() {
+                    //const data = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',"登录失败");
                 }
             })
         }

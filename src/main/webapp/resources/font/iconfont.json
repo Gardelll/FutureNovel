@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2180841",
+      "name": "提交,成功,对号",
+      "font_class": "tijiao",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "11349105",
+      "name": "happy-l",
+      "font_class": "happy-l",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "14629252",
+      "name": "sad",
+      "font_class": "sad",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
       "icon_id": "88050",
       "name": "earth",
       "font_class": "earth",

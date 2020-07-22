@@ -4,12 +4,12 @@ function yes_no(contant,name,id){
 function del_num(){
 
 }
-function popup_over(icon,contant){
-    $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 180px; height: 80px; border: 1px solid #D5D6D5;"><i class="iconfont '+icon+'" style="font-size: 30px; color: green;"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>')
+function popup_over(icon,color,contant){
+    $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
     setTimeout(function(){
-        // $('.popup_over').remove();
-        clear('.popup_over');
-    },1000)
+        $('.popup_over').remove();
+        // clear('.popup_over');
+    },1500)
 };
 function logout_user(){
     $.ajax({

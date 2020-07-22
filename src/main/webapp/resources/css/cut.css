@@ -1,0 +1,146 @@
+.shortcut {
+  height: 49px;
+  width: 100%;
+  line-height: 49px;
+  background-color: white;
+  border-bottom: 1px solid #F8F8F8;
+}
+
+.shortcut .w {
+  width: 98%;
+  margin: 0 auto;
+}
+
+.shortcut .w .left {
+  position: relative;
+  left: 220px;
+}
+
+.shortcut .w .left li:hover {
+  border-top: 2px solid black;
+  transition: border .2s;
+}
+
+.shortcut .w .left li {
+  margin: 0 10px;
+}
+
+.shortcut .w .left li a i {
+  font-size: 16px;
+}
+
+.shortcut .w .left li a .icon-earth {
+  font-size: 18px;
+}
+
+.shortcut .w .fl a {
+  color: black;
+  font-size: 20px;
+}
+
+.shortcut .w .fl i {
+  font-size: 18px;
+}
+
+.shortcut .w .fr {
+  position: relative;
+  color: black;
+}
+
+.shortcut .w .fr .fl:hover {
+  border-top: 2px solid black;
+  transition: border .2s;
+}
+
+.shortcut .w .fr li {
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.shortcut .w .fr .admin {
+  cursor: pointer;
+  position: relative;
+}
+
+.shortcut .w .fr .admin .dropdown {
+  z-index: 99;
+  line-height: 35px;
+  left: 0px;
+  top: 40px;
+  width: 90px;
+  position: absolute;
+  padding-top: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut .w .fr .admin .dropdown li:hover {
+  background-color: #F2F2F2;
+  transition: .2s;
+}
+
+.shortcut .w .fr .admin a {
+  color: black;
+  font-size: 15px;
+}
+
+.side .logo {
+  position: relative;
+  text-align: center;
+  height: 49px;
+  line-height: 49px;
+  width: 220px;
+  font-weight: 600;
+}
+
+.side .logo span {
+  color: #BDBDC0;
+  text-align: center;
+}
+
+.side ul .active {
+  border-left: 6px solid #009688;
+  color: white;
+}
+
+.side ul .active a {
+  color: white;
+}
+
+.side ul li a {
+  display: block;
+  color: #BDBDC0;
+  width: 195px;
+  height: 49px;
+  line-height: 49px;
+  padding-left: 25px;
+}
+
+.side ul li:hover {
+  border-left: 6px solid #009688;
+}
+
+.side ul li:hover a {
+  color: white;
+}
+
+.catalog {
+  display: block;
+  position: absolute;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  width: 220px;
+  padding-top: 10px;
+  z-index: 99;
+  overflow: auto;
+  border-right: 1px solid #e5e5e5;
+  background-color: #20222A;
+}
+
+.contant {
+  position: relative;
+  left: 220px;
+  width: 81%;
+}

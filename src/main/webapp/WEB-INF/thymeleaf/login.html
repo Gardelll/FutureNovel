@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- 作为公共部分分离 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<link rel="stylesheet" href="../../resources/css/login.css" th:href="@{/resources/css/login.css}">
+<link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
+<!-- 作为公共部分分离/ -->
+<body>
+    <div class="header">
+    <div class="w">
+        <div class="top">
+            Future Book
+        </div>
+    </div>
+    </div>
+    <div class="content">
+        <div class="w">
+            <div class="login-img">
+                <img src="../../resources/img/loginBg.jpg" th:src="@{/resources/img/loginBg.jpg}" alt="login">
+            </div>
+            <div class="login-wrap">
+                <div class="title-container">
+                    <h2 class="title">Login</h2>
+                    <input type="text" name="us" placeholder="username" class="input-item username" id="us">     
+                    <input type="password" name="ps" placeholder="password" class="input-item psw" id="ps">
+                    <div class="btn" id="login">登录</div>
+                    <div class="btn" id="logon">注册</div>
+                    <div class="icon">
+                        <ul>
+                            <li class="iconfont icon-twitter"></li>
+                            <li class="iconfont icon-icon_facebook"></li>
+                            <li class="iconfont icon-ins"></li>
+                            <li class="iconfont icon-emailFilled"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script src="js/login.js" th:src="@{/resources/js/login.js}"></script> -->
+<script th:inline="javascript" async>
+    $(document).ready(function(){
+        $('#login').on('click',function(){
+        var us=$('#us').val(),
+        ps=$('#ps').val();
+        if(us=='' || ps==''){
+            alert('输入框内不能为空')
+        }else if(us.length>=18 ||ps.length>=18){
+            alert('输入内容过多')
+        }else {
+            $.ajax({
+                url:'http://localhost:8080/future-novel/api/login',
+                type:'post',
+                datatype:"json",
+                data:JSON.stringify({
+                    userName: us,
+                    password: ps,
+                    //redirectTo: ul
+                    redirectTo: 'index.html'
+                }),
+                contentType:'application/json; charset=utf-8',
+                success: function(data){
+                    //$(location).attr('href','index.html');
+                    console.log('登录成功')
+                },
+                // error: function(jqXHR, textStatus, errorThrown) {
+                //     const data = JSON.parse(jqXHR.responseText);
+                //     alert("登录失败:" + data.errorMessage);
+                // }
+            })
+        }
+
+});
+    })
+</script>
+</html>

@@ -1,0 +1,88 @@
+.header{
+    width: 100%;
+    font-size: 30px;
+    border-bottom: 1px solid grey;
+    padding-bottom: 20px;
+    margin-bottom: 100px;
+}
+.w{
+    width: 86%;
+    margin: 0 auto;
+}
+.login-img{
+    position: relative;
+    z-index: 1;
+    width: 534px;
+    height: 400px;
+    float: left;
+}
+.login-wrap{
+    width: 400px;
+    float: right;
+}
+.title-container {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px 8px 8px 8px;
+    margin-bottom: 20%;
+    border: 1px solid #b3c0c7;
+  }
+  
+  .title-container .title {
+    padding: 20px 0 20px;
+    margin: 0;
+  }
+  
+  .title-container .input-item {
+    width: 300px;
+    height: 40px;
+    border: 0;
+    border-bottom: 1px solid #b3c0c7;
+    font-size: 15px;
+    outline: none;
+  }
+  .title-container .btn{
+    margin: 20px auto 0;
+    width: 200px;
+    padding: 10px;
+    background-image: linear-gradient(to right, #8998D9, #8BAAED);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* .title-container hr {
+    border: 0;
+    height: 1px;
+    margin: 0 40px;
+    background-color: #b3c0c7;
+  } */
+  
+  .title-container .icon {
+    padding: 20px 0 60px 0;
+  }
+  
+  .title-container .icon ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+  }
+  
+  .title-container .icon li {
+    display: inline-block;
+    border: 1px solid #000;
+    padding: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    border-color: #4f5c63;
+    color: #4f5c63;
+    font-size: 20px;
+  }
+  
+  .title-container .icon li:hover {
+    color: #b3c0c7;
+    border-color: #b3c0c7;
+    transition: .2s;
+  }
+  

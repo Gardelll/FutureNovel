@@ -21,8 +21,8 @@ import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 
 /**
- * 过滤器，含有如下功能：
- * 过滤掉请求过快的 IP 地址
+ * 过滤器，含有如下功能：<br />
+ * 过滤掉请求过快的 IP 地址 <br />
  * 暂时禁止一个 IP 执行某项操作
  */
 @Slf4j
@@ -61,9 +61,10 @@ public class DefaultFilter extends HttpFilter {
 
     /**
      * 暂时封禁一个 IP
+     *
      * @param remoteAddr 要封禁的 IP
-     * @param uri 对于哪一个路径（相对于 ContextPath)
-     * @param time 封禁的时间，单位：秒
+     * @param uri        对于哪一个路径（相对于 ContextPath)
+     * @param time       封禁的时间，单位：秒
      */
     public static void blockIp(String remoteAddr, String uri, int time) {
         synchronized (DefaultFilter.class) {
@@ -77,7 +78,7 @@ public class DefaultFilter extends HttpFilter {
     private static RequestInfo getRequestInfo(String remoteAddr, String uri) {
         HashMap<String, RequestInfo> infoMap = Optional.ofNullable(limitInfo.get(remoteAddr))
                 .orElseGet(() -> {
-                    HashMap<String , RequestInfo> tmp = new HashMap<>(limitTable.size());
+                    HashMap<String, RequestInfo> tmp = new HashMap<>(limitTable.size());
                     tmp.put(uri, new RequestInfo());
                     limitInfo.put(remoteAddr, tmp);
                     return tmp;
@@ -105,7 +106,7 @@ public class DefaultFilter extends HttpFilter {
                 System.arraycopy(requestInfo.lastRequestsTimeMillis, 1, tmpArr, 0, COLLECT_COUNT - 1);
                 tmpArr[COLLECT_COUNT - 1] = System.currentTimeMillis();
                 System.arraycopy(tmpArr, 0, requestInfo.lastRequestsTimeMillis, 0, COLLECT_COUNT);
-                double rate = (double) 60 / ((double) (tmpArr[COLLECT_COUNT - 1] - tmpArr[0]) / 1000);
+                double rate = (double) 60 / ((double) (tmpArr[COLLECT_COUNT - 1] - tmpArr[0]) / (COLLECT_COUNT - 1) / 1000);
                 if (rate > limit || (tmpArr[COLLECT_COUNT - 1] - tmpArr[COLLECT_COUNT - 2]) / 1000 < requestInfo.blockSeconds) {
                     log.warn("{} -- request too quickly! (path: {})", remoteAddr, uri);
                     ErrorResponse errResponse = new ErrorResponse();

@@ -55,24 +55,23 @@
             alert('输入内容过多')
         }else {
             $.ajax({
-                url:'http://localhost:8080/future-novel/api/login',
+                url:/*[[${#request.getContextPath()} + '/api/sendCaptcha']]*/ "http://localhost:8080/future-novel/api/login" ,
                 type:'post',
                 datatype:"json",
                 data:JSON.stringify({
                     userName: us,
                     password: ps,
-                    //redirectTo: ul
-                    redirectTo: 'index.html'
+                    //redirectTo: 'index.html'
                 }),
                 contentType:'application/json; charset=utf-8',
                 success: function(data){
-                    //$(location).attr('href','index.html');
+                    $(location).attr('href','index.html' /*[[${/index.html}]]*/);
                     console.log('登录成功')
                 },
-                // error: function(jqXHR, textStatus, errorThrown) {
-                //     const data = JSON.parse(jqXHR.responseText);
-                //     alert("登录失败:" + data.errorMessage);
-                // }
+                error: function(jqXHR, textStatus, errorThrown) {
+                    const data = JSON.parse(jqXHR.responseText);
+                    alert("登录失败:" + data.errorMessage);
+                }
             })
         }
 

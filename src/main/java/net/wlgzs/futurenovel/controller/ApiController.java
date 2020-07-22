@@ -1,5 +1,7 @@
 package net.wlgzs.futurenovel.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.bean.AddChapterRequest;
+import net.wlgzs.futurenovel.bean.AddSectionRequest;
+import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
@@ -33,9 +39,13 @@ import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
 import net.wlgzs.futurenovel.model.Account;
+import net.wlgzs.futurenovel.model.Chapter;
+import net.wlgzs.futurenovel.model.NovelIndex;
+import net.wlgzs.futurenovel.model.Section;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
+import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
@@ -81,13 +91,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class ApiController extends AbstractAppController {
 
+
     public ApiController(TokenStore tokenStore,
                          AccountService accountService,
                          EmailService emailService,
+                         NovelService novelService,
                          Validator defaultValidator,
                          Properties futureNovelConfig,
                          FileService fileService) {
-        super(tokenStore, accountService, emailService, defaultValidator, futureNovelConfig, fileService);
+        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService);
     }
 
     @InitBinder
@@ -97,6 +109,7 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 用于检查用户名或邮箱是否存在
+     * <p>
      * 若不存在，返回状态码 204
      * @param name 需要检查的值
      * @param type email 或 username, 默认为 username
@@ -113,7 +126,9 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 登录接口
+     * <p>
      * 登录成功后设置 Cookie 并跳转到请求参数中 redirectTo 所指向的页面
+     * <p>
      * 若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页
      * @param req 请求参数，请参阅 {@link LoginRequest}
      * @param userAgent 浏览器 UA, 用于生成 Token
@@ -199,7 +214,9 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 编辑用户信息
+     * <p>
      * 不包含的属性不会修改
+     * <p>
      * 未发生任何改动则认为修改失败
      * @param req 请求参数 {@link EditAccountRequest}
      * @param uid Cookie：用户 ID
@@ -385,6 +402,173 @@ public class ApiController extends AbstractAppController {
         } else {
             return ResponseEntity.ok(result);
         }
+    }
+
+    /**
+     * 小说管理
+     * <p>
+     * 创建小说信息
+     * <p>
+     * 权限：参见 {@link net.wlgzs.futurenovel.model.Account.Permission}
+     * @param req 请求参数，参见 {@link CreateNovelIndexRequest}
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @return 章节 json 对象
+     * @see net.wlgzs.futurenovel.model.Account.Permission
+     * @see CreateNovelIndexRequest
+     * @see NovelIndex
+     */
+    @PostMapping(value = "/novel/addIndex", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public NovelIndex addNovelIndex(@RequestBody @Valid CreateNovelIndexRequest req,
+                                    @CookieValue(name = "uid", defaultValue = "") String uid,
+                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                    HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        if (req.series == null || req.series.isBlank()) req.series = req.title;
+        return novelService.createNovelIndex(currentAccount,
+                req.copyright,
+                req.title,
+                req.authors,
+                req.description,
+                (byte) 0,
+                req.tags,
+                req.series,
+                req.publisher,
+                req.pubdate,
+                req.coverImgUrl);
+    }
+
+    /**
+     * 小说管理
+     * <p>
+     * 添加章节目录
+     * <p>
+     * 权限：上传者或管理员
+     * @param fromNovel 小说的 ID
+     * @param req 请求参数，仅包含 标题
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @return 章节 json 对象
+     * @see Chapter
+     */
+    @PostMapping("/novel/{fromNovel:[0-9a-f\\-]{36}}/addChapter")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Chapter addChapter(@PathVariable("fromNovel") String fromNovel,
+                              @RequestBody AddChapterRequest req,
+                              @CookieValue(name = "uid", defaultValue = "") String uid,
+                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                              HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(fromNovel));
+        return novelService.addChapter(currentAccount, novelIndex, req.title);
+    }
+
+    /**
+     * 小说管理
+     * <p>
+     * 添加小节
+     * <p>
+     * 权限：上传者或管理员
+     * @param fromNovel 小说的 ID
+     * @param fromChapter 章节的 ID，只需前 8 位
+     * @param req 请求参数，包含标题和文本
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @return 小节 json 对象，不含文本
+     */
+    @PostMapping("/novel/{fromNovel:[0-9a-f\\-]{36}}/{fromChapter:[0-9a-f\\-]{8,36}}/addSection")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, String> addSection(@PathVariable("fromNovel") String fromNovel,
+                                          @PathVariable("fromChapter") String fromChapter,
+                                          @RequestBody @Valid AddSectionRequest req,
+                                          @CookieValue(name = "uid", defaultValue = "") String uid,
+                                          @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                          @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                          HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(fromNovel));
+
+        // 拓展 fromChapter
+        ArrayNode allChapters = novelIndex.getChapters();
+        for (JsonNode uuidStr : allChapters) {
+            String uidNum = uuidStr.asText();
+            if (uidNum.startsWith(fromChapter)) {
+                fromChapter = uuidStr.asText();
+                break;
+            }
+        }
+        Chapter chapter = novelService.getChapter(UUID.fromString(fromChapter));
+        Section section = novelService.addSection(currentAccount, chapter, novelIndex, req.title, req.text);
+        return Map.ofEntries(
+                Map.entry("uniqueId", section.getUniqueId().toString()),
+                Map.entry("title", section.getTitle())
+        );
+    }
+
+    /**
+     * 获取小说的目录信息
+     * @param uniqueId 小说的 ID
+     * @return json 对象
+     */
+    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseBody
+    public NovelIndex getNovelInfo(@PathVariable("uniqueId") String uniqueId) {
+        return novelService.getNovelIndex(UUID.fromString(uniqueId));
+    }
+
+    /**
+     * 获取小说的某一章节信息
+     * @param uniqueId 章节的 ID
+     * @return json 对象
+     */
+    @GetMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseBody
+    public Chapter getChapter(@PathVariable String uniqueId) {
+        return novelService.getChapter(UUID.fromString(uniqueId));
+    }
+
+    /**
+     * 获取小说的某一小节，包含文本
+     * @param uniqueId 小节的 ID
+     * @return json 对象
+     */
+    @GetMapping("/novel/section/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseBody
+    public Section getSection(@PathVariable String uniqueId) {
+        return novelService.getSection(UUID.fromString(uniqueId));
+    }
+
+    /**
+     * 根据小说目录的 ID 获取所有章节的信息
+     * @param uniqueId 小说目录的 ID
+     * @return json 数组
+     */
+    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/chapters")
+    @ResponseBody
+    public List<Chapter> getChapters(@PathVariable("uniqueId") String uniqueId) {
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(uniqueId));
+        ArrayNode allChapters = novelIndex.getChapters();
+        final ArrayList<Chapter> result = new ArrayList<>(allChapters.size());
+        allChapters.forEach(uuidStr -> result.add(novelService.getChapter(UUID.fromString(uuidStr.asText()))));
+        return result;
     }
 
 //    // TODO 统计网站数据

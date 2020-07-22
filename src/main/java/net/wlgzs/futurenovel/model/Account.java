@@ -62,13 +62,13 @@ public class Account implements Serializable {
      * 注册时间
      */
     @NonNull
-    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy年MM月dd日 HH:mm:ss")
     private Date registerDate;
 
     /**
      * 上次登陆时间
      */
-    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy年MM月dd日 HH:mm:ss")
     private Date lastLoginDate;
 
     /**

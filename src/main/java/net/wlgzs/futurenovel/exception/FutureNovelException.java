@@ -48,7 +48,8 @@ public class FutureNovelException extends RuntimeException {
         WRONG_ACTIVATE_CODE(400, "验证码错误"),
         DATABASE_EXCEPTION(500, "数据库异常"),
         PERMISSION_DENIED(403, "无权操作"),
-        FILE_TOO_LARGE(413, "上传的文件过大");
+        FILE_TOO_LARGE(413, "上传的文件过大"),
+        NOVEL_NOT_FOUND(404, "找不到小说");
         private final String msg;
         private final int statusCode;
         Error(int statusCode, String msg) {

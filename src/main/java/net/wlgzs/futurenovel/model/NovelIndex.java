@@ -31,17 +31,17 @@ public class NovelIndex implements Serializable {
     final private UUID uploader;
 
     /**
+     * 小说的标题
+     */
+    @NonNull
+    private String title;
+
+    /**
      * 版权
      * @see Copyright
      */
     @NonNull
     private Copyright copyright;
-
-    /**
-     * 小说的标题
-     */
-    @NonNull
-    private String title;
 
     /**
      * 小说的作者
@@ -85,7 +85,7 @@ public class NovelIndex implements Serializable {
      * 出版日期
      */
     @NonNull
-    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy年MM月dd日 HH:mm:ss")
     private Date pubdate;
 
     /**

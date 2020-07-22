@@ -9,8 +9,11 @@ import org.hibernate.validator.constraints.URL;
 
 /**
  * 编辑用户信息
+ * <p>
  * 请求参数
+ * <p>
  * 不包含的属性不会修改
+ * <p>
  * 未发生任何改动则认为修改失败
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -57,6 +60,7 @@ public class EditAccountRequest {
 
     /**
      * 邮箱激活码
+     * <p>
      * 当且仅当修改邮箱、密码时验证
      */
     @Size(min = 4)

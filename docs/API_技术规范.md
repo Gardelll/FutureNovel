@@ -28,6 +28,7 @@
 |数据库异常|500|DATABASE_EXCEPTION|数据库异常|
 |管理时所用帐号权限不足|403|PERMISSION_DENIED|无权操作|
 |上传文件超过 8MB|413|FILE_TOO_LARGE|上传的文件过大|
+|编辑小说时找不到对应的索引|404|NOVEL_NOT_FOUND|找不到小说|
 |未完待续| | | |
 
 ### 数据格式
@@ -56,6 +57,29 @@
     "uidNum": "be0dcefb52b24ed4b16151e45d7d50cb" // 用户 UID 的数字格式（十六进制）
 }
 ```
+
++ NovelIndex：小说的目录，序列化内容如下
+```json5
+{
+    "uniqueId": "94bcb21d-9e05-4509-b048-ffc582184d1f", // 小说 ID
+    "uploader": "d46d71c7-b0cf-45c6-a082-0ff75281d959", // 上传者
+    "copyright": "REPRINT",
+    "title": "标题",
+    "authors": "作者A,作者B", // 半角逗号分隔
+    "description": "简介",
+    "rating": 0,
+    "tags": "测试", // 半角逗号分隔
+    "series": "系列",
+    "publisher": "出版社",
+    "pubdate": "2020年07月22日 11:21:18",
+    "coverImgUrl": null,
+    "chapters": [ // 章节的 ID
+      "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
+      "e8335b58-a522-449c-b3d8-320c0900b23b"
+    ]
+}
+```
+
 
 -----------
 
@@ -135,6 +159,10 @@ GET $URL/api/logout
 >权限：所有登陆用户
 
 若注销成功，服务端返回状态码 204 - No Content
+
+--------
+
+### 用户管理相关接口
 
 #### 修改帐号信息
 
@@ -244,3 +272,224 @@ GET $URL/admin/accounts/get
 
 若该页没有数据，服务端返回状态码 204 - No Content
 
+--------
+
+### 小说管理相关接口
+
+#### 创建小说
+
+1. 创建目录信息
+
+```
+POST $URL/api/novel/addIndex
+```
+
+>权限：  
+>&nbsp;普通用户：可浏览，发布转载、公版小说  
+>&nbsp;认证作家：可以发布同人、原创小说  
+>&nbsp;管理员：可进行所有操作
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|copyright|String|<a title="NO_COPYRIGHT 公版,REPRINT 转载,FAN_FICTION 同人,ORIGINAL 原创">版权</a>字符串枚举|F|
+|title|String|标题|F|
+|authors|String 数组|作者(JSON 数组)|F|
+|description|String|简介|F|
+|tags|String 数组|用于分类的标签(JSON 数组)|F|
+|series|String|<a title="比如《三体》、《黑暗森林》、《死神永生》属于“地球往事三部曲”系列">系列</a>|T|
+|publisher|String|出版社|F|
+|pubdate|String|出版日期，格式："yyyy年MM月dd日 HH:mm:ss"|F|
+|coverImgUrl|String|封面图像 URL|T|
+
+示例：
+```json5
+{
+  "copyright": "REPRINT",
+  "title": "标题",
+  "authors": ["作者A","作者B"],
+  "description": "简介",
+  "tags": ["测试"],
+  "series": "系列",
+  "publisher": "出版社",
+  "pubdate": "2020年07月22日 11:21:18",
+  "coverImgUrl": null
+}
+```
+
+若创建成功，服务端返回状态码 201 - Created  
+上传成功自动取得对该文章的编辑权限
+
+返回参数：
+
+```json5
+{
+  // 小说目录信息，见上方 #数据格式 NovelIndex
+}
+```
+
+2. 添加章节
+
+```
+POST $URL/api/novel/{fromNovel}/addChapter
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|fromNovel|UUID|小说 ID，注意要包含在路径里，不是 JSON 参数|F|
+|title|String|标题|T|
+
+示例：  
+`POST http://localhost:8080/future-novel/api/novel/94bcb21d-9e05-4509-b048-ffc582184d1f/addChapter`
+```json5
+{
+  "title": "章标题"
+}
+```
+
+若创建成功，服务端返回状态码 201 - Created  
+
+返回参数：
+```json5
+{
+  "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e", // 章节 ID
+  "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f", // 小说 ID
+  "title": "章标题",
+  "sections": [] // 文章，待添加
+}
+```
+
+3. 添加文章（小节）
+
+```
+POST $URL/api/novel/{fromNovel}/{fromChapter}/addSection
+```
+
+>权限：上传者、管理员
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|fromNovel|UUID|小说 ID，注意要包含在路径里，不是 JSON 参数|F|
+|fromChapter|String|章节 ID 的前 8 位，也可以是全部 注意要包含在路径里，不是 JSON 参数|F|
+|title|String|标题|T|
+|text|String|文章内容（HTML）|F|
+
+示例：  
+`POST http://localhost:8080/future-novel/api/novel/94bcb21d-9e05-4509-b048-ffc582184d1f/b8e99ad0/addSection`
+```json5
+{
+  "title": "第 1 节",  
+  "text": "内容过长，不宜展示"
+}
+```
+
+若创建成功，服务端返回状态码 201 - Created  
+
+返回参数：
+```json5
+{
+  "title": "第 1 节",
+  "uniqueId": "43c8d320-047c-4af6-877b-bfe228841cd1" // 文章（小节） ID
+}
+```
+
+4. 重新获取小说的目录信息
+
+```
+GET $URL/api/novel/{uniqueId}
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+```json5
+{
+  // 小说目录信息，见上方 #数据格式 NovelIndex
+}
+```
+
+5. 获取小说的某一章节信息
+
+```
+GET $URL/api/novel/chapter/{uniqueId}
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|章节的 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+```json5
+{
+  "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
+  "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f",
+  "title": "章标题",
+  "sections": [
+    "43c8d320-047c-4af6-877b-bfe228841cd1"
+  ]
+}
+```
+
+6. 获取小说的某一小节，包含文本
+
+
+```
+GET $URL/api/novel/section/{uniqueId}
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|小节的 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+```json5
+{
+  "uniqueId": "43c8d320-047c-4af6-877b-bfe228841cd1",
+  "fromChapter": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
+  "title": "第 1 节",
+  "text": "内容过长，不宜展示"
+}
+```
+
+7. 或者直接根据小说目录的 ID 获取所有章节的信息
+
+
+```
+GET $URL/api/novel/{uniqueId}/chapters
+```
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+```json5
+[
+  {
+    "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
+    "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f",
+    "title": "章标题",
+    "sections": [
+      "43c8d320-047c-4af6-877b-bfe228841cd1"
+    ]
+  },
+  {
+    // 还可能有更多
+  }
+]
+```

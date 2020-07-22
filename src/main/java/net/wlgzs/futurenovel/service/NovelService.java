@@ -24,10 +24,12 @@ import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.Section;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * 小说的增删改查
@@ -122,8 +124,8 @@ public class NovelService implements DisposableBean {
         try {
             var novelIndex = new NovelIndex(UUID.randomUUID(),
                     account.getUid(),
-                    copyright,
                     title,
+                    copyright,
                     String.join(",", authors),
                     description,
                     rating,
@@ -137,8 +139,21 @@ public class NovelService implements DisposableBean {
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
             return novelIndex;
         } catch (DataAccessException e) {
+            log.warn("database error: ", e);
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
+    }
+
+    @NonNull
+    public NovelIndex getNovelIndex(@NonNull UUID uniqueId) {
+        try {
+            NovelIndex ret = novelIndexDao.getNovelIndexById(uniqueId);
+            if (ret != null) return ret;
+        } catch (DataAccessException e) {
+            log.warn("database error: ", e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @NonNull
@@ -159,18 +174,33 @@ public class NovelService implements DisposableBean {
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新添加操作返回了不是 1 的值：" + ret);
             return chapter;
         } catch (DataAccessException e) {
+            log.warn("database error: ", e);
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
+    }
+
+    @NonNull
+    public Chapter getChapter(@NonNull UUID uniqueId) {
+        try {
+            var ret = chapterDao.getChapterById(uniqueId);
+            if (ret != null) return ret;
+        } catch (DataAccessException e) {
+            log.warn("database error: ", e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @NonNull
     @Transactional
     public Section addSection(@NonNull Account account,
                               @NonNull Chapter chapter,
+                              @Nullable NovelIndex novelIndex,
                               @Nullable String title,
                               @NonNull String text) {
         try {
-            var novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
+            if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
+            if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             if (title == null) title = String.format("第 %d 节", sectionDao.countSectionByFromChapter(chapter.getUniqueId()) + 1);
@@ -183,8 +213,21 @@ public class NovelService implements DisposableBean {
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新操作返回了不是 1 的值：" + ret);
             return section;
         } catch (DataAccessException e) {
+            log.warn("database error: ", e);
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
+    }
+
+    @NonNull
+    public Section getSection(@NonNull UUID uniqueId) {
+        try {
+            var ret = sectionDao.getSectionById(uniqueId);
+            if (ret != null) return ret;
+        } catch (DataAccessException e) {
+            log.warn("database error: ", e);
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
@@ -196,7 +239,11 @@ public class NovelService implements DisposableBean {
             for (var node : arrayNode) {
                 UUID chapterId = UUID.fromString(node.asText());
                 Chapter chapter = chapterDao.getChapterById(chapterId);
-                deleteChapter(account, chapter, novelIndex);
+                if (chapter != null) try {
+                    deleteChapter(account, chapter, novelIndex);
+                } catch (Exception e) {
+                    log.warn("chapter({}) from novel({}) can not delete", chapterId.toString(), novelIndex.getUniqueId().toString());
+                }
             }
             var ret = novelIndexDao.deleteNovelIndex(novelIndex);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
@@ -215,7 +262,11 @@ public class NovelService implements DisposableBean {
             for (var node : arrayNode) {
                 UUID sectionId = UUID.fromString(node.asText());
                 Section section = sectionDao.getSectionById(sectionId);
-                deleteSection(account, section, novelIndex);
+                if (section != null) try {
+                    deleteSection(account, section, novelIndex);
+                } catch (Exception e) {
+                    log.warn("section({}) from novel({}) can not delete", sectionId.toString(), novelIndex.getUniqueId().toString());
+                }
             }
             var ret = chapterDao.deleteChapter(chapter);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);

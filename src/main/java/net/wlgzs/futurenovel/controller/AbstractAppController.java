@@ -8,12 +8,14 @@ import java.util.Properties;
 import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
+import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -34,15 +36,18 @@ public abstract class AbstractAppController {
 
     protected final EmailService emailService;
 
+    protected final NovelService novelService;
+
+    protected final FileService fileService;
+
     protected final Validator defaultValidator;
 
     protected final Properties futureNovelConfig;
 
-    protected final FileService fileService;
-
     public AbstractAppController(TokenStore tokenStore,
                                  AccountService accountService,
                                  EmailService emailService,
+                                 NovelService novelService,
                                  Validator defaultValidator,
                                  Properties futureNovelConfig,
                                  FileService fileService) {
@@ -52,14 +57,16 @@ public abstract class AbstractAppController {
         this.defaultValidator = defaultValidator;
         this.futureNovelConfig = futureNovelConfig;
         this.fileService = fileService;
+        this.novelService = novelService;
     }
 
     /**
      * 检查登录状态
-     * @param uid 用户 ID
-     * @param tokenStr token 令牌
-     * @param clientIp 用户 IP 地址
-     * @param userAgent 浏览器 UA
+     *
+     * @param uid            用户 ID
+     * @param tokenStr       token 令牌
+     * @param clientIp       用户 IP 地址
+     * @param userAgent      浏览器 UA
      * @param throwException 登陆失败是否要抛出异常(uncheck)
      * @return 登陆的用户
      */
@@ -79,6 +86,28 @@ public abstract class AbstractAppController {
         }
     }
 
+    /**
+     * 检查登录状态并设置或清除 session
+     *
+     * @param uid            用户 ID
+     * @param tokenStr       token 令牌
+     * @param clientIp       用户 IP 地址
+     * @param userAgent      浏览器 UA
+     * @param session        Http Session
+     * @param throwException 登陆失败是否要抛出异常(uncheck)
+     * @return 登陆的用户
+     */
+    protected Account checkLoginAndSetSession(@NonNull String uid,
+                                              @NonNull String tokenStr,
+                                              @NonNull String clientIp,
+                                              @NonNull String userAgent,
+                                              @NonNull HttpSession session,
+                                              boolean throwException) {
+        Account account = checkLogin(uid, tokenStr, clientIp, userAgent, throwException);
+        session.setAttribute("currentAccount", account);
+        return account;
+    }
+
     protected ErrorResponse buildErrorResponse(Exception e) {
         ErrorResponse response = new ErrorResponse();
         if (e instanceof HttpMessageNotReadableException ||
@@ -86,7 +115,8 @@ public abstract class AbstractAppController {
                 e instanceof IllegalArgumentException ||
                 e instanceof ServletRequestBindingException) {
             var errorMessage = e.getLocalizedMessage();
-            if (errorMessage == null || errorMessage.isBlank()) errorMessage = FutureNovelException.Error.ILLEGAL_ARGUMENT.getErrorMessage();
+            if (errorMessage == null || errorMessage.isBlank())
+                errorMessage = FutureNovelException.Error.ILLEGAL_ARGUMENT.getErrorMessage();
             e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errorMessage);
         }
         response.errorMessage = e.getLocalizedMessage();
@@ -125,7 +155,8 @@ public abstract class AbstractAppController {
     public void handle(HttpServletRequest request) {
         String errorMessage = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
         int status = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        if (errorMessage != null && !errorMessage.isBlank()) throw new ResponseStatusException(HttpStatus.valueOf(status), errorMessage);
+        if (errorMessage != null && !errorMessage.isBlank())
+            throw new ResponseStatusException(HttpStatus.valueOf(status), errorMessage);
         else throw new ResponseStatusException(HttpStatus.valueOf(status));
     }
 

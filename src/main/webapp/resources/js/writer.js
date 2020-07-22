@@ -1,4 +1,6 @@
-window.onload = function() {
+$(function () {
+
+
 
 	$("body").delegate("#book-name,#title-name", "propertuchange input", function () {
 		if ($("#book-name").val().length > 0 && $("#title-name").val().length > 0) {
@@ -40,10 +42,12 @@ window.onload = function() {
 		var editBody = activeEditor.getBody();
 		activeEditor.selection.select(editBody);
 		var text = activeEditor.selection.getContent({"format": "html"});
+		var Text = activeEditor.selection.getContent({"format": "text"});
+		var TextLength = Text.length;
 		if (text.length == 1) {
 			alert("内容不能为空");
 		} else {
-			var $xiaoshuo = createEle($BookName, $TitieName, text, Nowtime);
+			var $xiaoshuo = createEle($BookName, $TitieName, text, Nowtime,TextLength);
 			$(".writer-list").prepend($xiaoshuo);
 //			$(".writer-lis").click(function(){
 //			if($(".works-content").height()==0){
@@ -71,8 +75,8 @@ window.onload = function() {
 //		}
 //		-
 //	});
-	function createEle(shuming, zhangjie, text, time) {
-		var $xiaoshuo = $("<li><div class='writer-lis'><p>" + "" + shuming + "" + "</p><p>" + "" + zhangjie + "" + "</p></div><div class='works-content'><span class='neirong'>" + "" + text + "" + "</span><span class='neirong'style='margin: 0;'>...</span><span id='writer-data'>" + "" + time + "" + "</span><span id='words-num' style='margin-left:15px;'>" + "" + "字数：" + "" + text.length + "" + "</span></div></li>")
+	function createEle(shuming, zhangjie, text, time,TextLength) {
+		var $xiaoshuo = $("<li><div class='writer-lis'><p>" + "" + shuming + "" + "</p><p>" + "" + zhangjie + "" + "</p></div><div class='works-content'><span class='neirong'>" + "" + text + "" + "</span><span class='neirong'style='margin: 0;'>...</span><span id='writer-data'>" + "" + time + "" + "</span><span id='words-num' style='margin-left:15px;'>" + "" + "字数：" + "" + TextLength + "" + "</span></div></li>")
 		return $xiaoshuo;
 	}
-}
+})

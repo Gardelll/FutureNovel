@@ -71,8 +71,7 @@ CREATE TABLE `token_store`
 ALTER TABLE `accounts`
     ADD PRIMARY KEY (`uid`),
     ADD UNIQUE KEY `name_index` (`userName`) USING BTREE,
-    ADD UNIQUE KEY `email_index` (`email`) USING BTREE,
-    ADD UNIQUE KEY `phone_index` (`phone`) USING BTREE;
+    ADD UNIQUE KEY `email_index` (`email`) USING BTREE;
 
 ALTER TABLE `chapter`
     ADD PRIMARY KEY (`uniqueId`),

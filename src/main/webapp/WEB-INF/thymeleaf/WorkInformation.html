@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>作品信息</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../resources/css/WorkInformation.css" th:href="@{/resources/css/WorkInformation.css}">
+</head>
+<script>
+    window.onload = function () {
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            var minute = date.getMinutes();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            if (minute >= 0 && minute <= 9) {
+                minute = "0" + minute;
+            }
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                + " " + date.getHours() + seperator2 + minute;
+            return currentdate;
+        }
+        $("#create-work").click(function () {
+            if ($("#book-name").val().length >15) {
+                $("#TEXT").html("书名不能超过15个字");
+            }
+            else if(!$("#book-name").val().match(/^[\u4e00-\u9fa5]+$/)){
+                $("#TEXT").html("书名只能用汉字");
+            }
+            else if($("#book-type").val()=="-请选择-"){
+                $("#TEXT").html("请选择书籍类型");
+            }
+            else if($("#copyright").val()=="-请选择-"){
+                $("#TEXT").html("请选择版权");
+            }
+            else if($("#book-tags").val()==""){
+                $("#TEXT").html("请输入作品标签");
+            }
+            else if($("#book-press").val()==""){
+                $("#TEXT").html("请输入出版社");
+            }
+            else if($("#book-intro").val().length<20||$("#book-intro").val().length>150){
+                $("#TEXT").html("介绍必须在20-150字之间");
+            }else{
+                $("#TEXT").html("创建成功，出版日期："+getNowFormatDate());
+            }
+        });
+
+        $("#addIMG").click(function () {
+            $(".img-box").css("display","block")
+        })
+
+        $("#sure").click(function () {
+            var ImgObj=new Image();
+            ImgObj.src= $("#img-src").val();
+            if(ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0))
+            {
+                $("#addIMG").attr("src",$("#img-src").val());
+                $(".img-box").css("display","none");
+            } else {
+                alert("图片地址无效")
+            }
+
+        });
+
+    }
+</script>
+<body>
+    <div class="work-info" style="position: relative;margin-top: 100px">
+        <div class="top-title">
+            <div class="top-title-box">
+                <img src="../../resources/img/书.png" th:src="@{/resources/img/书.png}" id="book-icon"/>
+                <span style="line-height: 50px;font-size:17px;color: white;float: right;">创建作品</span>
+            </div>
+
+        </div>
+        <div class="work-info-form">
+            <form id="info-form" action="#" method="POST">
+            <div class="form-box">
+                <div class="form-list">
+                    <dl>
+                        <dd class="">
+                            <span>作品名称</span>
+                            <input name="book-name" id="book-name" class="form-inputs" type="text" required>
+                            <p>15字内，请勿添加书名号等特殊符号</p>
+                        </dd>
+                        <dd>
+                            <span>作品类型</span>
+                            <select id="book-type">
+                                <option selected>-请选择-</option>
+                                <option>玄幻</option>
+                                <option>奇幻</option>
+                                <option>武侠</option>
+                                <option>仙侠</option>
+                                <option>都市</option>
+                                <option>现实</option>
+                                <option>军事</option>
+                                <option>历史</option>
+                                <option>游戏</option>
+                                <option>体育</option>
+                                <option>科幻</option>
+                                <option>悬疑</option>
+                                <option>女生网</option>
+                                <option>轻小说</option>
+                            </select>
+
+                        </dd>
+                        <dd>
+                            <span>版权</span>
+                            <select id="copyright">
+                                <option selected>-请选择-</option>
+                                <option>原创</option>
+                                <option>同人</option>
+                                <option>公创</option>
+                                <option>转载</option>
+                            </select>
+                        </dd>
+                        <dd>
+                            <span>作品标签</span>
+                            <input type="text" id="book-tags" class="form-inputs">
+                        </dd>
+                        <dd>
+                            <span>出版社</span>
+                            <input name="book-press" id="book-press" class="form-inputs" type="text" required>
+                        </dd>
+                        <dd>
+                            <span>介绍</span>
+                            <textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
+                            <p>20~500字</p>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="create">
+                    <button type="button" id="create-work" data-toggle="modal" data-target="#myModal">创建作品</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                       提示
+                    </h4>
+                </div>
+                <div class="modal-body" >
+                    <p id="TEXT"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="Insert-picture">
+        <p>请插入封面图片</p>
+        <img src="../../resources/img/添加图片.png" id="addIMG"/>
+        <div class="img-box">
+            <p>请输入图片链接</p>
+            <input type="text" id="img-src">
+            <button id="sure">确定</button>
+        </div>
+
+    </div>
+
+</body>
+</html>

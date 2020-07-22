@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.dao.ChapterDao;
 import net.wlgzs.futurenovel.dao.NovelIndexDao;
@@ -41,10 +42,10 @@ public class NovelService implements DisposableBean {
 
     private final SectionDao sectionDao;
 
-    @Getter
+    @Getter(onMethod_ = {@Synchronized})
     private final HashSet<String> tags = new HashSet<>();
 
-    @Getter
+    @Getter(onMethod_ = {@Synchronized})
     private final HashSet<String> series = new HashSet<>();
 
     private final ScheduledExecutorService executor;
@@ -77,6 +78,24 @@ public class NovelService implements DisposableBean {
         }, 1, 10, TimeUnit.MINUTES);
     }
 
+    /**
+     * 创建小说目录
+     * @param account 所用帐号
+     * @param copyright 版权
+     * @param title 标题
+     * @param authors 作者
+     * @param description 描述
+     * @param rating 评分
+     * @param tags 标签
+     * @param series 系列
+     * @param publisher 出版社
+     * @param pubdate 出版日期
+     * @param coverImgUrl 封面图
+     * @return NovelIndex 小说目录
+     * @see NovelIndex
+     * @see net.wlgzs.futurenovel.model.NovelIndex.Copyright
+     * @see net.wlgzs.futurenovel.model.Account.Permission
+     */
     @NonNull
     @Transactional
     public NovelIndex createNovelIndex(@NonNull Account account,

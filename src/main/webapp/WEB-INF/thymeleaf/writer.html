@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>写小说</title>
-		<script src="../../resources/js/jquery-3.4.1.min.js"></script>
+		<script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
 		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
 		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
 		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
@@ -30,7 +30,6 @@
 					<span style="color: #7a7a7a;">作者名字</span>
 				</div>
 				<ul class="writer-list"style="overflow: auto;">
-					
 				</ul>
 			</div>
 			<div class="writer-body">

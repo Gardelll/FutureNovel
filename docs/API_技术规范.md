@@ -209,7 +209,7 @@ GET $URL/admin/accounts/get
     "lastLoginIP": null, // 上次登陆 IP，从未登陆为 null
     "registerDate": "2020年07月19日 14:59:28", // 注册时间
     "lastLoginDate": null, // 上次登陆时间，从未登陆为 null
-    "status": "FINED", // 帐号状态，分为 正常 FINED, 未验证 UNVERIFIED, 封禁 BANED
+    "status": "FINE", // 帐号状态，分为 正常 FINE, 未验证 UNVERIFIED, 封禁 BANED
     "permission": "USER", // 帐号所属权限组，分为 USER, AUTHOR, ADMIN
     "experience": 0, // 用户的积分
     "profileImgUrl": null, // 头像 URL 地址

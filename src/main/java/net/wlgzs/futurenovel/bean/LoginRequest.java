@@ -19,7 +19,16 @@ public class LoginRequest {
     public String password;
 
     /**
+     * 邮箱激活码
+     * <p>
+     * 当且仅当账号未激活时验证
+     */
+    @Size(min = 4)
+    public String activateCode;
+
+    /**
      * 登录完成后的跳转 Url
      */
     public String redirectTo;
+
 }

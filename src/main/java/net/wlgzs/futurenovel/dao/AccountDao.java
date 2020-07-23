@@ -106,12 +106,15 @@ public interface AccountDao {
             "<if test='email != null'>email=#{email},</if> ",
             "<if test='phone != null'>phone=#{phone}</if> ",
             "<if test='profileImgUrl != null'>profileImgUrl=#{profileImgUrl}</if> ",
+            "<if test='status != null'>status=#{status}</if> ",
+            "<if test='vip != null'>isVip=#{vip}</if> ",
+            "<if test='permission != null'>permission=#{permission}</if> ",
             "</set> ",
             "WHERE `accounts`.`uid` = #{uid}",
             "</script>"})
     int editAccount(EditAccountRequest account) throws DataAccessException;
 
-    @Delete("DELETE `accounts` WHERE `accounts`.`uid` = #{uid}")
+    @Delete("DELETE FROM `accounts` WHERE `accounts`.`uid` = #{uid}")
     int deleteAccount(Account account) throws DataAccessException;
 
     @Update("UPDATE `accounts` SET `experience` = #{experience} WHERE `accounts`.`uid` = #{uid}")

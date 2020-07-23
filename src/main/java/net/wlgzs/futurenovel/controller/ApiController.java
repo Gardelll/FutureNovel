@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,12 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.bean.AddAccountRequest;
 import net.wlgzs.futurenovel.bean.AddChapterRequest;
 import net.wlgzs.futurenovel.bean.AddSectionRequest;
 import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
+import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
@@ -53,10 +56,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -81,7 +88,9 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(origins = "*",
         methods = {
                 RequestMethod.POST,
-                RequestMethod.GET
+                RequestMethod.GET,
+                RequestMethod.PUT,
+                RequestMethod.DELETE
         },
         allowedHeaders = {
                 "Authorization",
@@ -144,6 +153,32 @@ public class ApiController extends AbstractAppController {
                                 HttpServletResponse response,
                                 HttpSession session) {
         var account = accountService.login(req.userName, req.password);
+
+        // 若账号未验证
+        if (account.getStatus() == Account.Status.UNVERIFIED) {
+            if (req.activateCode == null) {
+                // 1. 第一次尝试登陆，提示未验证并发送验证码
+                var sendCaptchaRequest = new SendCaptchaRequest();
+                sendCaptchaRequest.email = account.getEmail();
+                sendCaptcha(request, session, sendCaptchaRequest);
+                throw new FutureNovelException(FutureNovelException.Error.USER_UNVERIFIED);
+            } else if (account.getEmail().equals(session.getAttribute("activateEmail")) &&
+                req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
+                Optional.ofNullable((Long) session.getAttribute("activateBefore"))
+                    .map(value -> System.currentTimeMillis() < value).orElse(false)) {
+                // 2. 第二次登录，带上了验证码参数，并校验成功，设为激活状态
+                session.setAttribute("activateCode", null);
+                session.setAttribute("activateBefore", null);
+                session.setAttribute("activateEmail", null);
+                account.setStatus(Account.Status.FINE);
+            } else {
+                // 3. 激活失败，继续上一步
+                throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
+            }
+        } else if (account.getStatus() == Account.Status.BANED) {
+            throw new FutureNovelException(FutureNovelException.Error.ACCESS_DENIED);
+        }
+
         var token = tokenStore.acquireToken(account, request.getRemoteAddr(), userAgent);
 
         // 更新帐号属性
@@ -159,7 +194,8 @@ public class ApiController extends AbstractAppController {
             return now.get(Calendar.YEAR) != year || now.get(Calendar.DAY_OF_YEAR) != day;
         }).ifPresent((date) -> account.setExperience(account.getExperience() + 3));
         account.setLastLoginDate(new Date());
-        accountService.updateAccount(account);
+        if (!accountService.updateAccount(account))
+            log.warn("用户 {} 的数据更新失败", account.getUserName());
 
         // 保存到 session 和设置 cookie
         session.setAttribute("currentAccount", account);
@@ -264,6 +300,98 @@ public class ApiController extends AbstractAppController {
         if (!accountService.editAccount(currentAccount, req)) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
         }
+    }
+
+    @PostMapping(value = "/admin/account/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Map<String, List<?>> adminAddAccount(@RequestBody List<AddAccountRequest> reqs,
+                                                @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                HttpServletRequest request) {
+        if (reqs == null || reqs.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+
+        LinkedList<Account> success = new LinkedList<>();
+        LinkedList<Map<String, ?>> failed = new LinkedList<>();
+
+        for (AddAccountRequest req : reqs) {
+            try {
+                var e = new BindException(req, "list#request");
+                defaultValidator.validate(req, e);
+                if (e.hasErrors()) throw e;
+                if (accountService.isEmailUsed(req.email, null))
+                    throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "邮箱地址(" + req.email + ")已被使用");
+                if (accountService.isEmailUsed(req.userName, null))
+                    throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "用户名(" + req.userName + ")已被使用");
+
+                var account = new Account(UUID.randomUUID(),
+                    req.userName,
+                    BCrypt.hashpw(req.password, BCrypt.gensalt()),
+                    req.email,
+                    req.phone,
+                    request.getRemoteAddr(),
+                    null,
+                    new Date(),
+                    null,
+                    req.status,
+                    req.vip,
+                    req.permission,
+                    0,
+                    null);
+                accountService.register(account);
+                success.add(account);
+            } catch (Exception e) {
+                failed.add(Map.of(
+                    "request", req,
+                    "error", buildErrorResponse(e)
+                ));
+            }
+        }
+
+        return Map.of(
+            "success", success,
+            "failed", failed
+        );
+    }
+
+    @DeleteMapping(value = "/admin/account/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Map<String, List<?>> adminDeleteAccount(@RequestBody List<String> uids,
+                                                   @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                   @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                   @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                   HttpServletRequest request) {
+        if (uids == null || uids.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+
+        LinkedList<Account> success = new LinkedList<>();
+        LinkedList<Map<String, ?>> failed = new LinkedList<>();
+
+        for (String uidStr : uids) {
+            try {
+                UUID uuid = UUID.fromString(uidStr);
+                if (uid.equals(uuid.toString())) throw new IllegalArgumentException("不能删除自己的账号");
+                Account account = accountService.getAccount(uuid);
+                if (accountService.unRegister(account) != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION);
+                success.add(account);
+            } catch (Exception e) {
+                failed.add(Map.of(
+                    "request", uidStr,
+                    "error", buildErrorResponse(e)
+                ));
+            }
+        }
+        return Map.of(
+            "success", success,
+            "failed", failed
+        );
     }
 
     /**

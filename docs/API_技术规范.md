@@ -17,13 +17,14 @@
 
 |异常情况|HTTP状态码|Error|Error Message|
 |--------|----------|-----|------------|
-|一般 HTTP 异常（非业务异常，如 _Not Found_、_Method Not Allowed_）|_未定义_|_该 HTTP 状态对应的 Reason Phrase（于 [HTTP/1.1](https://tools.ietf.org/html/rfc2616#section-6.1.1) 中定义）_|_未定义_|
+|一般 HTTP 异常（非业务异常，如 _Not Found_、_Method Not Allowed_）|_未定义_|_该 HTTP 状态对应的 Reason Phrase（于 [HTTP/1.1](https://tools.ietf.org/html/rfc7231#section-6) 中定义）_|_未定义_|
 |参数错误（包括请求体 json 解析失败）|400|ILLEGAL_ARGUMENT|参数格式错误（各异）|
 |登陆状态失效或未登录|403|INVALID_TOKEN|未登录|
 |用户名或密码错误|403|INVALID_PASSWORD|用户名或密码错误|
 |短时间内多次异常操作而被暂时禁止|423|HACK_DETECTED|检测到违规行为|
 |帐号异常|403|ACCESS_DENIED|拒绝访问|
 |注册或修改用户名、邮箱时遇到冲突|409|USER_EXIST|用户已存在|
+|账号由管理员创建但未验证邮箱|403|USER_UNVERIFIED|账号未激活|
 |验证码错误|400|WRONG_ACTIVATE_CODE|验证码错误|
 |数据库异常|500|DATABASE_EXCEPTION|数据库异常|
 |管理时所用帐号权限不足|403|PERMISSION_DENIED|无权操作|
@@ -129,6 +130,13 @@ POST $URL/api/login
 |userName|String|用户名或邮箱|否|
 |password|String|密码|否|
 |redirectTo|String|登录完成后的跳转 Url|是|
+|activateCode|String|邮箱激活码，如果用户未激活，则使用此激活码激活|是|
+
+登录时会检查用户邮箱验证情况，当且仅当邮箱未激活（如 管理员批量创建用户）时，进行如下步骤  
+1. 第一次尝试登陆，不带 `activateCode` 参数，
+服务端返回错误代码 `USER_UNVERIFIED` 并发送验证码，
+此时页面提示账号需要激活，验证码已发送，并展示验证码输入框  
+2. 第二次登录，带上 `activateCode` 参数，若校验成功，则登录成功，否则重试第 1 步（注意需要间隔 30秒)
 
 登录成功后设置 Cookie，
 若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页。
@@ -179,6 +187,9 @@ GET $URL/api/account/edit
 |password|String|密码|T|
 |email|String|邮箱|T|
 |phone|String|手机号|T|
+|status|String|账号状态，（参见上方 #数据格式 Account->status）|T|
+|vip|Boolean|是否为高级会员|T|
+|permission|String|用户权限，参见上方 #数据格式 Account->permission|T|
 |profileImgUrl|String|头像 URL|T|
 |activateCode|String|邮箱验证码，当且仅当修改邮箱、密码时验证|T|
 
@@ -271,6 +282,170 @@ GET $URL/admin/accounts/get
 ```
 
 若该页没有数据，服务端返回状态码 204 - No Content
+
+3. 管理员批量创建用户
+
+```
+POST $URL/api/admin/account/add
+```
+
+>权限：管理员
+
+请求参数：包含下表属性的 JSON 对象的数组
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|userName|String|用户名|F|
+|password|String|密码|F|
+|email|String|邮箱|F|
+|phone|String|手机号|F|
+|status|String|账号状态，（参见上方 #数据格式 Account->status）|T 默认 UNVERIFIED|
+|vip|Boolean|是否为高级会员|T 默认为 false|
+|permission|String|用户权限，参见上方 #数据格式 Account->permission|T 默认 USER|
+
+示例：  
+```json5
+[
+  {
+    "userName": "合法的",
+    "password": "12345678",
+    "email": "test@email.test",
+    "phone": "15660724871",
+    "status": "FINE",
+    "permission": "USER",
+    "vip": false
+  },
+  {
+    "userName": "默认为未激活",
+    "password": "12345678",
+    "email": "test@email.test.com",
+    "phone": "15660724871"
+  },
+  {
+    "userName": "非法的",
+    "password": "密码",
+    "email": "test.notvalid",
+    "phone": "15660????"
+  },
+  {
+    // 还可能有更多
+  }
+]
+```
+
+若请求成功，服务端返回状态码 200 - OK （即使所有操作都失败）
+
+返回参数有些复杂，但是看了例子就能明白
+```json5
+{
+  "success": [ // 所有成功的请求，为 Account 的数组
+    {
+      "uid": "ed58afe8-d7a7-4387-97d1-b4e5b6437350",
+      "userName": "合法的",
+      // ... 省略
+      "status": "FINE",
+      "permission": "USER",
+      "vip": false
+    },
+    {
+      "uid": "5c574a65-6933-4807-b609-c5a6cef07bf6",
+      "userName": "默认为未激活",
+      // ... 省略
+      "status": "UNVERIFIED",
+      "permission": "USER",
+      "vip": false
+    },
+    {
+      // 还可能有更多
+    }
+  ],
+  "failed": [ // 失败的请求与失败原因的数组
+    {
+      "request": { // 失败的原请求
+        "userName": "非法的",
+        "password": "密码",
+        "email": "test.notvalid",
+        "phone": "15660????",
+        "status": "UNVERIFIED",
+        "vip": false,
+        "permission": "USER"
+      },
+      "error": { // 此请求失败的原因
+        "error": "ILLEGAL_ARGUMENT",
+        "errorMessage": "password: 个数必须在6和2147483647之间;\nphone: 个数必须在11和14之间;\nemail: 不是一个合法的电子邮件地址",
+        "cause": "调试信息"
+      }
+    },
+    {
+      // 还可能有更多
+      "request": {/* xxx */},
+      "error": {/* xxx */}
+    }
+  ]
+}
+```
+
+4. 批量删除用户
+
+```
+DELETE $URL/api/admin/account/delete
+```
+
+>权限：管理员
+
+请求参数：用户 ID 的 JSON 的数组
+
+示例：
+```json5
+[
+  "ed58afe8-d7a7-4387-97d1-b4e5b6437350",
+  "5c574a65-6933-4807-b609-c5a6cef07bf6"
+  // 还可能有更多
+]
+```
+
+若请求成功，服务端返回状态码 200 - OK （即使所有操作都失败）
+
+返回参数和上一步类似，示例：
+```json5
+{
+  "success": [
+    {
+      "uid": "ed58afe8-d7a7-4387-97d1-b4e5b6437350",
+      "userName": "合法的",
+      "email": "test@email.test",
+      "phone": "15660724871",
+      // ... 省略
+    },
+    {
+      // 还可能有更多
+    }
+  ],
+  "failed": [
+    {
+      "request": "ed58afe8-d7a7",
+      "error": {
+        "error": "ILLEGAL_ARGUMENT",
+        "errorMessage": "Invalid UUID string: ed58afe8-d7a7- ",
+        "cause": "调试信息"
+      }
+    },
+    {
+      "request": "5c574a65-6933-4807-b609-c5a6cef07bf6",
+      "error": {
+        "error": "DATABASE_EXCEPTION",
+        "errorMessage": "找不到该用户",
+        "cause": "调试信息"
+      }
+    },
+    {
+      // 还可能有更多
+      "request": "UUID",
+      "error": {/* xxx */}
+    }
+  ]
+}
+```
 
 --------
 

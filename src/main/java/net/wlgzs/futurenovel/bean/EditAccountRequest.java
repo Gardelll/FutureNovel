@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.UUID;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+import net.wlgzs.futurenovel.model.Account;
 import org.hibernate.validator.constraints.URL;
 
 /**
@@ -57,6 +58,23 @@ public class EditAccountRequest {
      */
     @URL
     public String profileImgUrl;
+
+    /**
+     * 当前用户状态
+     * @see Account.Status
+     */
+    public Account.Status status;
+
+    /**
+     * 是否为高级会员
+     */
+    public Boolean vip;
+
+    /**
+     * 权限组
+     * @see Account.Permission
+     */
+    public Account.Permission permission;
 
     /**
      * 邮箱激活码

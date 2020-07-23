@@ -257,6 +257,7 @@ public class TemplateController extends AbstractAppController {
         return "error";
     }
 
+    @Override
     @RequestMapping(path = "/error")
     public void handle(HttpServletRequest request) {
        super.handle(request);

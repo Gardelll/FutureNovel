@@ -25,10 +25,10 @@ public interface ChapterDao {
     @Update({"UPDATE `chapter` SET `title` = #{title} WHERE `chapter`.`uniqueId` = #{uniqueId}"})
     int updateChapterTitle(Chapter chapter) throws DataAccessException;
 
-    @Delete("DELETE `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
     int deleteChapter(Chapter chapter) throws DataAccessException;
 
-    @Delete("DELETE `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
     int deleteChapterById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
     @Select({"<script>",

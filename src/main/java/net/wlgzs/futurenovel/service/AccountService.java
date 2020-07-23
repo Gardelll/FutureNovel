@@ -96,8 +96,23 @@ public class AccountService {
     public boolean editAccount(@NonNull Account account, @NonNull EditAccountRequest toEdit) {
         try {
             if (toEdit.uid == null) toEdit.uid = UUID.fromString(toEdit.uuid);
-            if (!account.getUid().equals(toEdit.uid)) account.checkPermission(Account.Permission.ADMIN);
-            if (checkAllNull(toEdit.userName, toEdit.password, toEdit.email, toEdit.phone, toEdit.profileImgUrl)) return false;
+
+            // 如果是管理员编辑其他账号，则检查权限，如果是编辑自己的账号，则某些信息不能自己修改
+            if (!account.getUid().equals(toEdit.uid)) {
+                account.checkPermission(Account.Permission.ADMIN);
+            } else {
+                toEdit.vip = null;
+                toEdit.status = null;
+                toEdit.permission = null;
+            }
+            if (checkAllNull(toEdit.userName,
+                toEdit.password,
+                toEdit.email,
+                toEdit.phone,
+                toEdit.profileImgUrl,
+                toEdit.vip,
+                toEdit.status,
+                toEdit.permission)) return false;
             if (toEdit.password != null) toEdit.password = BCrypt.hashpw(toEdit.password, BCrypt.gensalt());
             return 1 == accountDao.editAccount(toEdit);
         } catch (DuplicateKeyException e) {

@@ -25,10 +25,10 @@ public interface SectionDao {
     @Update({"UPDATE `section` SET `title` = #{title} WHERE `section`.`uniqueId` = #{uniqueId}"})
     int updateSectionTitle(Section section) throws DataAccessException;
 
-    @Delete("DELETE `section` WHERE `section`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSection(Section section) throws DataAccessException;
 
-    @Delete("DELETE `section` WHERE `section`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSectionById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
     @Select({"<script>",

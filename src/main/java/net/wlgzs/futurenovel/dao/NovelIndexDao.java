@@ -48,10 +48,10 @@ public interface NovelIndexDao {
             "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
     int updateNovelIndexExceptContent(NovelIndex novelIndex) throws DataAccessException;
 
-    @Delete("DELETE `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
     int deleteNovelIndex(NovelIndex novelIndex) throws DataAccessException;
 
-    @Delete("DELETE `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
+    @Delete("DELETE FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
     int deleteNovelIndexById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
     @Select({"<script>",

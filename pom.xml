@@ -251,6 +251,8 @@
                                 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
                             </cargo.start.jvmargs>
                             <cargo.tomcat.uriencoding>UTF-8</cargo.tomcat.uriencoding>
+                            <cargo.tomcat.deploy.update>true</cargo.tomcat.deploy.update>
+                            <cargo.tomcat.context.reloadable>true</cargo.tomcat.context.reloadable>
                         </properties>
                     </configuration>
                 </configuration>

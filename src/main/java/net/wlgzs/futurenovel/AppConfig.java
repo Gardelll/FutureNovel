@@ -115,7 +115,8 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateResolver.setSuffix(".html");
         templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCacheable(true);
+        // 缓存模板文件
+        templateResolver.setCacheable(false);
         return templateResolver;
     }
 

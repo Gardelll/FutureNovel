@@ -7,80 +7,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
-    <link rel="stylesheet" href="../../resources/css/register.css" type="text/css" th:href="@{/resources/css/register.css}"/>
+    <link rel="stylesheet" href="../../resources/css/register.css" type="text/css" th:href="@{/resources/css/register.css}" />
     <script src="../../resources/js/reg_click_tip.js" type="text/javascript" th:src="@{/resources/js/reg_click_tip.js}"></script>
 </head>
 
 <body>
-<div>
-    <!-- 头部开始 -->
-    <div class="header reg-header">
-        <div class="box-center">
-            <div class="logo cf">
-                <!-- <img src="../../resources/img/logo.jpg"> -->
-                <a href="../../resources/FutureNovel.html" th:href="@{/}">未来小说网</a>
-                <div class="spacer"></div>
-                <p>用户注册</p>
+    <div>
+        <!-- 头部开始 -->
+        <div class="header reg-header">
+            <div class="box-center">
+                <div class="logo cf">
+                    <!-- <img src="../../resources/img/logo.jpg"> -->
+                    <a href="../../resources/FutureNovel.html" th:href="@{/}">未来小说网</a>
+                    <div class="spacer"></div>
+                    <p>用户注册</p>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- 整体中间开始 -->
-    <div class="box-center" style="max-width: 507px;">
-        <!-- 注册 -->
-        <div class="reg-wrap">
-            <div class="reg-step">
-                <p class="title"><i style="font-size:24px;margin-right: 5px;" class="fa"></i>注册</p>
-            </div>
-            <!--/*@thymesVar id="error" type="java.lang.String"*/-->
-            <p class="display: block; width: 300px; margin: 20px auto;" th:if="${error}">
-                <b>错误信息：</b> <span th:text="${errorMessage}">错误</span>
-                <span th:if="${error}" th:text="'('+${error}+')'">error ...</span>
-            </p>
+        <!-- 整体中间开始 -->
+        <div class="box-center" style="max-width: 507px;">
+            <!-- 注册 -->
+            <div class="reg-wrap">
+                <div class="reg-step">
+                    <p class="title"><i style="font-size:24px;margin-right: 5px;" class="fa"></i>注册</p>
+                </div>
+                <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+                <p class="display: none; width: 300px; margin: 20px auto;" th:if="${error}">
+                    <b>错误信息：</b> <span th:text="${errorMessage}">错误</span>
+                    <span th:if="${error}" th:text="'('+${error}+')'">error ...</span>
+                </p>
 
-            <div class="reg-form-wrap">
-                <form id="reg-form" action="#" th:action="@{/register}" th:object="${req}" method="POST">
-                    <div class="reg-form-list form-list">
-                        <dl>
-                            <dd id="userName">
-                                <p>用户名</p>
-                                <input name="userName" class="mid" type="text" placeholder="请输入用户名" id="txtusername" required minlength="3">
-                            </dd>
-                            <dd class="top" id="email">
-                                <p>邮箱</p>
-                                <input name="email" class="mid" type="email" placeholder="请输入邮箱" id="txtemailnumber">
-                            </dd>
-                            <dd id="emailcode">
-                                <p>邮箱验证</p>
-                                <input name="activateCode" type="text" class="mid" placeholder="请输入验证码" id="textemailcode" style="width: 149px;" autocomplete="off">
-                                <button class="get-code stat" href="###" id="get-code">获取验证码</button>
-                            </dd>
-                            <dd class="top" id="phone">
-                                <p>手机号</p>
-                                <input name="phone" class="mid" type="text" placeholder="请输入手机号码" id="txtphonenumber" maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')">
-                            </dd>
-                            <dd id="phonepwd">
-                                <p>密码</p>
-                                <input name="password" type="password" id="txtphonepwd" placeholder="6-18位大小写字母、符号或数字">
-                                <div class="password-tip" style="width: 152px;display: none;">
-                                    <span><cite></cite></span>
-                                    <p id="pwdrule1">长度为6-18个字符</p>
-                                    <p id="pwdrule2">不能是9位以下的纯数字</p>
-                                    <p id="pwdrule3">不能包含空格</p>
-                                </div>
-                            </dd>
-                            <dd id="password2">
-                                <p>确认密码</p>
-                                <input name="passwordRepeat" type="password" id="txtphonepwd2" placeholder="再次输入密码">
-                            </dd>
-                        </dl>
-                        <input type="hidden" name="redirectTo" th:value="${#request.getContextPath()}" />
-                        <button type="submit" class="blue-btn go-reg" id="btnRegister">立即注册</button>
-                    </div>
-                </form>
+                <div class="reg-form-wrap">
+                    <form id="reg-form" action="#" th:action="@{/register}" th:object="${req}" method="POST">
+                        <div class="reg-form-list form-list">
+                            <dl>
+                                <dd id="userName">
+                                    <p>用户名</p>
+                                    <input name="userName" class="mid" type="text" placeholder="请输入用户名" id="txtusername" required minlength="3">
+                                </dd>
+                                <dd class="top" id="email">
+                                    <p>邮箱</p>
+                                    <input name="email" class="mid" type="email" placeholder="请输入邮箱" id="txtemailnumber">
+                                </dd>
+                                <dd id="emailcode">
+                                    <p>邮箱验证</p>
+                                    <input name="activateCode" type="text" class="mid" placeholder="请输入验证码" id="textemailcode" style="width: 149px;" autocomplete="off">
+                                    <button class="get-code stat" href="###" id="get-code">获取验证码</button>
+                                </dd>
+                                <dd class="top" id="phone">
+                                    <p>手机号</p>
+                                    <input name="phone" class="mid" type="text" placeholder="请输入手机号码" id="txtphonenumber" maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')">
+                                </dd>
+                                <dd id="phonepwd">
+                                    <p>密码</p>
+                                    <input name="password" type="password" id="txtphonepwd" placeholder="6-18位大小写字母、符号或数字">
+                                    <div class="password-tip" style="width: 152px;display: none;">
+                                        <span><cite></cite></span>
+                                        <p id="pwdrule1">长度为6-18个字符</p>
+                                        <p id="pwdrule2">不能是9位以下的纯数字</p>
+                                        <p id="pwdrule3">不能包含空格</p>
+                                    </div>
+                                </dd>
+                                <dd id="password2">
+                                    <p>确认密码</p>
+                                    <input name="passwordRepeat" type="password" id="txtphonepwd2" placeholder="再次输入密码">
+                                </dd>
+                            </dl>
+                            <input type="hidden" name="redirectTo" th:value="${#request.getContextPath()}" />
+                            <button type="submit" class="blue-btn go-reg" id="btnRegister">立即注册</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>

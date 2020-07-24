@@ -35,10 +35,11 @@ git clone https://gitee.com/FutureNovel/FutureNovel.git
 + 修改配置文件 (没有的文件需要手动创建)
 ```
 # src/main/webapp/WEB-INF/database_config.properties
-driverClassName=org.mariadb.jdbc.Driver
-url=[jdbc链接]
-username=[数据库用户名]
+c3p0.driverClass=org.mariadb.jdbc.Driver
+c3p0.jdbcUrl=[jdbc链接]
+user=[数据库用户名]
 password=[密码]
+# 下面是数据库驱动的属性
 useSSL=false
 autoReconnect=true
 useUnicode=true

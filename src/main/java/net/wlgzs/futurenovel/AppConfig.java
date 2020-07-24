@@ -2,6 +2,7 @@ package net.wlgzs.futurenovel;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -29,7 +30,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -144,14 +144,17 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         try {
             Properties properties = new Properties();
             properties.load(applicationContext.getResource("/WEB-INF/database_config.properties").getInputStream());
-            var dataSource = new DriverManagerDataSource();
-            dataSource.setDriverClassName(properties.getProperty("driverClassName"));
-            dataSource.setUrl(properties.getProperty("url"));
-            dataSource.setUsername(properties.getProperty("username"));
-            dataSource.setPassword(properties.getProperty("password"));
-            dataSource.setConnectionProperties(properties);
-            return dataSource;
-        } catch (IOException e) {
+            var pooledDataSource = new ComboPooledDataSource();
+            pooledDataSource.setDriverClass(properties.getProperty("c3p0.driverClass"));
+            pooledDataSource.setJdbcUrl(properties.getProperty("c3p0.jdbcUrl"));
+            pooledDataSource.setUser(properties.getProperty("user"));
+            pooledDataSource.setPassword(properties.getProperty("password"));
+            pooledDataSource.setMinPoolSize(5);
+            pooledDataSource.setAcquireIncrement(5);
+            pooledDataSource.setMaxPoolSize(20);
+            pooledDataSource.setProperties(properties);
+            return pooledDataSource;
+        } catch (Exception e) {
             throw new NullPointerException(e.getLocalizedMessage());
         }
     }

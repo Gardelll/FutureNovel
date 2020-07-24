@@ -8,6 +8,6 @@ public class AddSectionRequest {
     @Nullable
     public String title;
     @NotBlank
-    @Size(min = 200)
+    @Size(min = 200, max = 4194304) // 最大 4MB
     public String text;
 }

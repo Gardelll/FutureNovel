@@ -2,6 +2,7 @@ package net.wlgzs.futurenovel.dao;
 
 import java.util.List;
 import java.util.UUID;
+import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.model.Section;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -24,6 +25,9 @@ public interface SectionDao {
 
     @Update({"UPDATE `section` SET `title` = #{title} WHERE `section`.`uniqueId` = #{uniqueId}"})
     int updateSectionTitle(Section section) throws DataAccessException;
+
+    @Select("SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
+    List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
 
     @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSection(Section section) throws DataAccessException;

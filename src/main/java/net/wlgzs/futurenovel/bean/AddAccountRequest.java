@@ -13,13 +13,14 @@ public class AddAccountRequest {
      * 用户名
      */
     @NotBlank
+    @Size(max = 255)
     public String userName;
 
     /**
      * 密码
      */
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 255)
     public String password;
 
     /**
@@ -27,6 +28,7 @@ public class AddAccountRequest {
      */
     @NotBlank
     @Email
+    @Size(max = 255)
     public String email;
 
     /**

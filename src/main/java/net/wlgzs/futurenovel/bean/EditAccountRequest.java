@@ -26,25 +26,26 @@ public class EditAccountRequest {
     /**
      * 用户 UID
      */
-    @Size(min = 36)
+    @Size(min = 36, max = 36)
     public String uuid;
 
     /**
      * 用户名
      */
-    @Size(min = 1)
+    @Size(min = 1, max = 255)
     public String userName;
 
     /**
      * 密码
      */
-    @Size(min = 6)
+    @Size(min = 6, max = 255)
     public String password;
 
     /**
      * 邮箱地址
      */
     @Email
+    @Size(max = 255)
     public String email;
 
     /**

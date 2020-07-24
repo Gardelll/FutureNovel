@@ -15,20 +15,21 @@ public class RegisterRequest {
      * 用户名
      */
     @NotBlank
+    @Size(max = 255)
     public String userName;
 
     /**
      * 密码
      */
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 255)
     public String password;
 
     /**
      * 再输一遍密码
      */
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 255)
     public String passwordRepeat;
 
     /**
@@ -36,6 +37,7 @@ public class RegisterRequest {
      */
     @NotBlank
     @Email
+    @Size(max = 255)
     public String email;
 
     /**

@@ -26,7 +26,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 public abstract class AbstractAppController {
 
@@ -44,6 +46,8 @@ public abstract class AbstractAppController {
 
     protected final Properties futureNovelConfig;
 
+    protected String serverUrl = null;
+
     public AbstractAppController(TokenStore tokenStore,
                                  AccountService accountService,
                                  EmailService emailService,
@@ -58,6 +62,19 @@ public abstract class AbstractAppController {
         this.futureNovelConfig = futureNovelConfig;
         this.fileService = fileService;
         this.novelService = novelService;
+    }
+
+    protected boolean safeRedirect(String redirectTo) {
+        String serverUrl = this.serverUrl == null ?
+                           this.serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                               .build()
+                               .normalize()
+                               .toString() :
+                           this.serverUrl;
+        if (!redirectTo.startsWith("http") && !redirectTo.startsWith("//")) {
+            return true;
+        }
+        return redirectTo.startsWith(serverUrl);
     }
 
     /**
@@ -145,6 +162,9 @@ public abstract class AbstractAppController {
         } else if (e instanceof ResponseStatusException) {
             response.error = ((ResponseStatusException) e).getStatus().name();
             response.status = ((ResponseStatusException) e).getStatus().value();
+        } else if (e instanceof HttpStatusCodeException) {
+            response.error = ((HttpStatusCodeException) e).getStatusCode().name();
+            response.status = ((HttpStatusCodeException) e).getStatusCode().value();
         } else {
             response.error = e.getClass().getSimpleName();
             response.status = HttpStatus.I_AM_A_TEAPOT.value();

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.dao.ChapterDao;
 import net.wlgzs.futurenovel.dao.NovelIndexDao;
 import net.wlgzs.futurenovel.dao.SectionDao;
@@ -230,6 +231,16 @@ public class NovelService implements DisposableBean {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
+    @NonNull
+    public List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@NonNull UUID fromChapter) {
+        try {
+            var list = sectionDao.getSectionInfoByFromChapter(fromChapter);
+            return list == null ? List.of() : list;
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
     @Transactional
     public void deleteNovelIndex(@NonNull Account account, @NonNull NovelIndex novelIndex) {
         try {
@@ -327,7 +338,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<NovelIndex> findNovelIndexByUploader(@NonNull UUID uploader, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<NovelIndex> findNovelIndexByUploader(@NonNull UUID uploader, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<NovelIndex> list = novelIndexDao.getNovelIndexByUploader(uploader, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -337,7 +348,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<NovelIndex> findNovelIndexByPubDate(@NonNull Date after, @NonNull Date before, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<NovelIndex> findNovelIndexByPubDate(@NonNull Date after, @NonNull Date before, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<NovelIndex> list = novelIndexDao.getNovelIndexByPubDate(after, before, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -347,7 +358,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<NovelIndex> searchNovelIndex(@NonNull String keywords, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<NovelIndex> searchNovelIndex(@NonNull String keywords, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<NovelIndex> list = novelIndexDao.getNovelIndexByKeywords(keywords, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -357,7 +368,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<Chapter> findChapterByFromNovel(@NonNull UUID fromNovel, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<Chapter> findChapterByFromNovel(@NonNull UUID fromNovel, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<Chapter> list = chapterDao.getChapterByFromNovel(fromNovel, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -369,7 +380,7 @@ public class NovelService implements DisposableBean {
     // May be never used
     @NonNull
     @Deprecated
-    public List<Chapter> findChapterByTitle(@NonNull String title, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<Chapter> findChapterByTitle(@NonNull String title, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<Chapter> list = chapterDao.getChapterByTitle(title, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -379,7 +390,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<Section> findSectionByFromChapter(@NonNull UUID fromChapter, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<Section> findSectionByFromChapter(@NonNull UUID fromChapter, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<Section> list = sectionDao.getSectionByFromChapter(fromChapter, offset, count, orderBy);
             return list == null ? List.of() : list;
@@ -389,7 +400,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<Section> searchByContent(@NonNull String keywords, @NonNull int offset, @NonNull int count, @NonNull String orderBy) {
+    public List<Section> searchByContent(@NonNull String keywords, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<Section> list = sectionDao.getSectionByKeywords(keywords, offset, count, orderBy);
             return list == null ? List.of() : list;

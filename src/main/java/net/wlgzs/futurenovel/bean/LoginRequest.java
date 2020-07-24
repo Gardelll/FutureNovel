@@ -9,13 +9,14 @@ public class LoginRequest {
      * 用户名或邮箱
      */
     @NotBlank
+    @Size(max = 255)
     public String userName;
 
     /**
      * 密码
      */
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 255)
     public String password;
 
     /**

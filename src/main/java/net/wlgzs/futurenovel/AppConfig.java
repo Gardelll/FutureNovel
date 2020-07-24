@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -143,10 +145,11 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
             Properties properties = new Properties();
             properties.load(applicationContext.getResource("/WEB-INF/database_config.properties").getInputStream());
             var dataSource = new DriverManagerDataSource();
-            dataSource.setDriverClassName(properties.getProperty("jdbc_driverClassName"));
-            dataSource.setUrl(properties.getProperty("jdbc_url"));
-            dataSource.setUsername(properties.getProperty("jdbc_username"));
-            dataSource.setPassword(properties.getProperty("jdbc_password"));
+            dataSource.setDriverClassName(properties.getProperty("driverClassName"));
+            dataSource.setUrl(properties.getProperty("url"));
+            dataSource.setUsername(properties.getProperty("username"));
+            dataSource.setPassword(properties.getProperty("password"));
+            dataSource.setConnectionProperties(properties);
             return dataSource;
         } catch (IOException e) {
             throw new NullPointerException(e.getLocalizedMessage());
@@ -200,6 +203,19 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
         validatorFactoryBean.setProviderClass(HibernateValidator.class);
         return validatorFactoryBean;
+    }
+
+    // Formatter
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(dateFormatter());
+    }
+
+    @Bean
+    public DateFormatter dateFormatter() {
+        DateFormatter dateFormatter = new DateFormatter("yyyy年MM月dd日 HH:mm:ss");
+        dateFormatter.setTimeZone(TimeZone.getDefault());
+        return dateFormatter;
     }
 
     // Application Configuration

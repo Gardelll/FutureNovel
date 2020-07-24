@@ -46,7 +46,7 @@ public class FileService {
                 var messageDigest = MessageDigest.getInstance("MD5");
                 while ((read = inputStream.read(buffer)) != -1) {
                     messageDigest.update(buffer, 0, read);
-                    tmpOutput.write(buffer, 0, read); // 2
+                    tmpOutput.write(buffer, 0, read); // 1
                 }
                 tmpOutput.flush();
                 md5Hex = toHex(messageDigest.digest());
@@ -56,7 +56,7 @@ public class FileService {
             tmpOutput.flush();
         }
         var savePath = Files.createDirectories(uploadPath.resolve(md5Hex.substring(0, 2)));
-        Files.move(tmpFile, savePath.resolve(md5Hex), StandardCopyOption.REPLACE_EXISTING); // 3
+        Files.move(tmpFile, savePath.resolve(md5Hex), StandardCopyOption.REPLACE_EXISTING); // 2
         return md5Hex;
     }
 

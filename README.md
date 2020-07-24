@@ -35,10 +35,15 @@ git clone https://gitee.com/FutureNovel/FutureNovel.git
 + 修改配置文件 (没有的文件需要手动创建)
 ```
 # src/main/webapp/WEB-INF/database_config.properties
-jdbc_driverClassName=org.mariadb.jdbc.Driver
-jdbc_url=[jdbc链接]
-jdbc_username=[数据库用户名]
-jdbc_password=[密码]
+driverClassName=org.mariadb.jdbc.Driver
+url=[jdbc链接]
+username=[数据库用户名]
+password=[密码]
+useSSL=false
+autoReconnect=true
+useUnicode=true
+characterEncoding=utf8
+characterSetResults=utf8
 ```
 
 ```

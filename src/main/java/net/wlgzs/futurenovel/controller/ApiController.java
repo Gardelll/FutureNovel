@@ -4,13 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -37,7 +34,6 @@ import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
-import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
@@ -57,7 +53,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
@@ -79,6 +74,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * Ajax 接口相关的控制器
@@ -126,6 +122,7 @@ public class ApiController extends AbstractAppController {
     @GetMapping("/checkUsername")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void checkUsername(@RequestParam(name = "name") String name, @RequestParam(defaultValue = "username", required = false) String type) {
+        if (name.isBlank()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         boolean used;
         if ("email".equalsIgnoreCase(type)) {
             used = accountService.isEmailUsed(name, null);
@@ -211,6 +208,7 @@ public class ApiController extends AbstractAppController {
             .filter(s -> !s.isEmpty())
             .orElseGet(() -> Optional.ofNullable((String) session.getAttribute("redirectTo"))
                 .filter(s -> !s.isEmpty())
+                .filter(this::safeRedirect)
                 .orElse(request.getContextPath()));
         session.setAttribute("redirectTo", null);
         //ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectTo).body(null);
@@ -414,41 +412,27 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
 
-        Path tmpFile = null;
-        try (var in = file.getInputStream()) {
+        try (ByteArrayOutputStream tmpStream = new ByteArrayOutputStream(); var in = file.getInputStream()) {
             BufferedImage image = ImageIO.read(in);
-            if (image.getWidth() > 4096 || image.getHeight() > 4096) throw new FutureNovelException(FutureNovelException.Error.FILE_TOO_LARGE);
-            // TODO 简化操作，这里拷贝了三次
-            tmpFile = Files.createTempFile("uploadTemp", ".jpg");
+            if (image.getWidth() > 4096 || image.getHeight() > 4096)
+                throw new FutureNovelException(FutureNovelException.Error.FILE_TOO_LARGE);
             BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
             newImage.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
             image = newImage;
-            if (!ImageIO.write(image, "JPEG", tmpFile.toFile()))
+            if (!ImageIO.write(image, "JPEG", tmpStream))
                 throw new FutureNovelException(FutureNovelException.Error.UNDEFINED);
-            try (var jpegIn = Files.newInputStream(tmpFile)) {
+            try (var jpegIn = new ByteArrayInputStream(tmpStream.toByteArray())) {
                 var index = fileService.saveFile(jpegIn);
-                String url;
-                try {
-                    url = new URI(request.getScheme(),
-                            null,
-                            request.getServerName(),
-                            request.getLocalPort(),
-                            request.getContextPath() + "/api/img/" + index,
-                            null,
-                            null)
-                            .normalize()
-                            .toString();
-                } catch (URISyntaxException ignored) {
-                    url = request.getRequestURL().toString().replaceAll("/img/upload", "/img/" + index);
-                }
+                String url = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .build()
+                    .normalize()
+                    .toString().replaceAll("/img/upload", "/img/" + index);
                 return Map.ofEntries(Map.entry("md5", index),
-                        Map.entry("url", url),
-                        Map.entry("mime", MediaType.IMAGE_JPEG_VALUE));
+                    Map.entry("url", url),
+                    Map.entry("mime", MediaType.IMAGE_JPEG_VALUE));
             }
         } catch (IOException e) {
             throw new FutureNovelException("文件上传失败", e);
-        } finally {
-            if (tmpFile != null) try { Files.delete(tmpFile); } catch (IOException ignored) {}
         }
     }
 
@@ -692,11 +676,7 @@ public class ApiController extends AbstractAppController {
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/chapters")
     @ResponseBody
     public List<Chapter> getChapters(@PathVariable("uniqueId") String uniqueId) {
-        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(uniqueId));
-        ArrayNode allChapters = novelIndex.getChapters();
-        final ArrayList<Chapter> result = new ArrayList<>(allChapters.size());
-        allChapters.forEach(uuidStr -> result.add(novelService.getChapter(UUID.fromString(uuidStr.asText()))));
-        return result;
+        return novelService.findChapterByFromNovel(UUID.fromString(uniqueId), 0, Integer.MAX_VALUE, null);
     }
 
 //    // TODO 统计网站数据
@@ -728,21 +708,16 @@ public class ApiController extends AbstractAppController {
                         "<p>您的邮箱验证码为：<h3>%s</h3> 10分钟内有效。</p>" +
                         "----------------------------------------------------------------------<br />" +
                         "<p>请在表单中填写该信息</p>",
-                        new URI(request.getScheme(),
-                                null,
-                                request.getServerName(),
-                                request.getServerPort(),
-                                request.getContextPath(),
-                                null,
-                                null)
-                                .normalize()
-                                .toString(),
+                        serverUrl == null ? serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                            .build()
+                            .normalize()
+                            .toString() : serverUrl,
                         activateCode));
             session.setAttribute("activateCode", activateCode);
             session.setAttribute("activateBefore", System.currentTimeMillis() + Duration.ofMinutes(10).toMillis());
             session.setAttribute("activateEmail", req.email);
             DefaultFilter.blockIp(request.getRemoteAddr(), "/api/sendCaptcha", 30); // 30 秒后重试
-        } catch (MailException | MessagingException | URISyntaxException e) {
+        } catch (MailException | MessagingException e) {
             throw new FutureNovelException(e.getLocalizedMessage());
         }
     }

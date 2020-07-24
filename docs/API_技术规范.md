@@ -301,7 +301,7 @@ POST $URL/api/admin/account/add
 |phone|String|手机号|F|
 |status|String|账号状态，（参见上方 #数据格式 Account->status）|T 默认 UNVERIFIED|
 |vip|Boolean|是否为高级会员|T 默认为 false|
-|permission|String|用户权限，参见上方 #数据格式 Account->permission|T 默认 USER|
+|permission|String|用户权限，（参见上方 #数据格式 Account->permission）|T 默认 USER|
 
 示例：  
 ```json5

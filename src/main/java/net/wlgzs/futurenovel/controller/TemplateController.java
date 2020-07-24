@@ -1,7 +1,9 @@
 package net.wlgzs.futurenovel.controller;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.time.Duration;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
+import net.wlgzs.futurenovel.bean.Novel;
+import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
@@ -20,7 +24,9 @@ import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,10 +38,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * HTML 页面的控制器
@@ -96,18 +105,29 @@ public class TemplateController extends AbstractAppController {
     }
 
     @GetMapping("/register")
-    public String register(Model m, @CookieValue(name = "uid", defaultValue = "") String uid,
+    public String register(Model m, @RequestParam(name = "redirectTo", defaultValue = "") String redirectTo,
+                           @CookieValue(name = "uid", defaultValue = "") String uid,
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                            HttpServletRequest request,
                            HttpSession session) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         m.addAttribute("errorMessage", "OK");
+        if (!redirectTo.isBlank()) {
+            session.setAttribute("redirectTo", redirectTo);
+        }
         return "register";
     }
 
     @GetMapping({"/login"})
-    public String login() {
+    public String login(@RequestParam(name = "redirectTo", defaultValue = "") String redirectTo,
+                        @RequestParam(name = "errorMessage", defaultValue = "OK") String errorMessage,
+                        Model model,
+                        HttpSession session) {
+        if (!redirectTo.isBlank()) {
+            session.setAttribute("redirectTo", redirectTo);
+        }
+        model.addAttribute("errorMessage", errorMessage);
         return "login";
     }
 
@@ -170,9 +190,12 @@ public class TemplateController extends AbstractAppController {
                 session.setAttribute("activateCode", null);
                 session.setAttribute("activateBefore", null);
                 session.setAttribute("activateEmail", null);
-                session.setAttribute("regSuccessRedirect", Boolean.TRUE);
-                if (req.redirectTo != null) session.setAttribute("redirectTo", req.redirectTo);
-                return "redirect:index";
+                m.addAttribute("errorMessage", "注册成功，请登录");
+                if (req.redirectTo != null && !req.redirectTo.isBlank()) {
+                    session.setAttribute("redirectTo", req.redirectTo);
+                    m.addAttribute("redirectTo", req.redirectTo);
+                }
+                return "redirect:login";
             } else throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
         } catch (FutureNovelException e) {
             m.addAttribute("errorMessage", e.getLocalizedMessage());
@@ -184,24 +207,71 @@ public class TemplateController extends AbstractAppController {
         return "register";
     }
 
-    @GetMapping("/novel/view")
-    public String bookView(@CookieValue(name = "uid", defaultValue = "") String uid,
+    private Novel buildNovel(@NonNull UUID novelIndexId) {
+        var novelIndex = novelService.getNovelIndex(novelIndexId);
+        var novel = new Novel(novelIndex);
+        ArrayNode allChapters = novelIndex.getChapters();
+        final LinkedList<NovelChapter> chapterList = new LinkedList<>();
+        allChapters.forEach(uuidStr -> {
+            var novelChapter = new NovelChapter(novelService.getChapter(UUID.fromString(uuidStr.asText())));
+            novelChapter.addAll(novelService.getSectionInfoByFromChapter(novelChapter.getUniqueId()));
+            chapterList.add(novelChapter);
+        });
+        novel.addAll(chapterList);
+        return novel;
+    }
+
+    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/view")
+    public String bookView(@PathVariable(name = "uniqueId") String uniqueId,
+                           @CookieValue(name = "uid", defaultValue = "") String uid,
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                            HttpServletRequest request,
-                           HttpSession session) {
+                           HttpSession session,
+                           Model model) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        var novel = buildNovel(UUID.fromString(uniqueId));
+        model.addAttribute("novel", novel);
         return "look-book";
     }
 
-    @GetMapping("/novel/read")
-    public String bookRead(@CookieValue(name = "uid", defaultValue = "") String uid,
+    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/read")
+    public String bookRead(@PathVariable(name = "uniqueId") String uniqueId,
+                           @RequestParam("sectionId") String sectionId,
+                           @CookieValue(name = "uid", defaultValue = "") String uid,
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                            HttpServletRequest request,
-                           HttpSession session) {
+                           HttpSession session,
+                           Model model) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+
+        var novel = buildNovel(UUID.fromString(uniqueId));
+        model.addAttribute("novel", novel);
+
+        var section = novelService.getSection(UUID.fromString(sectionId));
+        model.addAttribute("sectionWithContent", section);
+
         return "read-book";
+    }
+
+    @GetMapping({"/user", "/user/{uuid:[0-9a-f\\-]{36}}"})
+    public String userCenter(@PathVariable(required = false) String uuid,
+                             @CookieValue(name = "uid", defaultValue = "") String uid,
+                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                             HttpServletRequest request,
+                             HttpSession session,
+                             Model model) {
+        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (uuid == null) uuid = uid;
+        try {
+            Account showAccount = accountService.getAccount(UUID.fromString(uuid));
+            model.addAttribute("showAccount", showAccount);
+            return "user";
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);
+        }
     }
 
     @GetMapping("/search")
@@ -219,8 +289,13 @@ public class TemplateController extends AbstractAppController {
                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                              HttpServletRequest request,
-                             HttpSession session) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, true);
+                             HttpSession session,
+                             Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            return "redirect:login";
+        }
         return "writer";
     }
 
@@ -229,8 +304,13 @@ public class TemplateController extends AbstractAppController {
                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                               HttpServletRequest request,
-                              HttpSession session) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, true);
+                              HttpSession session,
+                              Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            return "redirect:login";
+        }
         return "WorkInformation";
     }
 
@@ -239,8 +319,13 @@ public class TemplateController extends AbstractAppController {
                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                             HttpServletRequest request,
-                            HttpSession session) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, true);
+                            HttpSession session,
+                            Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            return "redirect:login";
+        }
         currentAccount.checkPermission(Account.Permission.ADMIN);
         return "index";
     }

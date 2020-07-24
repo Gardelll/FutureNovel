@@ -2,14 +2,15 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title>登录</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <title>Document</title>
+    <!-- 作为公共部分分离 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <link rel="stylesheet" href="../../resources/css/login.css" th:href="@{/resources/css/login.css}">
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
+    <!-- 作为公共部分分离/ -->
 </head>
-<!-- 作为公共部分分离 -->
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<link rel="stylesheet" href="../../resources/css/login.css" th:href="@{/resources/css/login.css}">
-<link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
-<!-- 作为公共部分分离/ -->
 <body>
     <div class="header">
     <div class="w">
@@ -63,8 +64,8 @@
                     password: ps,
                 }),
                 contentType:'application/json; charset=utf-8',
-                success: function(redirectTo,account){
-                    $(location).attr('href',redirectTo);
+                success: function(data){
+                    $(location).attr('href',data.redirectTo);
                     console.log('登录成功');
                 },
                 error: function() {

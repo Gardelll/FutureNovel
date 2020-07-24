@@ -6,7 +6,7 @@
 		<title>排行榜</title>
 		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 		<link rel="stylesheet" href="../../resources/css/all2.css" th:href="@{/resources/css/all2.css}">
-		<script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
+		<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 		<link rel="stylesheet" href="../../resources/css/rank.css" th:href="@{/resources/css/rank.css}">
 		<script src="../../resources/js/rank.js" th:src="@{/resources/js/rank.js}"></script>
 
@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="logo fl">
-                    <a href="##">未来小说网</a>
+                    <a href="##" id="#title">未来小说网</a>
                 </div>
                 <div class="search-wrap fl">
                     <form id="formUrl" action="######" method="get" target="_blank">
@@ -38,13 +38,13 @@
         </div>
 
 
-		<div class="top-nav" style="background-color: rgb(62,61,67);">
+		<div class="top-nav" style="background-color: #2470bf ;">
 			<div id="top-box-center">
 				<ul type="none" class="mainDiv">
 					<li id="first">
 						<a href="##">作品分类</a>
 
-						<img src="../../resources/img/下 (1).png" th:src="@{/resources/img/下 (1).png}" height="200" width="200"style="width:20px;height: 20px;margin:10px;float:right;" id="direction"/></li>
+						<img src="../../resources/img/down.png" th:src="@{/resources/img/down.png}" height="200" width="200"style="width:20px;height: 20px;margin:10px;float:right;" id="direction"/></li>
 					<li class="navs" style="margin-left: 50px;width: 120px;"><a href="##">全部作品</a></li>
 					<li class="navs" style="width: 100px;"><a href="##">排行</a></li>
 					<li class="navs" style="width: 130px;"><a href="##">作家专区</a></li>
@@ -54,7 +54,7 @@
 						<a href="##">客户端</a>
 
 
-						<img src="../../resources/img/手机.png" th:src="@{/resources/img/手机.png}"  style="width:20px;height: 20px;margin:10px;float:left;"/></li>
+						<img src="../../resources/img/phone.png" th:src="@{/resources/img/phone.png}"  style="width:20px;height: 20px;margin:10px;float:left;"/></li>
 				</ul>
 			</div>
 		</div>
@@ -471,7 +471,8 @@
 					</div>
 				</div>
             </div>
-            
+
         </div>
+
 	</body>
 </html>

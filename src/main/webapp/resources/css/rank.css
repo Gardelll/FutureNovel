@@ -10,7 +10,7 @@
 
 #first {
 	width: 216px;
-	background-color: rgb(49, 48, 53);
+	background-color: #2470bf ;
 }
 
 #first a {
@@ -30,7 +30,7 @@
 }
 
 .navs:hover {
-	background-color: rgb(49, 48, 53);
+	background-color:#115f96;
 }
 
 .navs a {
@@ -130,12 +130,11 @@
 	height: 40px;
 	line-height: 40px;
 	text-align: center;
-	background-color: #bf2c24
+	background-color: #2470bf;
 }
 
-.logo-wrap .book-shelf :hover,
 .logo-wrap .search-wrap .search-btn:hover {
-	background-color: #ed4259
+	background-color: rgb(84,122,226);
 }
 
 .submit-input {
@@ -168,8 +167,8 @@
 
 .logo-wrap .book-shelf a:hover {
 	color: #fff;
-	border: 1px solid #ed4259;
-	background: #ed4259;
+	border: 1px solid #115f96;
+	background-color: #115f96;
 }
 
 .focus-wrap {
@@ -344,3 +343,5 @@
 .book-rank-img:hover img{
 	transform: scale(1.1,1.1);
 }
+
+

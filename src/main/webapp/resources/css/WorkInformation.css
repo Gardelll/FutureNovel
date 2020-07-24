@@ -97,7 +97,7 @@
     padding: 5px 10px;
 }
 .img-box{
-    display: none;
+    display:block;
 }
 #sure{
     margin-top:10px;
@@ -111,4 +111,33 @@
 }
 #sure:hover{
     background-color: rgb(61,160,217);
+}
+.tags{
+    margin-left: 120px;
+    width: 300px;
+    border: 1px solid #e6e6e6;
+    border-top: none;
+    padding: 10px;
+    font-size:15px;
+    height: 80px;
+    overflow: auto;
+}
+.tags-s{
+    margin: 5px;
+    padding:0 0 0 5px;
+    display: inline-block;
+    background-color:rgb(204,199,227);
+    border-radius:50px;
+}
+.tags-s img{
+    padding: 4px;
+    margin: 5px;
+    border-radius: 50%;
+}
+.tags-s:hover img{
+    background-color: #9f9fe0;
+}
+.tags-text{
+    display: inline-block;
+    margin-top: 5px;
 }

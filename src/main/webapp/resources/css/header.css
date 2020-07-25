@@ -30,6 +30,7 @@ ul{
 input,button{
     border: 0;
     outline: none;
+    padding-left: 10px;
 }
 input:focus{
     outline: none;
@@ -38,6 +39,8 @@ button{
     cursor: pointer;
     padding: 5px;
     border-radius: 5px;
+    color: white;
+    background-color: #009688;
 }
 table{
     margin: 0;

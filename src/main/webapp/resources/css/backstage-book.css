@@ -1,0 +1,105 @@
+.book {
+  margin-left: 3%;
+  margin-top: 10px;
+}
+
+.book .function {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.book .function span {
+  font-size: 15px;
+}
+
+.book .function input {
+  height: 35px;
+  width: 15%;
+  border: 1px solid #CCCCCC;
+  margin-left: 5px;
+}
+
+.book .function ::-webkit-input-placeholder {
+  color: #CCCCCC;
+}
+
+.book .function button {
+  width: 50px;
+  height: 40px;
+  color: white;
+  background-color: #009688;
+}
+
+.book table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.book table thead th {
+  height: 40px;
+  border: 1px solid #BBBBBB;
+  text-align: center;
+  font-size: 15px;
+  background-color: #F2F2F2;
+}
+
+.book table tbody th {
+  height: 40px;
+  border: 1px solid #BBBBBB;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 400;
+}
+.book table tbody .modify-user{
+  width: 50px;
+  line-height: 18px;
+  height: 20px;
+  border-radius: 2px;
+  display: inline-block;
+  color: white;
+  background-color: #1E9FFF;
+  cursor: pointer;
+}
+.book table tbody .modify-user i{
+  font-size: 12px;
+}
+.book .but {
+  margin-left: 90%;
+  margin-top: 20px;
+}
+
+.book .but button {
+  cursor: pointer;
+  padding: 5px;
+  background-color: #009688;
+  border-radius: 5px;
+}
+
+.book .but button:hover {
+  opacity: .8;
+}
+/* 针对弹窗的input样式 */
+.popup_mod input{ 
+  height: 35px;
+  width: 185px;
+  border: 1px solid #BBBBBB;
+}
+.popup_mod label{
+    float: left;
+    display: block;
+    padding: 9px 15px;
+    width: 80px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: right;
+}
+.popup_mod .item{
+  margin-bottom: 15px;
+  position: relative;
+}
+.popup_mod .item button{
+  width: 80px;
+  height: 35px;
+  line-height: 27px;
+  vertical-align: middle;
+}

@@ -54,7 +54,7 @@
         ps=$('#ps').val();
         if(us=='' || ps==''){
             popup_over('icon-sad','#d81e06',"输入内容不能为空");
-        }else if(us.length<=4 || ps.length<=4){
+        }else if(us.length<4 || ps.length<4){
             popup_over('icon-sad','#d81e06',"输入内容太短了吧");
         }else {
             $.ajax({

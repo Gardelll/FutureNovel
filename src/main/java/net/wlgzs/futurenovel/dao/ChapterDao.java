@@ -28,8 +28,8 @@ public interface ChapterDao {
     @Delete("DELETE FROM `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
     int deleteChapter(Chapter chapter) throws DataAccessException;
 
-    @Delete("DELETE FROM `chapter` WHERE `chapter`.`uniqueId` = #{uniqueId}")
-    int deleteChapterById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+    @Delete("DELETE FROM `chapter` WHERE `chapter`.`fromNovel` = #{fromNovel}")
+    int deleteChapterByFromNovel(@Param("fromNovel") UUID fromNovel) throws DataAccessException;
 
     @Select({"<script>",
             "SELECT `uniqueId`, `fromNovel`, `title`, `sections` FROM `chapter` ",

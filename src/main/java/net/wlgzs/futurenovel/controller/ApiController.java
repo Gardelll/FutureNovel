@@ -412,6 +412,8 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
 
+        if (file.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "文件为空");
+
         try (ByteArrayOutputStream tmpStream = new ByteArrayOutputStream(); var in = file.getInputStream()) {
             BufferedImage image = ImageIO.read(in);
             if (image.getWidth() > 4096 || image.getHeight() > 4096)
@@ -701,6 +703,21 @@ public class ApiController extends AbstractAppController {
 
         NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(uniqueId));
         novelService.deleteNovelIndex(currentAccount, novelIndex);
+    }
+
+    @DeleteMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteChapter(@PathVariable String uniqueId,
+                              @CookieValue(name = "uid", defaultValue = "") String uid,
+                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                              HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        Chapter chapter = novelService.getChapter(UUID.fromString(uniqueId));
+        NovelIndex novelIndex = novelService.getNovelIndex(chapter.getParentUUID());
+        novelService.deleteChapter(currentAccount, chapter, novelIndex);
     }
 
 //    // TODO 统计网站数据

@@ -29,11 +29,27 @@ public interface SectionDao {
     @Select("SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
     List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
 
+    @Select({"<script> ",
+        "SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` IN (",
+        "<foreach collection='list' item='fromChapter' index='index' open=' ' separator=',' close=' '>",
+        "#{fromChapter}",
+        "</foreach>) </script>"
+    })
+    List<NovelChapter.SectionInfo> getSectionInfoByFromChapterList(List<UUID> fromChapterList) throws DataAccessException;
+
     @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSection(Section section) throws DataAccessException;
 
-    @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
-    int deleteSectionById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+    @Delete("DELETE FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
+    int deleteSectionByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
+
+    @Delete({"<script> ",
+        "DELETE FROM `section` WHERE `section`.`fromChapter` IN (",
+        "<foreach collection='list' item='fromChapter' index='index' open=' ' separator=',' close=' '>",
+        "#{fromChapter}",
+        "</foreach>) </script>"
+    })
+    int deleteSectionByFromChapterList(List<UUID> fromChapters) throws DataAccessException;
 
     @Select({"<script>",
             "SELECT `uniqueId`, `fromChapter`, `title`, `text` FROM `section` ",

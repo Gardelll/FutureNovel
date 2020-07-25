@@ -53,10 +53,35 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> impleme
     }
 
     @Override
+    public boolean add(SectionInfo sectionInfo) {
+        return sections.add(sectionInfo);
+    }
+
+    @Override
+    public void add(int index, SectionInfo element) {
+        sections.add(index, element);
+    }
+
+    @Override
     public boolean addAll(Collection<? extends SectionInfo> c) {
         boolean b = sections.addAll(c);
         sections.sort(NovelNodeComparator::compareByTitle);
         return b;
+    }
+
+    @Override
+    public SectionInfo remove(int index) {
+        return sections.remove(index);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return sections.remove(o);
+    }
+
+    @Override
+    public SectionInfo set(int index, SectionInfo element) {
+        return sections.set(index, element);
     }
 
     @Override

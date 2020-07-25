@@ -1,10 +1,13 @@
 package net.wlgzs.futurenovel.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -242,20 +245,34 @@ public class NovelService implements DisposableBean {
         }
     }
 
+    @NonNull
+    public List<NovelChapter.SectionInfo> getSectionInfoByFromChapterList(@NonNull List<UUID> fromChapterList) {
+        if (fromChapterList.isEmpty()) throw new IllegalArgumentException("list param is empty");
+        try {
+            var list = sectionDao.getSectionInfoByFromChapterList(fromChapterList);
+            return list == null ? List.of() : list;
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
     @Transactional
     public void deleteNovelIndex(@NonNull Account account, @NonNull NovelIndex novelIndex) {
         try {
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var arrayNode = novelIndex.getChapters();
-            for (var node : arrayNode) {
-                UUID chapterId = UUID.fromString(node.asText());
-                Chapter chapter = chapterDao.getChapterById(chapterId);
-                if (chapter != null) try {
-                    deleteChapter(account, chapter, novelIndex);
-                } catch (Exception e) {
-                    log.warn("chapter({}) from novel({}) can not delete", chapterId.toString(), novelIndex.getUniqueId().toString());
-                }
+            var chapterIdList = new LinkedList<UUID>();
+            for (JsonNode node : arrayNode) chapterIdList.add(UUID.fromString(node.asText()));
+            try {
+                sectionDao.deleteSectionByFromChapterList(chapterIdList);
+            } catch (Exception e) {
+                log.warn("chapter(s) from novel({}) can not totally delete", novelIndex.getUniqueId().toString());
+            }
+            try {
+                chapterDao.deleteChapterByFromNovel(novelIndex.getUniqueId());
+            } catch (Exception e) {
+                log.warn("chapter(s) from novel({}) can not totally delete", novelIndex.getUniqueId().toString());
             }
             var ret = novelIndexDao.deleteNovelIndex(novelIndex);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
@@ -270,15 +287,10 @@ public class NovelService implements DisposableBean {
             if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            var arrayNode = chapter.getSections();
-            for (var node : arrayNode) {
-                UUID sectionId = UUID.fromString(node.asText());
-                Section section = sectionDao.getSectionById(sectionId);
-                if (section != null) try {
-                    deleteSection(account, section, novelIndex);
-                } catch (Exception e) {
-                    log.warn("section({}) from novel({}) can not delete", sectionId.toString(), novelIndex.getUniqueId().toString());
-                }
+            try {
+                sectionDao.deleteSectionByFromChapter(chapter.getThisUUID());
+            } catch (Exception e) {
+                log.warn("section(s) from novel({}) can not delete", novelIndex.getUniqueId().toString());
             }
             var ret = chapterDao.deleteChapter(chapter);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);

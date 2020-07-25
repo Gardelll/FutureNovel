@@ -1,12 +1,13 @@
 package net.wlgzs.futurenovel.controller;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.time.Duration;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +20,13 @@ import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
+import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -208,15 +211,37 @@ public class TemplateController extends AbstractAppController {
     }
 
     private Novel buildNovel(@NonNull UUID novelIndexId) {
+        // 1. 根据 ID 查询目录信息
         var novelIndex = novelService.getNovelIndex(novelIndexId);
+
         var novel = new Novel(novelIndex);
-        ArrayNode allChapters = novelIndex.getChapters();
-        final LinkedList<NovelChapter> chapterList = new LinkedList<>();
-        allChapters.forEach(uuidStr -> {
-            var novelChapter = new NovelChapter(novelService.getChapter(UUID.fromString(uuidStr.asText())));
-            novelChapter.addAll(novelService.getSectionInfoByFromChapter(novelChapter.getUniqueId()));
-            chapterList.add(novelChapter);
-        });
+        var chapterIdList = new LinkedList<UUID>();
+        ConcurrentHashMap<UUID, NovelChapter> chapterIndex = new ConcurrentHashMap<>(); // chapterId 到 NovelChapter 的映射
+
+        // 2. 查询目录下的所有章节
+        List<Chapter> chapterListTemp = novelService.findChapterByFromNovel(novelIndexId, 0, Integer.MAX_VALUE, null);
+
+        // 整理一次
+        for (Chapter chapter : chapterListTemp) {
+            chapterIdList.add(chapter.getThisUUID());
+            chapterIndex.put(chapter.getThisUUID(), new NovelChapter(chapter));
+        }
+
+        // 3. 一次性获取目录下的所有文本小节
+        var sectionInfoList = novelService.getSectionInfoByFromChapterList(chapterIdList);
+
+        // 根据映射添加到章节里面
+        for (NovelChapter.SectionInfo sectionInfo : sectionInfoList) {
+            Optional.ofNullable(chapterIndex.get(sectionInfo.getFromChapter()))
+                .orElseThrow(() -> new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND))
+                .add(sectionInfo);
+        }
+
+        // 按照目录标题排序
+        var chapterList = chapterIndex.values();
+        for (NovelChapter chapter : chapterList) chapter.sort(NovelNodeComparator::compareByTitle);
+
+        // 生成最终结果
         novel.addAll(chapterList);
         return novel;
     }
@@ -335,6 +360,22 @@ public class TemplateController extends AbstractAppController {
         }
         currentAccount.checkPermission(Account.Permission.ADMIN);
         return "index";
+    }
+
+    @GetMapping({"/admin/users"})
+    public String userAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                            HttpServletRequest request,
+                            HttpSession session,
+                            Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            return "redirect:login";
+        }
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        return "backstage-user";
     }
 
     @ExceptionHandler(Exception.class)

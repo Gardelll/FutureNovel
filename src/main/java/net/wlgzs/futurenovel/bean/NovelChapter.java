@@ -11,11 +11,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import net.wlgzs.futurenovel.model.Chapter;
+import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.apache.ibatis.annotations.AutomapConstructor;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> {
+public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> implements NovelNode {
 
     private final UUID uniqueId;
     private final UUID fromNovel;
@@ -30,6 +31,11 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> {
     }
 
     @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
     public SectionInfo get(int index) {
         return sections.get(index);
     }
@@ -41,12 +47,16 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> {
 
     @Override
     public boolean addAll(int index, Collection<? extends SectionInfo> c) {
-        return sections.addAll(index, c);
+        boolean b = sections.addAll(index, c);
+        sections.sort(NovelNodeComparator::compareByTitle);
+        return b;
     }
 
     @Override
     public boolean addAll(Collection<? extends SectionInfo> c) {
-        return sections.addAll(c);
+        boolean b = sections.addAll(c);
+        sections.sort(NovelNodeComparator::compareByTitle);
+        return b;
     }
 
     @Override
@@ -79,10 +89,20 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> {
         return sections.lastIndexOf(o);
     }
 
+    @Override
+    public UUID getParentUUID() {
+        return fromNovel;
+    }
+
+    @Override
+    public UUID getThisUUID() {
+        return uniqueId;
+    }
+
     @Getter
     @AllArgsConstructor(onConstructor_ = {@AutomapConstructor})
     @EqualsAndHashCode
-    public static class SectionInfo {
+    public static class SectionInfo implements NovelNode {
         final private UUID uniqueId;
         final private UUID fromChapter;
         final private String title;
@@ -91,6 +111,22 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> {
             this.fromChapter = section.getFromChapter();
             this.title = section.getTitle();
         }
+
+        @Override
+        public UUID getParentUUID() {
+            return fromChapter;
+        }
+
+        @Override
+        public UUID getThisUUID() {
+            return uniqueId;
+        }
+
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
     }
 
 }

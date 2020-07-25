@@ -134,7 +134,7 @@ public abstract class AbstractAppController {
             var errorMessage = e.getLocalizedMessage();
             if (errorMessage == null || errorMessage.isBlank())
                 errorMessage = FutureNovelException.Error.ILLEGAL_ARGUMENT.getErrorMessage();
-            e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errorMessage);
+            e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errorMessage, e);
         }
         response.errorMessage = e.getLocalizedMessage();
         StringWriter stringWriter = new StringWriter();

@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import net.wlgzs.futurenovel.model.NovelIndex;
+import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 
 @EqualsAndHashCode(callSuper = false)
 @Getter
@@ -70,12 +71,16 @@ public class Novel extends AbstractList<NovelChapter> {
 
     @Override
     public boolean addAll(int index, Collection<? extends NovelChapter> c) {
-        return chapters.addAll(index, c);
+        boolean b = chapters.addAll(index, c);
+        chapters.sort(NovelNodeComparator::compareByTitle);
+        return b;
     }
 
     @Override
     public boolean addAll(Collection<? extends NovelChapter> c) {
-        return chapters.addAll(c);
+        boolean b = chapters.addAll(c);
+        chapters.sort(NovelNodeComparator::compareByTitle);
+        return b;
     }
 
     @Override

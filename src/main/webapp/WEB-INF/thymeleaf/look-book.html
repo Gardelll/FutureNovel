@@ -81,30 +81,31 @@
         <!-- 书详情 -->
         <div class="book-detail center">
             <!-- 书籍信息 -->
-            <div class="book-information cf">
+            <!--/*@thymesVar id="novel" type="net.wlgzs.futurenovel.bean.Novel"*/-->
+            <div class="book-information cf" th:object="${novel}">
                 <div class="book-img">
                     <a href="###" id="bookImg">
-                        <img src="../../resources/img/万族之劫.jpg" th:src="@{/resources/img/万族之劫.jpg}">
+                        <img src="../../resources/img/万族之劫.jpg" th:src="*{coverImgUrl}">
                     </a>
                 </div>
                 <div class="book-info">
-                    <h1>万族之劫
-                        <span>
-                            <a class="writer" href="###" target="_blank" style="margin-right: 10px;">老鹰吃小鸡</a>著
+                    <h1><a th:text="*{title}">万族之劫</a>
+                        <span th:each="author : *{authors}">
+                            <a class="writer" href="###" target="_blank" style="margin-right: 10px;" th:text="${author}">老鹰吃小鸡</a>著
                         </span>
                     </h1>
                     <p class="tag">
-                        <span class="blue">连载</span>
-                        <span class="blue">签约</span>
-                        <span class="blue">VIP</span>
-                        <a href="###" class="red" target="_blank">都市</a>
-                        <a href="###" class="red" target="_blank">都市异能</a>
+                        <span class="blue"  th:each="tag : *{tags}" th:text="${tag}">连载</span>
+<!--                        <span class="blue">签约</span>-->
+<!--                        <span class="blue">VIP</span>-->
+<!--                        <a href="###" class="red" target="_blank">都市</a>-->
+<!--                        <a href="###" class="red" target="_blank">都市异能</a>-->
                     </p>
-                    <p class="intro">重生过去、畅想未来、梦幻现实，再塑传奇人生！</p>
+                    <p class="intro" th:text="*{title}">重生过去、畅想未来、梦幻现实，再塑传奇人生！</p>
                     <p>
-                        <em>325.64</em><span>万字</span><i>|</i>
-                        <em>478.39</em><span>万总推荐</span><i>|</i>
-                        <em>22.56</em><span>万周推荐</span>
+<!--                        <em>325.64</em><span>万字</span><i>|</i>-->
+<!--                        <em>478.39</em><span>万总推荐</span><i>|</i>-->
+                        <span>评分</span><em th:text="*{rating} == 0 ? '暂无' : *{rating}">22.56</em>
                     </p>
                     <p>
                         <a class="blue-btn" href="###" id="blueBtn">免费试读</a>
@@ -131,7 +132,7 @@
             <div class="book-content cf">
                 <div class="left-wrap fl">
                     <div class="book-info">
-                        <p style="padding: 10px 30px;border-bottom: 1px solid #e6e6e6;"> 我是这诸天万族的劫！<br> 已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢养。</p>
+                        <p style="padding: 10px 30px;border-bottom: 1px solid #e6e6e6;" th:utext="${novel.description}"> 我是这诸天万族的劫！<br> 已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢养。</p>
                     </div>
                     <div class="book-state">
                         <ul>
@@ -222,71 +223,11 @@
                     <div class="volume">
                         <h2>
                             <a class="subscri" href="###" target="_blank"><i class="fa fa-file-text-o" style="font-size:14px;margin-right: 3px;"></i> 分卷阅读</a>
-                            <p style="font-size: 18px;">正文卷<i>·</i>共89章<span class="free">免费</span></p>
+                            <p style="font-size: 18px;">正文卷<i>·</i><a th:text="|共${novel.size()}章|">共89章</a><span class="free">免费</span></p>
                         </h2>
-                        <ul class="cf">
-                            <li>
-                                <a href="#" target="_blank">第1章 父子</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第2章 四大学府体系</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第3章 万族图册</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第4章 开元加速法</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第5章 梦境</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第6章 铁翼鸟再现</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第7章 书册开启</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第8章 文明之火</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第9章 文明学府的手段</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第10章 开元四重</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第11章 风平浪静</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第12章 引蛇出洞</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第13章 不一样的大夏府</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第14章 行动</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第15章 夏龙武</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第16章 战起</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第17章 初战</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第18章 全军覆没</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第19章 收获</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第20章 领功</a>
-                            </li>
-                            <li>
-                                <a href="#" target="_blank">第21章 满满的恶意</a>
+                        <ul class="cf" th:each="chapter : ${novel}">
+                            <li th:each="section : ${chapter}">
+                                <a href="#" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${section.uniqueId.toString()}" target="_blank" th:text="|${chapter.title} - ${section.title}|">第1章 父子</a>
                             </li>
                         </ul>
                     </div>

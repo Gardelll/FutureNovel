@@ -5,14 +5,16 @@ import java.io.Serializable;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import net.wlgzs.futurenovel.bean.NovelNode;
 
 /**
  * 小说的章节
  */
 @Data
 @AllArgsConstructor
-public class Chapter implements Serializable {
+public class Chapter implements Serializable, NovelNode {
 
     private static final long serialVersionUID = 2888176444107291305L;
 
@@ -32,6 +34,7 @@ public class Chapter implements Serializable {
      * 章标题
      */
     @NonNull
+    @Getter(onMethod_ = {@Override})
     private String title;
 
     /**
@@ -39,5 +42,15 @@ public class Chapter implements Serializable {
      */
     @NonNull
     private ArrayNode sections;
+
+    @Override
+    public UUID getParentUUID() {
+        return fromNovel;
+    }
+
+    @Override
+    public UUID getThisUUID() {
+        return uniqueId;
+    }
 
 }

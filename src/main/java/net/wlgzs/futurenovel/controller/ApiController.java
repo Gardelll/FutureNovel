@@ -679,6 +679,30 @@ public class ApiController extends AbstractAppController {
         return novelService.findChapterByFromNovel(UUID.fromString(uniqueId), 0, Integer.MAX_VALUE, null);
     }
 
+    /**
+     * 删除小说（递归）
+     * <p>
+     * 权限：上传者或管理员
+     * @param uniqueId 小说的 ID
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     */
+    @DeleteMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteNovelIndex(@PathVariable String uniqueId,
+                                 @CookieValue(name = "uid", defaultValue = "") String uid,
+                                 @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                 HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(uniqueId));
+        novelService.deleteNovelIndex(currentAccount, novelIndex);
+    }
+
 //    // TODO 统计网站数据
 //    public Map<String, ?> statistics() {
 //

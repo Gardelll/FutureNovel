@@ -23,6 +23,7 @@ import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.Section;
+import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -371,7 +372,9 @@ public class NovelService implements DisposableBean {
     public List<Chapter> findChapterByFromNovel(@NonNull UUID fromNovel, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<Chapter> list = chapterDao.getChapterByFromNovel(fromNovel, offset, count, orderBy);
-            return list == null ? List.of() : list;
+            if (list == null) return List.of();
+            list.sort(NovelNodeComparator::compareByTitle);
+            return list;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

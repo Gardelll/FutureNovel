@@ -250,7 +250,14 @@ public class TemplateController extends AbstractAppController {
         model.addAttribute("novel", novel);
 
         var section = novelService.getSection(UUID.fromString(sectionId));
-        model.addAttribute("sectionWithContent", section);
+        model.addAttribute("section", section);
+
+        var chapter = novel.getChapters()
+            .stream()
+            .filter( c -> c.getUniqueId().equals(section.getFromChapter()))
+            .findFirst()
+            .orElseGet(() -> new NovelChapter(novelService.getChapter(section.getFromChapter())));
+        model.addAttribute("chapter", chapter);
 
         return "read-book";
     }

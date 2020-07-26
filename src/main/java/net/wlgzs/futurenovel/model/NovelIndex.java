@@ -89,6 +89,11 @@ public class NovelIndex implements Serializable {
     private Date pubdate;
 
     /**
+     * 热度（点击量）
+     */
+    private long hot;
+
+    /**
      * 封面图的地址
      */
     private String coverImgUrl;

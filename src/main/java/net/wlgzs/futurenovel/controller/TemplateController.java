@@ -210,42 +210,6 @@ public class TemplateController extends AbstractAppController {
         return "register";
     }
 
-    private Novel buildNovel(@NonNull UUID novelIndexId) {
-        // 1. 根据 ID 查询目录信息
-        var novelIndex = novelService.getNovelIndex(novelIndexId);
-
-        var novel = new Novel(novelIndex);
-        var chapterIdList = new LinkedList<UUID>();
-        ConcurrentHashMap<UUID, NovelChapter> chapterIndex = new ConcurrentHashMap<>(); // chapterId 到 NovelChapter 的映射
-
-        // 2. 查询目录下的所有章节
-        List<Chapter> chapterListTemp = novelService.findChapterByFromNovel(novelIndexId, 0, Integer.MAX_VALUE, null);
-
-        // 整理一次
-        for (Chapter chapter : chapterListTemp) {
-            chapterIdList.add(chapter.getThisUUID());
-            chapterIndex.put(chapter.getThisUUID(), new NovelChapter(chapter));
-        }
-
-        // 3. 一次性获取目录下的所有文本小节
-        var sectionInfoList = novelService.getSectionInfoByFromChapterList(chapterIdList);
-
-        // 根据映射添加到章节里面
-        for (NovelChapter.SectionInfo sectionInfo : sectionInfoList) {
-            Optional.ofNullable(chapterIndex.get(sectionInfo.getFromChapter()))
-                .orElseThrow(() -> new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND))
-                .add(sectionInfo);
-        }
-
-        // 按照目录标题排序
-        var chapterList = chapterIndex.values();
-        for (NovelChapter chapter : chapterList) chapter.sort(NovelNodeComparator::compareByTitle);
-
-        // 生成最终结果
-        novel.addAll(chapterList);
-        return novel;
-    }
-
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/view")
     public String bookView(@PathVariable(name = "uniqueId") String uniqueId,
                            @CookieValue(name = "uid", defaultValue = "") String uid,
@@ -256,6 +220,8 @@ public class TemplateController extends AbstractAppController {
                            Model model) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         var novel = buildNovel(UUID.fromString(uniqueId));
+        novelService.hotAddOne(novel.getUniqueId());
+
         model.addAttribute("novel", novel);
         return "look-book";
     }
@@ -273,6 +239,7 @@ public class TemplateController extends AbstractAppController {
 
         var novel = buildNovel(UUID.fromString(uniqueId));
         model.addAttribute("novel", novel);
+        novelService.hotAddOne(novel.getUniqueId());
 
         var section = novelService.getSection(UUID.fromString(sectionId));
         model.addAttribute("section", section);

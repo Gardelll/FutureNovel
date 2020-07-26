@@ -40,6 +40,9 @@ public interface SectionDao {
     @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSection(Section section) throws DataAccessException;
 
+    @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
+    int deleteSectionById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+
     @Delete("DELETE FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
     int deleteSectionByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
 

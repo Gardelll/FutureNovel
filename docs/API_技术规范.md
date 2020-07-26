@@ -66,17 +66,38 @@
     "uploader": "d46d71c7-b0cf-45c6-a082-0ff75281d959", // 上传者
     "copyright": "REPRINT",
     "title": "标题",
-    "authors": "作者A,作者B", // 半角逗号分隔
+    "authors": [
+        "作者A",
+        "作者B"
+    ],
     "description": "简介",
     "rating": 0,
-    "tags": "测试", // 半角逗号分隔
+    "tags": [
+        "测试"
+    ],
     "series": "系列",
     "publisher": "出版社",
     "pubdate": "2020年07月22日 11:21:18",
     "coverImgUrl": null,
-    "chapters": [ // 章节的 ID
-      "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
-      "e8335b58-a522-449c-b3d8-320c0900b23b"
+    "chapters": [
+        {
+            "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e", // 章节 ID
+            "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f", // 小说 ID
+            "title": "章标题",
+            "sections": [
+                {
+                    "uniqueId": "43c8d320-047c-4af6-877b-bfe228841cd1", // 文章（小节）ID
+                    "fromChapter": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e", // 所属的章节 ID
+                    "title": "第 1 节"
+                },
+                {
+                    // 还可能有更多
+                }
+            ]
+        },
+        {
+            // 还可能有更多
+        }
     ]
 }
 ```
@@ -232,7 +253,7 @@ PUT $URL/api/img/upload
 1. 获取用户管理的总页数
 
 ```
-GET $URL/admin/accounts/pages
+GET $URL/api/admin/accounts/pages
 ```  
 
 >请求格式：`application/x-www-form-urlencoded`  
@@ -256,7 +277,7 @@ GET $URL/admin/accounts/pages
 2. 获取所有的用户信息
 
 ```
-GET $URL/admin/accounts/get
+GET $URL/api/admin/accounts/get
 ```  
 
 >请求格式：`application/x-www-form-urlencoded`  
@@ -592,32 +613,7 @@ GET $URL/api/novel/{uniqueId}
 }
 ```
 
-5. 获取小说的某一章节信息
-
-```
-GET $URL/api/novel/chapter/{uniqueId}
-```
-
-|字段|类型|含义或值|可空|
-|---|---|------------|---|
-|uniqueId|UUID|章节的 ID，注意要包含在路径里，不是 query 参数|F|
-
-若查询成功，服务端返回状态码 200 - OK
-
-返回参数：
-```json5
-{
-  "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
-  "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f",
-  "title": "章标题",
-  "sections": [
-    "43c8d320-047c-4af6-877b-bfe228841cd1"
-  ]
-}
-```
-
-6. 获取小说的某一小节，包含文本
-
+5. 获取小说的某一小节，包含文本
 
 ```
 GET $URL/api/novel/section/{uniqueId}
@@ -639,32 +635,80 @@ GET $URL/api/novel/section/{uniqueId}
 }
 ```
 
-7. 或者直接根据小说目录的 ID 获取所有章节的信息
-
+6. 删除小说（递归）
 
 ```
-GET $URL/api/novel/{uniqueId}/chapters
+DELETE $URL/api/novel/{uniqueId}
 ```
+
+>权限：上传者、管理员
 
 |字段|类型|含义或值|可空|
 |---|---|------------|---|
 |uniqueId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+7. 根据章节 ID 删除某一章（递归）
+
+```
+DELETE $URL/api/novel/chapter/{uniqueId}
+```
+
+>权限：上传者、管理员
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|章节 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+8. 根据小节 ID 删除某一小节
+
+```
+DELETE $URL/api/novel/section/{uniqueId}
+```
+
+>权限：上传者、管理员
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+9. 查询所有的标签（tag）
+
+```
+GET $URL/api/novel/tags/all
+```
 
 若查询成功，服务端返回状态码 200 - OK
 
 返回参数：
 ```json5
 [
-  {
-    "uniqueId": "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e",
-    "fromNovel": "94bcb21d-9e05-4509-b048-ffc582184d1f",
-    "title": "章标题",
-    "sections": [
-      "43c8d320-047c-4af6-877b-bfe228841cd1"
-    ]
-  },
-  {
-    // 还可能有更多
-  }
+    "测试",
+    "古典文学",
+    "外国小说",
+]
+```
+
+10. 查询所有的系列
+
+```
+GET $URL/api/novel/series/all
+```
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：  
+```json5
+[
+    "系列",
+    "水浒传",
+    "三国演义",
+    "简·爱",
+    "地球往事三部曲"
 ]
 ```

@@ -1,5 +1,7 @@
 package net.wlgzs.futurenovel.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -16,6 +18,8 @@ import org.apache.ibatis.annotations.AutomapConstructor;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@JsonIgnoreProperties({"size", "empty", "thisUUID", "parentUUID"})
 public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> implements NovelNode {
 
     private final UUID uniqueId;
@@ -127,6 +131,7 @@ public class NovelChapter extends AbstractList<NovelChapter.SectionInfo> impleme
     @Getter
     @AllArgsConstructor(onConstructor_ = {@AutomapConstructor})
     @EqualsAndHashCode
+    @JsonIgnoreProperties({"thisUUID", "parentUUID"})
     public static class SectionInfo implements NovelNode {
         final private UUID uniqueId;
         final private UUID fromChapter;

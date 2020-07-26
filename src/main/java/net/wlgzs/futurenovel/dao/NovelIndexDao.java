@@ -15,15 +15,15 @@ public interface NovelIndexDao {
 
     @Select({"SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
             "`authors`, `description`, `rating`, `tags`, `series`, ",
-            "`publisher`, `pubdate`, `coverImgUrl`, `chapters` FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId} LIMIT 1"})
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId} LIMIT 1"})
     NovelIndex getNovelIndexById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
     @Insert({"INSERT INTO `novel_index` (`uniqueId`, `uploader`, `title`, ",
             "`copyright`, `authors`, `description`, `rating`, `tags`, `series`, ",
-            "`publisher`, `pubdate`, `coverImgUrl`, `chapters`) ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters`) ",
             "VALUES (#{uniqueId} , #{uploader} , #{title}, #{copyright}, ",
             "#{authors}, #{description}, #{rating}, #{tags}, ",
-            "#{series}, #{publisher}, #{pubdate}, #{coverImgUrl}, ",
+            "#{series}, #{publisher}, #{pubdate}, #{hot}, #{coverImgUrl}, ",
             "#{chapters})"})
     int insertNovelIndex(NovelIndex novelIndex) throws DataAccessException;
 
@@ -33,7 +33,8 @@ public interface NovelIndexDao {
             "`authors` = #{authors}, `description` = #{description}, ",
             "`rating` = #{rating}, `tags` = #{tags}, ",
             "`series` = #{series}, `publisher` = #{publisher}, ",
-            "`pubdate` = #{pubdate}, `coverImgUrl` = #{coverImgUrl}, ",
+            "`pubdate` = #{pubdate}, `hot` = #{hot}, ",
+            "`coverImgUrl` = #{coverImgUrl}, ",
             "`chapters` = #{chapters} ",
             "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
     int updateNovelIndex(NovelIndex novelIndex) throws DataAccessException;
@@ -44,7 +45,8 @@ public interface NovelIndexDao {
             "`authors` = #{authors}, `description` = #{description}, ",
             "`rating` = #{rating}, `tags` = #{tags}, ",
             "`series` = #{series}, `publisher` = #{publisher}, ",
-            "`pubdate` = #{pubdate}, `coverImgUrl` = #{coverImgUrl} ",
+            "`pubdate` = #{pubdate}, `hot` = #{hot}, ",
+            "`coverImgUrl` = #{coverImgUrl}, ",
             "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
     int updateNovelIndexExceptContent(NovelIndex novelIndex) throws DataAccessException;
 
@@ -54,10 +56,25 @@ public interface NovelIndexDao {
     @Delete("DELETE FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
     int deleteNovelIndexById(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
+    @Select({"SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
+            "`authors`, `description`, `rating`, `tags`, `series`, ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "WHERE `uniqueId` = (SELECT `chapter`.`fromNovel` FROM `chapter` ",
+            "WHERE `chapter`.`uniqueId` = (SELECT `section`.`fromChapter` FROM `section` ",
+            "WHERE `section`.`uniqueId` = #{uniqueId}))"})
+    NovelIndex getNovelIndexBySectionId(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+
+    @Select({"SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
+            "`authors`, `description`, `rating`, `tags`, `series`, ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "WHERE `uniqueId` = (SELECT `chapter`.`fromNovel` FROM `chapter` ",
+            "WHERE `chapter`.`uniqueId` = #{uniqueId})"})
+    NovelIndex getNovelIndexByChapterId(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+
     @Select({"<script>",
             "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
             "`authors`, `description`, `rating`, `tags`, `series`, ",
-            "`publisher`, `pubdate`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
             "WHERE `novel_index`.`uploader` = #{uploader} ",
             "<if test='orderBy != null'>ORDER BY ${orderBy}</if> ",
             "LIMIT ${offset},${count}",
@@ -70,10 +87,16 @@ public interface NovelIndexDao {
             "</script>"})
     int countNovelIndexByUploader(@Param("uploader") UUID uploader) throws DataAccessException;
 
+    @Update({"UPDATE `novel_index` SET `hot` = ",
+            "(SELECT `novel_index`.`hot` FROM `novel_index` ",
+            "WHERE `novel_index`.`uniqueId` = #{uniqueId}) + 1 ",
+            "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
+    int hotAddOne(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+
     @Select({"<script>",
             "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
             "`authors`, `description`, `rating`, `tags`, `series`, ",
-            "`publisher`, `pubdate`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
             "WHERE `novel_index`.`pubdate` BETWEEN #{after} AND #{before} ",
             "<if test='orderBy != null'>ORDER BY ${orderBy}</if> ",
             "LIMIT ${offset},${count}",
@@ -90,7 +113,7 @@ public interface NovelIndexDao {
     @Select({"<script>",
             "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
             "`authors`, `description`, `rating`, `tags`, `series`, ",
-            "`publisher`, `pubdate`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
             "WHERE MATCH (`title`, `authors`, `description`, `tags`, `series`, `publisher`) AGAINST (#{keywords} IN BOOLEAN MODE) ",
             "<if test='orderBy != null'>ORDER BY ${orderBy}</if> ",
             "LIMIT ${offset},${count}",

@@ -1,5 +1,7 @@
 package net.wlgzs.futurenovel.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +19,8 @@ import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 
 @EqualsAndHashCode(callSuper = false)
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@JsonIgnoreProperties({"empty", "size"})
 public class Novel extends AbstractList<NovelChapter> {
 
     final private UUID uniqueId;
@@ -29,7 +33,9 @@ public class Novel extends AbstractList<NovelChapter> {
     private final List<String> tags;
     private final String series;
     private final String publisher;
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy年MM月dd日 HH:mm:ss")
     private final Date pubdate;
+    private final long hot;
     private final String coverImgUrl;
     private final LinkedList<NovelChapter> chapters;
 
@@ -46,6 +52,7 @@ public class Novel extends AbstractList<NovelChapter> {
         this.series = novelIndex.getSeries();
         this.publisher = novelIndex.getPublisher();
         this.pubdate = novelIndex.getPubdate();
+        this.hot = novelIndex.getHot();
         this.coverImgUrl = novelIndex.getCoverImgUrl();
     }
 

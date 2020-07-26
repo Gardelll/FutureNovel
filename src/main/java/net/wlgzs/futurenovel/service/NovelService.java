@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +69,8 @@ public class NovelService implements DisposableBean {
                 final int count = 100;
                 int i = 0;
                 List<String> result;
+                tags.clear();
+                series.clear();
                 do {
                     result = novelIndexDao.getAllTags(i, count);
                     i += count;
@@ -80,7 +81,7 @@ public class NovelService implements DisposableBean {
                     result = novelIndexDao.getAllSeries(i, count);
                     i += count;
                     series.addAll(result);
-                } while (result.size() >= count);
+                } while (result.size() >= count && series.size() < 1000);
             }
         }, 1, 10, TimeUnit.MINUTES);
     }
@@ -138,6 +139,7 @@ public class NovelService implements DisposableBean {
                     series,
                     publisher,
                     pubdate,
+                    0,
                     coverImgUrl,
                     new ArrayNode(JsonNodeFactory.instance));
             var ret = novelIndexDao.insertNovelIndex(novelIndex);
@@ -169,8 +171,8 @@ public class NovelService implements DisposableBean {
         if (novelIndex.getUploader().equals(account.getUid())) account.checkPermission();
         else account.checkPermission(Account.Permission.ADMIN);
         try {
-            if (title == null) title = String.format("第 %d 章", chapterDao.countChapterByFromNovel(novelIndex.getUniqueId()) + 1);
-            var chapter = new Chapter(UUID.randomUUID(), novelIndex.getUniqueId(), title, new ArrayNode(JsonNodeFactory.instance));
+            if (title == null || title.isBlank()) title = String.format("第 %d 章", chapterDao.countChapterByFromNovel(novelIndex.getUniqueId()) + 1);
+            var chapter = new Chapter(UUID.randomUUID(), novelIndex.getUniqueId(), title.trim(), new ArrayNode(JsonNodeFactory.instance));
             var arrayNode = novelIndex.getChapters();
             arrayNode.add(chapter.getUniqueId().toString());
             var ret = chapterDao.insertChapter(chapter);
@@ -208,8 +210,8 @@ public class NovelService implements DisposableBean {
             if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            if (title == null) title = String.format("第 %d 节", sectionDao.countSectionByFromChapter(chapter.getUniqueId()) + 1);
-            var section = new Section(UUID.randomUUID(), chapter.getUniqueId(), title, text);
+            if (title == null || title.isBlank()) title = String.format("第 %d 节", sectionDao.countSectionByFromChapter(chapter.getUniqueId()) + 1);
+            var section = new Section(UUID.randomUUID(), chapter.getUniqueId(), title.trim(), text);
             var arrayNode = chapter.getSections();
             arrayNode.add(section.getUniqueId().toString());
             var ret = sectionDao.insertSection(section);
@@ -282,17 +284,17 @@ public class NovelService implements DisposableBean {
     }
 
     @Transactional
-    public void deleteChapter(@NonNull Account account, @NonNull Chapter chapter, @Nullable NovelIndex novelIndex) {
+    public void deleteChapter(@NonNull Account account, @NonNull UUID chapterId) {
         try {
-            if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
+            var novelIndex = novelIndexDao.getNovelIndexByChapterId(chapterId);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             try {
-                sectionDao.deleteSectionByFromChapter(chapter.getThisUUID());
+                sectionDao.deleteSectionByFromChapter(chapterId);
             } catch (Exception e) {
                 log.warn("section(s) from novel({}) can not delete", novelIndex.getUniqueId().toString());
             }
-            var ret = chapterDao.deleteChapter(chapter);
+            var ret = chapterDao.deleteChapterById(chapterId);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -300,15 +302,24 @@ public class NovelService implements DisposableBean {
     }
 
     @Transactional
-    public void deleteSection(@NonNull Account account, @NonNull Section section, @Nullable NovelIndex novelIndex) {
+    public void deleteSection(@NonNull Account account, @NonNull UUID sectionId) {
         try {
-            if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapterDao.getChapterById(section.getFromChapter()).getFromNovel());
+            var novelIndex = novelIndexDao.getNovelIndexBySectionId(sectionId);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            var ret = sectionDao.deleteSection(section);
+            var ret = sectionDao.deleteSectionById(sectionId);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    public boolean hotAddOne(@NonNull UUID novelIndexId) {
+        try {
+            return 1 == novelIndexDao.hotAddOne(novelIndexId);
+        } catch (DataAccessException e) {
+            log.warn("error while increment hot", e);
+            return false;
         }
     }
 

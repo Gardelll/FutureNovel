@@ -34,6 +34,7 @@ import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
+import net.wlgzs.futurenovel.bean.Novel;
 import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
@@ -544,11 +545,12 @@ public class ApiController extends AbstractAppController {
                                     HttpServletRequest request) {
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
-
+        req.authors.replaceAll(String::trim);
+        req.tags.replaceAll(String::trim);
         if (req.series == null || req.series.isBlank()) req.series = req.title;
         return novelService.createNovelIndex(currentAccount,
                 req.copyright,
-                req.title,
+                req.title.trim(),
                 req.authors,
                 req.description,
                 (byte) 0,
@@ -644,8 +646,8 @@ public class ApiController extends AbstractAppController {
      */
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}")
     @ResponseBody
-    public NovelIndex getNovelInfo(@PathVariable("uniqueId") String uniqueId) {
-        return novelService.getNovelIndex(UUID.fromString(uniqueId));
+    public Novel getNovelInfo(@PathVariable("uniqueId") String uniqueId) {
+        return buildNovel(UUID.fromString(uniqueId));
     }
 
     /**
@@ -655,6 +657,7 @@ public class ApiController extends AbstractAppController {
      */
     @GetMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}")
     @ResponseBody
+    @Deprecated
     public Chapter getChapter(@PathVariable String uniqueId) {
         return novelService.getChapter(UUID.fromString(uniqueId));
     }
@@ -677,6 +680,7 @@ public class ApiController extends AbstractAppController {
      */
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/chapters")
     @ResponseBody
+    @Deprecated
     public List<Chapter> getChapters(@PathVariable("uniqueId") String uniqueId) {
         return novelService.findChapterByFromNovel(UUID.fromString(uniqueId), 0, Integer.MAX_VALUE, null);
     }
@@ -715,9 +719,32 @@ public class ApiController extends AbstractAppController {
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
-        Chapter chapter = novelService.getChapter(UUID.fromString(uniqueId));
-        NovelIndex novelIndex = novelService.getNovelIndex(chapter.getParentUUID());
-        novelService.deleteChapter(currentAccount, chapter, novelIndex);
+        novelService.deleteChapter(currentAccount, UUID.fromString(uniqueId));
+    }
+
+    @DeleteMapping("/novel/section/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteSection(@PathVariable String uniqueId,
+                              @CookieValue(name = "uid", defaultValue = "") String uid,
+                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                              HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        novelService.deleteSection(currentAccount, UUID.fromString(uniqueId));
+    }
+
+    @GetMapping("/novel/tags/all")
+    @ResponseBody
+    public List<String> novelGetAllTags() {
+        return List.of(novelService.getTags().toArray(new String[0]));
+    }
+
+    @GetMapping("/novel/series/all")
+    @ResponseBody
+    public List<String> novelGetAllSeries() {
+        return List.of(novelService.getSeries().toArray(new String[0]));
     }
 
 //    // TODO 统计网站数据

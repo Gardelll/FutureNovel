@@ -101,11 +101,12 @@
                 type:'get',
                 datatype:"json",
                 data:JSON.stringify({
-                    per_page: '5'
+                    per_page: 5
                 }),
                 contentType:'application/x-www-form-urlencoded; charset=utf-8',
                 success: function(data){
                     var all_page=data.pages;
+                    console.log(data)
                 },
                 error: function(jqXHR) {
                     //let data = JSON.parse(jqXHR.responseText);
@@ -119,12 +120,13 @@
                 type:'get',
                 datatype:"json",
                 data:JSON.stringify({
-                    per_page: '5',
-                    page: '1'
+                    per_page: 5,
+                    page: 1
                 }),
                 contentType:'application/x-www-form-urlencoded;',
                 success: function(data){
                     alert(data.Account.uid)
+                    console.log(data)
                 },
                 error: function() {
                     //const data = JSON.parse(jqXHR.responseText);

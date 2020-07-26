@@ -100,9 +100,9 @@
     $(document).ready(function(){
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/admin/accounts/pages" ,
-                type:'get',
+                type:'GET',
                 data:JSON.stringify({
-                    per_page: onepage
+                    per_page: Number(onepage)
                 }),
                 success: function(data){
                     var all_page=data.pages;
@@ -117,10 +117,10 @@
     })
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/admin/accounts/get" ,
-                type:'get',
+                type:'GET',
                 data:JSON.stringify({
-                    per_page: onepage,
-                    page: curpage
+                    per_page: Number(onepage),
+                    page: Number(curpage)
                 }),
                 success: function(data){
                     alert(data.Account.uid)

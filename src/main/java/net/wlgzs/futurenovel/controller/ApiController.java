@@ -230,7 +230,8 @@ public class ApiController extends AbstractAppController {
      */
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@CookieValue(name = "uid", defaultValue = "") String uid,
+    public void logout(@RequestParam(defaultValue = "false") boolean all,
+                       @CookieValue(name = "uid", defaultValue = "") String uid,
                        @CookieValue(name = "token", defaultValue = "") String tokenStr,
                        @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                        HttpServletRequest request,
@@ -244,7 +245,8 @@ public class ApiController extends AbstractAppController {
         tokenCookie.setMaxAge(0);
         tokenCookie.setPath(request.getContextPath());
         response.addCookie(tokenCookie);
-        tokenStore.removeToken(token);
+        if (all) tokenStore.removeAll(token.getAccountUid());
+        else tokenStore.removeToken(token);
     }
 
     /**
@@ -651,18 +653,6 @@ public class ApiController extends AbstractAppController {
     }
 
     /**
-     * 获取小说的某一章节信息
-     * @param uniqueId 章节的 ID
-     * @return json 对象
-     */
-    @GetMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}")
-    @ResponseBody
-    @Deprecated
-    public Chapter getChapter(@PathVariable String uniqueId) {
-        return novelService.getChapter(UUID.fromString(uniqueId));
-    }
-
-    /**
      * 获取小说的某一小节，包含文本
      * @param uniqueId 小节的 ID
      * @return json 对象
@@ -671,18 +661,6 @@ public class ApiController extends AbstractAppController {
     @ResponseBody
     public Section getSection(@PathVariable String uniqueId) {
         return novelService.getSection(UUID.fromString(uniqueId));
-    }
-
-    /**
-     * 根据小说目录的 ID 获取所有章节的信息
-     * @param uniqueId 小说目录的 ID
-     * @return json 数组
-     */
-    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/chapters")
-    @ResponseBody
-    @Deprecated
-    public List<Chapter> getChapters(@PathVariable("uniqueId") String uniqueId) {
-        return novelService.findChapterByFromNovel(UUID.fromString(uniqueId), 0, Integer.MAX_VALUE, null);
     }
 
     /**

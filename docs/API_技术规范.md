@@ -186,6 +186,11 @@ GET $URL/api/logout
 ```
 
 >权限：所有登陆用户
+>请求格式：`application/x-www-form-urlencoded`
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|all|boolean|也包括其他设备，默认 false|是|
 
 若注销成功，服务端返回状态码 204 - No Content
 

@@ -249,7 +249,7 @@ public class NovelService implements DisposableBean {
 
     @NonNull
     public List<NovelChapter.SectionInfo> getSectionInfoByFromChapterList(@NonNull List<UUID> fromChapterList) {
-        if (fromChapterList.isEmpty()) throw new IllegalArgumentException("list param is empty");
+        if (fromChapterList.isEmpty()) return List.of();
         try {
             var list = sectionDao.getSectionInfoByFromChapterList(fromChapterList);
             return list == null ? List.of() : list;

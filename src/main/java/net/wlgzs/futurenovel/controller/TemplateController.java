@@ -2,12 +2,9 @@ package net.wlgzs.futurenovel.controller;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,21 +12,17 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
-import net.wlgzs.futurenovel.bean.Novel;
 import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.bean.RegisterRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
-import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
-import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -198,7 +191,7 @@ public class TemplateController extends AbstractAppController {
                     session.setAttribute("redirectTo", req.redirectTo);
                     m.addAttribute("redirectTo", req.redirectTo);
                 }
-                return "redirect:login";
+                return "redirect:/login";
             } else throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
         } catch (FutureNovelException e) {
             m.addAttribute("errorMessage", e.getLocalizedMessage());
@@ -294,7 +287,8 @@ public class TemplateController extends AbstractAppController {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
-            return "redirect:login";
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
         }
         var novel = buildNovel(UUID.fromString(uniqueId));
 
@@ -312,7 +306,8 @@ public class TemplateController extends AbstractAppController {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
-            return "redirect:login";
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
         }
         return "WorkInformation";
     }
@@ -327,7 +322,8 @@ public class TemplateController extends AbstractAppController {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
-            return "redirect:login";
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
         }
         currentAccount.checkPermission(Account.Permission.ADMIN);
         return "index";
@@ -343,7 +339,8 @@ public class TemplateController extends AbstractAppController {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
-            return "redirect:login";
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
         }
         currentAccount.checkPermission(Account.Permission.ADMIN);
         return "backstage-user";

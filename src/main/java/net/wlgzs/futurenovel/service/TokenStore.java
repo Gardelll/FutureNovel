@@ -56,9 +56,9 @@ public class TokenStore implements DisposableBean {
         tokenMap.remove(accessToken);
     }
 
-    public void removeAll(Account account) {
+    public void removeAll(UUID accountId) {
         tokenMap.forEach((k, v) -> {
-            if (v.getAccountUid().equals(account.getUid()))
+            if (v.getAccountUid().equals(accountId))
                 tokenMap.remove(k, v);
         });
     }

@@ -101,9 +101,9 @@
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/admin/accounts/pages" ,
                 type:'GET',
-                data:JSON.stringify({
+                data:{
                     per_page: Number(onepage)
-                }),
+                },
                 success: function(data){
                     var all_page=data.pages;
                     console.log(data)
@@ -118,10 +118,10 @@
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/admin/accounts/get" ,
                 type:'GET',
-                data:JSON.stringify({
+                data:{
                     per_page: Number(onepage),
                     page: Number(curpage)
-                }),
+                },
                 success: function(data){
                     alert(data.Account.uid)
                     console.log(data)

@@ -283,8 +283,9 @@ public class TemplateController extends AbstractAppController {
         return "rank";
     }
 
-    @GetMapping("/novel/write")
-    public String novelWrite(@CookieValue(name = "uid", defaultValue = "") String uid,
+    @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/write")
+    public String novelWrite(@PathVariable("uniqueId") String uniqueId,
+                             @CookieValue(name = "uid", defaultValue = "") String uid,
                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                              HttpServletRequest request,
@@ -295,6 +296,9 @@ public class TemplateController extends AbstractAppController {
             model.addAttribute("errorMessage", "请先登录");
             return "redirect:login";
         }
+        var novel = buildNovel(UUID.fromString(uniqueId));
+
+        model.addAttribute("novel", novel);
         return "writer";
     }
 

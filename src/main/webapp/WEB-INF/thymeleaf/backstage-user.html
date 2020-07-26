@@ -95,15 +95,15 @@
 </script>
 <!-- 作为公共部分分离/ -->
 <script th:inline="javascript" async>
+    var curpage=1,
+        onepage=5;
     $(document).ready(function(){
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/admin/accounts/pages" ,
                 type:'get',
-                
                 data:JSON.stringify({
-                    per_page: '5'
+                    per_page: onepage
                 }),
-                contentType:'application/x-www-form-urlencoded; charset=utf-8',
                 success: function(data){
                     var all_page=data.pages;
                     console.log(data)
@@ -118,12 +118,10 @@
         $.ajax({
                 url:/*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/admin/accounts/get" ,
                 type:'get',
-                
                 data:JSON.stringify({
-                    per_page: '5',
-                    page: '1'
+                    per_page: onepage,
+                    page: curpage
                 }),
-                contentType:'application/x-www-form-urlencoded;',
                 success: function(data){
                     alert(data.Account.uid)
                     console.log(data)

@@ -140,7 +140,7 @@
             })
     })
         $.ajax({
-                url:/*[[${#request.getContextPath()} + /api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),

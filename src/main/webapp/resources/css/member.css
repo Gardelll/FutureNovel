@@ -1,0 +1,166 @@
+/*侧边导航栏*/
+.personal-side {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    width: 15%;
+    margin-bottom: 0;
+    list-style: none;
+    float: left;
+    background-color: #fff;
+    padding: 20px 0;
+}
+.side-main .side-parent{
+    position: relative;
+    padding: 12px 25px;
+    cursor: pointer;
+}
+.side-ul-a{
+    position: relative;
+    padding: 12px 25px;
+    font-size: 14px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+}
+.side-main li a{
+    font-size: 14px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.side-main i {
+    width: 21px;
+    margin-right: 16px;
+    text-align: center;
+    vertical-align: middle;
+}
+.side-main li span {
+    vertical-align: middle;
+}
+.side-main li:hover {
+    color: #115f96;
+    background: #fff;
+}
+.side-main .side-group {
+    display: none;
+    padding: 10px 0;
+}
+.side-group>li{
+    position: relative;
+    display: block;
+}
+.side-main .side-group li a {
+    padding: 6px 15px 6px 42px;
+    overflow: hidden;
+}
+.side-groupli>a {
+    position: relative;
+    display: block;
+}
+.side-group li {
+    font-size: 14px;
+    line-height: 36px;
+    position: relative;
+    cursor: pointer;
+}
+.side-group li .side-list-a {
+    display: block;
+    overflow: hidden;
+    padding: 0 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-radius: 4px;
+}
+/*中间内容*/
+.home-content {
+    color: #3e3d43;
+    display: table-cell;
+    width: 778px;
+    padding: 16px 0 0 90px;
+    /*color: #7f7f7f;*/
+}
+.home-user-wrap {
+    position: relative;
+    margin: 20px 0 0 0;
+    padding: 55px 0 0 0;
+    background: #fff url(../../resources/img/user-bg.png) no-repeat;
+    border: 1px solid #e0deda;
+    border-radius: 4px;
+}
+
+.home-user-avatar {
+    position: relative;
+    float: left;
+    width: 140px;
+    text-align: center;
+}
+.user-avatar-a {
+    display: inline-block;
+    border-radius: 50%;
+}
+.home-user {
+    margin: 0 0 0 140px;
+}
+.home-user-wrap .blue-btn-little {
+    position: absolute;
+    right: 20px;
+    margin: 5px 0 0 0;
+}
+.button-icon {
+    font-size: 16px;
+    line-height: 1;
+    padding: 10px;
+}
+
+.button-a {
+    display: inline-block;
+    margin: 0 0 0 16px;
+    transition: background .15s,border-color .15s;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.5);
+    border-radius: 50%;
+    background: rgba(0,0,0,.2);
+}
+.button-a:hover{
+    background-color: #2470bf;
+    color: #fff;
+}
+.home-user h3 {
+    padding: 13px 20px 20px 0;
+}
+.home-user h3 a{
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+.home-user-data {
+    line-height: 56px;
+    margin: 10px;
+}
+.home-user-b {
+    font-family: arial;
+    font-size: 20px;
+    margin: 0 0 0 8px;
+}
+/*我的书架*/
+.shelf-main {
+    position: relative;
+    margin: 20px 0;
+    padding: 20px;
+    color: #3e3d43;
+    background: #fff;
+    border: 1px solid #e0deda;
+    border-radius: 4px;
+}
+.shelf-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    color: #3e3d43;
+}
+.shelf-list {
+    line-height: 0;
+    margin: 20px 0 0 0;
+    text-align: justify;
+    position: relative;
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>未来小说网--个人信息设置</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
+    <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css"
+          th:href="@{/resources/css/fix-nav.css}">
+    <link rel="stylesheet" href="../../resources/css/member.css" type="text/css"
+          th:href="@{/resources/css/member.css}">
+    <link rel="stylesheet" href="../../resources/css/setting.css" type="text/css"
+          th:href="@{/resources/css/setting.css}">
+    <script src="../../resources/js/down.js" type="text/javascript" th:src="@{/resources/js/down.js}"></script>
+</head>
+<body>
+<div class="wrap">
+    <!-- 导航条 -->
+    <div class="fixed-nav">
+        <div class="cf" style="width: 1200px;margin: 0 auto;">
+            <h1 class="top-logo">未来小说网</h1>
+            <div class="nav-list site-nav fl">
+                <ul>
+                    <li>
+                        <a href="###">玄幻</a>
+                    </li>
+                    <li>
+                        <a href="###">都市</a>
+                    </li>
+                    <li>
+                        <a href="###">仙侠</a>
+                    </li>
+                    <li>
+                        <a href="###">科幻</a>
+                    </li>
+                    <li>
+                        <a href="###">排行</a>
+                    </li>
+                    <li class="more">
+                        <a href="###">更多<span></span></a>
+                        <div class="dropdown">
+                            <a href="###" target="_blank">全部作品</a>
+                            <a href="###" target="_blank">轻小说</a>
+                            <a href="###" target="_blank">奇幻</a>
+                            <a href="###" target="_blank">武侠</a>
+                            <a href="###" target="_blank">悬疑</a>
+                            <a href="###" target="_blank">军事</a>
+                            <a href="###" target="_blank">现实</a>
+                            <a href="###" target="_blank">体育</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-list min-user fr">
+                <ul>
+                    <li id="min-search">
+                        <form id="formUrl" method="get" target="_blank" action="">
+                            <label id="fixed-search" for="topsearchSubmit">
+                                <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
+                            </label>
+                            <input id="fixed-input" class="fixed-input hide" type="text" name="kw">
+                            <input class="submit-input" type="submit" id="topsearchSubmit">
+                        </form>
+                    <li class="line"></li>
+                    </li>
+                    <li class="sign-out">
+                        <a id="fixed-login" href="###">登录</a>
+                        <a class="reg" href="###" target="_blank">注册</a>
+                    </li>
+                    <li class="line"></li>
+                    <li class="book-shelf" id="top-book-shelf">
+                        <a href="member.html" target="_blank">
+                            <i class="fa fa-book" style="font-size:16px">我的书架</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--用户信息设置-->
+    <div class="box-center" style="margin-top: 100px">
+        <!-- 侧边导航栏-->
+        <div class="personal-side">
+            <ul class="side-main">
+                <a th:href="@{/FutureNovel.html}" href="FutureNovel.html" class="side-ul-a">
+                    <i class="fa fa-home" style="font-size:16px"></i>首页
+                </a>
+                <li class="side-parent" id="side-parent">
+                    <a>
+                        <i class="fa fa-edit" style="font-size:16px"></i>
+                        <span style="vertical-align: inherit">修改</span>
+                    </a>
+                    <ul class="side-group" id="side-group">
+                        <li>
+                            <a class="side-list-a tabTarget1">修改信息</a>
+                        </li>
+                        <li>
+                            <a class="side-list-a tabTarget2">修改头像</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="side-parent" id="side-parent2">
+                    <a>
+                        <i class="fa fa-history" style="font-size:16px"></i>
+                        <span style="vertical-align:inherit">历史</span>
+                    </a>
+                    <ul class="side-group" id="side-group2">
+                        <li>
+                            <a href="" class="side-list-a">浏览历史</a>
+                        </li>
+                        <li>
+                            <a href="" class="side-list-a">点赞历史</a>
+                        </li>
+                        <li>
+                            <a href="" class="side-list-a">评论历史</a>
+                        </li>
+                    </ul>
+                </li>
+                <a href="member.html" class="side-ul-a">
+                    <i class="fa fa-book" style="font-size:16px"></i>我的书架
+                </a>
+            </ul>
+        </div>
+        <!-- 中间内容-->
+        <div class="setting-content">
+            <div class="setting-record">
+                <div class="tabs" id="tabView">
+                    <a class="tabTarget1 checked">基本设置</a>
+                    <a class="tabTarget2">头像设置</a>
+                </div>
+                <div class="tab-contents" id="tabContents">
+                    <div id="tabTarget1" class="tab-content checked">
+                        <div class="tab-form">
+                            <form id="setBasicForm" action="" method="post">
+                                <input type="hidden" name="csrfToken" value="" class="elCsrf">
+                                <dl>
+                                    <dt>用户名</dt>
+                                    <dd>
+                                        书友
+                                        <span href="###" id="btnEditName" class="blue ml8 cur" role="button"
+                                              style="font-size: 12px">修改用户名</span>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>性别</dt>
+                                    <dd>
+                                        <input type="radio" id="radioSex1" name="gender">
+                                        <label for="radioSex1"></label>
+                                        <label for="radioSex1" style="margin-right: 20px">男</label>
+                                        <input type="radio" id="radioSex2" name="gender">
+                                        <label for="radioSex2"></label>
+                                        <label for="radioSex2">女</label>
+                                    </dd>
+                                </dl>
+                                <dl class="form-higher">
+                                    <dt>生日</dt>
+                                    <dd>
+                                        <span class="date-input">
+                                            <input id="iptBorth" type="date" value="1970-01-01" name="birthday">
+                                            <label for="iptBorth" class="data-arrow"></label>
+                                        </span>
+                                    </dd>
+                                </dl>
+                                <dl class="form-higher">
+                                    <dt>简介</dt>
+                                    <dd>
+                                        <textarea id="forIntroArea" name="introduction"
+                                                  placeholder="可以简单的描述一下自己"></textarea>
+                                        <label for="forIntroArea" class="textarea-count">
+                                            <span>0</span>/<span>100</span>
+                                        </label>
+                                    </dd>
+                                </dl>
+                                <dl class="form-higher">
+                                    <dt></dt>
+                                    <dd>
+                                        <div>
+                                            <input type="submit" id="basicMsgSubmit" class="clip">
+                                            <label class="button" for="basicMsgSubmit">保存</label>
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="tabTarget2" class="tab-content">
+                        <form id="setAvatarForm" method="post" action="##" novalidate>
+                            <input type="hidden" name="csrfToken" value="" class="elCsrf">
+                            <input type="radio" id="avatarUpload" class="avatar-upload" name="avatarType" value="0">
+                            <input type="radio" id="avatarSystem" class="avatar-system" name="avatarType" value="1">
+                            <input type="hidden" id="elUploadUrl" name="url" value="">
+                            <div id="avatarChoose" class="avatar-choose">
+                                <img class="avatar-show" src="../../resources/img/avatar.png" alt="书友的头像">
+                                <div class="avatar-text">
+                                    <p>本地上传: 选择本地图片编辑后上传 (上传头像将会在2个工作日内进行审核，通过后需重新登录显示新头像)。</p>
+                                    <p class="gray">支持jpg、gif、png格式图片，上传文件大小不超过5MB，图片尺寸需大于200*200。</p>
+                                </div>
+                                <div>
+                                    <label class="button" id="elLabelforup" role="button">本地上传</label>
+                                    <label for="avatarSystem" class="button" role="button">选择系统头像</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+    $(".tabTarget1").click(function () {
+        $(".tabTarget1").addClass("checked")
+        $("#tabTarget2").removeClass("checked");
+        $("#tabTarget1").addClass("checked");
+        $(".tabTarget2").removeClass("checked");
+    });
+
+    $(".tabTarget2").click(function () {
+        $(".tabTarget1").removeClass("checked");
+        $(".tabTarget2").addClass("checked");
+        $("#tabTarget1").removeClass("checked");
+        $("#tabTarget2").addClass("checked");
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+.setting-content {
+    display: table-cell;
+    width: 2000px;
+    padding: 16px 0 0 90px;
+}
+
+.setting-record {
+    border-radius: 4px;
+}
+
+.tabs {
+    height: 46px;
+    border: 1px solid #e0deda;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    background: #fcfcfa;
+}
+
+.tabs a:first-child {
+    margin-left: -1px;
+}
+
+.tabs .checked, .tabs .checked a {
+    font-weight: 600;
+    margin-top: -5px;
+    padding: 5px 19px 1px;
+    color: #3e3d43;
+    border: 1px solid #e0deda;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    background: #fff;
+}
+
+.tabs > a {
+    display: block;
+    transition: color .15s;
+    color: #7f7f7f;
+}
+
+.tabs a {
+    font-size: 14px;
+    line-height: 45px;
+    float: left;
+    padding: 0 19px;
+    border: 1px solid transparent;
+}
+
+.tab-contents {
+    border: 1px solid #e0deda;
+    border-radius: 0 0 4px 4px;
+    background: #fff;
+}
+.tab-content.checked {
+    display: block;
+}
+/*基本设置*/
+
+.tab-content {
+    display: none;
+}
+
+.setting-record .tab-form {
+    padding: 25px 40px 40px;
+    color: #3e3d43;
+}
+
+.tab-form dl {
+    margin: 0;
+    padding: 15px 0;
+}
+
+.setting-record .tab-form dt {
+    min-width: 56px;
+}
+
+.tab-form dt {
+    display: inline-block;
+    min-width: 94px;
+    text-align: right;
+    vertical-align: top;
+    color: #a6a6a6;
+}
+
+.tab-form dd {
+    display: inline-block;
+    margin: 0 0 0 12px;
+    vertical-align: top;
+}
+
+
+dl.form-higher {
+    padding: 10px 0;
+}
+
+dl.form-higher dt {
+    line-height: 36px;
+}
+
+span.date-input {
+    display: inline-block;
+}
+
+span.date-input > input {
+    width: 135px;
+}
+
+.date-input > input{
+    font-family: inherit;
+    overflow: hidden;
+    padding-right: 33px;
+    cursor: pointer;
+}
+
+.date-input > input, input.date-input {
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+    padding: 7px 8px;
+    transition: border-color .15s, background-color .15s;
+    color: #3e3d43;
+    border: 1px solid #e0deda;
+    outline: 0;
+    background-color: #fff;
+}
+.date-arrow {
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-size: 20px 20px;
+}
+textarea{
+    margin: 0px;
+    min-width: 324px;
+    min-height: 158px;
+    padding: 10px;
+}
+.clip {
+     position: absolute;
+     clip: rect(0 0 0 0);
+ }
+.setting-record .button {
+    min-width: 70px;
+}
+.button {
+    font-size: 14px;
+    line-height: 20px;
+    display: inline-block;
+    overflow: visible;
+    min-width: 50px;
+    padding: 7px 15px;
+    cursor: pointer;
+    transition: background-color .15s,opacity .15s;
+    text-align: center;
+    color: #fff;
+    border: 1px solid transparent;
+    background-color: #207ab7;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+/*头像设置*/
+.avatar-choose{
+    padding: 25px 40px 40px;
+}
+.avatar-show {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+}
+.avatar-text {
+    line-height: 26px;
+    margin: 25px 0;
+}
+.gray {
+    color: #7f7f7f;
+}
+input[type=radio] {
+    position: absolute;
+    clip: rect(0,0,0,0);
+}

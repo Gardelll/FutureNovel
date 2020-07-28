@@ -15,11 +15,6 @@ window.onload = function() {
     displaywindowsSize();
 
 
-    // var first = document.getElementById("first");
-    // var classify_list = document.getElementById("classify-list");
 
-    // first.onclick = function() {
-    //     classify_list.style.display = classify_list.style.display == "block" ? "none" : "block";
-    // }
 
 };

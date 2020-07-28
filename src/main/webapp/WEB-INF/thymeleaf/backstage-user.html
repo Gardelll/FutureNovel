@@ -123,7 +123,7 @@
         onepage=5;
     $(document).ready(function(){
         $.ajax({
-                url:/*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/api/admin/accounts/pages" ,
+                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/api/admin/accounts/pages" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage)
@@ -140,7 +140,7 @@
             })
     })
         $.ajax({
-                url:/*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                url:/*[[${#request.getContextPath()} + /api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),

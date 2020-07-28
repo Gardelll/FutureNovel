@@ -149,3 +149,10 @@
 .fixed-nav .min-user li.book-shelf a:hover {
     background: #115f96;
 }
+
+.avatar a,
+.avatar a img {
+    margin-top: 2.5px;
+    width: 36px;
+    border-radius: 100%;
+}

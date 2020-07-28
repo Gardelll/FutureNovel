@@ -71,6 +71,11 @@
                                 <i class="fa fa-book" style="font-size:16px">我的书架</i>
                             </a>
                         </li>
+                        <li class="avatar">
+                            <a href="../../WEB-INF/thymeleaf/member.html" target="_blank">
+                                <img src="../../resources/img/avatar.png">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -96,22 +101,21 @@
                         </span>
                     </h1>
                     <p class="tag">
-                        <span class="blue"  th:each="tag : *{tags}" th:text="${tag}">连载</span>
-<!--                        <span class="blue">签约</span>-->
-<!--                        <span class="blue">VIP</span>-->
-<!--                        <a href="###" class="red" target="_blank">都市</a>-->
-<!--                        <a href="###" class="red" target="_blank">都市异能</a>-->
+                        <span class="blue" th:each="tag : *{tags}" th:text="${tag}">连载</span>
+                        <!--                        <span class="blue">签约</span>-->
+                        <!--                        <span class="blue">VIP</span>-->
+                        <!--                        <a href="###" class="red" target="_blank">都市</a>-->
+                        <!--                        <a href="###" class="red" target="_blank">都市异能</a>-->
                     </p>
                     <p class="intro" th:text="*{title}">重生过去、畅想未来、梦幻现实，再塑传奇人生！</p>
                     <p>
-<!--                        <em>325.64</em><span>万字</span><i>|</i>-->
-<!--                        <em>478.39</em><span>万总推荐</span><i>|</i>-->
+                        <!--                        <em>325.64</em><span>万字</span><i>|</i>-->
+                        <!--                        <em>478.39</em><span>万总推荐</span><i>|</i>-->
                         <span>评分</span><em th:text="*{rating} == 0 ? '暂无' : *{rating}">22.56</em>
                     </p>
                     <p>
-                        <a class="blue-btn" href="###" id="blueBtn">免费试读</a>
-                        <a class="blue-btn add-book" href="###" id="addBookBtn">加入书架</a>
-                        <a class="blue-btn" href="###" id="downloadAppBtn">手机App阅读</a>
+                        <a class="blue-btn" href="../../WEB-INF/thymeleaf/read-book.html" id="blueBtn">免费试读</a>
+                        <a class="blue-btn add-book" href="../../WEB-INF/thymeleaf/setting.html" id="addBookBtn">加入书架</a>
                     </p>
                 </div>
                 <div class="take-wrap">

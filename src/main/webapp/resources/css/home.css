@@ -542,12 +542,11 @@
 .hot-rec-wrap {
     overflow: hidden;
     height: 498px;
-    border-radius: 6px;
 }
 
 .inner-wrap {
     padding: 20px;
-    background: #fff;
+    /* background: #fff; */
 }
 
 .left-wrap h3 {
@@ -556,7 +555,7 @@
 }
 
 .hot-rec-wrap h3 {
-    font: 700 20px;
+    font-size: 20px;
     padding-bottom: 12px;
     border-bottom: 1px solid #1a1a1a;
 }
@@ -747,7 +746,8 @@
     padding: 20px;
 }
 
-h3.wrap-title {
+
+/* h3.wrap-title {
     font-size: 18px;
     font-weight: 400;
     line-height: 25px;
@@ -756,13 +756,14 @@ h3.wrap-title {
     padding-bottom: 4px;
     border-bottom: 1px solid #666;
     color: #1a1a1a;
-}
+} */
 
-.hot-work h3.wrap-title {
-    font-size: 22px;
+.hot-work h3 {
+    font-size: 20px;
     line-height: 30px;
     overflow: hidden;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
 }
 
 .hot-work .hot-work-info {
@@ -832,10 +833,10 @@ h3.wrap-title {
 }
 
 .info-text h3 {
-    font: 700 16px;
     overflow: hidden;
-    height: 24px;
-    margin-bottom: 5px;
+    font-size: 20px;
+    padding-bottom: 12px;
+    border-bottom: none;
 }
 
 .info-text .work-author {
@@ -887,10 +888,11 @@ h3.wrap-title {
     margin-right: 16px;
 }
 
-.hot-classify-wrap h3.wrap-title {
-    position: relative;
-    overflow: visible;
+.hot-classify-wrap h3 {
     margin-bottom: 5px;
+    font-size: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
 }
 
 .hot-classify-wrap .hot-book-list dd {
@@ -943,11 +945,11 @@ h3.wrap-title {
     padding: 20px 0 20px 20px;
 }
 
-.left-wrap-2 .wrap-title {
-    font-size: 22px;
-    line-height: 27px;
+.left-wrap-2 h3 {
     margin-top: -2px;
-    padding-bottom: 6px;
+    font-size: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
 }
 
 .left-wrap-2 .left-info {
@@ -959,6 +961,10 @@ h3.wrap-title {
 
 .left-wrap-2 .left-info .slide-box {
     padding: 24px 0;
+}
+
+.left-wrap-2 .left-info .info-text h3 {
+    border-bottom: none;
 }
 
 .center-book-list {
@@ -1060,11 +1066,11 @@ h3.wrap-title {
 }
 
 .center-book-list ul li .book-info h3 {
-    font-size: 16px;
     overflow: hidden;
-    height: 21px;
     margin-top: -3px;
-    margin-bottom: 8px;
+    font-size: 16px;
+    padding-bottom: 12px;
+    border-bottom: none;
 }
 
 .center-book-list ul li .book-info h3 a {
@@ -1132,6 +1138,12 @@ h3.wrap-title {
     padding: 20px 0;
 }
 
+.score-list h3 {
+    font-size: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
+}
+
 .score-list li.unfold {
     overflow: visible;
     height: 114px;
@@ -1161,6 +1173,8 @@ h3.wrap-title {
     text-align: center;
     color: #fff;
     background: #bf2c24;
+    padding-bottom: 2px;
+    border-bottom: none;
 }
 
 .book-wrap .book-info h4 {
@@ -1269,20 +1283,22 @@ h3.wrap-title {
     color: #a6a6a6;
 }
 
-.update-wrap .wrap-title {
-    font-size: 22px;
+.update-wrap h3 {
+    font-size: 20px;
     position: relative;
     z-index: 1;
     overflow: hidden;
     width: 216px;
     height: 24px;
     white-space: nowrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
 }
 
 .update-wrap .update-rec-list {
     overflow: hidden;
     width: 216px;
-    height: 632px;
+    height: 585px;
     background: #dddddd38;
 }
 
@@ -1397,7 +1413,7 @@ h3.wrap-title {
 
 .update-wrap .update-list-wrap .update-more {
     height: 24px;
-    padding-bottom: 4px;
+    padding-bottom: 12px;
 }
 
 .update-wrap .update-list-wrap .update-more {

@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>写小说</title>
-		<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
-		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
-		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
-		<script>
-			tinymce.init({ 
-				selector:'textarea.content',
-			    height:"500", //高度
-			    width:"100%", //宽度
-			    toolbar_items_size: 'small', //控件大小
-			    menubar:true, //是否显示菜单栏
-			    plugins: ["link code"], //插件区，激活控件
-				language:"zh_CN",//名称前后显示，影响控件显示位置
-			});
-		</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>未来小说网--写小说</title>
+    <script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
+    <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
+    <script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
+    <script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea.content',
+            height: "500", //高度
+            width: "100%", //宽度
+            toolbar_items_size: 'small', //控件大小
+            menubar: true, //是否显示菜单栏
+            plugins: ["link code"], //插件区，激活控件
+            language: "zh_CN", //名称前后显示，影响控件显示位置
+        });
+    </script>
 
 
-		<!--这里设置 class="content" 套用TinyMCE编辑器-->
-	</head>
-	<body style="background-color: rgb(245,245,245);">
-		<div class="writer-wrep" style="height: 500px;">
-			<div class="writer-tabs">
-				<div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
-					<span style="color: #7a7a7a;">作者名字</span>
-				</div>
-				<ul class="writer-list"style="overflow: auto;">
-				</ul>
-			</div>
-			<div class="writer-body">
-				<form action="" method="">
-					<p><input type="text" name="bookName"  placeholder="输入书名" id="book-name" class="writer-inputs"/></p>
-					<p><input type="text" name="titleName" placeholder="输入章节名称" id="title-name" class="writer-inputs"/></p>
+    <!--这里设置 class="content" 套用TinyMCE编辑器-->
+</head>
 
-					<p><textarea name="content" class="content"></textarea></p>
-					<!--先暂时写成button类型，等前后端交互再改成submit类型-->
-					<p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release"/></p>
-				</form>
-			</div>
-		</div>
-	</body>
+<body style="background-color: #f5f5f5;">
+    <div class="writer-wrep" style="height: 500px;">
+        <div class="writer-tabs">
+            <div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
+                <span style="color: #7a7a7a;">作者名字</span>
+            </div>
+            <ul class="writer-list" style="overflow: auto;">
+            </ul>
+        </div>
+        <div class="writer-body">
+            <form action="" method="">
+                <p><input type="text" name="bookName" placeholder="输入书名" id="book-name" class="writer-inputs" /></p>
+                <p><input type="text" name="titleName" placeholder="输入章节名称" id="title-name" class="writer-inputs" /></p>
+
+                <p><textarea name="content" class="content"></textarea></p>
+                <!--先暂时写成button类型，等前后端交互再改成submit类型-->
+                <p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release" class="blue-btn" /></p>
+            </form>
+        </div>
+    </div>
+</body>
+
 </html>

@@ -94,7 +94,7 @@ p {
     width: 1200px;
     margin-right: auto;
     margin-left: auto;
-    /*background-color: #fff;*/
+    background-color: #fff;
 }
 
 .cf {
@@ -126,21 +126,27 @@ p {
 .mb20 {
     margin-bottom: 20px;
 }
+
 .mr12 {
     margin-right: 12px;
 }
+
 .mr5 {
     margin-right: 5px;
 }
+
 .ml5 {
     margin-left: 5px;
 }
-ml8{
+
+ml8 {
     margin-left: 8px;
 }
-.cur{
+
+.cur {
     cursor: pointer;
 }
+
 .blue-btn {
     display: inline-block;
     margin: 0 5px;

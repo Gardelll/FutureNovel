@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
     <script src="../../resources/js/nav.js" type="text/javascript" th:src="@{/resources/js/navs.js}"></script>
     <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
+    <!-- <script src="../../resources/js/animation.js" type="text/javascript" th:src="@{/resources/js/animation.js}"></script> -->
+    <!-- <script src="../../resources/js/animation-2.js" type="text/javascript" th:src="@{/resources/js/animation-2.js}"></script> -->
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
@@ -19,7 +21,7 @@
         <div class="logo-wrap box-center">
             <div class="box-center cf" style="margin: 0 auto;" id="box-center">
                 <div class="book-shelf fr">
-                    <a href="######" target="_blank" id="numero2">
+                    <a href="../../WEB-INF/thymeleaf/member.html" target="_blank" id="numero2">
                         <i class="fa fa-book" style="font-size:16px">我的书架</i>
                     </a>
                 </div>
@@ -48,12 +50,12 @@
                         <a href="##">作品分类</a>
                         <i class="fa fa-angle-down" style="font-size:24px;color: #ffffff;margin-left: 75px;"></i>
                     </li>
-                    <li class="navs" style="margin-left: 50px;width: 120px;"><a href="##">全部作品</a></li>
-                    <li class="navs" style="width: 100px;"><a href="##">排行</a></li>
-                    <li class="navs" style="width: 130px;"><a href="##">作家专区</a></li>
-                    <li class="navs" style="width: 100px;"><a href="##">完本</a></li>
-                    <li class="navs" style="width: 100px;"><a href="##">免费</a></li>
-                    <li class="navs" style="width: 100px;"><a href="##"><i class="fa fa-mobile" style="font-size:24px;margin-right: 4px;"></i>客户端</a></li>
+                    <!-- <li class="navs" style="margin-left: 50px;width: 120px;"><a href="##">全部作品</a></li> -->
+                    <li class="navs" style="width: 100px;"><a href="../../WEB-INF/thymeleaf/rank.html" target="_blank">排行</a></li>
+                    <li class="navs" style="width: 130px;"><a href="../../WEB-INF/thymeleaf/WriterArea.html" target="_blank">作家专区</a></li>
+                    <li class="navs" style="width: 100px;"><a href="#pop">热门</a></li>
+                    <li class="navs" style="width: 100px;"><a href="#finishBook">完本</a></li>
+                    <li class="navs" style="width: 100px;"><a href="#newest">最新</a></li>
                 </ul>
             </div>
         </div>
@@ -241,15 +243,15 @@
                     <div class="user_inner">
                         <div>
                             <div class="user_avatar">
-                                <a class="user_avatar_lk">
+                                <a href="../../WEB-INF/thymeleaf/member.html" class="user_avatar_lk">
                                     <img src="../../resources/img/logo.jpg" th:src="@{/resources/img/logo.jpg}" />
                                 </a>
                             </div>
                             <div class="user_show">
-                                <a href="js">Hi~欢迎阅读</a>
+                                <a href="../../WEB-INF/thymeleaf/member.html">Hi~欢迎阅读</a>
                                 <p>
-                                    <a href="../../resources/login.html" th:href="@{/login}" class="user_login">登录</a> |
-                                    <a href="../../resources/register.html" th:href="@{/register}" class="user_reg">注册</a>
+                                    <a href="../../WEB-INF/thymeleaf/login.html" th:href="@{/login}" class="user_login">登录</a> |
+                                    <a href="../../WEB-INF/thymeleaf/register.html" th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
                             </div>
                         </div>
@@ -323,7 +325,7 @@
             </div>
         </div>
         <!-- 中部--1 热门推荐 -->
-        <div class="hot-rec-wrap box-center mb20">
+        <div class="hot-rec-wrap box-center mb40" id="pop">
             <div class="inner-wrap cf">
                 <div class="left-wrap fl">
                     <h3>热门推荐</h3>
@@ -553,7 +555,7 @@
         <!-- 中部--2 热门作品 -->
         <div class="hot-work-wrap box-center mb40 cf">
             <div class="hot-work fl">
-                <h3 class="wrap-title">热门作品</h3>
+                <h3>热门作品</h3>
                 <div class="hot-work-info">
                     <div class="hot-work-slide">
                         <div class="three-books-slide">
@@ -628,7 +630,7 @@
             <div class="hot-classify-wrap fl">
                 <ul>
                     <li>
-                        <h3 class="wrap-title">玄幻·奇幻</h3>
+                        <h3>玄幻·奇幻</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -663,7 +665,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">武侠·仙侠</h3>
+                        <h3>武侠·仙侠</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -698,7 +700,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">都市·现实</h3>
+                        <h3>都市·现实</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -733,7 +735,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">军事·历史</h3>
+                        <h3>军事·历史</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -768,7 +770,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">游戏·体育</h3>
+                        <h3>游戏·体育</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -803,7 +805,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">科幻·悬疑</h3>
+                        <h3>科幻·悬疑</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -838,7 +840,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">女生网</h3>
+                        <h3>女生网</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -873,7 +875,7 @@
                         </dl>
                     </li>
                     <li>
-                        <h3 class="wrap-title">轻小说</h3>
+                        <h3>轻小说</h3>
                         <dl class="hot-book-list">
                             <dd>
                                 <a class="classify" href="##" target="_blank">
@@ -911,10 +913,10 @@
             </div>
         </div>
         <!-- 中部--3 完本精品 -->
-        <div class="finish-book-wrap box-center">
+        <div class="finish-book-wrap box-center" id="finishBook">
             <div class="cf" id="numero">
                 <div class="left-wrap-2 fl">
-                    <h3 class="wrap-title">完本精品</h3>
+                    <h3>完本精品</h3>
                     <div class="left-info fl">
                         <div class="slide-box">
                             <ul id="left-slide-2" class="roundabout-holder" style="display: block;padding: 0;position: relative;">
@@ -1105,7 +1107,7 @@
                 </div>
                 <div class="right-wrap-2 fr">
                     <div class="score-list">
-                        <h3 class="wrap-title">最近完本</h3>
+                        <h3>最近完本</h3>
                         <div class="book-list">
                             <ul>
                                 <li class="unfold">
@@ -1167,473 +1169,477 @@
             </div>
         </div>
         <!-- 中部--4  最新更新 -->
-        <div class="update-wrap box-center mb40 cf" style="padding: 20px;">
-            <div class="update-rec-wrap fl">
-                <h3 class="wrap-title">最新更新</h3>
-                <div class="update-rec-list">
-                    <ul>
-                        <li>
-                            <div class="book-wrap cf">
-                                <div class="book-info fr">
-                                    <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                    <p class="digital">
-                                        <span style="font-size: 12px;">日更千字</span>
-                                    </p>
-                                    <p class="author">
-                                        <a class="writer" href="###" target="_blank">心象风景</a>
-                                    </p>
+        <div class="update-wrap box-center mb40 cf" id="newest">
+            <div style="padding: 20px;">
+                <div class="update-rec-wrap fl">
+                    <h3>最新更新</h3>
+                    <div class="update-rec-list">
+                        <ul>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
+                                        </a>
+                                        <span></span>
+                                    </div>
                                 </div>
-                                <div class="book-cover">
-                                    <a class="link" href="###" target="_blank">
-                                        <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
-                                    </a>
-                                    <span></span>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
+                                        </a>
+                                        <span></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <p class="info">不是在虐主，就是在虐主的路上</p>
-                        </li>
-                        <li>
-                            <div class="book-wrap cf">
-                                <div class="book-info fr">
-                                    <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                    <p class="digital">
-                                        <span style="font-size: 12px;">日更千字</span>
-                                    </p>
-                                    <p class="author">
-                                        <a class="writer" href="###" target="_blank">心象风景</a>
-                                    </p>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
+                                        </a>
+                                        <span></span>
+                                    </div>
                                 </div>
-                                <div class="book-cover">
-                                    <a class="link" href="###" target="_blank">
-                                        <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
-                                    </a>
-                                    <span></span>
-                                </div>
-                            </div>
-                            <p class="info">不是在虐主，就是在虐主的路上</p>
-                        </li>
-                        <li>
-                            <div class="book-wrap cf">
-                                <div class="book-info fr">
-                                    <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                    <p class="digital">
-                                        <span style="font-size: 12px;">日更千字</span>
-                                    </p>
-                                    <p class="author">
-                                        <a class="writer" href="###" target="_blank">心象风景</a>
-                                    </p>
-                                </div>
-                                <div class="book-cover">
-                                    <a class="link" href="###" target="_blank">
-                                        <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
-                                    </a>
-                                    <span></span>
-                                </div>
-                            </div>
-                            <p class="info">不是在虐主，就是在虐主的路上</p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="update-list-wrap fl">
-                <div class="update-more cf">
-                    <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" href="###" target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
-                </div>
-                <div class="update-list" id="update-list">
-                    <div class="update-table">
-                        <table width="100%">
-                            <tbody>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                                <tr style="line-height: 31px;">
-                                    <td>
-                                        <a class="classify" href="###" target="_blank">
-                                            <span>「</span>轻小说<span>」</span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="name" href="###" target="_blank">赏金猎妖师</a>
-                                    </td>
-                                    <td>
-                                        <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
-                                    </td>
-                                    <td class="respon">
-                                        <a class="author" href="###" target="_blank">鱼子龙皇</a>
-                                    </td>
-                                    <td class="respon">
-                                        <i>07-15 14:15</i>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            <div class="update-rec-list fr" style="margin-top: 30px;">
-                <ul>
-                    <li>
-                        <div class="book-wrap cf">
-                            <div class="book-info fr">
-                                <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                <p class="digital">
-                                    <span style="font-size: 12px;">日更千字</span>
-                                </p>
-                                <p class="author">
-                                    <a class="writer" href="###" target="_blank">心象风景</a>
-                                </p>
-                            </div>
-                            <div class="book-cover">
-                                <a class="link" href="###" target="_blank">
-                                    <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
-                                </a>
-                                <span></span>
-                            </div>
+                <div class="update-list-wrap fl">
+                    <div class="update-more cf">
+                        <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" href="###" target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
+                    </div>
+                    <div class="update-list" id="update-list">
+                        <div class="update-table">
+                            <table width="100%">
+                                <tbody>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                    <tr style="line-height: 31px;">
+                                        <td>
+                                            <a class="classify" href="###" target="_blank">
+                                                <span>「</span>轻小说<span>」</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="name" href="###" target="_blank">赏金猎妖师</a>
+                                        </td>
+                                        <td>
+                                            <a class="section" href="###" target="_blank">第44章疯乞人屠</a>
+                                        </td>
+                                        <td class="respon">
+                                            <a class="author" href="###" target="_blank">鱼子龙皇</a>
+                                        </td>
+                                        <td class="respon">
+                                            <i>07-15 14:15</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <p class="info">不是在虐主，就是在虐主的路上</p>
-                    </li>
-                    <li>
-                        <div class="book-wrap cf">
-                            <div class="book-info fr">
-                                <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                <p class="digital">
-                                    <span style="font-size: 12px;">日更千字</span>
-                                </p>
-                                <p class="author">
-                                    <a class="writer" href="###" target="_blank">心象风景</a>
-                                </p>
-                            </div>
-                            <div class="book-cover">
-                                <a class="link" href="###" target="_blank">
-                                    <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
-                                </a>
-                                <span></span>
-                            </div>
-                        </div>
-                        <p class="info">不是在虐主，就是在虐主的路上</p>
-                    </li>
-                    <li>
-                        <div class="book-wrap cf">
-                            <div class="book-info fr">
-                                <h4><a href="###" target="_blank">这个男二是反派</a></h4>
-                                <p class="digital">
-                                    <span style="font-size: 12px;">日更千字</span>
-                                </p>
-                                <p class="author">
-                                    <a class="writer" href="###" target="_blank">心象风景</a>
-                                </p>
-                            </div>
-                            <div class="book-cover">
-                                <a class="link" href="###" target="_blank">
-                                    <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
-                                </a>
-                                <span></span>
-                            </div>
-                        </div>
-                        <p class="info">不是在虐主，就是在虐主的路上</p>
-                    </li>
-                </ul>
+                    </div>
+                </div>
+                <div class="update-rec-wrap fr" style="margin-top: 37px;">
+                    <div class="update-rec-list">
+                        <ul>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
+                                        </a>
+                                        <span></span>
+                                    </div>
+                                </div>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}">
+                                        </a>
+                                        <span></span>
+                                    </div>
+                                </div>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                            <li>
+                                <div class="book-wrap cf">
+                                    <div class="book-info fr">
+                                        <h4><a href="###" target="_blank">这个男二是反派</a></h4>
+                                        <p class="digital">
+                                            <span style="font-size: 12px;">日更千字</span>
+                                        </p>
+                                        <p class="author">
+                                            <a class="writer" href="###" target="_blank">心象风景</a>
+                                        </p>
+                                    </div>
+                                    <div class="book-cover">
+                                        <a class="link" href="###" target="_blank">
+                                            <img src="../../resources/img/update-book-1.jpg" th:src="@{/resources/img/update-book-1.jpg}" />
+                                        </a>
+                                        <span></span>
+                                    </div>
+                                </div>
+                                <p class="info">不是在虐主，就是在虐主的路上</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="footer">
@@ -1657,6 +1663,8 @@
             </div>
         </div>
     </div>
+
+    <!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script> -->
 </body>
 
 </html>

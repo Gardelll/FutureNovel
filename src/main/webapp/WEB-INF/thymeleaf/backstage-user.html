@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>用户管理</title>
@@ -13,31 +14,32 @@
 <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
 <!-- 作为公共部分分离/ -->
 <link rel="stylesheet" href="../../resources/css/backstage-book.css" th:href="@{/resources/css/backstage-book.css}">
+
 <body>
     <!-- 作为公共部分分离 -->
-        <div class="shortcut">
-            <div class="w">
-                <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
-                <ul class="fl left" >
-                    <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
-                    <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
-                </ul>
-                <ul class="fr">
-                    <li class="message fl"><i class="iconfont icon-Message"></i></li>
-                    <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
-                    <li class="s-name fl"></li>
-                    <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
-                        <ul class="dropdown" id="dropdown" style="display: none;">
-                            <li><a href="javascript:">个人信息</a></li>
-                            <li><a href="javascript:">切换账号</a></li>
-                            <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
-                        </ul>
-                    </li>
-                    
-                </ul>
-            </div>
+    <div class="shortcut">
+        <div class="w">
+            <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
+            <ul class="fl left">
+                <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
+                <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
+            </ul>
+            <ul class="fr">
+                <li class="message fl"><i class="iconfont icon-Message"></i></li>
+                <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
+                <li class="s-name fl"></li>
+                <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
+                    <ul class="dropdown" id="dropdown" style="display: none;">
+                        <li><a href="javascript:">个人信息</a></li>
+                        <li><a href="javascript:">切换账号</a></li>
+                        <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out">退出</a></li>
+                    </ul>
+                </li>
+
+            </ul>
         </div>
-        <div class="catalog" id="catalog">
+    </div>
+    <div class="catalog" id="catalog">
         <div class="side fl">
             <div class="logo">
                 <span>future book</span>
@@ -49,45 +51,45 @@
                 <li><a href="">系统管理</a></li>
             </ul>
         </div>
-        </div>
-        <div class="contant" id="contant">
-            <div class="book">
-                <div class="function">
-                    <span>手机号</span> <input type="text" class="seek" placeholder="请输入">
-                    <span>邮箱</span> <input type="text" class="seek" placeholder="请输入">
-                    <span>身份</span> <input type="text" class="seek" placeholder="请输入">
-                    <button type="button" class="btn-seek" ><i class="iconfont icon-iconseach"></i></button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 14%;">用户名</th>
-                            <th style="width: 20%;">手机号</th>
-                            <th style="width: 14%;">身份</th>
-                            <th style="width: 14%;">加入时间</th>
-                            <th style="width: 14%;">账号状态</th>
-                            <th style="width: 24%;">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tbody" id="a">
-                        <tr>
-                            <th style="width: 14%;">用户名</th>
-                            <th style="width: 20%;">手机号</th>
-                            <th style="width: 13%;">身份</th>
-                            <th style="width: 16%;">加入时间</th>
-                            <th style="width: 13%;">账号状态</th>
-                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(1)"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="but">
-                    <button type="button" class="btn" id="gopre">上一页</button>
-                    <button type="button" class="btn" id="gonext">下一页</button>
-                </div>
+    </div>
+    <div class="contant" id="contant">
+        <div class="book">
+            <div class="function">
+                <span>手机号</span> <input type="text" class="seek" placeholder="请输入">
+                <span>邮箱</span> <input type="text" class="seek" placeholder="请输入">
+                <span>身份</span> <input type="text" class="seek" placeholder="请输入">
+                <button type="button" class="btn-seek"><i class="iconfont icon-iconseach"></i></button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 14%;">用户名</th>
+                        <th style="width: 20%;">手机号</th>
+                        <th style="width: 14%;">身份</th>
+                        <th style="width: 14%;">加入时间</th>
+                        <th style="width: 14%;">账号状态</th>
+                        <th style="width: 24%;">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody" id="a">
+                    <tr>
+                        <th style="width: 14%;">用户名</th>
+                        <th style="width: 20%;">手机号</th>
+                        <th style="width: 13%;">身份</th>
+                        <th style="width: 16%;">加入时间</th>
+                        <th style="width: 13%;">账号状态</th>
+                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user(1)"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="but">
+                <button type="button" class="btn" id="gopre">上一页</button>
+                <button type="button" class="btn" id="gonext">下一页</button>
             </div>
         </div>
+    </div>
     <!-- 作为公共部分分离/ -->
-    </body>
+</body>
 <!-- 作为公共部分分离 -->
 <script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
 </script>
@@ -95,41 +97,42 @@
 </script>
 <!-- 作为公共部分分离/ -->
 <script th:inline="javascript" async>
-    var curpage=1,
-        onepage=5;
-    $(document).ready(function(){
+    var curpage = 1,
+        onepage = 5;
+    $(document).ready(function() {
         $.ajax({
-                url:/*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/admin/accounts/pages" ,
-                type:'GET',
-                data:{
-                    per_page: Number(onepage)
-                },
-                success: function(data){
-                    var all_page=data.pages;
-                    console.log(data)
-                },
-                error: function(jqXHR) {
-                    //let data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
-                    //console.log(data.error);
-                }
-            })
+            url: /*[[${#request.getContextPath()} + '/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/admin/accounts/pages",
+            type: 'GET',
+            data: {
+                per_page: Number(onepage)
+            },
+            success: function(data) {
+                var all_page = data.pages;
+                console.log(data)
+            },
+            error: function(jqXHR) {
+                //let data = JSON.parse(jqXHR.responseText);
+                popup_over('icon-sad', '#d81e06', "请求失败");
+                //console.log(data.error);
+            }
+        })
     })
-        $.ajax({
-                url:/*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/admin/accounts/get" ,
-                type:'GET',
-                data:{
-                    per_page: Number(onepage),
-                    page: Number(curpage)
-                },
-                success: function(data){
-                    alert(data.Account.uid)
-                    console.log(data)
-                },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
-                }
-            })
+    $.ajax({
+        url: /*[[${#request.getContextPath()} + '/admin/accounts/get']]*/ "http://localhost:8080/future-novel/admin/accounts/get",
+        type: 'GET',
+        data: {
+            per_page: Number(onepage),
+            page: Number(curpage)
+        },
+        success: function(data) {
+            alert(data.Account.uid)
+            console.log(data)
+        },
+        error: function() {
+            //const data = JSON.parse(jqXHR.responseText);
+            popup_over('icon-sad', '#d81e06', "请求失败");
+        }
+    })
 </script>
+
 </html>

@@ -75,36 +75,14 @@
                         </tr>
                     </thead>
                     <tbody class="tbody" id="a">
-                        <tr>
-                            <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
-                            <th style="width: 13%;">用户名</th>
-                            <th style="width: 20%;">手机号</th>
-                            <th style="width: 13%;">身份</th>
-                            <th style="width: 15%;">加入时间</th>
-                            <th style="width: 13%;">账号状态</th>
-                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(1)"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
-                        </tr>
-                        <tr>
-                            <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
-                            <th style="width: 13%;">用户名</th>
-                            <th style="width: 20%;">手机号</th>
-                            <th style="width: 13%;">身份</th>
-                            <th style="width: 15%;">加入时间</th>
-                            <th style="width: 13%;">账号状态</th>
-                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(1)"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
-                        </tr>
-                        <tr>
-                            <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
-                            <th style="width: 13%;">用户名</th>
-                            <th style="width: 20%;">手机号</th>
-                            <th style="width: 13%;">身份</th>
-                            <th style="width: 15%;">加入时间</th>
-                            <th style="width: 13%;">账号状态</th>
-                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(1)"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
-                        </tr>
+                        
                     </tbody>
                 </table>
+                <span id="control_page">
+                    
+                </span>
                 <div class="but">
+                    
                     <button type="button" class="btn" id="gopre">上一页</button>
                     <button type="button" class="btn" id="gonext">下一页</button>
                 </div>
@@ -129,6 +107,25 @@
                     per_page: Number(onepage)
                 },
                 success: function(data){
+                    
+                    var allpage=data.pages;
+                    console.log(data)
+                },
+                error: function(jqXHR) {
+                    let data = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',data.errorMessage);
+                    console.log(data.errorMessage);
+                }
+            })
+        $.ajax({
+                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                type:'GET',
+                data:{
+                    per_page: Number(onepage),
+                    page: Number(curpage)
+                },
+                success: function(data){
+                    $('#a').empty();
                     $.each(data,function(i){
                         $('#a').append(`<tr>
                             <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
@@ -140,25 +137,8 @@
                             <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                         </tr>`)
                     })
-                    var all_page=data.pages;
-                    console.log(data)
-                },
-                error: function(jqXHR) {
-                    let data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',data.errorMessage);
-                    console.log(data.errorMessage);
-                }
-            })
-    })
-        $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
-                type:'GET',
-                data:{
-                    per_page: Number(onepage),
-                    page: Number(curpage)
-                },
-                success: function(data){
-                    alert(data[0].uid)
+                    $('#control_page').empty();
+                    $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
                 error: function() {
@@ -166,5 +146,76 @@
                     popup_over('icon-sad','#d81e06',"请求失败");
                 }
             })
+            $('#gonext').on('click',function(){
+                    if(curPage>=1 && curPage<allPage){
+                        curPage=Number(curPage)+1;
+                    }
+                    console.log(curPage)
+                    $.ajax({
+                            url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                            type:'GET',
+                            data:{
+                                per_page: Number(onepage),
+                                page: Number(curpage)
+                            },
+                            success: function(data){
+                                if(curPage<=allPage){
+                                $.each(data,function(i){
+                                    $('#a').append(`<tr>
+                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
+                                        <th style="width: 13%;">${data[i].userName}</th>
+                                        <th style="width: 20%;">${data[i].phone}</th>
+                                        <th style="width: 13%;">${data[i].permission}</th>
+                                        <th style="width: 15%;">${data[i].registerDate}</th>
+                                        <th style="width: 13%;">${data[i].status}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                    </tr>`)
+                                })
+                                $('#control_page').empty();
+                                $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                                console.log(data)}
+                            },
+                            error: function() {
+                                //const data = JSON.parse(jqXHR.responseText);
+                                popup_over('icon-sad','#d81e06',"请求失败");
+                            }
+            })            
+                })
+            $('#gopre').on('click',function(){
+                    if(curPage>1 && curPage<=allPage){
+                        curPage=Number(curPage)-1;
+                    }
+                    console.log(curPage)
+                    $.ajax({
+                            url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                            type:'GET',
+                            data:{
+                                per_page: Number(onepage),
+                                page: Number(curpage)
+                            },
+                            success: function(data){
+                                if(curPage>0){
+                                $.each(data,function(i){
+                                    $('#a').append(`<tr>
+                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
+                                        <th style="width: 13%;">${data[i].userName}</th>
+                                        <th style="width: 20%;">${data[i].phone}</th>
+                                        <th style="width: 13%;">${data[i].permission}</th>
+                                        <th style="width: 15%;">${data[i].registerDate}</th>
+                                        <th style="width: 13%;">${data[i].status}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                    </tr>`)
+                                })
+                                $('#control_page').empty();
+                                $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                                console.log(data)}
+                            },
+                            error: function() {
+                                //const data = JSON.parse(jqXHR.responseText);
+                                popup_over('icon-sad','#d81e06',"请求失败");
+                            }
+            })            
+                })
+    })        
 </script>
 </html>

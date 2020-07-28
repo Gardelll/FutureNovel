@@ -51,6 +51,64 @@ function popup_user(id){
                                                     <button type="button" class="btn" id="submit-user" style="margin-right: 10px;" onclick="paging_mod(this,\''+id+'\');$(\'.popup_mod\').remove()">提交</button>
                                                     <button type="button" class="btn" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>`)
 }
+//批量添加用户弹窗
+function popup_user_add(){
+        $('body').append(`<div class="popup_mod" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div>
+        <div class="popup_mod" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 500px; height: 450px;">
+            <p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px; margin-bottom: 20px;">
+                <span style="margin-left: 10px;">添加用户</span>
+                <span style="right: 10px; position: absolute; cursor: pointer;">
+                    <a style="color: #000; text-decoration: none;" onclick="$(\'.popup_mod\').remove()">X</a></span></p>
+                    <div class="">
+                        <form class="">
+                            <div class="item">
+                                <label class="">用户名</label>
+                                <span class="">
+                                    <input type="text" class="" id="popup_user" name="user" placeholder="输入用户名"></span></div>
+                                    <div class="item">
+                                        <label class="">邮箱</label>
+                                        <span class="">
+                                            <input type="text" class="" id="popup_email" name="user" placeholder="输入邮箱"></span></div>
+                                            <div class="item">
+                                                <label class="">密码</label>
+                                                <span class=""><input type="text" class="" id="popup_pas" name="user" placeholder="输入用户名"></span></div>
+                                                <div class="item">
+                                                    <label class="">手机号</label>
+                                                    <span class="">
+                                                        <input type="text" class="" id="popup_phone" name="user" placeholder="请上传图片">
+                                                        </span>
+                                                        
+                                                    </div></form></div>
+                                                    <span style="bottom: 10px; right: 15px; position: absolute;">
+                                                        <button type="button" class="btn" id="submit-user" style="margin-right: 10px;" onclick="user_add();$(\'.popup_mod\').remove()">提交</button>
+                                                        <button type="button" class="btn" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>`)
+}
+//批量添加用户ajax
+function user_add(){
+    let userName=$('#popup_user').val(),
+        userEmail=$('popup_email').val(),
+        password=$('popup_pas').val(),
+        phone=$('popup_phone').val();
+        $.ajax({
+            url:/*[[${#request.getContextPath()} + '/api/admin/account/add']]*/'http://localhost:8080/future-novel/api/admin/account/add',
+            type: 'post',
+            datatype:'json',
+            data: JSON.stringify({
+                userName: userName,
+                password: password,
+                email: userEmail,
+                phone: phone
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+                console.log('添加成功');
+            },
+            error: function(jqXHR){
+                console.log('添加失败');
+                console.log(jqXHR.responseText.failedt)
+            }
+        })
+}
 //激活账号窗口
 function popup_activate(name){
     $('body').append('<div class="yes_no" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div><div class="yes_no" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 260px; height: 170px;"><p style="height: 40px; margin: 0; background-color: #F8F8F8; line-height: 40px; font-size: 16px;"><span style="margin-left: 10px;">激活账号</span> <span style="right: 10px; position: absolute; cursor: pointer;"><a style="color: #000; text-decoration: none;" onclick="$(\'.yes_no\').remove()">X</a></span></p><p style="height: 110px; margin: 0;"> <span style="font-size: 16px; top: 15px; left: 15px; position: relative;"><input type="text" name="activate" placeholder="验证码已发送，请输入" id="activate" style="width: 150px; height: 35px; font-size:16px; border: 1px solid grey;"></span><span style="bottom: 10px; right: 15px; position: absolute;"><button type="button" class="btn btn-info btn-sm" style="margin-right: 10px;" onclick="'+name+'();$(\'.yes_no\').remove()">确认</button><button type="button" class="btn btn-sm" onclick="$(\'.yes_no\').remove();">取消</button></span></p></div>');
@@ -92,6 +150,23 @@ function activate_yes(){
         }
     })
 }
+//删除checkbox管理
+$('#all-check').on('click',function(){
+if($('#all-check').prop("checked")){
+    $('.check').prop('checked',true)
+}else{
+    $('.check').prop('checked',false)
+}
+})
+$('.check').on('click',function(){
+    var allCheck=$('.check').length;
+    
+    if($('.check').checked){
+        $('#all-check').prop('checked',true)
+    }else{
+        $('#all-check').prop('checked',false)
+    }
+})
 // function logout_user(){
 //     $.ajax({
 //         url:'http://localhost:8080/future-novel/api/logout',

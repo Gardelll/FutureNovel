@@ -1,5 +1,7 @@
 package net.wlgzs.futurenovel.test;
 
+import java.math.BigInteger;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.dao.AccountDao;
 import net.wlgzs.futurenovel.model.Account;
@@ -25,15 +27,15 @@ public class DatabaseTest {
     void insertTest() {
         Account account = new Account();
         log.info("account uuid = {}", account.getUid());
-        account.setUserName("Test");
+        account.setUserName(UUID.randomUUID().toString());
         account.setUserPass("not my password");
-        account.setEmail("foo@bar.cn");
+        account.setEmail(UUID.randomUUID() + "@bar.cn");
         account.setPhone("10086");
         account.setStatus(Account.Status.FINE);
         account.setPermission(Account.Permission.USER);
         account.setRegisterIP("[::1]");
         account.setRegisterDate(new Date());
-        account.setExperience(500);
+        account.setExperience(BigInteger.valueOf(500));
         account.setProfileImgUrl("https://www.example.com/image.png");
         accountDao.insertAccount(account);
         Account got = accountDao.getAccount(account.getUid());

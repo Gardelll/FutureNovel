@@ -473,6 +473,21 @@ DELETE $URL/api/admin/account/delete
 }
 ```
 
+5. 修改帐号积分
+   
+```
+GET $URL/api/account/experience/edit
+```
+
+>权限：管理员
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|需要修改的用户 UID|F|
+|experience|int64|经验值|F|
+
+若修改成功，服务端返回状态码 204 - No Content
+
 --------
 
 ### 小说管理相关接口
@@ -717,3 +732,86 @@ GET $URL/api/novel/series/all
     "地球往事三部曲"
 ]
 ```
+
+11. 获取某用户上传的小说的总页数
+
+```
+GET $URL/api/novel/user/{accountId}/pages
+```  
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|账号 ID，注意要包含在路径里，不是 query 参数|F|
+|per_page|查询参数 int|每页展示的小说数量，默认为 20|是|
+
+若查询成功，返回状态码为 200 - OK
+
+返回参数：
+
+```json5
+{
+  "per_page" : 20, // 每页展示的小说数量 
+  "pages": 1 //总共的页数
+}
+```
+
+
+12. 获取某用户上传的所有小说
+
+```
+GET $URL/api/novel/user/{accountId}/get
+```  
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|账号 ID，注意要包含在路径里，不是 query 参数|F|
+|per_page|查询参数 int|每页展示的小说数量，默认为 20|T|
+|page|查询参数 int|页码|F|
+|sort_by|String|排序方式枚举，见下表，下同|T 默认 HOT_DESC|
+
+排序方式  
+编码：UTF-8
+
+|枚举常量|说明|
+|----|----|
+|AUTHORS|根据作者排序|
+|AUTHORS_DESC|作者倒序，下同理|
+|COPYRIGHT|版权|
+|COPYRIGHT_DESC| |
+|HOT|热度|
+|HOT_DESC| |
+|PUBDATE|发布日期|
+|PUBDATE_DESC| |
+|PUBLISHER|出版社或发布者|
+|PUBLISHER_DESC| |
+|RATING|评分|
+|RATING_DESC| |
+|SERIES|系列|
+|SERIES_DESC| |
+|TAGS|分类标签|
+|TAGS_DESC| |
+|TITLE|标题|
+|TITLE_DESC| |
+|UPLOADER|上传者 ID|
+|UPLOADER_DESC| |
+
+若查询成功，返回状态码为 200 - OK
+
+返回参数：  
+```json5
+[
+    {
+        // 小说目录信息，见上方 #数据格式 NovelIndex
+        "chapters": [] // 此处不会含有实际信息，只有章节 ID的列表，因此可以统计章节总数但不能获取章节标题
+    },
+    {
+        // 还可能有更多
+    }
+]
+```
+
+若该页没有数据，服务端返回状态码 204 - No Content

@@ -70,9 +70,12 @@ public interface SectionDao {
     @Select({"<script>",
             "SELECT `uniqueId`, `fromChapter`, `title`, `text` FROM `section` ",
             "WHERE MATCH (`title`, `text`) AGAINST (#{keywords} IN BOOLEAN MODE) ",
-            "<if test='orderBy != null'>ORDER BY ${orderBy}</if> ",
             "LIMIT ${offset},${count}",
             "</script>"})
-    List<Section> getSectionByKeywords(@Param("keywords") String keywords, @Param("offset") int offset, @Param("count") int count, @Param("orderBy") String orderBy) throws DataAccessException;
+    List<Section> getSectionByKeywords(@Param("keywords") String keywords, @Param("offset") int offset, @Param("count") int count) throws DataAccessException;
+
+    @Select({"SELECT COUNT(*) FROM `section` ",
+            "WHERE MATCH (`title`, `text`) AGAINST (#{keywords} IN BOOLEAN MODE) "})
+    long countSectionByKeywords(@Param("keywords") String keywords) throws DataAccessException;
 
 }

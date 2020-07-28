@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,10 +50,10 @@ public class NovelService implements DisposableBean {
     private final SectionDao sectionDao;
 
     @Getter(onMethod_ = {@Synchronized})
-    private final HashSet<String> tags = new HashSet<>();
+    private final LinkedHashSet<String> tags = new LinkedHashSet<>();
 
     @Getter(onMethod_ = {@Synchronized})
-    private final HashSet<String> series = new HashSet<>();
+    private final LinkedHashSet<String> series = new LinkedHashSet<>();
 
     private final ScheduledExecutorService executor;
 
@@ -127,6 +128,8 @@ public class NovelService implements DisposableBean {
                 account.checkPermission(Account.Permission.AUTHOR, Account.Permission.ADMIN);
                 break;
         }
+        authors.sort(String::compareToIgnoreCase);
+        tags.sort(String::compareToIgnoreCase);
         try {
             var novelIndex = new NovelIndex(UUID.randomUUID(),
                     account.getUid(),
@@ -314,6 +317,27 @@ public class NovelService implements DisposableBean {
         }
     }
 
+    @NonNull
+    public NovelIndex findNovelIndexBySectionId(@NonNull UUID sectionId) {
+        try {
+            return Optional.ofNullable(novelIndexDao.getNovelIndexBySectionId(sectionId))
+                .orElseThrow(() -> new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND));
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    @NonNull
+    public List<NovelIndex> findNovelIndexByChapterIdList(@NonNull List<UUID> chapterIds) {
+        try {
+            if (chapterIds.isEmpty()) return List.of();
+            return Optional.ofNullable(novelIndexDao.getNovelIndexByChapterIdList(chapterIds))
+                .orElseGet(List::of);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
     public boolean hotAddOne(@NonNull UUID novelIndexId) {
         try {
             return 1 == novelIndexDao.hotAddOne(novelIndexId);
@@ -371,6 +395,14 @@ public class NovelService implements DisposableBean {
         }
     }
 
+    public long countNovelIndexByUploader(@NonNull UUID uploader) {
+        try {
+            return novelIndexDao.countNovelIndexByUploader(uploader);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
     @NonNull
     public List<NovelIndex> findNovelIndexByPubDate(@NonNull Date after, @NonNull Date before, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
@@ -381,11 +413,27 @@ public class NovelService implements DisposableBean {
         }
     }
 
+    public long countNovelIndexByPubDate(@NonNull Date after, @NonNull Date before) {
+        try {
+            return novelIndexDao.countNovelIndexByPubDate(after, before);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
     @NonNull
     public List<NovelIndex> searchNovelIndex(@NonNull String keywords, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
         try {
             List<NovelIndex> list = novelIndexDao.getNovelIndexByKeywords(keywords, offset, count, orderBy);
             return list == null ? List.of() : list;
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    public long searchNovelIndexGetCount(@NonNull String keywords) {
+        try {
+            return novelIndexDao.countNovelIndexByKeywords(keywords);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -426,14 +474,24 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<Section> searchByContent(@NonNull String keywords, @NonNull int offset, @NonNull int count, @Nullable String orderBy) {
+    public List<Section> searchByContent(@NonNull String keywords, @NonNull int offset, @NonNull int count) {
         try {
-            List<Section> list = sectionDao.getSectionByKeywords(keywords, offset, count, orderBy);
+            List<Section> list = sectionDao.getSectionByKeywords(keywords, offset, count);
             return list == null ? List.of() : list;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
+
+    public long searchByContentGetCount(@NonNull String keywords) {
+        try {
+            return sectionDao.countSectionByKeywords(keywords);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    // TODO 在小说中搜索
 
     @Override
     public void destroy() throws Exception {

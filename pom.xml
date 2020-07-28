@@ -227,11 +227,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>webapp</directory>
-            </resource>
-        </resources>
 
         <plugins>
             <!-- Cargo 插件，用于快速部署 -->

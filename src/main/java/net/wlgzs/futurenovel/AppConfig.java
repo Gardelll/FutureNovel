@@ -214,7 +214,7 @@ public class AppConfig implements ApplicationContextAware, WebMvcConfigurer {
         registry.addFormatter(dateFormatter());
     }
 
-    @Bean
+    @Bean(name = "defaultDateFormatter")
     public DateFormatter dateFormatter() {
         DateFormatter dateFormatter = new DateFormatter("yyyy年MM月dd日 HH:mm:ss");
         dateFormatter.setTimeZone(TimeZone.getDefault());

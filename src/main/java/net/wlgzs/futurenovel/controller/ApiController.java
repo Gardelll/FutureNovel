@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,9 +33,11 @@ import net.wlgzs.futurenovel.bean.AddChapterRequest;
 import net.wlgzs.futurenovel.bean.AddSectionRequest;
 import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
+import net.wlgzs.futurenovel.bean.EditExperienceRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
 import net.wlgzs.futurenovel.bean.Novel;
+import net.wlgzs.futurenovel.bean.SearchNovelRequest;
 import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
@@ -48,6 +51,7 @@ import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -104,13 +108,14 @@ public class ApiController extends AbstractAppController {
                          NovelService novelService,
                          Validator defaultValidator,
                          Properties futureNovelConfig,
-                         FileService fileService) {
-        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService);
+                         FileService fileService,
+                         DateFormatter defaultDateFormatter) {
+        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService, defaultDateFormatter);
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(defaultValidator);
+        super.initBinder(binder);
     }
 
     /**
@@ -190,7 +195,7 @@ public class ApiController extends AbstractAppController {
             var now = Calendar.getInstance();
             now.setTimeInMillis(System.currentTimeMillis());
             return now.get(Calendar.YEAR) != year || now.get(Calendar.DAY_OF_YEAR) != day;
-        }).ifPresent((date) -> account.setExperience(account.getExperience() + 3));
+        }).ifPresent((date) -> account.setExperience(account.getExperience().add(BigInteger.valueOf(3))));
         account.setLastLoginDate(new Date());
         if (!accountService.updateAccount(account))
             log.warn("用户 {} 的数据更新失败", account.getUserName());
@@ -303,6 +308,33 @@ public class ApiController extends AbstractAppController {
         }
     }
 
+    @PostMapping(value = "/account/experience/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void editAccountExperience(@RequestBody @Valid EditExperienceRequest req,
+                                      @CookieValue(name = "uid", defaultValue = "") String uid,
+                                      @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                      @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                      HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+
+        Account account = accountService.getAccount(UUID.fromString(req.accountId));
+        account.setExperience(req.experience);
+        accountService.updateAccountExperience(account);
+    }
+
+
+    /**
+     * 管理员批量添加用户
+     * @param reqs 请求参数，一个列表
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @return json 信息
+     * @see AddAccountRequest
+     */
     @PostMapping(value = "/admin/account/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -341,7 +373,7 @@ public class ApiController extends AbstractAppController {
                     req.status,
                     req.vip,
                     req.permission,
-                    0,
+                    BigInteger.ZERO,
                     null);
                 accountService.register(account);
                 success.add(account);
@@ -359,6 +391,15 @@ public class ApiController extends AbstractAppController {
         );
     }
 
+    /**
+     * 管理员批量删除用户
+     * @param uids 要删除的 uid 的列表
+     * @param uid Cookie：用户 ID
+     * @param tokenStr Cookie：登陆令牌
+     * @param userAgent Header：浏览器标识
+     * @param request Http 请求
+     * @return json 信息
+     */
     @DeleteMapping(value = "/admin/account/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -474,7 +515,7 @@ public class ApiController extends AbstractAppController {
                                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                             HttpServletRequest request) {
-        if (perPage <= 0) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        if (perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -507,7 +548,7 @@ public class ApiController extends AbstractAppController {
             @CookieValue(name = "token", defaultValue = "") String tokenStr,
             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
             HttpServletRequest request) {
-        if (page <= 0 || perPage <= 0) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -724,6 +765,47 @@ public class ApiController extends AbstractAppController {
     public List<String> novelGetAllSeries() {
         return List.of(novelService.getSeries().toArray(new String[0]));
     }
+
+    /**
+     * 获取某个用户上传的所有小说
+     * @param accountId 用户的 ID
+     * @param page 页码
+     * @param perPage 每页显示的数量
+     * @param sortBy 排序方式，参见 {@link net.wlgzs.futurenovel.bean.SearchNovelRequest.SortBy}
+     * @return 小说目录的列表（不含章节目录）
+     */
+    @GetMapping("/novel/user/{accountId:[0-9a-f\\-]{36}}/get")
+    @ResponseBody
+    public ResponseEntity<List<NovelIndex>> novelGetAllFromUser(@PathVariable("accountId") String accountId,
+                                                                @RequestParam(name = "page") int page,
+                                                                @RequestParam(name = "per_page", defaultValue = "20") int perPage,
+                                                                @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") SearchNovelRequest.SortBy sortBy) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        int offset = (page - 1) * perPage;
+        final var result = novelService.findNovelIndexByUploader(UUID.fromString(accountId), offset, perPage, sortBy.getOrderBy());
+        return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
+    }
+
+    /**
+     * 获取某个用户上传的所有小说的总页数
+     * @param accountId 用户的 ID
+     * @param perPage 每页显示的数量
+     * @return json 数据
+     */
+    @GetMapping("/novel/user/{accountId:[0-9a-f\\-]{36}}/pages")
+    @ResponseBody
+    public Map<String, ?> novelGetAllPagesFromUser(@PathVariable("accountId") String accountId,
+                                                   @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        long total = novelService.countNovelIndexByUploader(UUID.fromString(accountId));
+        return Map.of(
+            "per_page", perPage,
+            "pages", total / perPage + 1,
+            "timestamp", System.currentTimeMillis()
+        );
+    }
+
+
 
 //    // TODO 统计网站数据
 //    public Map<String, ?> statistics() {

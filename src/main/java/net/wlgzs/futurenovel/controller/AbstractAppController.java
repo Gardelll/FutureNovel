@@ -2,6 +2,7 @@ package net.wlgzs.futurenovel.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import net.wlgzs.futurenovel.utils.NovelNodeComparator;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -32,6 +34,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -52,6 +55,8 @@ public abstract class AbstractAppController {
 
     protected final Properties futureNovelConfig;
 
+    protected final DateFormatter defaultDateFormatter;
+
     protected String serverUrl = null;
 
     public AbstractAppController(TokenStore tokenStore,
@@ -60,7 +65,8 @@ public abstract class AbstractAppController {
                                  NovelService novelService,
                                  Validator defaultValidator,
                                  Properties futureNovelConfig,
-                                 FileService fileService) {
+                                 FileService fileService,
+                                 DateFormatter defaultDateFormatter) {
         this.tokenStore = tokenStore;
         this.accountService = accountService;
         this.emailService = emailService;
@@ -68,6 +74,12 @@ public abstract class AbstractAppController {
         this.futureNovelConfig = futureNovelConfig;
         this.fileService = fileService;
         this.novelService = novelService;
+        this.defaultDateFormatter = defaultDateFormatter;
+    }
+
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(defaultValidator);
+        binder.addCustomFormatter(defaultDateFormatter, Date.class);
     }
 
     protected boolean safeRedirect(String redirectTo) {

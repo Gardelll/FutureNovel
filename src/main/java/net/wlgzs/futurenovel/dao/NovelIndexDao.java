@@ -71,6 +71,17 @@ public interface NovelIndexDao {
             "WHERE `chapter`.`uniqueId` = #{uniqueId})"})
     NovelIndex getNovelIndexByChapterId(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
 
+    @Select({"<script> ",
+            "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
+            "`authors`, `description`, `rating`, `tags`, `series`, ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "WHERE `uniqueId` IN (SELECT `chapter`.`fromNovel` FROM `chapter` ",
+            "WHERE `chapter`.`uniqueId` IN ",
+            "<foreach collection='list' item='fromChapter' index='index' open='(' separator=',' close=')'>",
+            "#{fromChapter}",
+            "</foreach>) </script>"})
+    List<NovelIndex> getNovelIndexByChapterIdList(List<UUID> chapterIds) throws DataAccessException;
+
     @Select({"<script>",
             "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
             "`authors`, `description`, `rating`, `tags`, `series`, ",
@@ -85,7 +96,7 @@ public interface NovelIndexDao {
             "SELECT COUNT(*) FROM `novel_index` ",
             "WHERE `novel_index`.`uploader` = #{uploader} ",
             "</script>"})
-    int countNovelIndexByUploader(@Param("uploader") UUID uploader) throws DataAccessException;
+    long countNovelIndexByUploader(@Param("uploader") UUID uploader) throws DataAccessException;
 
     @Update({"UPDATE `novel_index` SET `hot` = ",
             "(SELECT `novel_index`.`hot` FROM `novel_index` ",
@@ -103,10 +114,14 @@ public interface NovelIndexDao {
             "</script>"})
     List<NovelIndex> getNovelIndexByPubDate(@Param("after") Date after, @Param("before") Date before, @Param("offset") int offset, @Param("count") int count, @Param("orderBy") String orderBy) throws DataAccessException;
 
-    @Select("SELECT `tags` FROM `novel_index` LIMIT ${offset},${count}")
+    @Select({"SELECT COUNT(*) FROM `novel_index` ",
+            "WHERE `novel_index`.`pubdate` BETWEEN #{after} AND #{before} "})
+    long countNovelIndexByPubDate(@Param("after") Date after, @Param("before") Date before) throws DataAccessException;
+
+    @Select("SELECT `tags` FROM `novel_index` ORDER BY `hot` DESC LIMIT ${offset},${count}")
     List<String> getAllTags(@Param("offset") int offset, @Param("count") int count) throws DataAccessException;
 
-    @Select("SELECT `series` FROM `novel_index` LIMIT ${offset},${count}")
+    @Select("SELECT `series` FROM `novel_index` ORDER BY `hot` DESC LIMIT ${offset},${count}")
     List<String> getAllSeries(@Param("offset") int offset, @Param("count") int count) throws DataAccessException;
 
     // FullText Search
@@ -119,5 +134,9 @@ public interface NovelIndexDao {
             "LIMIT ${offset},${count}",
             "</script>"})
     List<NovelIndex> getNovelIndexByKeywords(@Param("keywords") String keywords, @Param("offset") int offset, @Param("count") int count, @Param("orderBy") String orderBy) throws DataAccessException;
+
+    @Select({"SELECT COUNT(*) FROM `novel_index` ",
+            "WHERE MATCH (`title`, `authors`, `description`, `tags`, `series`, `publisher`) AGAINST (#{keywords} IN BOOLEAN MODE) "})
+    long countNovelIndexByKeywords(@Param("keywords") String keywords) throws DataAccessException;
 
 }

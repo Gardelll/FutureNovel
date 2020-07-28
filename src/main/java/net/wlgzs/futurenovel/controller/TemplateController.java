@@ -1,10 +1,16 @@
 package net.wlgzs.futurenovel.controller;
 
+import java.math.BigInteger;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +20,17 @@ import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.bean.RegisterRequest;
+import net.wlgzs.futurenovel.bean.SearchNovelRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
+import net.wlgzs.futurenovel.model.NovelIndex;
+import net.wlgzs.futurenovel.model.Section;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -65,13 +75,14 @@ public class TemplateController extends AbstractAppController {
                               NovelService novelService,
                               Validator defaultValidator,
                               Properties futureNovelConfig,
-                              FileService fileService) {
-        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService);
+                              FileService fileService,
+                              DateFormatter defaultDateFormatter) {
+        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService, defaultDateFormatter);
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(defaultValidator);
+       super.initBinder(binder);
     }
 
     /**
@@ -176,7 +187,7 @@ public class TemplateController extends AbstractAppController {
                     Account.Status.FINE,
                     false,
                     Account.Permission.USER,
-                    0,
+                    BigInteger.ZERO,
                     null);
                 accountService.register(account);
                 var uidCookie = new Cookie("uid", account.getUid().toString());
@@ -273,7 +284,80 @@ public class TemplateController extends AbstractAppController {
                          HttpServletRequest request,
                          HttpSession session) {
         checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
-        return "rank";
+        return "search";
+    }
+
+    @PostMapping(value = "/search", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String doSearch(@Valid SearchNovelRequest req,
+                           @RequestParam int page,
+                           @RequestParam(defaultValue = "20") int perPage,
+                           @CookieValue(name = "uid", defaultValue = "") String uid,
+                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                           HttpServletRequest request,
+                           HttpSession session,
+                           Model model) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        model.addAttribute("searchBy", req.searchBy);
+        model.addAttribute("sortBy", req.sortBy);
+        int offset = (page - 1) * perPage;
+        switch (req.searchBy) {
+            case KEYWORDS: {
+                if (req.keywords == null) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字为空");
+                String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));
+                String query = Arrays.stream(req.keywords.split("\\s+")).map(s -> "+" + s).collect(Collectors.joining(" ")) + " " + except;
+                long total = novelService.searchNovelIndexGetCount(query);
+                List<NovelIndex> result = novelService.searchNovelIndex(query, offset, perPage, req.sortBy.getOrderBy());
+                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("novelIndexList", result);
+                break;
+            }
+            case CONTENT: {
+                if (currentAccount == null) {
+                    model.asMap().clear();
+                    model.addAttribute("errorMessage", "请先登录");
+                    model.addAttribute("redirectTo", request.getRequestURI());
+                    return "redirect:/login";
+                }
+                currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.ONE));
+                if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0) throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
+                if (req.keywords == null || req.keywords.length() < 5) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字太短");
+                String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));
+                String query = Arrays.stream(req.keywords.split("\\s+")).map(s -> "+" + s).collect(Collectors.joining(" ")) + " " + except;
+                long total = novelService.searchByContentGetCount(query);
+                List<Section> result = novelService.searchByContent(query, offset, perPage);
+                if (!result.isEmpty()) {
+                    accountService.updateAccountExperience(currentAccount);
+                }
+                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("sectionList", result);
+                List<UUID> chapterIds = result.stream()
+                    .map(Section::getFromChapter)
+                    .collect(Collectors.toList());
+                List<NovelIndex> novelIndexList = novelService.findNovelIndexByChapterIdList(chapterIds);
+                ConcurrentHashMap<UUID, NovelIndex> chapterIdToNovelIndexMap = new ConcurrentHashMap<>(5);
+                for (NovelIndex novelIndex : novelIndexList) {
+                    HashSet<UUID> containedChapterIds = new HashSet<>();
+                    novelIndex.getChapters().forEach(jsonNode -> containedChapterIds.add(UUID.fromString(jsonNode.asText())));
+                    for (UUID u : containedChapterIds) {
+                        if(chapterIds.contains(u)) chapterIdToNovelIndexMap.put(u, novelIndex);
+                    }
+                }
+                model.addAttribute("chapterIdToNovelIndexMap", chapterIdToNovelIndexMap);
+                break;
+            }
+            case PUBDATE: {
+                if (req.after == null || req.before == null)
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "时间段为空");
+                long total = novelService.countNovelIndexByPubDate(req.after, req.before);
+                List<NovelIndex> result = novelService.findNovelIndexByPubDate(req.after, req.before, offset, perPage, req.sortBy.getOrderBy());
+                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("novelIndexList", result);
+                break;
+            }
+        }
+        return "search";
     }
 
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/write")
@@ -327,6 +411,23 @@ public class TemplateController extends AbstractAppController {
         }
         currentAccount.checkPermission(Account.Permission.ADMIN);
         return "index";
+    }
+
+    @GetMapping({"/admin/books"})
+    public String novelAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                             HttpServletRequest request,
+                             HttpSession session,
+                             Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
+        }
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        return "backstage-book";
     }
 
     @GetMapping({"/admin/users"})

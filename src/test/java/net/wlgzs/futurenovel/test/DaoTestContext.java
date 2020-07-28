@@ -1,5 +1,8 @@
 package net.wlgzs.futurenovel.test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.UUID;
+import net.wlgzs.futurenovel.typehandler.JsonNodeTypeHandler;
 import net.wlgzs.futurenovel.typehandler.UUIDTypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -46,17 +49,18 @@ public class DaoTestContext {
         factoryBean.setDataSource(dataSource());
         factoryBean.setTypeAliasesPackage("net.wlgzs.futurenovel.model");
         var conf = new org.apache.ibatis.session.Configuration();
-        conf.setDefaultEnumTypeHandler(org.apache.ibatis.type.EnumOrdinalTypeHandler.class);
         var reg = conf.getTypeHandlerRegistry();
+        reg.setDefaultEnumTypeHandler(org.apache.ibatis.type.EnumOrdinalTypeHandler.class);
         reg.register(RoundingMode.class, org.apache.ibatis.type.EnumOrdinalTypeHandler.class);
-        reg.register(UUIDTypeHandler.class);
+        reg.register(UUID.class, UUIDTypeHandler.class);
+        reg.register(JsonNode.class, JsonNodeTypeHandler.class);
         conf.addMappers("net.wlgzs.futurenovel.dao");
         factoryBean.setConfiguration(conf);
         return factoryBean;
     }
 
-    @Bean
-    JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
-    }
+//    @Bean
+//    JdbcTemplate jdbcTemplate() {
+//        return new JdbcTemplate(dataSource());
+//    }
 }

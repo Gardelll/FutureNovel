@@ -3,6 +3,10 @@ package net.wlgzs.futurenovel.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -95,7 +99,7 @@ public class Account implements Serializable {
      * 经验/积分
      */
     @NonNull
-    private long experience;
+    private BigInteger experience;
 
     /**
      * 用户头像的 URL
@@ -129,7 +133,14 @@ public class Account implements Serializable {
      * @return 用户等级
      */
     public int getLevel() {
-        return (int) (0.5 * (Math.sqrt(0.08 * experience + 1) - 1));
+        return BigDecimal.valueOf(0.5)
+            .multiply(BigDecimal.valueOf(0.08)
+                .multiply(new BigDecimal(experience))
+                .add(BigDecimal.ONE)
+                .sqrt(new MathContext(7, RoundingMode.HALF_UP)))
+            .subtract(BigDecimal.ONE)
+            .intValue();
+        //return (int) (0.5 * (Math.sqrt(0.08 * experience + 1) - 1));
     }
 
     public void checkPermission(Account.Permission ... permissions) throws FutureNovelException {

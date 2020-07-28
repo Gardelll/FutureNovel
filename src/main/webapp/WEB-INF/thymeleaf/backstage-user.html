@@ -97,7 +97,7 @@
 </script>
 <!-- 作为公共部分分离/ -->
 <script th:inline="javascript" async>
-    var curpage=1,
+    var curPage=1,
         onepage=5;
     $(document).ready(function(){
         $.ajax({
@@ -108,7 +108,7 @@
                 },
                 success: function(data){
                     
-                    var allpage=data.pages;
+                    var allPage=data.pages;
                     console.log(data)
                 },
                 error: function(jqXHR) {
@@ -122,7 +122,7 @@
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
-                    page: Number(curpage)
+                    page: Number(curPage)
                 },
                 success: function(data){
                     $('#a').empty();
@@ -137,7 +137,6 @@
                             <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                         </tr>`)
                     })
-                    $('#control_page').empty();
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
@@ -156,7 +155,7 @@
                             type:'GET',
                             data:{
                                 per_page: Number(onepage),
-                                page: Number(curpage)
+                                page: Number(curPage)
                             },
                             success: function(data){
                                 if(curPage<=allPage){
@@ -191,7 +190,7 @@
                             type:'GET',
                             data:{
                                 per_page: Number(onepage),
-                                page: Number(curpage)
+                                page: Number(curPage)
                             },
                             success: function(data){
                                 if(curPage>0){

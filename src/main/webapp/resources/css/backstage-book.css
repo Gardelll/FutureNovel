@@ -84,6 +84,11 @@
   width: 185px;
   border: 1px solid #BBBBBB;
 }
+.popup_mod select{ 
+  height: 38px;
+  width: 196px;
+  border: 1px solid #BBBBBB;
+}
 .popup_mod label{
     float: left;
     display: block;

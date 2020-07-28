@@ -69,7 +69,7 @@
                             <th style="width: 13%;">用户名</th>
                             <th style="width: 20%;">手机号</th>
                             <th style="width: 13%;">身份</th>
-                            <th style="width: 13%;">加入时间</th>
+                            <th style="width: 15%;">加入时间</th>
                             <th style="width: 13%;">账号状态</th>
                             <th style="width: 24%;">操作</th>
                         </tr>
@@ -129,6 +129,17 @@
                     per_page: Number(onepage)
                 },
                 success: function(data){
+                    $.each(data,function(i){
+                        $('#a').append(`<tr>
+                            <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
+                            <th style="width: 13%;">${data[i].userName}</th>
+                            <th style="width: 20%;">${data[i].phone}</th>
+                            <th style="width: 13%;">${data[i].permission}</th>
+                            <th style="width: 15%;">${data[i].registerDate}</th>
+                            <th style="width: 13%;">${data[i].status}</th>
+                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                        </tr>`)
+                    })
                     var all_page=data.pages;
                     console.log(data)
                 },
@@ -147,7 +158,7 @@
                     page: Number(curpage)
                 },
                 success: function(data){
-                    //alert(data.Account.uid)
+                    alert(data[0].uid)
                     console.log(data)
                 },
                 error: function() {

@@ -14,9 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.AppConfig;
+import net.wlgzs.futurenovel.bean.AddSectionRequest;
+import net.wlgzs.futurenovel.bean.EditNovelRequest;
 import net.wlgzs.futurenovel.bean.NovelChapter;
 import net.wlgzs.futurenovel.dao.ChapterDao;
 import net.wlgzs.futurenovel.dao.NovelIndexDao;
@@ -180,7 +184,11 @@ public class NovelService implements DisposableBean {
             arrayNode.add(chapter.getUniqueId().toString());
             var ret = chapterDao.insertChapter(chapter);
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
-            ret = novelIndexDao.updateNovelIndex(novelIndex);
+            ret = novelIndexDao.updateNovelIndex(novelIndex.getUniqueId(),
+                null, null, null,
+                null, null, null,
+                null, null, null,
+                novelIndex.getChapters());
             if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新添加操作返回了不是 1 的值：" + ret);
             return chapter;
         } catch (DataAccessException e) {
@@ -347,39 +355,64 @@ public class NovelService implements DisposableBean {
         }
     }
 
+    private boolean checkAllNull(@NonNull Object ... objects) {
+        for (var o : objects) {
+            if (o instanceof CharSequence) {
+                if (((CharSequence) o).length() != 0) return false;
+            } else if (o != null) return false;
+        }
+        return true;
+    }
+
     @Transactional
-    public void editNovelIndex(@NonNull Account account, @NonNull NovelIndex novelIndex) {
+    public boolean editNovelIndex(@NonNull Account account, @NonNull UUID novelId, @NonNull EditNovelRequest edit) {
         try {
+            NovelIndex novelIndex = getNovelIndex(novelId);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            var ret = novelIndexDao.updateNovelIndex(novelIndex);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            String authors = edit.authors == null ? null : edit.authors.stream().map(String::trim).collect(Collectors.joining(","));
+            String tags = edit.tags == null ? null : edit.tags.stream().map(String::trim).collect(Collectors.joining(","));
+            ArrayNode chapters = edit.chapters == null ? null : edit.chapters.stream()
+                .filter(s -> s.matches("[0-9a-f\\-]{36}"))
+                .collect(
+                    () -> new ArrayNode(AppConfig.objectMapper.getNodeFactory()),
+                    ArrayNode::add,
+                    ArrayNode::addAll
+                );
+            if (checkAllNull(edit.title, edit.copyright, authors,
+                edit.description, tags, edit.series, edit.publisher,
+                edit.pubdate, edit.coverImgUrl, chapters)) return false;
+            return 1 == novelIndexDao.updateNovelIndex(
+                novelIndex.getUniqueId(), edit.title, edit.copyright, authors,
+                edit.description, tags, edit.series, edit.publisher,
+                edit.pubdate, edit.coverImgUrl, chapters
+            );
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
     @Transactional
-    public void editChapter(@NonNull Account account, @NonNull Chapter chapter, @Nullable NovelIndex novelIndex) {
+    public void editChapter(@NonNull Account account, @NonNull Chapter chapter) {
         try {
-            if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
+            var novelIndex = novelIndexDao.getNovelIndexById(chapter.getUniqueId());
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = chapterDao.updateChapter(chapter);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步修改操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
     @Transactional
-    public void editSection(@NonNull Account account, @NonNull Section section, @Nullable NovelIndex novelIndex) {
+    public boolean editSection(@NonNull Account account, @NonNull UUID sectionId, @NonNull AddSectionRequest edit) {
         try {
-            if (novelIndex == null) novelIndex = novelIndexDao.getNovelIndexById(chapterDao.getChapterById(section.getFromChapter()).getFromNovel());
+            var novelIndex = novelIndexDao.getNovelIndexBySectionId(sectionId);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            var ret = sectionDao.updateSection(section);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            if (checkAllNull(edit.text, edit.title)) return false;
+            return 1 == sectionDao.updateSection(sectionId, edit.title, edit.text);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -416,6 +449,23 @@ public class NovelService implements DisposableBean {
     public long countNovelIndexByPubDate(@NonNull Date after, @NonNull Date before) {
         try {
             return novelIndexDao.countNovelIndexByPubDate(after, before);
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    public List<NovelIndex> getAllNovelIndex(@NonNull int offset, @NonNull int count, @Nullable String orderBy) {
+        try {
+            List<NovelIndex> list = novelIndexDao.getAll(offset, count, orderBy);
+            return list == null ? List.of() : list;
+        } catch (DataAccessException e) {
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
+        }
+    }
+
+    public long countAllNovelIndex() {
+        try {
+            return novelIndexDao.size();
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

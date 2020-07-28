@@ -30,6 +30,7 @@
 |管理时所用帐号权限不足|403|PERMISSION_DENIED|无权操作|
 |上传文件超过 8MB|413|FILE_TOO_LARGE|上传的文件过大|
 |编辑小说时找不到对应的索引|404|NOVEL_NOT_FOUND|找不到小说|
+|执行需要积分的操作时积分不够|403|EXP_NOT_ENOUGH|积分不足|
 |未完待续| | | |
 
 ### 数据格式
@@ -215,7 +216,7 @@ GET $URL/api/account/edit
 |phone|String|手机号|T|
 |status|String|账号状态，（参见上方 #数据格式 Account->status）|T|
 |vip|Boolean|是否为高级会员|T|
-|permission|String|用户权限，参见上方 #数据格式 Account->permission|T|
+|permission|String|用户权限，（参见上方 #数据格式 Account->permission）|T|
 |profileImgUrl|String|头像 URL|T|
 |activateCode|String|邮箱验证码，当且仅当修改邮箱、密码时验证|T|
 
@@ -223,6 +224,7 @@ GET $URL/api/account/edit
 未发生任何改动则认为修改失败  
 注意：修改邮箱时验证码的收件帐号为新邮箱  
 注意：管理员修改自己的帐号时也需要验证邮箱
+注意：管理员不能自己修改自己的账号状态、权限、vip
 
 若修改成功，服务端返回状态码 204 - No Content
 
@@ -253,6 +255,30 @@ PUT $URL/api/img/upload
 }
 ```
 
+#### 根据用户 ID 查询用户信息
+
+```
+GET $URL/api/account/{uniqueId}/info
+```
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|用户 ID，注意要包含在路径里，不是 JSON 参数|F|
+
+返回参数：
+
+```json5
+{
+    "uid": "b6623a2e62334e36a1b131b4642e81ab", // 用户 ID 的数字格式（十六进制）
+    "vip": false,
+    "level": 2, // 用户等级
+    "profileImgUrl": null, // 用户头像的 URL
+    "userName": "admin"
+}
+```
+
 #### 用户管理
 
 1. 获取用户管理的总页数
@@ -266,7 +292,7 @@ GET $URL/api/admin/accounts/pages
 
 |字段|类型|含义或值|可空|
 |---|---|------------|---|
-|per_page|查询参数 int|每页展示的帐号数量，默认为 20|是|
+|per_page|查询参数 int|每页展示的帐号数量，默认为 20，最大为 100|是|
 
 若查询成功，返回状态码为 200 - OK
 
@@ -476,7 +502,7 @@ DELETE $URL/api/admin/account/delete
 5. 修改帐号积分
    
 ```
-GET $URL/api/account/experience/edit
+GET $URL/api/admin/account/experience/edit
 ```
 
 >权限：管理员
@@ -757,7 +783,6 @@ GET $URL/api/novel/user/{accountId}/pages
 }
 ```
 
-
 12. 获取某用户上传的所有小说
 
 ```
@@ -778,6 +803,7 @@ GET $URL/api/novel/user/{accountId}/get
 
 |枚举常量|说明|
 |----|----|
+|BEAT_MATCH|最佳匹配（搜索时有效）|
 |AUTHORS|根据作者排序|
 |AUTHORS_DESC|作者倒序，下同理|
 |COPYRIGHT|版权|
@@ -815,3 +841,141 @@ GET $URL/api/novel/user/{accountId}/get
 ```
 
 若该页没有数据，服务端返回状态码 204 - No Content
+
+13. 获取本站所有小说的总页数
+
+```
+GET $URL/api/admin/novel/all/pages
+```  
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|per_page|查询参数 int|每页展示的小说数量，默认为 20|是|
+
+若查询成功，返回状态码为 200 - OK
+
+返回参数：
+
+```json5
+{
+  "per_page" : 20, // 每页展示的小说数量 
+  "pages": 1 //总共的页数
+}
+```
+
+14. 获取本站所有小说
+
+```
+GET $URL/api/admin/novel/all
+```  
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|per_page|查询参数 int|每页展示的小说数量，默认为 20|T|
+|page|查询参数 int|页码|F|
+|sort_by|String|排序方式枚举|T 默认 HOT_DESC|
+
+若查询成功，返回状态码为 200 - OK
+
+返回参数：  
+```json5
+[
+    {
+        // 小说目录信息，见上方 #数据格式 NovelIndex
+        "chapters": [] // 此处不会含有实际信息，只有章节 ID的列表，因此可以统计章节总数但不能获取章节标题
+    },
+    {
+        // 还可能有更多
+    }
+]
+```
+
+若该页没有数据，服务端返回状态码 204 - No Content
+
+
+15. 编辑小说信息
+
+```
+POST $URL/api/novel/{novelId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|novelId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
+|copyright|String|<a title="NO_COPYRIGHT 公版,REPRINT 转载,FAN_FICTION 同人,ORIGINAL 原创">版权</a>字符串枚举|T|
+|title|String|标题|T|
+|authors|String 数组|作者(JSON 数组)|T|
+|description|String|简介|T|
+|tags|String 数组|用于分类的标签(JSON 数组)|T|
+|series|String|<a title="比如《三体》、《黑暗森林》、《死神永生》属于“地球往事三部曲”系列">系列</a>|T|
+|publisher|String|出版社|T|
+|pubdate|String|出版日期，格式："yyyy年MM月dd日 HH:mm:ss"|T|
+|coverImgUrl|String|封面图像 URL|T|
+|chapters|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序（排序算法未完成）|T|
+
+示例：
+```json5
+{
+  "title": "修改标题",
+  "authors": ["作者A","作者B"],
+  "chapters": [
+    "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e"
+    // 还可能有更多
+  ]
+}
+```
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败  
+
+若修改成功，服务端返回状态码 204 - No Content
+
+16. 编辑章节信息
+
+```
+POST $URL/api/novel/chapter/{chapterId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|章节 ID，注意要包含在路径里，不是 query 参数|F|
+|title|String|标题|T|
+|sections|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序|T|
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败
+
+若修改成功，服务端返回状态码 204 - No Content
+
+17. 编辑小节
+
+```
+POST $URL/api/novel/section/{sectionId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+|title|String|标题|T|
+|text|String|修改内容|T|
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败
+
+若修改成功，服务端返回状态码 204 - No Content

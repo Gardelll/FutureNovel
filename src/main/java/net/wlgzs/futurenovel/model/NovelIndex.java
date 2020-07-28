@@ -91,6 +91,7 @@ public class NovelIndex implements Serializable {
     /**
      * 热度（点击量）
      */
+    @NonNull
     private long hot;
 
     /**

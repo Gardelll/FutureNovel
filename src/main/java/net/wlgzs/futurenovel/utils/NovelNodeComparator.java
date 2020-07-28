@@ -37,7 +37,7 @@ public class NovelNodeComparator<T extends NovelNode> implements Comparator<T> {
         Arrays.sort(numChars);
     }
 
-    // TODO 添加手动排序方式
+    // TODO 添加手动排序方式 - 根据数据库中 chapters/sections 的 ID 顺序
 
     /**
      * 根据标题排序

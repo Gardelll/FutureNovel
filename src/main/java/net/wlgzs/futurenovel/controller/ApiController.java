@@ -28,12 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.AppConfig;
 import net.wlgzs.futurenovel.bean.AddAccountRequest;
 import net.wlgzs.futurenovel.bean.AddChapterRequest;
 import net.wlgzs.futurenovel.bean.AddSectionRequest;
 import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.bean.EditAccountRequest;
 import net.wlgzs.futurenovel.bean.EditExperienceRequest;
+import net.wlgzs.futurenovel.bean.EditNovelRequest;
 import net.wlgzs.futurenovel.bean.ErrorResponse;
 import net.wlgzs.futurenovel.bean.LoginRequest;
 import net.wlgzs.futurenovel.bean.Novel;
@@ -308,7 +310,7 @@ public class ApiController extends AbstractAppController {
         }
     }
 
-    @PostMapping(value = "/account/experience/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/admin/account/experience/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editAccountExperience(@RequestBody @Valid EditExperienceRequest req,
                                       @CookieValue(name = "uid", defaultValue = "") String uid,
@@ -324,6 +326,18 @@ public class ApiController extends AbstractAppController {
         accountService.updateAccountExperience(account);
     }
 
+    @GetMapping("/account/{uniqueId:[0-9a-f\\-]{36}}/info")
+    public Map<String, ?> getAccountShortInfo(@PathVariable String uniqueId) {
+        Account account = accountService.getAccount(UUID.fromString(uniqueId));
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("userName", account.getUserName());
+        result.put("uid", account.getUidNum());
+        result.put("vip", account.isVIP());
+        result.put("profileImgUrl", account.getProfileImgUrl());
+        result.put("level", account.getLevel());
+        result.put("timestamp", System.currentTimeMillis());
+        return result;
+    }
 
     /**
      * 管理员批量添加用户
@@ -767,6 +781,41 @@ public class ApiController extends AbstractAppController {
     }
 
     /**
+     * 获取本站所有小说
+     * @param page 页码
+     * @param perPage 每页显示的数量
+     * @param sortBy 排序方式，参见 {@link net.wlgzs.futurenovel.bean.SearchNovelRequest.SortBy}
+     * @return 小说目录的列表（不含章节目录）
+     */
+    @GetMapping("/admin/novel/all")
+    @ResponseBody
+    public ResponseEntity<List<NovelIndex>> novelGetAll(@RequestParam(name = "page") int page,
+                                                        @RequestParam(name = "per_page", defaultValue = "20") int perPage,
+                                                        @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") SearchNovelRequest.SortBy sortBy) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        int offset = (page - 1) * perPage;
+        final var result = novelService.getAllNovelIndex(offset, perPage, sortBy.getOrderBy());
+        return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
+    }
+
+    /**
+     * 获取本站所有小说的总页数
+     * @param perPage 每页显示的数量
+     * @return json 数据
+     */
+    @GetMapping("/admin/novel/all/pages")
+    @ResponseBody
+    public Map<String, ?> novelGetAllPages(@RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        long total = novelService.countAllNovelIndex();
+        return Map.of(
+            "per_page", perPage,
+            "pages", total / perPage + 1,
+            "timestamp", System.currentTimeMillis()
+        );
+    }
+
+    /**
      * 获取某个用户上传的所有小说
      * @param accountId 用户的 ID
      * @param page 页码
@@ -805,7 +854,64 @@ public class ApiController extends AbstractAppController {
         );
     }
 
+    @PostMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/edit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void editNovelIndex(@PathVariable("uniqueId") String uniqueId,
+                               @RequestBody @Valid EditNovelRequest req,
+                               @CookieValue(name = "uid", defaultValue = "") String uid,
+                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                               HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
+        if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+    }
+
+    @PostMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}/edit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void editChapter(@PathVariable("uniqueId") String uniqueId,
+                            @RequestBody @Valid AddChapterRequest req,
+                            @CookieValue(name = "uid", defaultValue = "") String uid,
+                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                            HttpServletRequest request) {
+        if ((req.title == null || req.title.isBlank()) && req.sectionsEdit == null) throw new IllegalArgumentException("title & sections: 不能同时为空");
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        var chapter = novelService.getChapter(UUID.fromString(uniqueId));
+        if (req.title != null && !req.title.isBlank()) chapter.setTitle(req.title);
+        ArrayNode sections = req.sectionsEdit == null ? null : req.sectionsEdit.stream()
+            .filter(s -> s.matches("[0-9a-f\\-]{36}"))
+            .collect(
+                () -> new ArrayNode(AppConfig.objectMapper.getNodeFactory()),
+                ArrayNode::add,
+                ArrayNode::addAll
+            );
+        if (sections != null) {
+            if (sections.isEmpty()) throw new IllegalArgumentException("没有合法的小节 ID，若要删除章节原来的内容，请先添加新的内容");
+            chapter.setSections(sections);
+        }
+        novelService.editChapter(currentAccount, chapter);
+    }
+
+    @PostMapping("/novel/section/{uniqueId:[0-9a-f\\-]{36}}/edit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void editSection(@PathVariable("uniqueId") String uniqueId,
+                            @RequestBody AddSectionRequest req,
+                            @CookieValue(name = "uid", defaultValue = "") String uid,
+                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                            HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException("title: 不能为空");
+        if (req.text != null && (req.text.length() < 200 || req.text.length() > 4194304)) throw new IllegalArgumentException("text: 大小必须在 200B 到 4MB 之间");
+
+        if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+    }
 
 //    // TODO 统计网站数据
 //    public Map<String, ?> statistics() {

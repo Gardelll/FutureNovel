@@ -137,8 +137,8 @@ public class Account implements Serializable {
             .multiply(BigDecimal.valueOf(0.08)
                 .multiply(new BigDecimal(experience))
                 .add(BigDecimal.ONE)
-                .sqrt(new MathContext(7, RoundingMode.HALF_UP)))
-            .subtract(BigDecimal.ONE)
+                .sqrt(new MathContext(7, RoundingMode.HALF_UP))
+                .subtract(BigDecimal.ONE))
             .intValue();
         //return (int) (0.5 * (Math.sqrt(0.08 * experience + 1) - 1));
     }

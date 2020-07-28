@@ -258,7 +258,7 @@ public class TemplateController extends AbstractAppController {
         return "read-book";
     }
 
-    @GetMapping({"/user", "/user/{uuid:[0-9a-f\\-]{36}}"})
+    @GetMapping({"/user/{uuid:[0-9a-f\\-]{36}}"})
     public String userCenter(@PathVariable(required = false) String uuid,
                              @CookieValue(name = "uid", defaultValue = "") String uid,
                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
@@ -271,7 +271,7 @@ public class TemplateController extends AbstractAppController {
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
             model.addAttribute("showAccount", showAccount);
-            return "user";
+            return "member";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);
         }
@@ -303,6 +303,13 @@ public class TemplateController extends AbstractAppController {
         model.addAttribute("sortBy", req.sortBy);
         int offset = (page - 1) * perPage;
         switch (req.searchBy) {
+            case HOT: {
+                long total = novelService.countAllNovelIndex();
+                List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, req.sortBy.getOrderBy());
+                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("novelIndexList", result);
+                break;
+            }
             case KEYWORDS: {
                 if (req.keywords == null) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字为空");
                 String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));

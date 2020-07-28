@@ -14,7 +14,7 @@ public class SearchNovelRequest {
     /**
      * 查询包含关键词，空格分隔
      */
-    @Size(min = 1)
+    @Size(min = 2)
     public String keywords;
 
     /**
@@ -48,7 +48,8 @@ public class SearchNovelRequest {
     public enum SearchBy {
         KEYWORDS,
         CONTENT,
-        PUBDATE
+        PUBDATE,
+        HOT
     }
 
     public enum SortBy {
@@ -72,7 +73,8 @@ public class SearchNovelRequest {
         TITLE("`title`"),
         TITLE_DESC("`title` DESC"),
         UPLOADER("`uploader`"),
-        UPLOADER_DESC("`uploader` DESC");
+        UPLOADER_DESC("`uploader` DESC"),
+        BEST_MATCH(null);
 
         private final String orderBy;
 

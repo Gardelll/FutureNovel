@@ -1,5 +1,6 @@
 package net.wlgzs.futurenovel.dao;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -27,28 +28,31 @@ public interface NovelIndexDao {
             "#{chapters})"})
     int insertNovelIndex(NovelIndex novelIndex) throws DataAccessException;
 
-    @Update({"UPDATE `novel_index` SET ",
-            "`uploader` = #{uploader}, `title` = #{title}, ",
-            "`copyright` = #{copyright}, ",
-            "`authors` = #{authors}, `description` = #{description}, ",
-            "`rating` = #{rating}, `tags` = #{tags}, ",
-            "`series` = #{series}, `publisher` = #{publisher}, ",
-            "`pubdate` = #{pubdate}, `hot` = #{hot}, ",
-            "`coverImgUrl` = #{coverImgUrl}, ",
-            "`chapters` = #{chapters} ",
-            "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
-    int updateNovelIndex(NovelIndex novelIndex) throws DataAccessException;
-
-    @Update({"UPDATE `novel_index` SET ",
-            "`uploader` = #{uploader} , `title` = #{title}, ",
-            "`copyright` = #{copyright}, ",
-            "`authors` = #{authors}, `description` = #{description}, ",
-            "`rating` = #{rating}, `tags` = #{tags}, ",
-            "`series` = #{series}, `publisher` = #{publisher}, ",
-            "`pubdate` = #{pubdate}, `hot` = #{hot}, ",
-            "`coverImgUrl` = #{coverImgUrl}, ",
-            "WHERE `novel_index`.`uniqueId` = #{uniqueId}"})
-    int updateNovelIndexExceptContent(NovelIndex novelIndex) throws DataAccessException;
+    @Update({"<script>",
+            "UPDATE `novel_index` <set> ",
+            "<if test='title != null'>`title` = #{title},</if> ",
+            "<if test='copyright != null'>`copyright` = #{copyright},</if> ",
+            "<if test='authors != null'>`authors` = #{authors},</if> ",
+            "<if test='description != null'>`description` = #{description},</if> ",
+            "<if test='tags != null'>`tags` = #{tags},</if> ",
+            "<if test='series != null'>`series` = #{series},</if> ",
+            "<if test='publisher != null'>`publisher` = #{publisher},</if> ",
+            "<if test='pubdate != null'>`pubdate` = #{pubdate},</if> ",
+            "<if test='coverImgUrl != null'>`coverImgUrl` = #{coverImgUrl},</if> ",
+            "<if test='chapters != null'>`chapters` = #{chapters}</if> ",
+            "</set> WHERE `novel_index`.`uniqueId` = #{uniqueId}",
+            "</script>"})
+    int updateNovelIndex(@Param("uniqueId") UUID novelId,
+                         @Param("title") String title,
+                         @Param("copyright") NovelIndex.Copyright copyright,
+                         @Param("authors") String authors,
+                         @Param("description") String description,
+                         @Param("tags") String tags,
+                         @Param("series") String series,
+                         @Param("publisher") String publisher,
+                         @Param("pubdate") Date pubdate,
+                         @Param("coverImgUrl") String coverImgUrl,
+                         @Param("chapters") ArrayNode chapters) throws DataAccessException;
 
     @Delete("DELETE FROM `novel_index` WHERE `novel_index`.`uniqueId` = #{uniqueId}")
     int deleteNovelIndex(NovelIndex novelIndex) throws DataAccessException;
@@ -117,6 +121,18 @@ public interface NovelIndexDao {
     @Select({"SELECT COUNT(*) FROM `novel_index` ",
             "WHERE `novel_index`.`pubdate` BETWEEN #{after} AND #{before} "})
     long countNovelIndexByPubDate(@Param("after") Date after, @Param("before") Date before) throws DataAccessException;
+
+    @Select("SELECT COUNT(*) FROM `novel_index`")
+    long size();
+
+    @Select({"<script>",
+            "SELECT `uniqueId`, `uploader`, `title`, `copyright`, ",
+            "`authors`, `description`, `rating`, `tags`, `series`, ",
+            "`publisher`, `pubdate`, `hot`, `coverImgUrl`, `chapters` FROM `novel_index` ",
+            "<if test='orderBy != null'>ORDER BY ${orderBy}</if> ",
+            "LIMIT ${offset},${count}",
+            "</script>"})
+    List<NovelIndex> getAll(@Param("offset") int offset, @Param("count") int count, @Param("orderBy") String orderBy);
 
     @Select("SELECT `tags` FROM `novel_index` ORDER BY `hot` DESC LIMIT ${offset},${count}")
     List<String> getAllTags(@Param("offset") int offset, @Param("count") int count) throws DataAccessException;

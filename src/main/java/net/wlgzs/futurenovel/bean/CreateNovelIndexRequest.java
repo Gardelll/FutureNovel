@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import net.wlgzs.futurenovel.model.NovelIndex;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.lang.Nullable;
 
 /**
@@ -70,6 +71,7 @@ public class CreateNovelIndexRequest {
      * 封面图像 URL
      */
     @Nullable
+    @URL
     public String coverImgUrl;
 
 }

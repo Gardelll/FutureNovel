@@ -20,11 +20,13 @@ public interface SectionDao {
             "VALUES (#{uniqueId}, #{fromChapter}, #{title}, #{text})"})
     int insertSection(Section section) throws DataAccessException;
 
-    @Update({"UPDATE `section` SET `fromChapter` = #{fromChapter}, `title` = #{title}, `text` = #{text} WHERE `section`.`uniqueId` = #{uniqueId}"})
-    int updateSection(Section section) throws DataAccessException;
-
-    @Update({"UPDATE `section` SET `title` = #{title} WHERE `section`.`uniqueId` = #{uniqueId}"})
-    int updateSectionTitle(Section section) throws DataAccessException;
+    @Update({"<script>", "UPDATE `section` <set> ",
+        "<if test='title != null'>`title` = #{title},</if> ",
+        "<if test='text != null'>`text` = #{text}</if> ",
+        "</set> WHERE `section`.`uniqueId` = #{uniqueId} </script>"})
+    int updateSection(@Param("uniqueId") UUID sectionId,
+                      @Param("title") String title,
+                      @Param("text") String text) throws DataAccessException;
 
     @Select("SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
     List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;

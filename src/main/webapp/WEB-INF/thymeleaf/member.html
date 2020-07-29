@@ -90,7 +90,7 @@
                         <i class="fa fa-home" style="font-size:16px"></i>首页
                     </a>
                     <li class="side-parent">
-                        <a href="setting.html">
+                        <a href="javascript:open()">
                             <i class="fa fa-edit" style="font-size:16px"></i>
                             <span style="vertical-align: inherit">修改</span>
                         </a>
@@ -115,6 +115,9 @@
                     <a href="#shelf" class="side-ul-a">
                         <i class="fa fa-book" style="font-size:16px"></i>我的书架
                     </a>
+                    <a href="#work" class="side-ul-a">
+                        <i class="fa fa-folder-o" style="font-size:16px"></i>我的作品
+                    </a>
                 </ul>
             </div>
             <!-- 中间内容-->
@@ -127,7 +130,7 @@
                     </div>
                     <div class="home-user">
                         <div class="blue-btn-little">
-                            <a href="setting.html" class="button-a button-icon">
+                            <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
                         </div>
@@ -154,10 +157,134 @@
                     <h2 class="shelf-title" id="shelf">我的书架</h2>
                     <ul class="shelf-list" id="shelfList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </form>
+                <form id="addToMyWork" method="post" class="my-work-main">
+                    <h2 class="my-work-title" id="work">我的作品</h2>
+                    <ul class="my-work-list" id="myWorkList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="mask" id="mask"></div>
+    <div class="setting-content" id="setting-content" style="width: 548.4px;height:506px;display: none;">
+        <div class="setting-record">
+            <div class="tabs" id="tabView">
+                <a class="tabTarget1 checked">基本设置</a>
+                <a class="tabTarget2">头像设置</a>
+                <a href="javascript:close()" id="close-setting" style="display: none;float: right;"><i class="fa fa-close" style="font-size:16px"></i></a>
+            </div>
+            <div class="tab-contents" id="tabContents">
+                <div id="tabTarget1" class="tab-content checked">
+                    <div class="tab-form">
+                        <form id="setBasicForm" action="" method="post">
+                            <input type="hidden" name="csrfToken" value="" class="elCsrf">
+                            <dl>
+                                <dt>用户名</dt>
+                                <dd>
+                                    书友
+                                    <span href="###" id="btnEditName" class="blue ml8 cur" role="button" style="font-size: 12px">修改用户名</span>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>性别</dt>
+                                <dd>
+                                    <input type="radio" id="radioSex1" name="gender">
+                                    <label for="radioSex1"></label>
+                                    <label for="radioSex1" style="margin-right: 20px">男</label>
+                                    <input type="radio" id="radioSex2" name="gender">
+                                    <label for="radioSex2"></label>
+                                    <label for="radioSex2">女</label>
+                                </dd>
+                            </dl>
+                            <dl class="form-higher">
+                                <dt>生日</dt>
+                                <dd>
+                                    <span class="date-input">
+                                        <input id="iptBorth" type="date" value="1970-01-01" name="birthday">
+                                        <label for="iptBorth" class="data-arrow"></label>
+                                    </span>
+                                </dd>
+                            </dl>
+                            <dl class="form-higher">
+                                <dt>简介</dt>
+                                <dd>
+                                    <textarea id="forIntroArea" name="introduction" placeholder="可以简单的描述一下自己"></textarea>
+                                    <label for="forIntroArea" class="textarea-count">
+                                        <span>0</span>/<span>100</span>
+                                    </label>
+                                </dd>
+                            </dl>
+                            <dl class="form-higher">
+                                <dt></dt>
+                                <dd>
+                                    <div>
+                                        <input type="submit" id="basicMsgSubmit" class="clip">
+                                        <label class="button" for="basicMsgSubmit">保存</label>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </form>
+                    </div>
+                </div>
+                <div id="tabTarget2" class="tab-content">
+                    <form id="setAvatarForm" method="post" action="##" novalidate>
+                        <input type="hidden" name="csrfToken" value="" class="elCsrf">
+                        <input type="radio" id="avatarUpload" class="avatar-upload" name="avatarType" value="0">
+                        <input type="radio" id="avatarSystem" class="avatar-system" name="avatarType" value="1">
+                        <input type="hidden" id="elUploadUrl" name="url" value="">
+                        <div id="avatarChoose" class="avatar-choose">
+                            <img class="avatar-show" src="../../resources/img/avatar.png" alt="书友的头像">
+                            <div class="avatar-text">
+                                <p>本地上传: 选择本地图片编辑后上传 (上传头像将会在2个工作日内进行审核，通过后需重新登录显示新头像)。</p>
+                                <p class="gray">支持jpg、gif、png格式图片，上传文件大小不超过5MB，图片尺寸需大于200*200。</p>
+                            </div>
+                            <div>
+                                <label class="button" id="elLabelforup" role="button">本地上传</label>
+                                <label for="avatarSystem" class="button" role="button">选择系统头像</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(".tabTarget1").click(function() {
+            $(".tabTarget1").addClass("checked")
+            $("#tabTarget2").removeClass("checked");
+            $("#tabTarget1").addClass("checked");
+            $(".tabTarget2").removeClass("checked");
+        });
+
+        $(".tabTarget2").click(function() {
+            $(".tabTarget1").removeClass("checked");
+            $(".tabTarget2").addClass("checked");
+            $("#tabTarget1").removeClass("checked");
+            $("#tabTarget2").addClass("checked");
+
+        });
+    </script>
+    <script>
+        function open() {
+            var s = document.getElementById("mask");
+            s.style.display = "block";
+            var l = document.getElementById("close-setting");
+            l.style.display = "block";
+            var c = document.getElementById("setting-content");
+            c.style.display = "block";
+        }
+
+        function close() {
+            var s = document.getElementById("mask");
+            s.style.display = "none";
+            var l = document.getElementById("close-setting");
+            l.style.display = "none";
+            var c = document.getElementById("setting-content");
+            c.style.display = "none";
+        }
+    </script>
 </body>
 
 </html>

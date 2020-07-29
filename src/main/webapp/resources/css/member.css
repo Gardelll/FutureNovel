@@ -1,4 +1,5 @@
 /*侧边导航栏*/
+
 .personal-side {
     height: 100%;
     position: relative;
@@ -10,12 +11,14 @@
     background-color: #fff;
     padding: 20px 0;
 }
-.side-main .side-parent{
+
+.side-main .side-parent {
     position: relative;
     padding: 12px 25px;
     cursor: pointer;
 }
-.side-ul-a{
+
+.side-ul-a {
     position: relative;
     padding: 12px 25px;
     font-size: 14px;
@@ -23,46 +26,56 @@
     text-overflow: ellipsis;
     display: block;
 }
-.side-main li a{
+
+.side-main li a {
     font-size: 14px;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 .side-main i {
     width: 21px;
     margin-right: 16px;
     text-align: center;
     vertical-align: middle;
 }
+
 .side-main li span {
     vertical-align: middle;
 }
+
 .side-main li:hover {
     color: #115f96;
     background: #fff;
 }
+
 .side-main .side-group {
     display: none;
     padding: 10px 0;
 }
-.side-group>li{
+
+.side-group>li {
     position: relative;
     display: block;
 }
+
 .side-main .side-group li a {
     padding: 6px 15px 6px 42px;
     overflow: hidden;
 }
+
 .side-groupli>a {
     position: relative;
     display: block;
 }
+
 .side-group li {
     font-size: 14px;
     line-height: 36px;
     position: relative;
     cursor: pointer;
 }
+
 .side-group li .side-list-a {
     display: block;
     overflow: hidden;
@@ -71,7 +84,10 @@
     text-overflow: ellipsis;
     border-radius: 4px;
 }
+
+
 /*中间内容*/
+
 .home-content {
     color: #3e3d43;
     display: table-cell;
@@ -79,6 +95,7 @@
     padding: 16px 0 0 90px;
     /*color: #7f7f7f;*/
 }
+
 .home-user-wrap {
     position: relative;
     margin: 20px 0 0 0;
@@ -94,18 +111,22 @@
     width: 140px;
     text-align: center;
 }
+
 .user-avatar-a {
     display: inline-block;
     border-radius: 50%;
 }
+
 .home-user {
     margin: 0 0 0 140px;
 }
+
 .home-user-wrap .blue-btn-little {
     position: absolute;
     right: 20px;
     margin: 5px 0 0 0;
 }
+
 .button-icon {
     font-size: 16px;
     line-height: 1;
@@ -115,35 +136,44 @@
 .button-a {
     display: inline-block;
     margin: 0 0 0 16px;
-    transition: background .15s,border-color .15s;
+    transition: background .15s, border-color .15s;
     color: #fff;
-    border: 1px solid rgba(255,255,255,.5);
+    border: 1px solid rgba(255, 255, 255, .5);
     border-radius: 50%;
-    background: rgba(0,0,0,.2);
+    background: rgba(0, 0, 0, .2);
 }
-.button-a:hover{
+
+.button-a:hover {
     background-color: #2470bf;
     color: #fff;
 }
+
 .home-user h3 {
     padding: 13px 20px 20px 0;
 }
-.home-user h3 a{
+
+.home-user h3 a {
     font-size: 20px;
     font-weight: 600;
     color: #fff;
 }
+
 .home-user-data {
     line-height: 56px;
     margin: 10px;
 }
+
 .home-user-b {
     font-family: arial;
     font-size: 20px;
     margin: 0 0 0 8px;
 }
-/*我的书架*/
-.shelf-main {
+
+
+/*我的书架和我的作品*/
+
+.shelf-main,
+.my-work-main {
     position: relative;
     margin: 20px 0;
     padding: 20px;
@@ -152,15 +182,232 @@
     border: 1px solid #e0deda;
     border-radius: 4px;
 }
-.shelf-title {
+
+.shelf-title,
+.my-work-title {
     font-size: 18px;
     font-weight: 600;
     line-height: 1;
     color: #3e3d43;
 }
-.shelf-list {
+
+.shelf-list,
+.my-work-list {
     line-height: 0;
     margin: 20px 0 0 0;
     text-align: justify;
     position: relative;
+}
+
+.mask {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    opacity: 0.6;
+    display: none;
+}
+
+.setting-content {
+    position: absolute;
+    top: 135px;
+    left: 525px;
+    padding: 20px;
+    z-index: 101;
+    opacity: 1;
+}
+
+.setting-record {
+    border-radius: 4px;
+}
+
+.tabs {
+    height: 46px;
+    border: 1px solid #e0deda;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    background: #fcfcfa;
+}
+
+.tabs a:first-child {
+    margin-left: -1px;
+}
+
+.tabs .checked,
+.tabs .checked a {
+    font-weight: 600;
+    margin-top: -5px;
+    padding: 5px 19px 1px;
+    color: #3e3d43;
+    border: 1px solid #e0deda;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    background: #fff;
+}
+
+.tabs>a {
+    display: block;
+    transition: color .15s;
+    color: #7f7f7f;
+}
+
+.tabs a {
+    font-size: 14px;
+    line-height: 45px;
+    float: left;
+    padding: 0 19px;
+    border: 1px solid transparent;
+}
+
+.tab-contents {
+    border: 1px solid #e0deda;
+    border-radius: 0 0 4px 4px;
+    background: #fff;
+}
+
+.tab-content.checked {
+    display: block;
+}
+
+
+/*基本设置*/
+
+.tab-content {
+    display: none;
+}
+
+.setting-record .tab-form {
+    padding: 20px;
+    color: #3e3d43;
+}
+
+.tab-form dl {
+    margin: 0;
+    padding: 15px 0;
+}
+
+.setting-record .tab-form dt {
+    min-width: 56px;
+}
+
+.tab-form dt {
+    display: inline-block;
+    min-width: 94px;
+    text-align: right;
+    vertical-align: top;
+    color: #a6a6a6;
+}
+
+.tab-form dd {
+    display: inline-block;
+    margin: 0 0 0 12px;
+    vertical-align: top;
+}
+
+dl.form-higher {
+    padding: 10px 0;
+}
+
+dl.form-higher dt {
+    line-height: 36px;
+}
+
+span.date-input {
+    display: inline-block;
+}
+
+span.date-input>input {
+    width: 135px;
+}
+
+.date-input>input {
+    font-family: inherit;
+    overflow: hidden;
+    padding-right: 33px;
+    cursor: pointer;
+}
+
+.date-input>input,
+input.date-input {
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+    padding: 7px 8px;
+    transition: border-color .15s, background-color .15s;
+    color: #3e3d43;
+    border: 1px solid #e0deda;
+    outline: 0;
+    background-color: #fff;
+}
+
+.date-arrow {
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-size: 20px 20px;
+}
+
+textarea {
+    margin: 0px;
+    min-width: 324px;
+    min-height: 158px;
+    padding: 10px;
+}
+
+.clip {
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+
+.setting-record .button {
+    min-width: 70px;
+}
+
+.button {
+    font-size: 14px;
+    line-height: 20px;
+    display: inline-block;
+    overflow: visible;
+    min-width: 50px;
+    padding: 7px 15px;
+    cursor: pointer;
+    transition: background-color .15s, opacity .15s;
+    text-align: center;
+    color: #fff;
+    border: 1px solid transparent;
+    background-color: #207ab7;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+/*头像设置*/
+
+.avatar-choose {
+    padding: 25px 40px 40px;
+}
+
+.avatar-show {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+}
+
+.avatar-text {
+    line-height: 26px;
+    margin: 25px 0;
+}
+
+.gray {
+    color: #7f7f7f;
+}
+
+input[type=radio] {
+    clip: rect(0, 0, 0, 0);
 }

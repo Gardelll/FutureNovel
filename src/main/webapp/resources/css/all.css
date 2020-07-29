@@ -231,3 +231,66 @@ ml8 {
     height: 20px;
     color: #a6a6a6;
 }
+
+.book1 {
+    position: absolute;
+    left: 64px;
+    top: -6px;
+    width: 84px;
+    height: 112px;
+    opacity: 1;
+    z-index: 280;
+    font-size: 16px;
+}
+
+.book2 {
+    position: absolute;
+    left: 135px;
+    top: -1px;
+    width: 65.1px;
+    height: 86.8px;
+    opacity: 0.85;
+    z-index: 145;
+    font-size: 12.4px;
+}
+
+.book3 {
+    position: absolute;
+    left: 15px;
+    top: -1px;
+    width: 65.1px;
+    height: 86.8px;
+    opacity: 0.85;
+    z-index: 145;
+    font-size: 12.4px;
+}
+
+.book1:hover {
+    top: -16px
+}
+
+.book2:hover {
+    left: 120px;
+    top: -18px;
+    width: 84px;
+    height: 112px;
+    opacity: 1;
+    z-index: 280;
+    transition: all .2s;
+}
+
+.book3:hover {
+    left: 15px;
+    top: -18px;
+    width: 84px;
+    height: 112px;
+    opacity: 1;
+    z-index: 280;
+    transition: all .2s;
+}
+
+
+/*
+.book2:hover+.book1 {
+    opacity: 0.5;
+} */

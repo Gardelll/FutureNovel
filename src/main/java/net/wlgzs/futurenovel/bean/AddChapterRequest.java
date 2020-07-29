@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 
 public class AddChapterRequest {
     @Nullable
+    @Size(max = 1024)
     public String title;
     @Nullable
     @Size(min = 1)

@@ -108,6 +108,9 @@ public class TemplateController extends AbstractAppController {
             // 已登录
             model.addAttribute("currentAccount", account);
         }
+        List<NovelIndex> result = novelService.getAllNovelIndex(0, 40, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
+        model.addAttribute("totalPage", 1);
+        model.addAttribute("novelIndexList", result);
         return "FutureNovel";
     }
 
@@ -305,7 +308,7 @@ public class TemplateController extends AbstractAppController {
         switch (req.searchBy) {
             case HOT: {
                 long total = novelService.countAllNovelIndex();
-                List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, req.sortBy.getOrderBy());
+                List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
                 model.addAttribute("totalPage", total / perPage + 1);
                 model.addAttribute("novelIndexList", result);
                 break;

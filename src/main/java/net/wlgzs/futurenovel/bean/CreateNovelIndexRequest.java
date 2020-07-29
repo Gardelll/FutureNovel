@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.lang.Nullable;
@@ -28,6 +29,7 @@ public class CreateNovelIndexRequest {
      * 标题
      */
     @NotBlank
+    @Size(max = 1024)
     public String title;
 
     /**
@@ -40,6 +42,7 @@ public class CreateNovelIndexRequest {
      * 简介
      */
     @NotBlank
+    @Size(max = 4194304)
     public String description;
 
     /**
@@ -52,12 +55,14 @@ public class CreateNovelIndexRequest {
      * 系列
      */
     @Nullable
+    @Size(max = 1024)
     public String series;
 
     /**
      * 出版社
      */
     @NotEmpty
+    @Size(max = 1024)
     public String publisher;
 
     /**
@@ -72,6 +77,7 @@ public class CreateNovelIndexRequest {
      */
     @Nullable
     @URL
+    @Size(max = 4194304)
     public String coverImgUrl;
 
 }

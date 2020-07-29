@@ -609,7 +609,7 @@ public class ApiController extends AbstractAppController {
                 req.copyright,
                 req.title.trim(),
                 req.authors,
-                req.description,
+                safeHTML(req.description),
                 (byte) 0,
                 req.tags,
                 req.series,
@@ -689,7 +689,7 @@ public class ApiController extends AbstractAppController {
             }
         }
         Chapter chapter = novelService.getChapter(UUID.fromString(fromChapter));
-        Section section = novelService.addSection(currentAccount, chapter, novelIndex, req.title, req.text);
+        Section section = novelService.addSection(currentAccount, chapter, novelIndex, req.title, safeHTML(req.text));
         return Map.ofEntries(
                 Map.entry("uniqueId", section.getUniqueId().toString()),
                 Map.entry("title", section.getTitle())
@@ -909,6 +909,7 @@ public class ApiController extends AbstractAppController {
 
         if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException("title: 不能为空");
         if (req.text != null && (req.text.length() < 200 || req.text.length() > 4194304)) throw new IllegalArgumentException("text: 大小必须在 200B 到 4MB 之间");
+        if (req.text != null) req.text = safeHTML(req.text);
 
         if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
     }

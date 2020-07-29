@@ -550,6 +550,4 @@ public class NovelService implements DisposableBean {
         executor.shutdownNow();
     }
 
-    // TODO 热搜与推荐
-
 }

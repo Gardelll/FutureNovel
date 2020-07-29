@@ -14,13 +14,13 @@ public class SearchNovelRequest {
     /**
      * 查询包含关键词，空格分隔
      */
-    @Size(min = 2)
+    @Size(min = 2, max = 4096)
     public String keywords;
 
     /**
      * 查询排除关键词，空格分隔
      */
-    @Size(min = 1)
+    @Size(min = 1, max = 4096)
     public String except;
 
     /**
@@ -74,6 +74,9 @@ public class SearchNovelRequest {
         TITLE_DESC("`title` DESC"),
         UPLOADER("`uploader`"),
         UPLOADER_DESC("`uploader` DESC"),
+        CREATE_TIME("`createTime`"),
+        CREATE_TIME_DESC("`createTime` DESC"),
+        RANDOM("RANDOM()"),
         BEST_MATCH(null);
 
         private final String orderBy;

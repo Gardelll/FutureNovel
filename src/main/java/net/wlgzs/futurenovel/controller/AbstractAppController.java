@@ -96,6 +96,17 @@ public abstract class AbstractAppController {
     }
 
     /**
+     * 过滤富文本中的 javascript 代码
+     * @param html HTML 文本
+     * @return 过滤后的 HTML 文本
+     */
+    protected String safeHTML(final String html) {
+        return html.replaceAll("<script[^>]*", "<pre")
+            .replaceAll("</script>", "</pre>")
+            .replaceAll("on[a-zA-Z]+=", "event-data=");
+    }
+
+    /**
      * 检查登录状态
      *
      * @param uid            用户 ID

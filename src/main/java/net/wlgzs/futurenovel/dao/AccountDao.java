@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.lang.Nullable;
 
 public interface AccountDao {
+
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
@@ -45,7 +46,7 @@ public interface AccountDao {
             "<where>",
             " `accounts`.`userName` = #{userName} ",
             " <if test='uid != null'>",
-            "   `accounts`.`uid` != #{uid}",
+            "   AND `accounts`.`uid` != #{uid}",
             " </if>",
             "</where>",
             "</script>"})
@@ -56,7 +57,7 @@ public interface AccountDao {
             "<where>",
             " `accounts`.`email` = #{email} ",
             " <if test='uid != null'>",
-            "   `accounts`.`uid` != #{uid}",
+            "   AND `accounts`.`uid` != #{uid}",
             " </if>",
             "</where>",
             "</script>"})
@@ -119,4 +120,6 @@ public interface AccountDao {
 
     @Update("UPDATE `accounts` SET `experience` = #{experience} WHERE `accounts`.`uid` = #{uid}")
     int updateExperience(Account account);
+
+    // TODO 打赏（把自己的积分给上传者）（需要用到事务锁）
 }

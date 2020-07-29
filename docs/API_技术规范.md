@@ -1,3 +1,28 @@
+<!-- TOC -->
+
+- [概述](#概述)
+- [基本约定](#基本约定)
+    - [请求与响应格式](#请求与响应格式)
+    - [响应错误信息格式](#响应错误信息格式)
+    - [数据格式](#数据格式)
+- [接口](#接口)
+    - [登录与注册相关接口](#登录与注册相关接口)
+        - [注册](#注册)
+        - [登录](#登录)
+        - [注销](#注销)
+    - [用户管理相关接口](#用户管理相关接口)
+        - [修改帐号信息](#修改帐号信息)
+        - [上传图片](#上传图片)
+        - [根据用户 ID 查询用户信息](#根据用户-id-查询用户信息)
+        - [用户管理](#用户管理)
+    - [小说管理相关接口](#小说管理相关接口)
+        - [创建小说](#创建小说)
+        - [编辑小说 - 获取原数据](#编辑小说---获取原数据)
+        - [编辑小说](#编辑小说)
+        - [删除小说](#删除小说)
+        - [搜索小说](#搜索小说)
+
+<!-- /TOC -->
 ## 概述
 本文档旨在为页面的一些 ajax 请求提供一份规范
 
@@ -186,7 +211,7 @@ POST $URL/api/login
 GET $URL/api/logout
 ```
 
->权限：所有登陆用户
+>权限：所有登陆用户  
 >请求格式：`application/x-www-form-urlencoded`
 
 |字段|类型|含义或值|可空|
@@ -202,7 +227,7 @@ GET $URL/api/logout
 #### 修改帐号信息
 
 ```
-GET $URL/api/account/edit
+POST $URL/api/account/edit
 ```
 
 >权限：若为管理员，可修改所有帐号，否则只能修改自己的帐号
@@ -502,7 +527,7 @@ DELETE $URL/api/admin/account/delete
 5. 修改帐号积分
    
 ```
-GET $URL/api/admin/account/experience/edit
+POST $URL/api/admin/account/experience/edit
 ```
 
 >权限：管理员
@@ -640,7 +665,9 @@ POST $URL/api/novel/{fromNovel}/{fromChapter}/addSection
 }
 ```
 
-4. 重新获取小说的目录信息
+#### 编辑小说 - 获取原数据
+
+1. 重新获取小说的目录信息
 
 ```
 GET $URL/api/novel/{uniqueId}
@@ -659,7 +686,7 @@ GET $URL/api/novel/{uniqueId}
 }
 ```
 
-5. 获取小说的某一小节，包含文本
+2. 获取小说的某一小节，包含文本
 
 ```
 GET $URL/api/novel/section/{uniqueId}
@@ -681,7 +708,94 @@ GET $URL/api/novel/section/{uniqueId}
 }
 ```
 
-6. 删除小说（递归）
+#### 编辑小说
+
+1. 编辑小说信息
+
+```
+POST $URL/api/novel/{novelId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|novelId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
+|copyright|String|<a title="NO_COPYRIGHT 公版,REPRINT 转载,FAN_FICTION 同人,ORIGINAL 原创">版权</a>字符串枚举|T|
+|title|String|标题|T|
+|authors|String 数组|作者(JSON 数组)|T|
+|description|String|简介|T|
+|tags|String 数组|用于分类的标签(JSON 数组)|T|
+|series|String|<a title="比如《三体》、《黑暗森林》、《死神永生》属于“地球往事三部曲”系列">系列</a>|T|
+|publisher|String|出版社|T|
+|pubdate|String|出版日期，格式："yyyy年MM月dd日 HH:mm:ss"|T|
+|coverImgUrl|String|封面图像 URL|T|
+|chapters|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序（排序算法未完成）|T|
+
+示例：
+```json5
+{
+  "title": "修改标题",
+  "authors": ["作者A","作者B"],
+  "chapters": [
+    "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e"
+    // 还可能有更多
+  ]
+}
+```
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败  
+
+若修改成功，服务端返回状态码 204 - No Content
+
+2. 编辑章节信息
+
+```
+POST $URL/api/novel/chapter/{chapterId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|章节 ID，注意要包含在路径里，不是 query 参数|F|
+|title|String|标题|T|
+|sections|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序|T|
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败
+
+若修改成功，服务端返回状态码 204 - No Content
+
+3. 编辑小节
+
+```
+POST $URL/api/novel/section/{sectionId}/edit
+```
+
+>权限：上传者、管理员
+
+参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+|title|String|标题|T|
+|text|String|修改内容|T|
+
+不包含的属性不会修改  
+未发生任何改动则认为修改失败
+
+若修改成功，服务端返回状态码 204 - No Content
+
+#### 删除小说
+
+1. 删除小说（递归）
 
 ```
 DELETE $URL/api/novel/{uniqueId}
@@ -695,7 +809,7 @@ DELETE $URL/api/novel/{uniqueId}
 
 若操作成功，服务端返回状态码 202 - ACCEPTED
 
-7. 根据章节 ID 删除某一章（递归）
+2. 根据章节 ID 删除某一章（递归）
 
 ```
 DELETE $URL/api/novel/chapter/{uniqueId}
@@ -709,7 +823,7 @@ DELETE $URL/api/novel/chapter/{uniqueId}
 
 若操作成功，服务端返回状态码 202 - ACCEPTED
 
-8. 根据小节 ID 删除某一小节
+3. 根据小节 ID 删除某一小节
 
 ```
 DELETE $URL/api/novel/section/{uniqueId}
@@ -723,7 +837,9 @@ DELETE $URL/api/novel/section/{uniqueId}
 
 若操作成功，服务端返回状态码 202 - ACCEPTED
 
-9. 查询所有的标签（tag）
+#### 搜索小说
+
+1. 查询所有的标签（tag）
 
 ```
 GET $URL/api/novel/tags/all
@@ -740,7 +856,7 @@ GET $URL/api/novel/tags/all
 ]
 ```
 
-10. 查询所有的系列
+2. 查询所有的系列
 
 ```
 GET $URL/api/novel/series/all
@@ -759,7 +875,7 @@ GET $URL/api/novel/series/all
 ]
 ```
 
-11. 获取某用户上传的小说的总页数
+3. 获取某用户上传的小说的总页数
 
 ```
 GET $URL/api/novel/user/{accountId}/pages
@@ -783,7 +899,7 @@ GET $URL/api/novel/user/{accountId}/pages
 }
 ```
 
-12. 获取某用户上传的所有小说
+4. 获取某用户上传的所有小说
 
 ```
 GET $URL/api/novel/user/{accountId}/get
@@ -842,7 +958,7 @@ GET $URL/api/novel/user/{accountId}/get
 
 若该页没有数据，服务端返回状态码 204 - No Content
 
-13. 获取本站所有小说的总页数
+5. 获取本站所有小说的总页数
 
 ```
 GET $URL/api/admin/novel/all/pages
@@ -865,7 +981,7 @@ GET $URL/api/admin/novel/all/pages
 }
 ```
 
-14. 获取本站所有小说
+6. 获取本站所有小说
 
 ```
 GET $URL/api/admin/novel/all
@@ -895,87 +1011,3 @@ GET $URL/api/admin/novel/all
 ```
 
 若该页没有数据，服务端返回状态码 204 - No Content
-
-
-15. 编辑小说信息
-
-```
-POST $URL/api/novel/{novelId}/edit
-```
-
->权限：上传者、管理员
-
-参数：
-
-|字段|类型|含义或值|可空|
-|---|---|------------|---|
-|novelId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|F|
-|copyright|String|<a title="NO_COPYRIGHT 公版,REPRINT 转载,FAN_FICTION 同人,ORIGINAL 原创">版权</a>字符串枚举|T|
-|title|String|标题|T|
-|authors|String 数组|作者(JSON 数组)|T|
-|description|String|简介|T|
-|tags|String 数组|用于分类的标签(JSON 数组)|T|
-|series|String|<a title="比如《三体》、《黑暗森林》、《死神永生》属于“地球往事三部曲”系列">系列</a>|T|
-|publisher|String|出版社|T|
-|pubdate|String|出版日期，格式："yyyy年MM月dd日 HH:mm:ss"|T|
-|coverImgUrl|String|封面图像 URL|T|
-|chapters|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序（排序算法未完成）|T|
-
-示例：
-```json5
-{
-  "title": "修改标题",
-  "authors": ["作者A","作者B"],
-  "chapters": [
-    "b8e99ad0-d269-4d6f-bf1a-3733d9f6fa8e"
-    // 还可能有更多
-  ]
-}
-```
-
-不包含的属性不会修改  
-未发生任何改动则认为修改失败  
-
-若修改成功，服务端返回状态码 204 - No Content
-
-16. 编辑章节信息
-
-```
-POST $URL/api/novel/chapter/{chapterId}/edit
-```
-
->权限：上传者、管理员
-
-参数：
-
-|字段|类型|含义或值|可空|
-|---|---|------------|---|
-|sectionId|UUID|章节 ID，注意要包含在路径里，不是 query 参数|F|
-|title|String|标题|T|
-|sections|UUID 数组|所有章节的 ID（JSON 数组），可以根据这里调整顺序|T|
-
-不包含的属性不会修改  
-未发生任何改动则认为修改失败
-
-若修改成功，服务端返回状态码 204 - No Content
-
-17. 编辑小节
-
-```
-POST $URL/api/novel/section/{sectionId}/edit
-```
-
->权限：上传者、管理员
-
-参数：
-
-|字段|类型|含义或值|可空|
-|---|---|------------|---|
-|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
-|title|String|标题|T|
-|text|String|修改内容|T|
-
-不包含的属性不会修改  
-未发生任何改动则认为修改失败
-
-若修改成功，服务端返回状态码 204 - No Content

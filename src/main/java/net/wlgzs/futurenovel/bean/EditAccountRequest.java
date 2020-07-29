@@ -58,6 +58,7 @@ public class EditAccountRequest {
      * 头像图像 URL 地址
      */
     @URL
+    @Size(max = 4194304)
     public String profileImgUrl;
 
     /**

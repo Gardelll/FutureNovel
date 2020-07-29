@@ -35,7 +35,8 @@ public class DefaultFilter extends HttpFilter {
     private static final Map<String, Integer> limitTable = Map.ofEntries(
             Map.entry("/register", 2),
             Map.entry("/api/sendCaptcha", 2),
-            Map.entry("/api/login", 12)
+            Map.entry("/api/login", 12),
+            Map.entry("/search", 2)
     );
 
     /**
@@ -99,7 +100,11 @@ public class DefaultFilter extends HttpFilter {
         var remoteAddr = req.getRemoteAddr();
         var uri = (contextPath.isBlank()) ? req.getRequestURI() : req.getRequestURI().replaceFirst(contextPath, "");
         synchronized (DefaultFilter.class) {
-            if (!whiteList.contains(remoteAddr) && limitTable.containsKey(uri)) {
+            boolean skip = (!uri.startsWith("/api") &&
+                (req.getMethod().equalsIgnoreCase("GET") ||
+                    req.getMethod().equalsIgnoreCase("HEAD"))) || // 跳过普通浏览请求
+                req.getMethod().equalsIgnoreCase("OPTION"); // 跳过 OPTION 请求
+            if (!skip && !whiteList.contains(remoteAddr) && limitTable.containsKey(uri)) {
                 int limit = limitTable.get(uri);
                 RequestInfo requestInfo = getRequestInfo(remoteAddr, uri);
                 long[] tmpArr = new long[COLLECT_COUNT];

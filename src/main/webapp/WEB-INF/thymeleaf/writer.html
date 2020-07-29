@@ -1,51 +1,177 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>未来小说网--写小说</title>
-    <script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-    <link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
-    <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
-    <script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
-    <script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
-    <script>
-        tinymce.init({
-            selector: 'textarea.content',
-            height: "500", //高度
-            width: "100%", //宽度
-            toolbar_items_size: 'small', //控件大小
-            menubar: true, //是否显示菜单栏
-            plugins: ["link code"], //插件区，激活控件
-            language: "zh_CN", //名称前后显示，影响控件显示位置
-        });
-    </script>
+	<head>
+		<meta charset="UTF-8">
+		<title>写小说</title>
+		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+		<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
+		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
+		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
 
 
-    <!--这里设置 class="content" 套用TinyMCE编辑器-->
-</head>
 
-<body style="background-color: #f5f5f5;">
-    <div class="writer-wrep" style="height: 500px;">
-        <div class="writer-tabs">
-            <div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
-                <span style="color: #7a7a7a;">作者名字</span>
-            </div>
-            <ul class="writer-list" style="overflow: auto;">
-            </ul>
-        </div>
-        <div class="writer-body">
-            <form action="" method="">
-                <p><input type="text" name="bookName" placeholder="输入书名" id="book-name" class="writer-inputs" /></p>
-                <p><input type="text" name="titleName" placeholder="输入章节名称" id="title-name" class="writer-inputs" /></p>
+		<!--这里设置 class="content" 套用TinyMCE编辑器-->
+	</head>
+	<body style="background-color: rgb(245,245,245);">
+		<div class="writer-wrep">
+			<div class="writer-tabs">
+				<div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
+				<span style="color: #7a7a7a;">作者名字</span>
+				</div>
+				<ul class="writer-list"style="overflow: auto;">
+					<li>
+						<div class='writer-lis'>
+							<div class="first" style='display: block'>
+								<p>" + "" + $("#book-name").val() + "" + "</p>
+								<i class="fa fa-caret-right rotate"></i>
+								<p>共有0节</p>
+							</div>
+							<button class="modify">修改</button><button class="delete">删除</button>
+							<div class='sec' chapterId='"+data.thisUUID+"' >
+								<div class='works-content'>
+									<span class="neirong">" + "" + text + "" + "</span>
+									<span class="neirong" style="margin: 0;">...</span>
+									<span class="writer-data\">" + "" + getNowFormatDate() + "" + "</span>
+									<span class="words-num\" style="margin-left:15px;">" + " " +'共'+ Text.length + +'个字'+ "" + "</span>
+								</div>
+							</div>
 
-                <p><textarea name="content" class="content"></textarea></p>
-                <!--先暂时写成button类型，等前后端交互再改成submit类型-->
-                <p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release" class="blue-btn" /></p>
-            </form>
-        </div>
-    </div>
-</body>
+						</div>
+						</div>
+					</li>
 
+				</ul>
+			</div>
+			<div class="writer-body">
+				<form action="" method="">
+					<p><input type="text" name="bookName"  placeholder="输入章节名称" id="book-name" class="writer-inputs"/><button type="button" id="sure-bookName">确定</button></p>
+					<p><input type="text" name="titleName" placeholder="请输入小结" id="title-name" class="writer-inputs"/></p>
+
+					<p><textarea name="content" class="content"></textarea></p>
+					<!--先暂时写成button类型，等前后端交互再改成submit类型-->
+					<p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release"/></p>
+				</form>
+			</div>
+		</div>
+		<script th:inline="javascript" async>
+
+			$("#sure-bookName").click(function () {
+				if($("#book-name").val().length==0){
+					alert("章节名称不能为空！");
+				}else{
+					$("#title-name").css("height",40+"px");
+					//创建章节的交互
+					$.ajax({
+						url:/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()} + '/addChapter']]*/"/nonexist",
+						type: "post",
+						datatype:"json",
+						contentType: "application/json;charset=UTF-8",
+						data: JSON.stringify({
+							title:$("#book-name").val(),
+						}),success:function (data) {
+
+							//保存章节id和小说id
+							localStorage.setItem("parentUUID",data.parentUUID);
+							localStorage.setItem("thisUUID",data.thisUUID);
+							localStorage.setItem("title",data.title);
+							$(".writer-list ").prepend("\t\t\t\t\t<li><div class='writer-lis'><div class=\"first\" style='display: block'><p>" + "" + $("#book-name").val() + "" + "</p><i class=\"fa fa-caret-right rotate\"></i><p>共有0节</p></div><div class='sec' chapterId='"+data.thisUUID+"' ></div></div></li>\n");
+						},error:function (data) {
+							console.log(data);
+						}
+
+					});
+				}
+			});
+			function getNowFormatDate() {
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				var minute = date.getMinutes();
+				if (month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if (strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				if (minute >= 0 && minute <= 9) {
+					minute = "0" + minute;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+						+ " " + date.getHours() + seperator2 + minute;
+				return currentdate;
+			}
+			$("#writer-release").click(function () {
+				var thisID = localStorage.getItem("thisUUID").substring(0,8);
+				var str =/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()}]]*/;
+				var Nowtime = getNowFormatDate();
+				var $BookName = $("#book-name").val();
+				var $TitieName = $("#title-name").val();
+				var activeEditor = tinymce.activeEditor;
+				var editBody = activeEditor.getBody();
+				activeEditor.selection.select(editBody);
+				var text = activeEditor.selection.getContent({"format": "html"});
+				var Text = activeEditor.selection.getContent({"format": "text"});
+				var TextLength = Text.length;
+				if (text.length == 1) {
+					alert("内容不能为空");
+				} else {
+					//创建小节的交互
+					$.ajax({
+					 	url:str+'/'+thisID+'/addSection',
+						type: "post",
+						datatype:"json",
+						contentType: "application/json;charset=UTF-8",
+						data: JSON.stringify({
+					 		title:localStorage.getItem("title"),
+							text:Text,
+						}),
+						success:function (data) {
+							alert("创建成功");
+							$(".sec[chapterId^='"+localStorage.getItem("thisUUID")+"']").append("<div class='works-content'><span class=\"neirong\">" + "" + text + "" + "</span><span class=\"neirong\" style=\"margin: 0;\">...</span><span class=\"writer-data\">" + "" + getNowFormatDate() + "" + "</span><span class=\"words-num\" style=\"margin-left:15px;\">" + " " +'共'+ Text.length + +'个字'+ "" + "</span></div></div>\n");
+							GetAllInfo();
+						}, error: function(jqXHR, textStatus, errorThrown) {
+							const data = JSON.parse(jqXHR.responseText);
+							alert("发送失败，请稍候再试:" + data.errorMessage);
+						}
+					 })
+				}
+			});
+			function GetAllInfo(){
+				$.ajax({
+					url:/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()}]]*/"/nonexist",
+					type: "GET",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: {},
+					success:function (data) {
+
+					},
+					// error: function(jqXHR, textStatus, errorThrown) {
+					// 	const data = JSON.parse(jqXHR.responseText);
+					// 	alert("发送失败，请稍候再试:" + data.errorMessage);
+					// }
+					error: function(data) {
+
+					}
+				})
+			};
+			$(".writer-list").on('click','.first',function(){
+				$(this).next(".sec").slideToggle("slow");
+			});
+			tinymce.init({
+				selector:'textarea.content',
+				height:"500", //高度
+				width:"100%", //宽度
+				toolbar_items_size: 'small', //控件大小
+				menubar:true, //是否显示菜单栏
+				plugins: ["link code"], //插件区，激活控件
+				language:"zh_CN",//名称前后显示，影响控件显示位置
+			});
+
+		</script>
+	</body>
 </html>

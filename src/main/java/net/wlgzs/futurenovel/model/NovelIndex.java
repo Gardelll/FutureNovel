@@ -8,12 +8,13 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import org.apache.ibatis.annotations.AutomapConstructor;
 
 /**
  * 小说目录
  */
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_={@AutomapConstructor})
 public class NovelIndex implements Serializable {
 
     private static final long serialVersionUID = 4627302502994711642L;

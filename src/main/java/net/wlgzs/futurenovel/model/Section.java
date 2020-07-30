@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-import net.wlgzs.futurenovel.bean.NovelNode;
+import net.wlgzs.futurenovel.packet.NovelNode;
+import org.apache.ibatis.annotations.AutomapConstructor;
 
 /**
  * 小说的小节
  */
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_={@AutomapConstructor})
 public class Section implements Serializable, NovelNode {
 
     private static final long serialVersionUID = -1682410254970643692L;

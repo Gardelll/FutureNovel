@@ -29,18 +29,18 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.bean.AddAccountRequest;
-import net.wlgzs.futurenovel.bean.AddChapterRequest;
-import net.wlgzs.futurenovel.bean.AddSectionRequest;
-import net.wlgzs.futurenovel.bean.CreateNovelIndexRequest;
-import net.wlgzs.futurenovel.bean.EditAccountRequest;
-import net.wlgzs.futurenovel.bean.EditExperienceRequest;
-import net.wlgzs.futurenovel.bean.EditNovelRequest;
-import net.wlgzs.futurenovel.bean.ErrorResponse;
-import net.wlgzs.futurenovel.bean.LoginRequest;
-import net.wlgzs.futurenovel.bean.Novel;
-import net.wlgzs.futurenovel.bean.SearchNovelRequest;
-import net.wlgzs.futurenovel.bean.SendCaptchaRequest;
+import net.wlgzs.futurenovel.packet.c2s.AddAccountRequest;
+import net.wlgzs.futurenovel.packet.c2s.AddChapterRequest;
+import net.wlgzs.futurenovel.packet.c2s.AddSectionRequest;
+import net.wlgzs.futurenovel.packet.c2s.CreateNovelIndexRequest;
+import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
+import net.wlgzs.futurenovel.packet.c2s.EditExperienceRequest;
+import net.wlgzs.futurenovel.packet.c2s.EditNovelRequest;
+import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
+import net.wlgzs.futurenovel.packet.c2s.LoginRequest;
+import net.wlgzs.futurenovel.packet.s2c.Novel;
+import net.wlgzs.futurenovel.packet.c2s.SearchNovelRequest;
+import net.wlgzs.futurenovel.packet.c2s.SendCaptchaRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
 import net.wlgzs.futurenovel.model.Account;
@@ -784,7 +784,7 @@ public class ApiController extends AbstractAppController {
      * 获取本站所有小说
      * @param page 页码
      * @param perPage 每页显示的数量
-     * @param sortBy 排序方式，参见 {@link net.wlgzs.futurenovel.bean.SearchNovelRequest.SortBy}
+     * @param sortBy 排序方式，参见 {@link SearchNovelRequest.SortBy}
      * @return 小说目录的列表（不含章节目录）
      */
     @GetMapping("/admin/novel/all")
@@ -820,7 +820,7 @@ public class ApiController extends AbstractAppController {
      * @param accountId 用户的 ID
      * @param page 页码
      * @param perPage 每页显示的数量
-     * @param sortBy 排序方式，参见 {@link net.wlgzs.futurenovel.bean.SearchNovelRequest.SortBy}
+     * @param sortBy 排序方式，参见 {@link SearchNovelRequest.SortBy}
      * @return 小说目录的列表（不含章节目录）
      */
     @GetMapping("/novel/user/{accountId:[0-9a-f\\-]{36}}/get")

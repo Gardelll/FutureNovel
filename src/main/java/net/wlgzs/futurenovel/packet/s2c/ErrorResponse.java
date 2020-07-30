@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.s2c;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

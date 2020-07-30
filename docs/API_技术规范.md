@@ -940,6 +940,7 @@ GET $URL/api/novel/user/{accountId}/get
 |TITLE_DESC| |
 |UPLOADER|上传者 ID|
 |UPLOADER_DESC| |
+|RANDOM|随机|
 
 若查询成功，返回状态码为 200 - OK
 

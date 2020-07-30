@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.c2s;
 
 import java.util.Date;
 import javax.validation.constraints.NotNull;
@@ -76,7 +76,7 @@ public class SearchNovelRequest {
         UPLOADER_DESC("`uploader` DESC"),
         CREATE_TIME("`createTime`"),
         CREATE_TIME_DESC("`createTime` DESC"),
-        RANDOM("RANDOM()"),
+        RANDOM("RAND()"),
         BEST_MATCH(null);
 
         private final String orderBy;

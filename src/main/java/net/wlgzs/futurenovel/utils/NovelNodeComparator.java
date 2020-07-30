@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Map;
-import net.wlgzs.futurenovel.bean.NovelNode;
+import net.wlgzs.futurenovel.packet.NovelNode;
 
 /**
  * 小说章节小节排序

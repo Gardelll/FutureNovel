@@ -3,7 +3,7 @@ package net.wlgzs.futurenovel.service;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.bean.EditAccountRequest;
+import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
 import net.wlgzs.futurenovel.dao.AccountDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;

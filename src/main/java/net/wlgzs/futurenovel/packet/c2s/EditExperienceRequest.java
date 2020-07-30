@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.c2s;
 
 import java.math.BigInteger;
 import javax.validation.constraints.NotBlank;

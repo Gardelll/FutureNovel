@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.c2s;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

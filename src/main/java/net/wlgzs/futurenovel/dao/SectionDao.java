@@ -2,7 +2,7 @@ package net.wlgzs.futurenovel.dao;
 
 import java.util.List;
 import java.util.UUID;
-import net.wlgzs.futurenovel.bean.NovelChapter;
+import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
 import net.wlgzs.futurenovel.model.Section;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;

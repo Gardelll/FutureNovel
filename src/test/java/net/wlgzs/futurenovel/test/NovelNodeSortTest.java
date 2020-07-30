@@ -2,11 +2,10 @@ package net.wlgzs.futurenovel.test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
-import net.wlgzs.futurenovel.bean.NovelNode;
+import net.wlgzs.futurenovel.packet.NovelNode;
 import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.junit.Assert;
 import org.junit.Test;

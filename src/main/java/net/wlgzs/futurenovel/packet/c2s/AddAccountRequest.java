@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.c2s;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.validation.constraints.Email;

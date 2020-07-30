@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.bean.ErrorResponse;
+import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 
 /**

@@ -2,7 +2,7 @@ package net.wlgzs.futurenovel.dao;
 
 import java.util.List;
 import java.util.UUID;
-import net.wlgzs.futurenovel.bean.EditAccountRequest;
+import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
 import net.wlgzs.futurenovel.model.Account;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;

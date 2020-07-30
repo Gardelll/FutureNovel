@@ -1,4 +1,4 @@
-package net.wlgzs.futurenovel.bean;
+package net.wlgzs.futurenovel.packet.s2c;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import net.wlgzs.futurenovel.model.Chapter;
+import net.wlgzs.futurenovel.packet.NovelNode;
 import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.apache.ibatis.annotations.AutomapConstructor;
 

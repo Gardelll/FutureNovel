@@ -1,14 +1,61 @@
-$(function () {
+//这里只有部分的动画
+window.onload = function () {
+    $("#modify-novel").click(function () {
+        $(".modify-Novel").css("top",0);
+    })
+    var tags = [];
+    var actor=["haha","heihei"];
+    $("#book-tags").keydown(function (event) {
+        if(event.keyCode==32){
+            var str= $("#book-tags").val();
+            var test= " <div class=\"tags-s\">\n" +
+                "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
+                "<i class=\"fa fa-close close2\" ></i>\n" +
+                "</div>";
+            $(".tags").append(test);
+            $("#book-tags").val("");
+        }
+    });
+    $(".tags").on('click','.close2',function(){
+        $(this).parent().remove();
+    });
+    function GetTags(){
+        $.ajax({
+            url:"http://localhost:8080/future-novel/api/novel/tags/all",
+            type:"get",
+            data:"",
+            success:function (data) {
+                console.log(data);
+                for (var i=0;i<data.length;i++){
+                    $("#tag").append(" <option value='" + "" + data[i] + "" + "'>")
+                }
+            },error:function (data) {
+                console.log(data)
+            }
+        });
+    }
+    GetTags();
+    $("#file").on("change",function () {
+        var formData = new FormData ;
+        formData.append("file",$("#file")[0].files[0]);
+        $.ajax({
+            url: "http://localhost:8080/future-novel/api/img/upload",
+            type: "put",
+            dataType: "JSON",
+            data:formData,
+            processData: false,
+            contentType: false,
+            success:function (data) {
+                $("#sure").click(function () {
+                    $("#addIMG").attr("src",data.url);
+                    var imgurl = data.url;
+                });
+            },error(){
+                console.log("上传的图片有误")
+            }
+        })
 
-	$("body").delegate("#book-name,#title-name", "propertuchange input", function () {
-		if ($("#book-name").val().length > 0 && $("#title-name").val().length > 0) {
-			//让发布按钮可用
-			$("#writer-release").prop("disabled", false);
-		} else {
-			//让发布按钮不可用
-			$("#writer-release").prop("disabled", true);
-		}
-	});
+    });
 
 
-})
+}

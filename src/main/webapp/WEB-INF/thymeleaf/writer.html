@@ -1,51 +1,413 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <html>
+	<head>
+		<meta charset="UTF-8">
+		<title>写小说</title>
+		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+		<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
+		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
+		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
+			<!--这里设置 class="content" 套用TinyMCE编辑器-->
+	</head>
+	<body style="background-color: rgb(245,245,245);">
+		<p id="SectionId" style="display: none">
 
-<head>
-	<meta charset="UTF-8">
-	<title>未来小说网--写小说</title>
-	<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-	<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
-	<link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
-	<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
-	<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
-	<script>
-		tinymce.init({
-			selector: 'textarea.content',
-			height: "500", //高度
-			width: "100%", //宽度
-			toolbar_items_size: 'small', //控件大小
-			menubar: true, //是否显示菜单栏
-			plugins: ["link code"], //插件区，激活控件
-			language: "zh_CN", //名称前后显示，影响控件显示位置
-		});
-	</script>
+		</p>
+		<div class="modify-Novel">
+			<div class="box3">
+				<div class="work-info">
+					<div class="top-title">
+						<div class="top-title-box">
+							<span style="line-height: 50px;font-size:17px;color: white;float: right;">修改作品</span>
+						</div>
 
+					</div>
+					<div class="work-info-form">
+						<form id="info-form" action="#" method="POST">
+							<div class="form-box">
+								<div class="form-list">
+									<dl>
+										<dd class="">
+											<span>作品名称</span>
+											<input name="book-name" id="book-name" class="form-inputs" type="text" required>
+											<p>15字内，请勿添加书名号等特殊符号</p>
+										</dd>
+										<dd>
+											<span>作品类型</span>
+											<select  id="book-type">
+												<option selected>-请选择-</option>
+												<option>玄幻</option>
+												<option>奇幻</option>
+												<option>武侠</option>
+												<option>仙侠</option>
+												<option>都市</option>
+												<option>现实</option>
+												<option>军事</option>
+												<option>历史</option>
+												<option>游戏</option>
+												<option>体育</option>
+												<option>科幻</option>
+												<option>悬疑</option>
+												<option>女生网</option>
+												<option>轻小说</option>
+											</select>
 
-	<!--这里设置 class="content" 套用TinyMCE编辑器-->
-</head>
+										</dd>
+										<dd>
+											<span>版权</span>
+											<select id="copyright">
+												<option selected>-请选择-</option>
+												<option>NO_COPYRIGHT</option>
+												<option>REPRINT</option>
+												<option>FAN_FICTION</option>
+												<option>ORIGINAL</option>
+											</select>
+										</dd>
+										<dd>
+											<span>作品标签</span>
+											<input style="height: 30px;padding: 0;resize: none;"  id="book-tags" list="tag" class="form-inputs">
+											<datalist id="tag">
 
-<body style="background-color: #f5f5f5;">
-<div class="writer-wrep" style="height: 500px;">
-	<div class="writer-tabs">
-		<div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
-			<span style="color: #7a7a7a;">作者名字</span>
+											</datalist>
+											<div class="tags">
+
+											</div>
+
+										</dd>
+										<dd>
+											<span>出版社</span>
+											<input name="book-press" id="book-press"  class="form-inputs" type="text" required>
+										</dd>
+										<dd>
+											<span>介绍</span>
+											<textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
+											<p>20~500字</p>
+										</dd>
+									</dl>
+								</div>
+								<div class="create">
+									<button type="button" id="create-work" data-toggle="modal" data-target="#myModal">修改作品</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="Insert-picture">
+					<p>请插入封面图片</p>
+					<form action="" style="text-align: center">
+						<input type="file" style="margin: 0 10px;" id="file" name="file">
+					</form>
+					<img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG"/>
+					<div class="img-box" style="display: block">
+						<input id="sure"  type="submit"></input>
+					</div>
+
+				</div>
+			</div>
 		</div>
-		<ul class="writer-list" style="overflow: auto;">
-		</ul>
-	</div>
-	<div class="writer-body">
-		<form action="" method="">
-			<p><input type="text" name="bookName" placeholder="输入书名" id="book-name" class="writer-inputs" /></p>
-			<p><input type="text" name="titleName" placeholder="输入章节名称" id="title-name" class="writer-inputs" /></p>
+		<div class="writer-wrep">
+			<div class="writer-tabs">
+				<div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
+				<span style="color: #7a7a7a;">作者名字</span>
+				</div>
+				<ul class="writer-list"style="overflow: auto;">
+					<li>
+						<div class='writer-lis'>
+							<button class="modify">修改</button>
+							<button class="delete">删除</button>
+							<div class="first" style='display: block'>
+								<p>" + "" + $("#book-name").val() + "" + "</p>
+								<i class="fa fa-caret-right rotate"></i>
+								<p>共有0节</p>
+							</div>
+							<div class='sec' chapterId='"+data.thisUUID+"' >
+								<div class='works-content'>
+									<span class="neirong">" + "" + text + "" + "</span>
+									<span class="neirong" style="margin: 0;">...</span>
+									<span class="writer-data\">日期</span>
+									<span class="words-num\" style="margin-left:15px;">字数</span>
+									<button class="delete2">删除</button>
+								</div>
+							</div>
 
-			<p><textarea name="content" class="content"></textarea></p>
-			<!--先暂时写成button类型，等前后端交互再改成submit类型-->
-			<p style="text-align: center;"><input type="button" value="发布" disabled="true" id="writer-release" class="blue-btn" /></p>
-		</form>
-	</div>
-</div>
-</body>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="writer-body">
+				<form action="" method="">
+					<p>
+						<input type="text" name="bookName"  placeholder="输入章节名称" id="book-name2" class="writer-inputs"/>
+						<button type="button" id="sure-bookName">确定</button>
+						<button type="button" id="modify-novel">修改书籍信息</button>
+					</p>
+					<p><input type="text" name="titleName" placeholder="请输入小结" id="title-name" class="writer-inputs"/></p>
+					<div class="box">
+					<p><textarea name="content" class="content"></textarea></p>
+					<!--先暂时写成button类型，等前后端交互再改成submit类型-->
+					<p style="text-align: center;"><input type="button" value="发布" id="writer-release"/></p>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script th:inline="javascript" async>
+			//得到书籍的所有信息
+			function GetAllInfo(){
+				$.ajax({
+					url:/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()}]]*/"/nonexist",
+					type: "GET",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: {},
+					success:function (data) {
+						console.log("书本信息")
+						console.log(data)
+						for (var i=0;i<data.chapters.length;i++){
+							//打印数据的同时将小说章节的id获取
+							$(".writer-list ").prepend("<li><div class='writer-lis'><button class='modify'  chapterId='"+data.chapters[i].uniqueId+"'>修改</button><button class='delete'  chapterId='"+data.chapters[i].uniqueId+"'>删除</button><p style='display: none'>" + "" + data.chapters[i].uniqueId+ "" + "</p><div class=\"first\" chapterId='"+data.chapters[i].uniqueId+"' style='display: block'><p>" + "" + data.chapters[i].title+ "" + "</p><i class=\"fa fa-caret-right rotate\"></i><p>共有0节</p></div><div class='sec' chapterId='"+data.chapters[i].uniqueId+"' ></div></div></li>\n");
+						}
+					},
+					// error: function(jqXHR, textStatus, errorThrown) {
+					// 	const data = JSON.parse(jqXHR.responseText);
+					// 	alert("发送失败，请稍候再试:" + data.errorMessage);
+					// }
+					error: function(data) {
+					}
+				})
+			};
+			GetAllInfo();
+			//添加章节
+			function AddTitle(){
+				$.ajax({
+					url:/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()} + '/addChapter']]*/"/nonexist",
+					type: "post",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: JSON.stringify({
+						title:$("#book-name2").val(),
+					}),success:function (data) {
+						//保存章节id和小说id
+						//localStorage.setItem("parentUUID",data.parentUUID);
+						//localStorage.setItem("thisUUID",data.thisUUID);
+						//localStorage.setItem("title",data.title);
+						console.log("章节信息")
+						console.log(data)
+						window.location.href=location;
+					},error:function (data) {
+						console.log(data);
+					}
+				});
+			}
+			//添加小节
+			function AddSection(thisID) {
+				var str =/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()}]]*/;
+				//获取富文本编辑器内的内容
+				var activeEditor = tinymce.activeEditor;
+				var editBody = activeEditor.getBody();
+				activeEditor.selection.select(editBody);
+				var text = activeEditor.selection.getContent({"format": "html"});
+				var Text = activeEditor.selection.getContent({"format": "text"});
+				var TextLength = Text.length;
+				if (text.length == 1) {
+					alert("内容不能为空");
+				} else {
+					//创建小节的交互
+					$.ajax({
+						url:str+'/'+thisID+'/addSection',
+						type: "post",
+						datatype:"json",
+						contentType: "application/json;charset=UTF-8",
+						data: JSON.stringify({
+							title:"第一节",
+							text:Text,
+						}),
+						success:function (data) {
+							getTitleId(data.uniqueId);
+							alert("创建成功");
+							console.log("小节信息")
+							console.log(data)
+							$(".sec[chapterId^='"+thisID+"']").append("<div class='works-content' sectionId='"+data.uniqueId+"'><span class=\"neirong\">" + "" +localStorage.getItem("Text")+ "" + "</span><span class=\"neirong\" style=\"margin: 0;\">...</span><span class=\"writer-data\">" + "" + getNowFormatDate() + "" + "</span><span class=\"words-num\" style=\"margin-left:15px;\">" + " " +'共'+ Text.length + '个字'+" " + "</span><button class='delete2' sectionId='"+data.uniqueId+"'>删除</button><p style='display: none' sectionId='"+data.uniqueId+"'>" + "" +data.uniqueId+ "" + "</p></div></div>\n");
+							$(".box").css("display","none");
+						}, error: function(jqXHR, textStatus, errorThrown) {
+							const data = JSON.parse(jqXHR.responseText);
+							alert("发送失败，请稍候再试:" + data.errorMessage);
+						}
+					})
+				}
+			}
+			//获取内容
+			function getTitleId(titleId) {
+				$.ajax({
+					url:"http://localhost:8080/future-novel/api/novel/section/"+titleId,
+					type: "GET",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: {},
+					success:function (data) {
+						console.log("内容信息")
+						console.log(data);
+						localStorage.setItem("Text",data.text)
+					},
+					error: function(data) {
+						console.log(data);
+					}
+				})
+			}
+			//删除章节
+			$(".writer-list").on('click','.delete',function(){
+				var thisSectionId = $(this).next().text();
+				console.log($(this).next().text())
+				$.ajax({
+					url:"http://localhost:8080/future-novel/api/novel/chapter/"+thisSectionId,
+					type:"delete",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: {},
+					success:function (data) {
+						console.log("删除章节")
+						console.log(data)
+						window.location.href=location;
+					},error:function (data) {
+						console.log(data);
+					}
+				})
+			})
+			//删除小节
+			$(".writer-list").on('click','.delete2',function(){
+				var thisTitleId = $(this).attr("sectionId");
+				console.log($(this).next().text())
+				$.ajax({
+					url:"http://localhost:8080/future-novel/api/novel/section/"+thisTitleId,
+					type:"delete",
+					datatype:"json",
+					contentType: "application/json;charset=UTF-8",
+					data: {},
+					success:function (data) {
+						console.log("删除小节")
+						console.log(data)
+						window.location.href=location;
+					},error:function (data) {
+						console.log(data);
+					}
+				})
+			})
+			//获取创建小说的日期
+			function getNowFormatDate() {
+				var date = new Date();
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				var minute = date.getMinutes();
+				var seconds= date.getSeconds();
+				if (month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if (strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				if (minute >= 0 && minute <= 9) {
+					minute = "0" + minute;
+				}
+				if (seconds >= 0 && seconds <= 9) {
+					seconds = "0" + seconds;
+				}
+				var currentdate = date.getFullYear() + '年' + month + '月' + strDate
+						+ '日 ' + date.getHours() + ':' + minute+':'+seconds;
+				return currentdate;
+			}
+			//修改小说信息
+			$("#create-work").click(function () {
+				var copyright = $("#copyright").val();
+				var BookType = $("#book-type").val();
+				var BookPrese = $("#book-press").val();
+				var BookIntro = $("#book-intro").val();
+				var BookName = $("#book-name").val();
+				var $inputArr = $('.tags-text');
+				var result = [];
+				$inputArr.each(function(){
+					//将每个input的值放进结果集
+					result.push($(this).text());
+				});
+				if($("#book-name").val().length==0){
+					BookName=null;
+				}if($("#book-type").val()=="-请选择-"){
+					BookType = null;
+				}if($("#copyright").val()=="-请选择-"){
+					copyright=null;
+				}if($("#book-press").val()==""){
+					BookPrese=null;
+				}if($("#book-intro").val().length==0){
+					BookIntro=null;
+				}if($("#addIMG").src=="../../resources/img/addimg.png"){
+					$("#addIMG")[0].src=null;
+				}if(result.length==0){
+					result=null;
+				}
+					$.ajax({
+						url:/*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()} + '/edit']]*/"/nonexist",
+						type: "post",
+						dataType: "JSON",
+						contentType:"application/json",
+						data: JSON.stringify({
+							"copyright":copyright,
+							"title": BookName,
+							"authors": ["haha","hehe"],
+							"description":BookIntro,
+							"tags":result,
+							"series": BookType,
+							"publisher": BookPrese,
+							"pubdate":getNowFormatDate() ,
+							"coverImgUrl": $("#addIMG")[0].src
+						}),
+						success:function (data) {
+							console.log( data);
+							window.location.href = location;
+						},error(data){
+							console.log( data);
+						}
+					})
+			});
+			$("#sure-bookName").click(function () {
+				if($("#book-name2").val().length==0){
+					alert("章节名称不能为空！");
+				}else{
+					//创建章节的交互
+					AddTitle();
+				}
+			});
 
+			//添加小节
+			$(".writer-list").on('click','.first',function(){
+				$(this).next(".sec").slideToggle("slow");
+			});
+			$(".writer-list").on('click','.modify',function(){
+				$(".box").css("display","block");
+				var str = $(this).attr("chapterid");
+				$("#writer-release").click(function () {
+					AddSection(str);
+				});
+			});
+			console.log(localStorage.getItem("thisUUID"))
+
+
+
+
+
+
+
+			//富文本编辑器
+			tinymce.init({
+				selector:'textarea.content',
+				height:"500", //高度
+				width:"100%", //宽度
+				toolbar_items_size: 'small', //控件大小
+				menubar:true, //是否显示菜单栏
+				plugins: ["link code"], //插件区，激活控件
+				language:"zh_CN",//名称前后显示，影响控件显示位置
+			});
+
+		</script>
+	</body>
 </html>

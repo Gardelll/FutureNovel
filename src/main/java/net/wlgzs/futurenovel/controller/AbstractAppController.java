@@ -19,9 +19,12 @@ import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.service.AccountService;
+import net.wlgzs.futurenovel.service.BookSelfService;
+import net.wlgzs.futurenovel.service.CommentService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
+import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import net.wlgzs.futurenovel.utils.NovelNodeComparator;
 import org.springframework.format.datetime.DateFormatter;
@@ -51,6 +54,12 @@ public abstract class AbstractAppController {
 
     protected final FileService fileService;
 
+    protected final ReadHistoryService readHistoryService;
+
+    protected final BookSelfService bookSelfService;
+
+    protected final CommentService commentService;
+
     protected final Validator defaultValidator;
 
     protected final Properties futureNovelConfig;
@@ -63,17 +72,23 @@ public abstract class AbstractAppController {
                                  AccountService accountService,
                                  EmailService emailService,
                                  NovelService novelService,
+                                 ReadHistoryService readHistoryService,
+                                 CommentService commentService,
                                  Validator defaultValidator,
                                  Properties futureNovelConfig,
                                  FileService fileService,
+                                 BookSelfService bookSelfService,
                                  DateFormatter defaultDateFormatter) {
         this.tokenStore = tokenStore;
         this.accountService = accountService;
         this.emailService = emailService;
+        this.readHistoryService = readHistoryService;
+        this.commentService = commentService;
         this.defaultValidator = defaultValidator;
         this.futureNovelConfig = futureNovelConfig;
         this.fileService = fileService;
         this.novelService = novelService;
+        this.bookSelfService = bookSelfService;
         this.defaultDateFormatter = defaultDateFormatter;
     }
 

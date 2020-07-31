@@ -8,7 +8,7 @@
 >  - main
 >    - java  
 >      - net.wlgzs.futurenovel  
->        - bean `Java DTO 类`  
+>        - packet `Java DTO 类`  
 >        - controller `Spring 控制器`  
 >        - dao `数据库映射`  
 >        - exception `应用异常`
@@ -16,6 +16,7 @@
 >        - model `数据模型`
 >        - service `Spring 数据服务`
 >        - typehandler `Mybatis 数据类型映射器`
+>        - utils `工具集`
 >    - resources `后端相关资源文件`  
 >    - webapp
 >      - resources `前端相关资源文件`

@@ -29,13 +29,16 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
+import net.wlgzs.futurenovel.model.Comment;
 import net.wlgzs.futurenovel.packet.c2s.AddAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddChapterRequest;
+import net.wlgzs.futurenovel.packet.c2s.AddCommentRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddSectionRequest;
 import net.wlgzs.futurenovel.packet.c2s.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditExperienceRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditNovelRequest;
+import net.wlgzs.futurenovel.packet.s2c.CommentInfo;
 import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
 import net.wlgzs.futurenovel.packet.c2s.LoginRequest;
 import net.wlgzs.futurenovel.packet.s2c.Novel;
@@ -48,9 +51,12 @@ import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.Section;
 import net.wlgzs.futurenovel.service.AccountService;
+import net.wlgzs.futurenovel.service.BookSelfService;
+import net.wlgzs.futurenovel.service.CommentService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
+import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.format.datetime.DateFormatter;
@@ -103,16 +109,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Slf4j
 public class ApiController extends AbstractAppController {
 
-
     public ApiController(TokenStore tokenStore,
                          AccountService accountService,
                          EmailService emailService,
                          NovelService novelService,
+                         ReadHistoryService readHistoryService,
+                         CommentService commentService,
                          Validator defaultValidator,
                          Properties futureNovelConfig,
                          FileService fileService,
+                         BookSelfService bookSelfService,
                          DateFormatter defaultDateFormatter) {
-        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService, defaultDateFormatter);
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter);
     }
 
     @InitBinder
@@ -437,6 +445,8 @@ public class ApiController extends AbstractAppController {
                 Account account = accountService.getAccount(uuid);
                 if (accountService.unRegister(account) != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION);
                 success.add(account);
+                commentService.clearAccountComment(account.getUid());
+                readHistoryService.clearReadHistory(account, null, null);
             } catch (Exception e) {
                 failed.add(Map.of(
                     "request", uidStr,
@@ -765,7 +775,9 @@ public class ApiController extends AbstractAppController {
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
-        novelService.deleteSection(currentAccount, UUID.fromString(uniqueId));
+        final UUID sectionId = UUID.fromString(uniqueId);
+        novelService.deleteSection(currentAccount, sectionId);
+        commentService.clearSectionComment(sectionId);
     }
 
     @GetMapping("/novel/tags/all")
@@ -912,6 +924,113 @@ public class ApiController extends AbstractAppController {
         if (req.text != null) req.text = safeHTML(req.text);
 
         if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+    }
+
+    @PostMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addComment(@PathVariable("sectionId") String sectionId,
+                           @RequestBody @Valid AddCommentRequest req,
+                           @CookieValue(name = "uid", defaultValue = "") String uid,
+                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                           HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+
+        commentService.addComment(currentAccount.getUid(), UUID.fromString(sectionId), req.rating, req.text);
+    }
+
+    @GetMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment/get")
+    @ResponseBody
+    public ResponseEntity<List<CommentInfo>> getCommentFromSection(@PathVariable("sectionId") String sectionId,
+                                                                   @RequestParam(name = "page") int page,
+                                                                   @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        int offset = (page - 1) * perPage;
+        var result = commentService.getComments(UUID.fromString(sectionId), offset, perPage);
+        if (result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/account/{accountId:[0-9a-f\\-]{36}}/comment/get")
+    @ResponseBody
+    public ResponseEntity<List<CommentInfo>> getCommentFromAccount(@PathVariable("accountId") String accountId,
+                                                                   @RequestParam(name = "page") int page,
+                                                                   @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        int offset = (page - 1) * perPage;
+        var result = commentService.getCommentsByAccount(UUID.fromString(accountId), offset, perPage);
+        if (result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/comment/{uniqueId:[0-9a-f\\-]{36}}/delete")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteComment(@PathVariable("uniqueId") String uniqueId,
+                              @CookieValue(name = "uid", defaultValue = "") String uid,
+                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                              HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        Comment comment = commentService.getComment(UUID.fromString(uniqueId));
+        NovelIndex novel = novelService.findNovelIndexBySectionId(comment.getSectionId());
+        if (currentAccount.getPermission() == Account.Permission.ADMIN || currentAccount.getUid().equals(novel.getUploader())) {
+            commentService.deleteComment(comment.getUniqueId(), null);
+        } else {
+            commentService.deleteComment(comment.getUniqueId(), currentAccount.getUid());
+        }
+    }
+
+    @DeleteMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment/clear")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void clearSectionComment(@PathVariable("sectionId") String sectionId,
+                                    @CookieValue(name = "uid", defaultValue = "") String uid,
+                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                    HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        NovelIndex novel = novelService.findNovelIndexBySectionId(UUID.fromString(sectionId));
+        if (currentAccount.getUid().equals(novel.getUploader())) currentAccount.checkPermission();
+        else currentAccount.checkPermission(Account.Permission.ADMIN);
+
+        commentService.clearSectionComment(UUID.fromString(sectionId));
+    }
+
+    @DeleteMapping("/account/{accountId:[0-9a-f\\-]{36}}/comment/clear")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void clearAccountComment(@PathVariable("accountId") String accountId,
+                                    @CookieValue(name = "uid", defaultValue = "") String uid,
+                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                    HttpServletRequest request) {
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        if (currentAccount.getUid().equals(UUID.fromString(accountId))) currentAccount.checkPermission();
+        else currentAccount.checkPermission(Account.Permission.ADMIN);
+
+        commentService.clearAccountComment(UUID.fromString(accountId));
+    }
+
+    @GetMapping("/comment/getAll")
+    @ResponseBody
+    public ResponseEntity<List<CommentInfo>> getAllComment(@RequestParam(name = "page") int page,
+                                                           @RequestParam(name = "per_page", defaultValue = "20") int perPage,
+                                                           @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                           HttpServletRequest request) {
+        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        int offset = (page - 1) * perPage;
+        // 检查权限
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        var result = commentService.getComments(offset, perPage);
+        if (result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
     }
 
 //    // TODO 统计网站数据

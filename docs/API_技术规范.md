@@ -21,6 +21,7 @@
         - [编辑小说](#编辑小说)
         - [删除小说](#删除小说)
         - [搜索小说](#搜索小说)
+    - [点评相关接口](#点评相关接口)
 
 <!-- /TOC -->
 ## 概述
@@ -55,6 +56,7 @@
 |管理时所用帐号权限不足|403|PERMISSION_DENIED|无权操作|
 |上传文件超过 8MB|413|FILE_TOO_LARGE|上传的文件过大|
 |编辑小说时找不到对应的索引|404|NOVEL_NOT_FOUND|找不到小说|
+|找不到该收藏夹|404|BOOK_SELF_NOT_FOUND|找不到该收藏夹|
 |执行需要积分的操作时积分不够|403|EXP_NOT_ENOUGH|积分不足|
 |未完待续| | | |
 
@@ -1010,5 +1012,160 @@ GET $URL/api/admin/novel/all
     }
 ]
 ```
+
+若该页没有数据，服务端返回状态码 204 - No Content
+
+--------
+
+### 点评相关接口
+
+1. 发送点评
+
+```
+POST $URL/api/novel/section/{sectionId}/comment
+```
+
+>权限：所有登录用户
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+|rating|int|评分（1-10）|F|
+|text|String|评论内容|F|
+
+若发送成功，服务端返回状态码 204 - No Content
+
+2. 获取某个小节的所有评论
+
+```
+GET $URL/api/novel/section/{sectionId}/comment/get
+```
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+|per_page|查询参数 int|每页展示的评论数量，默认为 20|T|
+|page|查询参数 int|页码|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+
+```json5
+[
+    {
+        "uniqueId": "bc01d9f4-a1ac-4942-b17f-ddffedc05853", // 评论 ID
+        "accountId": "b6623a2e-6233-4e36-a1b1-31b4642e81ab", // 账号 ID
+        "sectionId": "1eaf19cf-6966-4403-b836-e3295a25aef4", // 小节 ID
+        "rating": 10, // 评分
+        "text": "好！", // 评论内容
+        "createTime": "2020年07月31日 11:36:37", // 评论时间
+        "userName": "admin", // 用户名
+        "profileImgUrl": "一个 URL", // 头像
+        "level": 3, // 用户等级
+        "total": 1 // 总共的评论数量
+    },
+    {
+        // 还可能有更多
+    }
+]
+```
+
+若该页没有数据，服务端返回状态码 204 - No Content
+
+3. 获取某个用户的所有评论
+
+```
+GET $URL/api/account/{accountId}/comment/get
+```
+
+>请求格式：`application/x-www-form-urlencoded`  
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|用户 ID，注意要包含在路径里，不是 query 参数|F|
+|per_page|查询参数 int|每页展示的评论数量，默认为 20|T|
+|page|查询参数 int|页码|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数和上面一样
+
+若该页没有数据，服务端返回状态码 204 - No Content
+
+4. 删除某条评论
+
+```
+DELETE $URL/api/comment/{uniqueId}/delete
+```
+
+>权限：评论作者、小说上传者、管理员
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|评论 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+5. 清空某一小节的所有评论
+
+```
+DELETE $URL/api/novel/section/{sectionId}/comment/clear
+```
+
+>权限：小说上传者、管理员
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|sectionId|UUID|小节 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+6. 清空某账号的所有评论
+
+```
+DELETE $URL/api/account/{accountId}/comment/clear
+```
+
+>权限：账号所有者、管理员
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|账号 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+7. 获取本站最新评论（用于管理）
+
+```
+GET $URL/api/comment/getAll
+```
+
+>权限：管理员
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|per_page|查询参数 int|每页展示的评论数量，默认为 20|T|
+|page|查询参数 int|页码|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数和上面（2. 获取某个小节的所有评论）一样
 
 若该页没有数据，服务端返回状态码 204 - No Content

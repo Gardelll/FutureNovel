@@ -1,5 +1,6 @@
 package net.wlgzs.futurenovel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -8,7 +9,6 @@ import lombok.Data;
 import lombok.NonNull;
 import org.apache.ibatis.annotations.AutomapConstructor;
 
-// TODO 评论
 @Data
 @AllArgsConstructor(onConstructor_={@AutomapConstructor})
 public class Comment implements Serializable {
@@ -25,12 +25,13 @@ public class Comment implements Serializable {
     private final UUID sectionId;
 
     @NonNull
-    private byte rating;
+    private final byte rating;
 
     @NonNull
-    private String text;
+    private final String text;
 
     @NonNull
-    private Date createTime;
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy年MM月dd日 HH:mm:ss")
+    private final Date createTime;
 
 }

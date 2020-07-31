@@ -26,9 +26,12 @@ import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.Section;
 import net.wlgzs.futurenovel.service.AccountService;
+import net.wlgzs.futurenovel.service.BookSelfService;
+import net.wlgzs.futurenovel.service.CommentService;
 import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
+import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpStatus;
@@ -73,11 +76,14 @@ public class TemplateController extends AbstractAppController {
                               AccountService accountService,
                               EmailService emailService,
                               NovelService novelService,
+                              ReadHistoryService readHistoryService,
+                              CommentService commentService,
                               Validator defaultValidator,
                               Properties futureNovelConfig,
                               FileService fileService,
+                              BookSelfService bookSelfService,
                               DateFormatter defaultDateFormatter) {
-        super(tokenStore, accountService, emailService, novelService, defaultValidator, futureNovelConfig, fileService, defaultDateFormatter);
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter);
     }
 
     @InitBinder
@@ -111,6 +117,11 @@ public class TemplateController extends AbstractAppController {
         List<NovelIndex> result = novelService.getAllNovelIndex(0, 40, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
         model.addAttribute("totalPage", 1);
         model.addAttribute("novelIndexList", result);
+        result.sort((o1, o2) -> Long.compare(o2.getHot(), o1.getHot()));
+        List<String> covers = result.stream()
+            .filter(novelIndex -> novelIndex.getCoverImgUrl() != null)
+            .map(NovelIndex::getCoverImgUrl).collect(Collectors.toList());
+        model.addAttribute("covers", covers.subList(0, Math.min(covers.size(), 5)));
         return "FutureNovel";
     }
 

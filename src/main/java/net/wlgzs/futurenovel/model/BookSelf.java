@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NonNull;
 import org.apache.ibatis.annotations.AutomapConstructor;
 
-// TODO like/收藏
 @Data
 @AllArgsConstructor(onConstructor_={@AutomapConstructor})
 public class BookSelf implements Serializable {
@@ -26,5 +25,20 @@ public class BookSelf implements Serializable {
 
     @NonNull
     private ArrayNode novels;
+
+    public void addNovel(@NonNull UUID novelIndexId) {
+        novels.add(novelIndexId.toString());
+    }
+
+    public void clear() {
+        novels.removeAll();
+    }
+
+    public void remove(@NonNull UUID novelIndexId) {
+        for (int i = 0; i < novels.size(); i++) {
+            if (novels.get(i).asText().equals(novelIndexId.toString()))
+                novels.remove(i);
+        }
+    }
 
 }

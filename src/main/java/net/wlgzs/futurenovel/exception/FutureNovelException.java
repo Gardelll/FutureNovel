@@ -51,6 +51,7 @@ public class FutureNovelException extends RuntimeException {
         PERMISSION_DENIED(403, "无权操作"),
         FILE_TOO_LARGE(413, "上传的文件过大"),
         NOVEL_NOT_FOUND(404, "找不到小说"),
+        BOOK_SELF_NOT_FOUND(404, "找不到该收藏夹"),
         EXP_NOT_ENOUGH(403, "积分不足");
         private final String msg;
         private final int statusCode;

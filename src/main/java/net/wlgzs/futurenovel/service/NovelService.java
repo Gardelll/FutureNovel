@@ -88,7 +88,7 @@ public class NovelService implements DisposableBean {
                     series.addAll(result);
                 } while (result.size() >= count && series.size() < 1000);
             }
-        }, 1, 10, TimeUnit.MINUTES);
+        }, 0, 10, TimeUnit.MINUTES);
     }
 
     /**
@@ -323,6 +323,11 @@ public class NovelService implements DisposableBean {
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
+    }
+
+    @Transactional
+    public long gc() {
+        return chapterDao.chapterGC() + sectionDao.sectionGC();
     }
 
     @NonNull

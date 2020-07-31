@@ -56,6 +56,12 @@ public interface SectionDao {
     })
     int deleteSectionByFromChapterList(List<UUID> fromChapters) throws DataAccessException;
 
+    @Delete({
+        "DELETE FROM `section` WHERE `section`.`fromChapter` NOT IN ",
+        "(SELECT `chapter`.`uniqueId` FROM `chapter`) "
+    })
+    long sectionGC() throws DataAccessException;
+
     @Select({"<script>",
             "SELECT `uniqueId`, `fromChapter`, `title`, `text` FROM `section` ",
             "WHERE `section`.`fromChapter` = #{fromChapter} ",

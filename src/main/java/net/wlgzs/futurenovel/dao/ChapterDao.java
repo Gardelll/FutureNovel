@@ -34,6 +34,12 @@ public interface ChapterDao {
     @Delete("DELETE FROM `chapter` WHERE `chapter`.`fromNovel` = #{fromNovel}")
     int deleteChapterByFromNovel(@Param("fromNovel") UUID fromNovel) throws DataAccessException;
 
+    @Delete({
+        "DELETE FROM `chapter` WHERE `chapter`.`fromNovel` NOT IN ",
+        "(SELECT `novel_index`.`uniqueId` FROM `novel_index`) "
+    })
+    long chapterGC() throws DataAccessException;
+
     @Select({"<script>",
             "SELECT `uniqueId`, `fromNovel`, `title`, `sections` FROM `chapter` ",
             "WHERE `chapter`.`fromNovel` = #{fromNovel} ",

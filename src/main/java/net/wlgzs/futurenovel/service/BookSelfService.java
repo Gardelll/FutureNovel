@@ -74,7 +74,6 @@ public class BookSelfService {
         }
     }
 
-    @Transactional
     public BookSelf getBookSelf(@NonNull UUID bookSelfId) {
         try {
             var ret = bookSelfDao.getBookSelf(bookSelfId);
@@ -85,7 +84,6 @@ public class BookSelfService {
         }
     }
 
-    @Transactional
     public List<BookSelf> getBookSelves(@NonNull Account account) {
         try {
             var ret = bookSelfDao.getBookSelvesByAccountId(account.getUid());

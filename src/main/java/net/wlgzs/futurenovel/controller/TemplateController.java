@@ -245,6 +245,14 @@ public class TemplateController extends AbstractAppController {
         return "look-book";
     }
 
+    @GetMapping("/novel/read")
+    public String bookRead(@RequestParam("sectionId") String sectionIdStr, Model model) {
+        final UUID sectionId = UUID.fromString(sectionIdStr);
+        final var novelIndex = novelService.findNovelIndexBySectionId(sectionId);
+        model.addAttribute("sectionId", sectionIdStr);
+        return String.format("redirect:/novel/%s/read", novelIndex.getUniqueId().toString());
+    }
+
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/read")
     public String bookRead(@PathVariable(name = "uniqueId") String uniqueId,
                            @RequestParam("sectionId") String sectionId,
@@ -312,8 +320,8 @@ public class TemplateController extends AbstractAppController {
 
     @PostMapping(value = "/search", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String doSearch(@Valid SearchNovelRequest req,
-                           @RequestParam int page,
-                           @RequestParam(defaultValue = "20") int perPage,
+                           @RequestParam(name = "page") int page,
+                           @RequestParam(name = "per_page", defaultValue = "20") int perPage,
                            @CookieValue(name = "uid", defaultValue = "") String uid,
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -350,12 +358,14 @@ public class TemplateController extends AbstractAppController {
                     model.addAttribute("redirectTo", request.getRequestURI());
                     return "redirect:/login";
                 }
-                currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.ONE));
+                if (!currentAccount.isVIP())
+                    currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.ONE));
                 if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0) throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
                 if (req.keywords == null || req.keywords.length() < 5) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字太短");
                 String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));
                 String query = Arrays.stream(req.keywords.split("\\s+")).map(s -> "+" + s).collect(Collectors.joining(" ")) + " " + except;
                 long total = novelService.searchByContentGetCount(query);
+                // TODO 关键词着色
                 List<Section> result = novelService.searchByContent(query, offset, perPage);
                 if (!result.isEmpty()) {
                     accountService.updateAccountExperience(currentAccount);

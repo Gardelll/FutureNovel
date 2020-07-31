@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
 import net.wlgzs.futurenovel.model.Comment;
+import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.packet.c2s.AddAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddChapterRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddCommentRequest;
@@ -38,6 +39,7 @@ import net.wlgzs.futurenovel.packet.c2s.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditExperienceRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditNovelRequest;
+import net.wlgzs.futurenovel.packet.c2s.GetReadHistoryRequest;
 import net.wlgzs.futurenovel.packet.s2c.CommentInfo;
 import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
 import net.wlgzs.futurenovel.packet.c2s.LoginRequest;
@@ -874,7 +876,6 @@ public class ApiController extends AbstractAppController {
                                @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
@@ -889,7 +890,6 @@ public class ApiController extends AbstractAppController {
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                             HttpServletRequest request) {
         if ((req.title == null || req.title.isBlank()) && req.sectionsEdit == null) throw new IllegalArgumentException("title & sections: 不能同时为空");
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         var chapter = novelService.getChapter(UUID.fromString(uniqueId));
@@ -916,7 +916,6 @@ public class ApiController extends AbstractAppController {
                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                             HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException("title: 不能为空");
@@ -934,7 +933,6 @@ public class ApiController extends AbstractAppController {
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                            HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
 
@@ -965,14 +963,13 @@ public class ApiController extends AbstractAppController {
         else return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/comment/{uniqueId:[0-9a-f\\-]{36}}/delete")
+    @DeleteMapping("/comment/{uniqueId:[0-9a-f\\-]{36}}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteComment(@PathVariable("uniqueId") String uniqueId,
                               @CookieValue(name = "uid", defaultValue = "") String uid,
                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                               HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
         Comment comment = commentService.getComment(UUID.fromString(uniqueId));
@@ -991,7 +988,6 @@ public class ApiController extends AbstractAppController {
                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                     HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         NovelIndex novel = novelService.findNovelIndexBySectionId(UUID.fromString(sectionId));
         if (currentAccount.getUid().equals(novel.getUploader())) currentAccount.checkPermission();
@@ -1007,7 +1003,6 @@ public class ApiController extends AbstractAppController {
                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                     HttpServletRequest request) {
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         if (currentAccount.getUid().equals(UUID.fromString(accountId))) currentAccount.checkPermission();
         else currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -1025,12 +1020,48 @@ public class ApiController extends AbstractAppController {
                                                            HttpServletRequest request) {
         if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
-        // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
         var result = commentService.getComments(offset, perPage);
         if (result.isEmpty()) return ResponseEntity.noContent().build();
         else return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/account/readHistory/get")
+    @ResponseBody
+    public ResponseEntity<List<ReadHistory>> getReadHistory(@RequestBody @Valid GetReadHistoryRequest req,
+                                                            @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                            HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        var result = readHistoryService.getReadHistory(currentAccount, req.after, req.before);
+        if (result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/account/readHistory/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteReadHistory(@PathVariable("uniqueId") String uniqueId,
+                                  @CookieValue(name = "uid", defaultValue = "") String uid,
+                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                  HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        readHistoryService.deleteReadHistory(UUID.fromString(uniqueId), currentAccount.getUid());
+    }
+
+    @DeleteMapping("/account/readHistory/clear")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void clearReadHistory(@RequestBody @Valid GetReadHistoryRequest req,
+                                 @CookieValue(name = "uid", defaultValue = "") String uid,
+                                 @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                 HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+
+        readHistoryService.clearReadHistory(currentAccount, req.after, req.before);
     }
 
 //    // TODO 统计网站数据

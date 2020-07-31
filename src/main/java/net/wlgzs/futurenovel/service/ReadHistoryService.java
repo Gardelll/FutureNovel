@@ -36,9 +36,9 @@ public class ReadHistoryService {
     }
 
     @Transactional
-    public void deleteReadHistory(@NonNull UUID historyId) {
+    public void deleteReadHistory(@NonNull UUID historyId, @NonNull UUID accountId) {
         try {
-            int ret = readHistoryDao.deleteReadHistory(historyId);
+            int ret = readHistoryDao.deleteReadHistory(historyId, accountId);
             if (ret != 1)
                 throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {

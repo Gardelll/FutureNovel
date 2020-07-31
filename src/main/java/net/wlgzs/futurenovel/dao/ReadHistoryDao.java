@@ -16,8 +16,8 @@ public interface ReadHistoryDao {
             "VALUES (#{uniqueId}, #{accountId}, #{sectionId}, #{createTime})"})
     int insertReadHistory(ReadHistory readHistory) throws DataAccessException;
 
-    @Delete("DELETE FROM `read_history` WHERE `read_history`.`uniqueId` = #{uniqueId}")
-    int deleteReadHistory(@Param("uniqueId") UUID uniqueId) throws DataAccessException;
+    @Delete("DELETE FROM `read_history` WHERE `read_history`.`uniqueId` = #{uniqueId} AND `read_history`.`accountId` = #{accountId}")
+    int deleteReadHistory(@Param("uniqueId") UUID uniqueId, @Param("accountId") UUID accountId) throws DataAccessException;
 
     @Delete({
         "<script>",
@@ -37,12 +37,50 @@ public interface ReadHistoryDao {
     long historyGC() throws DataAccessException;
 
     @Select({
-        "<script>",
-        "SELECT `uniqueId`, `accountId`, `sectionId`, `createTime` ",
-        "FROM `read_history` ",
-        "<where> `read_history`.`accountId` = #{accountId} ",
-        "<if test='after != null'> AND `read_history`.`createTime` &gt; #{after} </if> ",
-        "<if test='before != null'> AND `read_history`.`createTime` &lt; #{before} </if>",
+        "<script> SELECT ",
+        "    `read_history`.`uniqueId`, ",
+        "    `read_history`.`accountId`, ",
+        "    `read_history`.`sectionId`, ",
+        "    `read_history`.`createTime`, ",
+        "    `section`.`title`, ",
+        "    `novel_index`.`uniqueId` AS `novelIndexId`, ",
+        "    `novel_index`.`title` AS `novelTitle`, ",
+        "    `chapter`.`title` AS `chapterTitle`, ",
+        "    `novel_index`.`coverImgUrl`, ",
+        "    `novel_index`.`authors` ",
+        "FROM ",
+        "    `read_history`, ",
+        "    `section`, ",
+        "    `novel_index`, ",
+        "    `chapter`",
+        "<where> ",
+        "    `read_history`.`accountId` = #{accountId} ",
+        "    AND `section`.`uniqueId` = `read_history`.`sectionId` ",
+        "    AND `novel_index`.`uniqueId` =( ",
+        "        SELECT ",
+        "            `chapter`.`fromNovel` ",
+        "        FROM ",
+        "            `chapter` ",
+        "        WHERE ",
+        "            `chapter`.`uniqueId` =( ",
+        "            SELECT ",
+        "                `section`.`fromChapter` ",
+        "            FROM ",
+        "                `section` ",
+        "            WHERE ",
+        "                `section`.`uniqueId` = `read_history`.`sectionId` ",
+        "        ) ",
+        "    )",
+        "    AND `chapter`.`uniqueId` =( ",
+        "        SELECT ",
+        "            `section`.`fromChapter` ",
+        "        FROM ",
+        "            `section` ",
+        "        WHERE ",
+        "            `section`.`uniqueId` = `read_history`.`sectionId` ",
+        "    ) ",
+        "    <if test='after != null'> AND `read_history`.`createTime` &gt; #{after} </if> ",
+        "    <if test='before != null'> AND `read_history`.`createTime` &lt; #{before} </if>",
         "</where> </script>"
     })
     List<ReadHistory> getReadHistoryByAccountId(@Param("accountId") UUID accountId, @Param("after") Date after, @Param("before") Date before) throws DataAccessException;

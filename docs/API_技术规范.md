@@ -64,6 +64,7 @@
 
 + UUID: 长度为 36 的随机且唯一字符串，例如 `11de527f-8b56-494e-9a02-0c11f8f31482` ，存储为 Cookie 时键名为 `uid`
 + Token: 长度为 64 的随机且唯一十六进制字符串，用于持久化用户的登录状态，存储为 Cookie 时键名为 `token`
++ Date: 时间点字符串，24 小时制，格式例如 `2020年07月19日 14:59:28`
 
 + Account: 用户信息，序列化内容如下  
 
@@ -1104,7 +1105,7 @@ GET $URL/api/account/{accountId}/comment/get
 4. 删除某条评论
 
 ```
-DELETE $URL/api/comment/{uniqueId}/delete
+DELETE $URL/api/comment/{uniqueId}
 ```
 
 >权限：评论作者、小说上传者、管理员
@@ -1169,3 +1170,82 @@ GET $URL/api/comment/getAll
 返回参数和上面（2. 获取某个小节的所有评论）一样
 
 若该页没有数据，服务端返回状态码 204 - No Content
+
+--------
+
+### 浏览历史相关接口
+
+1. 获取当前账号的浏览历史
+
+```
+POST $URL/api/account/readHistory/get
+```
+
+>权限：所有登录用户
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|after|Date|开始时间，默认不限|T|
+|before|Date|结束时间，默认不限|T|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回数据：
+
+```json5
+[
+    {
+        "uniqueId": "14f396dc-a65c-4b0c-8da8-79f5908d73d3", // 阅读历史的 ID
+        "accountId": "b6623a2e-6233-4e36-a1b1-31b4642e81ab", // 账号 ID
+        "sectionId": "b4eb6e09-7d85-434f-830b-160c4fb7274b", // 小节 ID
+        "createTime": "2020年07月31日 14:45:47", // 阅读时间
+        "title": "第 1 节", // 小节标题
+        "novelIndexId": "a08c1de1-36dd-4eab-a144-4825f7dc7aa6", // 小说 ID
+        "novelTitle": "水浒传", // 小说标题
+        "chapterTitle": "第九回 柴进门招天下客 林冲棒打洪教头", // 章标题
+        "coverImgUrl": "图片 URL", // 小说封面
+        "authors": "施耐庵" // 小说作者
+    },
+    {
+        // 还可能有更多
+    }
+]
+```
+
+指定的时间段没有数据，服务端返回状态码 204 - No Content
+
+2. 删除某条历史记录
+
+```
+DELETE $URL/api/account/readHistory/{uniqueId}
+```
+
+>权限：只能是用户自己
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|uniqueId|UUID|历史记录 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+3. 清空某一段时间的历史记录
+
+```
+DELETE $URL/api/account/readHistory/clear
+```
+
+>权限：所有登录用户
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|after|Date|开始时间，默认不限|T|
+|before|Date|结束时间，默认不限|T|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+

@@ -17,14 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
-import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
-import net.wlgzs.futurenovel.packet.c2s.RegisterRequest;
-import net.wlgzs.futurenovel.packet.c2s.SearchNovelRequest;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.NovelIndex;
+import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.model.Section;
+import net.wlgzs.futurenovel.packet.c2s.RegisterRequest;
+import net.wlgzs.futurenovel.packet.c2s.SearchNovelRequest;
+import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
+import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.BookSelfService;
 import net.wlgzs.futurenovel.service.CommentService;
@@ -253,7 +254,7 @@ public class TemplateController extends AbstractAppController {
                            HttpServletRequest request,
                            HttpSession session,
                            Model model) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
 
         var novel = buildNovel(UUID.fromString(uniqueId));
         model.addAttribute("novel", novel);
@@ -261,6 +262,10 @@ public class TemplateController extends AbstractAppController {
 
         var section = novelService.getSection(UUID.fromString(sectionId));
         model.addAttribute("section", section);
+
+        if (currentAccount != null) {
+            readHistoryService.recordReadHistory(currentAccount, section);
+        }
 
         var chapter = novel.getChapters()
             .stream()
@@ -280,11 +285,15 @@ public class TemplateController extends AbstractAppController {
                              HttpServletRequest request,
                              HttpSession session,
                              Model model) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
         if (uuid == null) uuid = uid;
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
             model.addAttribute("showAccount", showAccount);
+            if (currentAccount.getUid().equals(showAccount.getUid())) {
+                List<ReadHistory> history = readHistoryService.getReadHistory(currentAccount, new Date(System.currentTimeMillis() - Duration.ofDays(14).toMillis()), null);
+                model.addAttribute("readHistory", history);
+            }
             return "member";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);

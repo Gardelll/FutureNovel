@@ -298,6 +298,7 @@ public class NovelService implements DisposableBean {
     public void deleteChapter(@NonNull Account account, @NonNull UUID chapterId) {
         try {
             var novelIndex = novelIndexDao.getNovelIndexByChapterId(chapterId);
+            if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             try {
@@ -316,6 +317,7 @@ public class NovelService implements DisposableBean {
     public void deleteSection(@NonNull Account account, @NonNull UUID sectionId) {
         try {
             var novelIndex = novelIndexDao.getNovelIndexBySectionId(sectionId);
+            if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = sectionDao.deleteSectionById(sectionId);
@@ -400,7 +402,8 @@ public class NovelService implements DisposableBean {
     @Transactional
     public void editChapter(@NonNull Account account, @NonNull Chapter chapter) {
         try {
-            var novelIndex = novelIndexDao.getNovelIndexById(chapter.getUniqueId());
+            var novelIndex = novelIndexDao.getNovelIndexById(chapter.getFromNovel());
+            if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = chapterDao.updateChapter(chapter);
@@ -414,6 +417,7 @@ public class NovelService implements DisposableBean {
     public boolean editSection(@NonNull Account account, @NonNull UUID sectionId, @NonNull AddSectionRequest edit) {
         try {
             var novelIndex = novelIndexDao.getNovelIndexBySectionId(sectionId);
+            if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             if (checkAllNull(edit.text, edit.title)) return false;

@@ -24,6 +24,7 @@
     - [点评相关接口](#点评相关接口)
     - [浏览历史相关接口](#浏览历史相关接口)
     - [收藏相关接口](#收藏相关接口)
+    - [打赏](#打赏)
 
 <!-- /TOC -->
 ## 概述
@@ -1401,3 +1402,22 @@ GET $URL/api/account/{accountId}/bookSelves
     }
 ]
 ```
+
+--------
+
+### 打赏
+
+```
+GET $URL/api/novel/{novelIndexId}/donate
+```
+
+>权限：所有登录用户  
+>请求格式：`application/x-www-form-urlencoded`
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|novelIndexId|UUID|小说 ID，注意要包含在路径里，不是 query 参数|否|
+|count|查询参数 int|积分数量|是 默认 10|
+
+若打赏成功，服务端返回状态码 204 - No Content  
+若该作品为二创或原创，则作者增加相应积分

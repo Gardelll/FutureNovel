@@ -17,7 +17,7 @@ public interface AccountDao {
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`uid` = #{uid} LIMIT 1"})
+            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`uid` = #{uid} LIMIT 1 FOR UPDATE"})
     Account getAccount(@Param("uid") UUID uid) throws DataAccessException;
 
     @Insert({"INSERT INTO `accounts` (`userName`, `uid`, ",
@@ -32,13 +32,13 @@ public interface AccountDao {
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} LIMIT 1"})
+            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} LIMIT 1 FOR UPDATE"})
     Account getAccountByUsername(@Param("userName") String userName) throws DataAccessException;
 
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`email` = #{email} LIMIT 1"})
+            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`email` = #{email} LIMIT 1 FOR UPDATE"})
     Account getAccountByEmail(@Param("email") String email) throws DataAccessException;
 
     @Select({"<script>",
@@ -48,8 +48,8 @@ public interface AccountDao {
             " <if test='uid != null'>",
             "   AND `accounts`.`uid` != #{uid}",
             " </if>",
-            "</where>",
-            "</script>"})
+            "</where> ",
+            "FOR UPDATE</script>"})
     int getAccountSizeByUsername(@Param("userName") String name, @Param("uid") @Nullable UUID uid) throws DataAccessException;
 
     @Select({"<script>",
@@ -58,15 +58,15 @@ public interface AccountDao {
             " `accounts`.`email` = #{email} ",
             " <if test='uid != null'>",
             "   AND `accounts`.`uid` != #{uid}",
-            " </if>",
-            "</where>",
-            "</script>"})
+            " </if> ",
+            "</where> ",
+            "FOR UPDATE </script>"})
     int getAccountSizeByEmail(@Param("email") String email, @Param("uid") @Nullable UUID uid) throws DataAccessException;
 
     @Select({"SELECT `userName`, `uid`, ",
             " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} OR `accounts`.`email` = #{userName} LIMIT 1"})
+            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} OR `accounts`.`email` = #{userName} LIMIT 1 FOR UPDATE"})
     Account getAccountForLogin(@Param("userName") String userName) throws DataAccessException;
 
     @Select({"<script>",
@@ -75,7 +75,7 @@ public interface AccountDao {
             " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
             " `experience`, `profileImgUrl` FROM `accounts`",
             "<if test='orderBy != null'>ORDER BY ${orderBy} </if> ",
-            "LIMIT ${offset},${count}",
+            "LIMIT ${offset},${count} FOR UPDATE",
             "</script>"})
     List<Account> getAccountForAdmin(@Param("offset") long offset, @Param("count") int count, @Param("orderBy") String orderBy) throws DataAccessException;
 
@@ -121,5 +121,4 @@ public interface AccountDao {
     @Update("UPDATE `accounts` SET `experience` = #{experience} WHERE `accounts`.`uid` = #{uid}")
     int updateExperience(Account account);
 
-    // TODO 打赏（把自己的积分给上传者）（需要用到事务锁）
 }

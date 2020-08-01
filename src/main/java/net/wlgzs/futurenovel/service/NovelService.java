@@ -550,8 +550,6 @@ public class NovelService implements DisposableBean {
         }
     }
 
-    // TODO 在小说中搜索
-
     @Override
     public void destroy() throws Exception {
         future.cancel(true);

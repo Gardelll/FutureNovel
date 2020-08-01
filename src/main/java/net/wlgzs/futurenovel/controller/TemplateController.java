@@ -126,7 +126,7 @@ public class TemplateController extends AbstractAppController {
         List<NovelIndex> hot = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
         model.addAttribute("hotNovelIndexList", hot);
 
-        List<NovelIndex> newest = novelService.findNovelIndexByPubDate(new Date(0), new Date(), 0, 10, SearchNovelRequest.SortBy.PUBDATE_DESC.getOrderBy());
+        List<NovelIndex> newest = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.CREATE_TIME_DESC.getOrderBy());
         model.addAttribute("newestNovelIndexList", newest);
 
         List<NovelIndex> all = new LinkedList<>(new LinkedHashSet<>() {{

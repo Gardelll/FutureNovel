@@ -1163,6 +1163,29 @@ public class ApiController extends AbstractAppController {
         else return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/novel/{novelIndexId:[0-9a-f\\-]{36}}/donate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void donate(@PathVariable("novelIndexId") String novelIndexId,
+                       @RequestParam(defaultValue = "10") int count,
+                       @CookieValue(name = "uid", defaultValue = "") String uid,
+                       @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                       @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                       HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+
+        currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.valueOf(count)));
+        if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0) throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
+
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(novelIndexId));
+        if (novelIndex.getCopyright() == NovelIndex.Copyright.FAN_FICTION || novelIndex.getCopyright() == NovelIndex.Copyright.ORIGINAL) {
+            Account author = accountService.getAccount(novelIndex.getUploader());
+            author.setExperience(author.getExperience().add(BigInteger.valueOf(count)));
+            accountService.updateAccountExperience(author);
+        }
+        accountService.updateAccountExperience(currentAccount);
+    }
+
 //    // TODO 统计网站数据
 //    public Map<String, ?> statistics() {
 //

@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
@@ -29,12 +30,15 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
+import net.wlgzs.futurenovel.model.BookSelf;
 import net.wlgzs.futurenovel.model.Comment;
 import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.packet.c2s.AddAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddChapterRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddCommentRequest;
 import net.wlgzs.futurenovel.packet.c2s.AddSectionRequest;
+import net.wlgzs.futurenovel.packet.c2s.BookSelfAddNovelRequest;
+import net.wlgzs.futurenovel.packet.c2s.CreateBookSelfRequest;
 import net.wlgzs.futurenovel.packet.c2s.CreateNovelIndexRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
 import net.wlgzs.futurenovel.packet.c2s.EditExperienceRequest;
@@ -616,6 +620,8 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         req.authors.replaceAll(String::trim);
         req.tags.replaceAll(String::trim);
+        req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
+        if (req.tags.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
         if (req.series == null || req.series.isBlank()) req.series = req.title;
         return novelService.createNovelIndex(currentAccount,
                 req.copyright,
@@ -878,6 +884,11 @@ public class ApiController extends AbstractAppController {
                                HttpServletRequest request) {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
+        if (req.tags != null) {
+            req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
+            if (req.tags.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
+        }
+
         if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
     }
 
@@ -1062,6 +1073,94 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         readHistoryService.clearReadHistory(currentAccount, req.after, req.before);
+    }
+
+    @PostMapping("/bookSelf/create")
+    @ResponseBody
+    public BookSelf createBookSelf(@RequestBody @Valid CreateBookSelfRequest req,
+                                   @CookieValue(name = "uid", defaultValue = "") String uid,
+                                   @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                   @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                   HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        if (req.title == null || req.title.isBlank()) req.title = String.format("%s 的书架", currentAccount.getUserName());
+        return bookSelfService.createBookSelf(currentAccount, req.title);
+    }
+
+    @DeleteMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteBookSelf(@PathVariable("uniqueId") String uniqueId,
+                               @CookieValue(name = "uid", defaultValue = "") String uid,
+                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                               HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        bookSelfService.deleteBookSelf(UUID.fromString(uniqueId));
+    }
+
+    @GetMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}")
+    @ResponseBody
+    public BookSelf getBookSelf(@PathVariable("uniqueId") String uniqueId) {
+        return bookSelfService.getBookSelf(UUID.fromString(uniqueId));
+    }
+
+    @PostMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}/add")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void bookSelfAddNovel(@PathVariable("uniqueId") String uniqueId,
+                                 @RequestBody @Valid BookSelfAddNovelRequest req,
+                                 @CookieValue(name = "uid", defaultValue = "") String uid,
+                                 @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                 HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(req.novelIndexId));
+        novelIndex.getChapters().removeAll();
+        bookSelf.addNovel(AppConfig.objectMapper.valueToTree(novelIndex));
+        bookSelfService.editBookSelf(bookSelf);
+    }
+
+    @PostMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}/remove")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void bookSelfRemoveNovel(@PathVariable("uniqueId") String uniqueId,
+                                    @RequestBody @Valid BookSelfAddNovelRequest req,
+                                    @CookieValue(name = "uid", defaultValue = "") String uid,
+                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                    HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        bookSelf.remove(UUID.fromString(req.novelIndexId));
+        bookSelfService.editBookSelf(bookSelf);
+    }
+
+    @PostMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}/clear")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void bookSelfClear(@PathVariable("uniqueId") String uniqueId,
+                              @CookieValue(name = "uid", defaultValue = "") String uid,
+                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                              HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission();
+        BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        bookSelf.clear();
+        bookSelfService.editBookSelf(bookSelf);
+    }
+
+    @GetMapping("/account/{accountId:[0-9a-f\\-]{36}}/bookSelves")
+    @ResponseBody
+    public ResponseEntity<List<BookSelf>> getBookSelves(@PathVariable("accountId") String accountId) {
+        var result = bookSelfService.getBookSelves(UUID.fromString(accountId));
+        if (result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
     }
 
 //    // TODO 统计网站数据

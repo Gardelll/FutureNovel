@@ -2,15 +2,19 @@ package net.wlgzs.futurenovel.controller;
 
 import java.math.BigInteger;
 import java.time.Duration;
+import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -115,14 +119,35 @@ public class TemplateController extends AbstractAppController {
             // 已登录
             model.addAttribute("currentAccount", account);
         }
-        List<NovelIndex> result = novelService.getAllNovelIndex(0, 40, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
-        model.addAttribute("totalPage", 1);
-        model.addAttribute("novelIndexList", result);
-        result.sort((o1, o2) -> Long.compare(o2.getHot(), o1.getHot()));
-        List<String> covers = result.stream()
+
+        List<NovelIndex> random = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
+        model.addAttribute("suggestNovelIndexList", random);
+
+        List<NovelIndex> hot = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
+        model.addAttribute("hotNovelIndexList", hot);
+
+        List<NovelIndex> newest = novelService.findNovelIndexByPubDate(new Date(0), new Date(), 0, 10, SearchNovelRequest.SortBy.PUBDATE_DESC.getOrderBy());
+        model.addAttribute("newestNovelIndexList", newest);
+
+        List<NovelIndex> all = new LinkedList<>(new LinkedHashSet<>() {{
+            addAll(random);
+            addAll(hot);
+            addAll(newest);
+        }});
+
+        all.sort((o1, o2) -> Long.compare(o2.getHot(), o1.getHot()));
+
+        HashSet<String> covers = all.stream()
             .filter(novelIndex -> novelIndex.getCoverImgUrl() != null)
-            .map(NovelIndex::getCoverImgUrl).collect(Collectors.toList());
-        model.addAttribute("covers", covers.subList(0, Math.min(covers.size(), 5)));
+            .map(NovelIndex::getCoverImgUrl).collect(HashSet::new, HashSet::add, AbstractCollection::addAll);
+        model.addAttribute("covers", List.copyOf(covers).subList(0, Math.min(10, covers.size())));
+
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
+
         return "FutureNovel";
     }
 

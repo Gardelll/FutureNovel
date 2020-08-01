@@ -1,7 +1,10 @@
 package net.wlgzs.futurenovel.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +29,8 @@ public class BookSelf implements Serializable {
     @NonNull
     private ArrayNode novels;
 
-    public void addNovel(@NonNull UUID novelIndexId) {
-        novels.add(novelIndexId.toString());
+    public void addNovel(@NonNull ObjectNode novelIndex) {
+        novels.add(novelIndex);
     }
 
     public void clear() {
@@ -36,8 +39,13 @@ public class BookSelf implements Serializable {
 
     public void remove(@NonNull UUID novelIndexId) {
         for (int i = 0; i < novels.size(); i++) {
-            if (novels.get(i).asText().equals(novelIndexId.toString()))
-                novels.remove(i);
+            int finalI = i;
+            Optional.ofNullable(novels.get(i).get("uniqueId"))
+                .map(JsonNode::asText)
+                .ifPresent(s -> {
+                    if (s.equals(novelIndexId.toString()))
+                        novels.remove(finalI);
+                });
         }
     }
 

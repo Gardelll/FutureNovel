@@ -23,6 +23,7 @@
         - [搜索小说](#搜索小说)
     - [点评相关接口](#点评相关接口)
     - [浏览历史相关接口](#浏览历史相关接口)
+    - [收藏相关接口](#收藏相关接口)
 
 <!-- /TOC -->
 ## 概述
@@ -1250,3 +1251,153 @@ DELETE $URL/api/account/readHistory/clear
 
 若操作成功，服务端返回状态码 202 - ACCEPTED
 
+--------
+
+### 收藏相关接口
+
+1. 创建收藏夹
+
+```
+POST $URL/api/bookSelf/create
+```
+
+>权限：所有登录用户
+
+请求参数
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|title|String|收藏夹的名字|T|
+
+若创建成功，服务端返回状态码 200 - OK
+
+返回参数：
+
+```json5
+{
+    "uniqueId": "99bb44da-d5eb-4f68-935e-53bc9c3da22c", // 收藏夹的 ID
+    "accountId": "b6623a2e-6233-4e36-a1b1-31b4642e81ab", // 创建者的账号 ID
+    "title": "admin 的书架", // 收藏夹名字
+    "novels": [] // 待添加
+}
+```
+
+2. 删除收藏夹
+
+```
+DELETE $URL/api/bookSelf/{bookSelfId}
+```
+
+>权限：仅所有者拥有权限
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|bookSelfId|UUID|收藏夹 ID，注意要包含在路径里，不是 query 参数|F|
+
+若操作成功，服务端返回状态码 202 - ACCEPTED
+
+3. 查询收藏夹内容（貌似没卵用）
+
+```
+GET $URL/api/bookSelf/{bookSelfId}
+```
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|bookSelfId|UUID|收藏夹 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：略
+
+4. 收藏小说
+
+```
+POST $URL/api/bookSelf/{bookSelfId}/add
+```
+
+>权限：仅所有者拥有权限
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|bookSelfId|UUID|收藏夹 ID，注意要包含在路径里，不是 query 参数|F|
+|novelIndexId|UUID|小说 ID|F|
+
+若添加成功，服务端返回状态码 204 - No Content
+
+5. 从收藏夹移除小说
+
+```
+POST $URL/api/bookSelf/{bookSelfId}/remove
+```
+
+>权限：仅所有者拥有权限
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|bookSelfId|UUID|收藏夹 ID，注意要包含在路径里，不是 query 参数|F|
+|novelIndexId|UUID|小说 ID|F|
+
+若移除成功，服务端返回状态码 202 - ACCEPTED
+
+6. 清空收藏夹
+
+```
+POST $URL/api/bookSelf/{bookSelfId}/clear
+```
+
+>权限：仅所有者拥有权限
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|bookSelfId|UUID|收藏夹 ID，注意要包含在路径里，不是 query 参数|F|
+
+若清空成功，服务端返回状态码 202 - ACCEPTED
+
+7. 获取账号下的所有收藏夹
+
+```
+GET $URL/api/account/{accountId}/bookSelves
+```
+
+请求参数：
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|accountId|UUID|用户 ID，注意要包含在路径里，不是 query 参数|F|
+
+若查询成功，服务端返回状态码 200 - OK
+
+返回参数：
+
+```json5
+[
+    {
+        "uniqueId": "99bb44da-d5eb-4f68-935e-53bc9c3da22c", // 收藏夹 ID
+        "accountId": "b6623a2e-6233-4e36-a1b1-31b4642e81ab",
+        "title": "admin 的书架", // 收藏夹名字
+        "novels": [
+            {
+                // 小说目录信息，见上方 #数据格式 NovelIndex
+                "chapters": [] // 此处不会含有实际信息，不可访问
+            },
+            {
+                // 还可能有更多
+            }
+        ]
+    },
+    {
+        // 还可能有更多
+    }
+]
+```

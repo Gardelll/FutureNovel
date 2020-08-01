@@ -84,9 +84,9 @@ public class BookSelfService {
         }
     }
 
-    public List<BookSelf> getBookSelves(@NonNull Account account) {
+    public List<BookSelf> getBookSelves(@NonNull UUID accountId) {
         try {
-            var ret = bookSelfDao.getBookSelvesByAccountId(account.getUid());
+            var ret = bookSelfDao.getBookSelvesByAccountId(accountId);
             if (ret == null) return List.of();
             return ret;
         } catch (DataAccessException e) {

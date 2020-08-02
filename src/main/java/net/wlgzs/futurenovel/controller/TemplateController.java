@@ -120,10 +120,10 @@ public class TemplateController extends AbstractAppController {
             model.addAttribute("currentAccount", account);
         }
 
-        List<NovelIndex> random = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
+        List<NovelIndex> random = novelService.getAllNovelIndex(0, 12, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
         model.addAttribute("suggestNovelIndexList", random);
 
-        List<NovelIndex> hot = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
+        List<NovelIndex> hot = novelService.getAllNovelIndex(0, 12, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
         model.addAttribute("hotNovelIndexList", hot);
 
         List<NovelIndex> newest = novelService.getAllNovelIndex(0, 10, SearchNovelRequest.SortBy.CREATE_TIME_DESC.getOrderBy());

@@ -925,7 +925,7 @@ GET $URL/api/novel/user/{accountId}/get
 
 |枚举常量|说明|
 |----|----|
-|BEAT_MATCH|最佳匹配（搜索时有效）|
+|BEST_MATCH|最佳匹配（搜索时有效）|
 |AUTHORS|根据作者排序|
 |AUTHORS_DESC|作者倒序，下同理|
 |COPYRIGHT|版权|

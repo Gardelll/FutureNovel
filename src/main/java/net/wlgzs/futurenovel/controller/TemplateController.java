@@ -512,6 +512,23 @@ public class TemplateController extends AbstractAppController {
         return "backstage-user";
     }
 
+    @GetMapping({"/admin/comments"})
+    public String commentAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                               HttpServletRequest request,
+                               HttpSession session,
+                               Model model) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (currentAccount == null) {
+            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
+        }
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        return "backstage-comment";
+    }
+
     @ExceptionHandler(Exception.class)
     public String error(Model model, HttpServletResponse response, Exception e) {
         log.error("error: {}", e.getLocalizedMessage());

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台评论管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+    <title>Future book</title>
+</head>
+<!-- 作为公共部分分离 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<link rel="stylesheet" href="../../resources/css/header.css" th:href="@{/resources/css/header.css}">
+<link rel="stylesheet" href="../../resources/css/cut.css" th:href="@{/resources/css/cut.css}">
+<link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
+<!-- 作为公共部分分离/ -->
+<link rel="stylesheet" href="../../resources/css/backstage-book.css" th:href="@{/resources/css/backstage-book.css}">
+<body>
+<!-- 作为公共部分分离 -->
+    <div class="shortcut">
+        <div class="w">
+            <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
+            <ul class="fl left" >
+                <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
+                <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
+            </ul>
+            <ul class="fr">
+                <li class="message fl"><i class="iconfont icon-Message"></i></li>
+                <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
+                <li class="s-name fl"></li>
+                <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
+                    <ul class="dropdown" id="dropdown" style="display: none;">
+                        <li><a href="javascript:">个人信息</a></li>
+                        <li><a href="javascript:">切换账号</a></li>
+                        <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    <div class="catalog" id="catalog">
+    <div class="side fl">
+        <div class="logo">
+            <span>future book</span>
+        </div>
+        <ul>
+            <li><a href="backstage-book.html" th:href="@{/admin/novels}">书籍管理</a></li>
+            <li><a href="backstage-user.html" th:href="@{/admin/users}">用户管理</a></li>
+            <li class="active"><a href="backstage-comment.html" th:href="@{/admin/comments}">评论管理</a></li>
+        </ul>
+    </div>
+    </div>
+    <div class="contant" id="contant">
+        <div class="book">
+            <div class="function">
+                <span>作者名</span> <input type="text" class="seek" placeholder="请输入">
+                <span>小说类型</span> <input type="text" class="seek" placeholder="请输入">
+                <span>身份</span> <input type="text" class="seek" placeholder="请输入">
+                <button type="button" class="btn-seek" ><i class="iconfont icon-iconseach"></i></button>
+            </div>
+            <div class="function">    
+            </div>
+            <table class="data_dispaly">
+                <thead>
+                    <tr>
+                        <th style="width: 13%;">用户名</th>
+                        <th style="width: 20%;">内容</th>
+                        <th style="width: 4%;">评分</th>
+                        <th style="width: 13%;">用户等级</th>
+                        <th style="width: 15%;">评论时间</th>
+                        <th style="width: 13%;">total</th>
+                        <th style="width: 24%;">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody" id="a">
+                    
+                </tbody>
+            </table>
+            <span id="control_page">
+                
+            </span>
+            <div class="but">
+                
+                <button type="button" class="btn" id="gopre">上一页</button>
+                <button type="button" class="btn" id="gonext">下一页</button>
+            </div>
+        </div>
+    </div>
+<!-- 作为公共部分分离/ -->
+</body>
+<!-- 作为公共部分分离 -->
+<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
+</script>
+<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
+<!-- 作为公共部分分离/ -->
+<script th:inline="javascript" async>
+    var curPage=1,
+        onepage=7;
+    $(document).ready(function(){
+        
+                    $.ajax({
+                        url:/*[[${#request.getContextPath()} + '/api/comment/getAll ']]*/ "http://localhost:8080/future-novel/api/comment/getAll" ,
+                        type:'GET',
+                        data:{
+                            per_page: Number(onepage),
+                            page: Number(curPage)
+                        },
+                        success: function(data){
+                            $('#a').empty();
+                            $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 13%;">${data[i].userName}</th>
+                                        <th style="width: 16%;">${data[i].text}</th>
+                                        <th style="width: 4%;">${data[i].rating}</th>
+                                        <th style="width: 13%;">${data[i].level}</th>
+                                        <th style="width: 15%;">${data[i].createTime}</th>
+                                        <th style="width: 13%;">${data[i].total}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                    </tr>`)
+                                    })
+
+                            $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                            console.log(data)
+                        },
+                        error: function() {
+                            //const data = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',"请求失败");
+                        }
+                    })
+                    $('#gonext').on('click',function(){
+                        if(curPage>=1 && curPage<allPage){
+                            curPage=Number(curPage)+1;
+                        }
+                        console.log(curPage)
+                        $.ajax({
+                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        type:'GET',
+                        data:{
+                            per_page: Number(onepage),
+                            page: Number(curPage)
+                        },
+                        success: function(data){
+                            $('#a').empty();
+                            $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 13%;">${data[i].title}</th>
+                                        <th style="width: 16%;">${data[i].authors}</th>
+                                        <th style="width: 4%;">${data[i].hot}</th>
+                                        <th style="width: 13%;">${data[i].series}</th>
+                                        <th style="width: 15%;">${data[i].pubdate}</th>
+                                        <th style="width: 13%;">${data[i].copyright}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                    </tr>`)
+                                    })
+                                    $('#control_page').empty()        
+                            $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                            console.log(data)
+                        },
+                        error: function() {
+                            //const data = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',"请求失败");
+                        }
+                    })
+                    })
+                    $('#gopre').on('click',function(){
+                        if(curPage>1 && curPage<=allPage){
+                            curPage=Number(curPage)-1;
+                        }
+                        console.log(curPage)
+                        $.ajax({
+                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        type:'GET',
+                        data:{
+                            per_page: Number(onepage),
+                            page: Number(curPage)
+                        },
+                        success: function(data){
+                            $('#a').empty();
+                            $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 13%;">${data[i].title}</th>
+                                        <th style="width: 16%;">${data[i].authors}</th>
+                                        <th style="width: 4%;">${data[i].hot}</th>
+                                        <th style="width: 13%;">${data[i].series}</th>
+                                        <th style="width: 15%;">${data[i].pubdate}</th>
+                                        <th style="width: 13%;">${data[i].copyright}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                    </tr>`)
+                                    })
+                            $('#control_page').empty();    
+                            $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                            console.log(data)
+                        },
+                        error: function() {
+                            //const data = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',"请求失败");
+                        }
+                    })
+                    })
+
+    })        
+</script>
+</html>

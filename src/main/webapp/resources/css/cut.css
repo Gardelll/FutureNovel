@@ -125,7 +125,7 @@
   color: white;
 }
 
-.catalog {
+.catalog { 
   display: block;
   position: absolute;
   top: 0px;
@@ -134,7 +134,7 @@
   width: 220px;
   padding-top: 10px;
   z-index: 99;
-  overflow: auto;
+  overflow-x: none;
   border-right: 1px solid #e5e5e5;
   background-color: #20222A;
 }

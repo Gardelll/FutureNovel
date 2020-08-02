@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>用户管理</title>
+    <title>后台用户管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <title>Future book</title>
 </head>
@@ -26,7 +26,7 @@
                     <li class="message fl"><i class="iconfont icon-Message"></i></li>
                     <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
                     <li class="s-name fl"></li>
-                    <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
+                    <li class="admin fl" id="admin">admin<i class="iconfont icon-downarrow"></i>
                         <ul class="dropdown" id="dropdown" style="display: none;">
                             <li><a href="javascript:">个人信息</a></li>
                             <li><a href="javascript:">切换账号</a></li>
@@ -43,13 +43,14 @@
                 <span>future book</span>
             </div>
             <ul>
-                <li><a href="backstage-book.html" th:href="@{/thymeleaf/backstage-book.html}">书籍管理</a></li>
-                <li class="active"><a href="javascript:">用户管理</a></li>
-                <li><a href="">评论管理</a></li>
-                <li><a href="">系统管理</a></li>
+                <li><a href="backstage-book.html" th:href="@{/admin/novels}">书籍管理</a></li>
+                <li class="active"><a href="backstage-user.html" th:href="@{/admin/users}">用户管理</a></li>
+                <li><a href="backstage-comment.html" th:href="@{/admin/comments}">评论管理</a></li>
+    
             </ul>
         </div>
         </div>
+    <!-- 作为公共部分分离/ -->
         <div class="contant" id="contant">
             <div class="book">
                 <div class="function">
@@ -60,14 +61,15 @@
                 </div>
                 <div class="function">
                     <button type="button" class="btn-add" onclick="popup_user_add()">添加</button>
-                    <button type="button" class="btn-del">删除</button>
+                    <button type="button" class="btn-del" onclick="yes_no('确认删除吗？','user_del')">删除</button>
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 4%;"><input type="checkbox" id="all-check" name="check"  value="del" style="zoom: 1.5;"></th>
+                            <th style="width: 4%;"><input type="checkbox" id="all-check" name="all-check"  value="del" style="zoom: 1.5;"></th>
                             <th style="width: 13%;">用户名</th>
                             <th style="width: 20%;">手机号</th>
+                            <th style="width: 4%;">积分</th>
                             <th style="width: 13%;">身份</th>
                             <th style="width: 15%;">加入时间</th>
                             <th style="width: 13%;">账号状态</th>
@@ -88,7 +90,6 @@
                 </div>
             </div>
         </div>
-    <!-- 作为公共部分分离/ -->
     </body>
 <!-- 作为公共部分分离 -->
 <script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
@@ -106,51 +107,46 @@
                 data:{
                     per_page: Number(onepage)
                 },
+
                 success: function(data){
-                    
-                    var allPage=data.pages;
+                    const allPage=data.pages;
                     console.log(data)
-                },
-                error: function(jqXHR) {
-                    let data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',data.errorMessage);
-                    console.log(data.errorMessage);
-                }
-            })
-        $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
-                type:'GET',
-                data:{
-                    per_page: Number(onepage),
-                    page: Number(curPage)
-                },
-                success: function(data){
-                    $('#a').empty();
-                    $.each(data,function(i){
-                        $('#a').append(`<tr>
-                            <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
-                            <th style="width: 13%;">${data[i].userName}</th>
-                            <th style="width: 20%;">${data[i].phone}</th>
-                            <th style="width: 13%;">${data[i].permission}</th>
-                            <th style="width: 15%;">${data[i].registerDate}</th>
-                            <th style="width: 13%;">${data[i].status}</th>
-                            <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
-                        </tr>`)
-                    })
-                    $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
-                    console.log(data)
-                },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
-                }
-            })
-            $('#gonext').on('click',function(){
-                    if(curPage>=1 && curPage<allPage){
-                        curPage=Number(curPage)+1;
-                    }
-                    console.log(curPage)
                     $.ajax({
+                        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                        type:'GET',
+                        data:{
+                            per_page: Number(onepage),
+                            page: Number(curPage)
+                        },
+                        success: function(data){
+                            $('#a').empty();
+                            $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
+                                        <th style="width: 13%;">${data[i].userName}</th>
+                                        <th style="width: 16%;">${data[i].phone}</th>
+                                        <th style="width: 4%;">${data[i].experience}</th>
+                                        <th style="width: 13%;">${data[i].permission}</th>
+                                        <th style="width: 15%;">${data[i].registerDate}</th>
+                                        <th style="width: 13%;">${data[i].status}</th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                    </tr>`)
+                                    })
+
+                            $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                            console.log(data)
+                        },
+                        error: function() {
+                            //const data = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',"请求失败");
+                        }
+                    })
+                    $('#gonext').on('click',function(){
+                        if(curPage>=1 && curPage<allPage){
+                            curPage=Number(curPage)+1;
+                        }
+                        console.log(curPage)
+                        $.ajax({
                             url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
                             type:'GET',
                             data:{
@@ -159,33 +155,35 @@
                             },
                             success: function(data){
                                 if(curPage<=allPage){
-                                $.each(data,function(i){
-                                    $('#a').append(`<tr>
-                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
+                                    $('#a').empty();
+                                    $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 20%;">${data[i].phone}</th>
+                                        <th style="width: 16%;">${data[i].phone}</th>
+                                        <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;">${data[i].permission}</th>
                                         <th style="width: 15%;">${data[i].registerDate}</th>
                                         <th style="width: 13%;">${data[i].status}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
-                                })
-                                $('#control_page').empty();
-                                $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
-                                console.log(data)}
+                                    })
+                                    $('#control_page').empty();
+                                    $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                                    console.log(data)}
                             },
                             error: function() {
                                 //const data = JSON.parse(jqXHR.responseText);
                                 popup_over('icon-sad','#d81e06',"请求失败");
                             }
-            })            
-                })
-            $('#gopre').on('click',function(){
-                    if(curPage>1 && curPage<=allPage){
-                        curPage=Number(curPage)-1;
-                    }
-                    console.log(curPage)
-                    $.ajax({
+                        })
+                    })
+                    $('#gopre').on('click',function(){
+                        if(curPage>1 && curPage<=allPage){
+                            curPage=Number(curPage)-1;
+                        }
+                        console.log(curPage)
+                        $.ajax({
                             url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
                             type:'GET',
                             data:{
@@ -194,27 +192,37 @@
                             },
                             success: function(data){
                                 if(curPage>0){
-                                $.each(data,function(i){
-                                    $('#a').append(`<tr>
-                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="del" style="zoom: 1.5;"></th>
+                                    $('#a').empty();
+                                    $.each(data,function(i){
+                                        $('#a').append(`<tr>
+                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 20%;">${data[i].phone}</th>
+                                        <th style="width: 16%;">${data[i].phone}</th>
+                                        <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;">${data[i].permission}</th>
                                         <th style="width: 15%;">${data[i].registerDate}</th>
                                         <th style="width: 13%;">${data[i].status}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user(${data[i].uid})"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
-                                })
-                                $('#control_page').empty();
-                                $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
-                                console.log(data)}
+                                    })
+                                    $('#control_page').empty();
+                                    $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
+                                    console.log(data)}
                             },
                             error: function() {
                                 //const data = JSON.parse(jqXHR.responseText);
                                 popup_over('icon-sad','#d81e06',"请求失败");
                             }
-            })            
-                })
+                        })
+                    })
+                },
+                error: function(jqXHR) {
+                    let data = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',data.errorMessage);
+                    console.log(data.errorMessage);
+                }
+            })
+
     })        
 </script>
 </html>

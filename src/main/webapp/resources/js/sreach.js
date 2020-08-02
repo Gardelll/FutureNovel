@@ -6,6 +6,9 @@ $(function () {
             data:"",
             success:function (data) {
                 console.log(data);
+                for (var i=0;i<data.length;i++){
+                    $("#data").append("<option value='" + "" + data[i] + "" + "'>")
+                }
             },error:function (data) {
                 console.log(data.errorMessage)
             }
@@ -19,13 +22,15 @@ $(function () {
             data:"",
             success:function (data) {
                 console.log(data);
+                for (var i=0;i<data.length;i++){
+                    $("#data").append("<option value='" + "" + data[i] + "" + "'>")
+                }
             },error:function (data) {
                 console.log(data.errorMessage)
             }
         });
     }
     GetSeries ();
-
     function displaywindowsSize() {
         var w = document.documentElement.clientWidth;
         var h = document.documentElement.clientHeight;
@@ -48,4 +53,15 @@ $(function () {
     })
     window.addEventListener("resize", displaywindowsSize);
     displaywindowsSize();
+
+    // function tpformsubmit(index) {
+    //     str='http://localhost:8080/future-novel/search?page='+index+'&per_page=2'
+    //     $("#form").attr("action",str);
+    // }
+    // $(".rank-page").click(function () {
+    //     var page = $(this).text();
+    //     console.log(page)
+    //     tpformsubmit(page);
+    // })
+
 })

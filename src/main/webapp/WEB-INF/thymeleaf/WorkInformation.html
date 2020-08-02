@@ -38,16 +38,35 @@
         var actor=["haha","heihei"];
         $("#book-tags").keydown(function (event) {
             if(event.keyCode==32){
-                var str= $("#book-tags").val();
+                if($("#book-tags").val().length>=4){
+                    alert("标签不得超过三个字")
+                    $("#book-tags").val("");
+                }else{
+                    var str= $("#book-tags").val();
+                    var test= " <div class=\"tags-s\">\n" +
+                        "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
+                        "<i class=\"fa fa-close close2\" ></i>\n" +
+                        "</div>";
+                    $(".tags").append(test);
+                    $("#book-tags").val("");
+                }
+            }
+        });
+        $("#book-act").keydown(function (event) {
+            if(event.keyCode==32){
+                var str= $("#book-act").val();
                 var test= " <div class=\"tags-s\">\n" +
-                    "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
+                    "<a href=\"###\" class=\"tags-text2\">"+str+"</a>\n" +
                     "<i class=\"fa fa-close close2\" ></i>\n" +
                     "</div>";
-                $(".tags").append(test);
-                $("#book-tags").val("");
+                $(".acts").append(test);
+                $("#book-act").val("");
             }
         });
         $(".tags").on('click','.close2',function(){
+            $(this).parent().remove();
+        });
+        $(".acts").on('click','.close2',function(){
             $(this).parent().remove();
         });
         function GetTags(){
@@ -92,6 +111,12 @@
                     //将每个input的值放进结果集
                     result.push($(this).text());
                 });
+                var $inputArr2 = $('.tags-text2');
+                var result2 = [];
+                $inputArr2.each(function(){
+                    //将每个input的值放进结果集
+                    result2.push($(this).text());
+                });
                 console.log(result);
                 $.ajax({
                     url:"http://localhost:8080/future-novel/api/novel/addIndex",
@@ -101,7 +126,7 @@
                     data: JSON.stringify({
                         "copyright": $("#copyright").val(),
                         "title": $("#book-name").val(),
-                        "authors": actor,
+                        "authors": result2,
                         "description": $("#book-intro").val(),
                         "tags":result,
                         "series": $("#book-type").val(),
@@ -117,7 +142,6 @@
 
                     }
                 })
-
             }
         });
         $("#file").on("change",function () {
@@ -139,13 +163,7 @@
                     console.log("上传的图片有误")
                 }
                 })
-
             });
-
-
-
-
-
     }
 
 </script>
@@ -202,13 +220,21 @@
                         </dd>
                         <dd>
                             <span>作品标签</span>
-                            <input style="height: 30px;padding: 0;resize: none;"  id="book-tags" list="tag" class="form-inputs">
+                            <input style="height: 30px;padding: 0;resize: none;" placeholder="(用空格隔开标签)" id="book-tags" list="tag" class="form-inputs">
                             <datalist id="tag">
 
                             </datalist>
                             <div class="tags">
 
                              </div>
+
+                        </dd>
+                        <dd>
+                            <span>作者</span>
+                            <input style="height: 30px;padding: 0;resize: none;"  id="book-act" class="form-inputs">
+                            <div class="acts">
+
+                            </div>
 
                         </dd>
                         <dd>

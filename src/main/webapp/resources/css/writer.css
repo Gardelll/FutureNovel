@@ -93,10 +93,6 @@
 .sec{
 	border-bottom:1px solid #131313;
 }
-#title-name{
-	height: 0;
-	transition: 0.5s;
-}
 #sure-bookName{
 	background-color: deepskyblue;
 	margin-left: 10px;
@@ -109,7 +105,7 @@
 #sure-bookName:hover{
 	background-color: #01aae0;
 }
-.modify,.delete{
+.modify,.delete,.add{
 	transition: 0.5s;
 	display: none;
 	font-size: 10px;
@@ -121,12 +117,16 @@
 	cursor: pointer;
 	position: absolute;
 }
+.add{
+	top: 8px;
+	background-color: #3979c6;
+}
 .modify{
-	top: -10px;
+	top: -20px;
 	background-color: #8ac131;
 }
 .delete{
-	margin-top: 20px;
+	top:35px ;
 	background-color: #cd4d4d;
 }
 .first{
@@ -143,7 +143,18 @@
 	border-radius: 5px;
 	cursor: pointer;
 	background-color: #cd4d4d;
-	margin-left: 140px;
+	float: left;
+	margin-left: 20px;
+}
+.modify2{
+	font-size: 10px;
+	padding: 2px 7px;
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	background-color: #8ac131;
+	float: left;
 }
 .writer-lis:hover .delete{
 	display: block;
@@ -151,8 +162,8 @@
 .writer-lis:hover .modify{
 	display: block;
 }
-.box{
-	display: none;
+.writer-lis:hover .add{
+	display: block;
 }
 #modify-novel{
 	padding: 8px 10px;
@@ -184,7 +195,10 @@
 	margin-top: 10px;
 	float: left;
 }
-
+#title-name{
+	height: 0;
+	transition: 0.5s;
+}
 .top-title-box {
 	overflow: hidden;
 	margin: 0 auto;
@@ -218,7 +232,13 @@
 .form-list dl dd {
 	padding: 10px 0;
 }
-
+.box{
+	display: none;
+}
+#book-name2{
+	transition: 0.5s;
+	margin-top: 10px;
+}
 #book-type,
 #copyright {
 	margin-left: 10px;
@@ -367,3 +387,28 @@
 	top: -1000px;
 	transition: 0.5s;
 }
+.modify-chapter{
+	margin-top: -50px;
+	height: 50px;
+	width: 100%;
+	position: fixed;
+	background-color:rgb(245,245,245);
+	text-align: center;
+	transition: 0.5s;
+	z-index: 99;
+	box-shadow: 0 0 4px rgba(0, 0, 0, .16);
+}
+.box4{
+	width: 80%;
+	margin: 0 auto;
+}
+.btn-sure{
+	padding: 8px 10px;
+	margin-left: 10px;
+	background-color: deepskyblue;
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	transition: 0.5s;
+}
+

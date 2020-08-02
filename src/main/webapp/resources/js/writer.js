@@ -7,13 +7,18 @@ window.onload = function () {
     var actor=["haha","heihei"];
     $("#book-tags").keydown(function (event) {
         if(event.keyCode==32){
-            var str= $("#book-tags").val();
-            var test= " <div class=\"tags-s\">\n" +
-                "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
-                "<i class=\"fa fa-close close2\" ></i>\n" +
-                "</div>";
-            $(".tags").append(test);
-            $("#book-tags").val("");
+            if($("#book-tags").val().length>=4){
+                alert("标签不得超过三个字")
+                $("#book-tags").val("");
+            }else{
+                var str= $("#book-tags").val();
+                var test= " <div class=\"tags-s\">\n" +
+                    "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
+                    "<i class=\"fa fa-close close2\" ></i>\n" +
+                    "</div>";
+                $(".tags").append(test);
+                $("#book-tags").val("");
+            }
         }
     });
     $(".tags").on('click','.close2',function(){
@@ -25,7 +30,6 @@ window.onload = function () {
             type:"get",
             data:"",
             success:function (data) {
-                console.log(data);
                 for (var i=0;i<data.length;i++){
                     $("#tag").append(" <option value='" + "" + data[i] + "" + "'>")
                 }

@@ -140,7 +140,16 @@
     font-size: 15px;
     height: 80px;
     overflow: auto;
-
+}
+.acts {
+    margin-left: 120px;
+    width: 300px;
+    border: 1px solid #e6e6e6;
+    border-top: none;
+    padding: 10px;
+    font-size: 15px;
+    height: 80px;
+    overflow: auto;
 }
 
 .tags-s {

@@ -231,10 +231,17 @@
     cursor: pointer;
 }
 .rank-page:hover{
-    background-color: rgb(240,245,255);
+    border-radius: 50%;
+    background-color: rgb(217, 225, 255);
 }
 #next,#prve{
     cursor: pointer;
+    position: absolute;
+    margin: 0 -20px;
+}
+#next{
+    right: 0;
+    top: 0;
 }
 .book-rank-img{
     float: left;
@@ -249,6 +256,15 @@
 #main-content-wrap{
     width: 1200px;
     margin: 100px auto;
-
-
+}
+#data{
+    height: 200px;
+    overflow: hidden;
+}
+.book-rank-synopsis{
+    height: 107px;
+    overflow: auto;
+}
+.tab{
+    background-color: rgb(217, 225, 255);
 }

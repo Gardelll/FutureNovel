@@ -51,14 +51,16 @@
 			<div class="nav-list min-user fr">
 				<ul>
 					<li id="min-search">
-						<form id="formUrl" method="get" target="_blank" action="">
+						<form id="formUrl" method="post" target="_blank" action="">
 							<label id="fixed-search">
 								<i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
 							</label>
 							<input id="fixed-input" class="fixed-input hide" list="data" type="text" name="kw">
-							<datalist id="data">
+							<div style=" max-height:150px; overflow:auto;">
+							<datalist id="data" >
 
 							</datalist>
+							</div>
 						</form>
 					<li class="line"></li>
 					</li>
@@ -87,7 +89,6 @@
 				<div class="tool-box">
 					<div class="type-list">
 						<p>
-							<a th:text="${searchBy}">searchBy</a>
 							<a href="##" style="margin: 0;padding: 0;">全部分类</a><em>·</em>
 							<a href="##">玄幻</a><em>·</em>
 							<a href="##">武侠</a><em>·</em>
@@ -109,23 +110,22 @@
 		</div>
 		<div class="rank-body" style="margin:10px 0;">
 			<ul style="overflow: hidden;">
-				<li>
+				<li th:each="novel:${novelIndexList}">
 					<div class="book-rank-list" style="overflow: hidden;">
 						<div class="book-rank-img">
-							<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;"/>
+							<img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;"/>
 						</div>
-						<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-							<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+						<div class="book-rank-list-text"   style="width:425px;float:left;margin:5px 0 0 20px;">
+							<h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
 							<p style="font-size: 10px;color: gray;margin-top: 10px;">
-								<span class="book-rank-writer">大鱼吃虾米</span><city>|</city>
-								<span class="book-rank-type">都市</span><city>|</city>
+								<span class="book-rank-writer" th:text="${novel.authors}"></span><city>|</city>
+								<span class="book-rank-type" th:text="${novel.tags}"></span><city>|</city>
 								<span class="book-rank-mode">连载</span>
 							</p>
-							<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-							<span>****************************</span>
+							<span class="book-rank-synopsis" th:text="${novel.description}"></span>
 						</div>
 						<div class="rank-book-buttons">
-							<span class="rank-book-details">书籍详情</span>
+							<span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
 							<span class="rank-book-add">加入书单</span>
 						</div>
 					</div>
@@ -135,13 +135,42 @@
 		<div class="page-box" style="padding: 40px 0;position: relative;">
 			<div class="pagination" style="position: absolute;right: 0;">
 				<span id="prve"><</span>
-				<span class="rank-page">1</span>
-				<span class="rank-page">2</span>
-				<span class="rank-page">3</span>
-				<span class="rank-page">4</span>
+				<div class="box-page">
+
+				</div>
 				<span id="next">></span>
 			</div>
 		</div>
 	</div>
+
+	<form action="http://localhost:8080/future-novel/search?page=1&per_page=5" id="form" method="post">
+		<label>关键词:
+			<input name="keywords" id="keywords">
+		</label>
+		<input type="hidden" name="searchBy" value="KEYWORDS" />
+		<input type="hidden" name="sortBy" value="BEST_MATCH" />
+		<button>确定</button>
+	</form>
 	</body>
+
+	<script  th:inline="javascript" async>
+		function submitForm(index) {
+			var str="http://localhost:8080/future-novel/search?page="+index+"&per_page=5"
+			$("#form").attr("action",str);
+			$("#form").submit();
+		}
+		if([[${totalPage}]]==1){
+			for (var i=1;i<=[[${totalPage}]];i++){
+				$(".box-page").append("<span class=\"rank-page\">" + "" +i+ "" + "</span>")
+			}
+		}
+		$(".box-page").on("click",".rank-page",function () {
+			$(this).toggleClass("tab");
+			$(this).siblings().removeClass("tab");
+			submitForm($(this).text());
+		})
+		$(".rank-book-buttons").on("click",".rank-book-details",function () {
+			window.location.href="http://localhost:8080/future-novel/novel/"+$(this).attr("novelId")+"/view";
+		})
+	</script>
 </html>

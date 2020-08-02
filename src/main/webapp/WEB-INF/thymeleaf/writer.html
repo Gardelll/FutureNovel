@@ -15,6 +15,12 @@
 		<p id="SectionId" style="display: none">
 
 		</p>
+		<div class="modify-chapter">
+			<div class="box4">
+			<input type="text" id="modify-chapter-name" class="form-inputs">
+			<button class="btn-sure">确定修改</button>
+			</div>
+		</div>
 		<div class="modify-Novel">
 			<div class="box3">
 				<div class="work-info">
@@ -30,7 +36,6 @@
 								<div class="form-list">
 									<dl>
 										<dd class="">
-											<span>作品名称</span>
 											<input name="book-name" id="book-name" class="form-inputs" type="text" required>
 											<p>15字内，请勿添加书名号等特殊符号</p>
 										</dd>
@@ -67,7 +72,7 @@
 										</dd>
 										<dd>
 											<span>作品标签</span>
-											<input style="height: 30px;padding: 0;resize: none;"  id="book-tags" list="tag" class="form-inputs">
+											<input style="height: 30px;padding: 0;resize: none;"  id="book-tags" placeholder="(用空格隔开标签)" list="tag" class="form-inputs">
 											<datalist id="tag">
 
 											</datalist>
@@ -111,28 +116,27 @@
 		<div class="writer-wrep">
 			<div class="writer-tabs">
 				<div class="MyWorks" style="line-height: 40px;border-bottom: rgba(0,0,0,0.2) 1px solid;padding:0 20px;">
-				<span style="color: #7a7a7a;">作者名字</span>
+				<span style="color: #7a7a7a;" id="BOOKNAME">书名</span>
 				</div>
 				<ul class="writer-list"style="overflow: auto;">
-					<li>
+					<li th:each="chapter1:${novel}">
 						<div class='writer-lis'>
-							<button class="modify">修改</button>
-							<button class="delete">删除</button>
+							<button class="modify" th:attr="chapterid=${chapter1.uniqueId}">添加</button>
+							<button class="delete" th:attr="chapterid=${chapter1.uniqueId}">删除</button>
+							<button class="add" th:attr="chapterid=${chapter1.uniqueId}">修改</button>
+							<p style="display: none" class="getId" th:text="${chapter1.uniqueId}"></p>
 							<div class="first" style='display: block'>
-								<p>" + "" + $("#book-name").val() + "" + "</p>
+								<p th:text="${chapter1.title}"></p>
 								<i class="fa fa-caret-right rotate"></i>
-								<p>共有0节</p>
+								<p th:text="共+${chapter1.size()}+节"></p>
 							</div>
-							<div class='sec' chapterId='"+data.thisUUID+"' >
-								<div class='works-content'>
-									<span class="neirong">" + "" + text + "" + "</span>
-									<span class="neirong" style="margin: 0;">...</span>
-									<span class="writer-data\">日期</span>
-									<span class="words-num\" style="margin-left:15px;">字数</span>
-									<button class="delete2">删除</button>
+							<div class='sec' chapterId='"+data.thisUUID+"'>
+								<div class='works-content' th:attr="chapterid=${chapter1.uniqueId}" th:each="section1 : ${chapter1}">
+									<span class="neirong" th:text="${section1.title}"></span>
+									<button class="modify2" th:attr="sectionid=${section1.uniqueId}">修改</button>
+									<button class="delete2" th:attr="sectionid=${section1.uniqueId}">删除</button>
 								</div>
 							</div>
-
 						</div>
 					</li>
 				</ul>
@@ -144,9 +148,9 @@
 						<button type="button" id="sure-bookName">确定</button>
 						<button type="button" id="modify-novel">修改书籍信息</button>
 					</p>
-					<p><input type="text" name="titleName" placeholder="请输入小结" id="title-name" class="writer-inputs"/></p>
 					<div class="box">
-					<p><textarea name="content" class="content"></textarea></p>
+						<p><input type="text" name="titleName" placeholder="请输入小结" id="title-name" class="writer-inputs"/></p>
+						<p><textarea name="content" class="content"></textarea></p>
 					<!--先暂时写成button类型，等前后端交互再改成submit类型-->
 					<p style="text-align: center;"><input type="button" value="发布" id="writer-release"/></p>
 					</div>
@@ -164,11 +168,13 @@
 					data: {},
 					success:function (data) {
 						console.log("书本信息")
-						console.log(data)
-						for (var i=0;i<data.chapters.length;i++){
+						console.log(data);
+						$("#BOOKNAME").text(data.title);
+						//for (var i=0;i<data.chapters.length;i++){
 							//打印数据的同时将小说章节的id获取
-							$(".writer-list ").prepend("<li><div class='writer-lis'><button class='modify'  chapterId='"+data.chapters[i].uniqueId+"'>修改</button><button class='delete'  chapterId='"+data.chapters[i].uniqueId+"'>删除</button><p style='display: none'>" + "" + data.chapters[i].uniqueId+ "" + "</p><div class=\"first\" chapterId='"+data.chapters[i].uniqueId+"' style='display: block'><p>" + "" + data.chapters[i].title+ "" + "</p><i class=\"fa fa-caret-right rotate\"></i><p>共有0节</p></div><div class='sec' chapterId='"+data.chapters[i].uniqueId+"' ></div></div></li>\n");
-						}
+						//	$(".writer-list ").prepend("<li><div class='writer-lis'><button class='modify'  chapterId='"+data.chapters[i].uniqueId+"'>修改</button><button class='delete'  chapterId='"+data.chapters[i].uniqueId+"'>删除</button><p style='display: none'>" + "" + data.chapters[i].uniqueId+ "" + "</p><div class=\"first\" chapterId='"+data.chapters[i].uniqueId+"' style='display: block'><p>" + "" + data.chapters[i].title+ "" + "</p><i class=\"fa fa-caret-right rotate\"></i><p>共有0节</p></div><div class='sec' chapterId='"+data.chapters[i].uniqueId+"' ></div></div></li>\n");
+						//}
+
 					},
 					// error: function(jqXHR, textStatus, errorThrown) {
 					// 	const data = JSON.parse(jqXHR.responseText);
@@ -194,8 +200,8 @@
 						//localStorage.setItem("thisUUID",data.thisUUID);
 						//localStorage.setItem("title",data.title);
 						console.log("章节信息")
+						window.location.href = location;
 						console.log(data)
-						window.location.href=location;
 					},error:function (data) {
 						console.log(data);
 					}
@@ -221,7 +227,7 @@
 						datatype:"json",
 						contentType: "application/json;charset=UTF-8",
 						data: JSON.stringify({
-							title:"第一节",
+							title:$("#title-name").val(),
 							text:Text,
 						}),
 						success:function (data) {
@@ -229,8 +235,9 @@
 							alert("创建成功");
 							console.log("小节信息")
 							console.log(data)
-							$(".sec[chapterId^='"+thisID+"']").append("<div class='works-content' sectionId='"+data.uniqueId+"'><span class=\"neirong\">" + "" +localStorage.getItem("Text")+ "" + "</span><span class=\"neirong\" style=\"margin: 0;\">...</span><span class=\"writer-data\">" + "" + getNowFormatDate() + "" + "</span><span class=\"words-num\" style=\"margin-left:15px;\">" + " " +'共'+ Text.length + '个字'+" " + "</span><button class='delete2' sectionId='"+data.uniqueId+"'>删除</button><p style='display: none' sectionId='"+data.uniqueId+"'>" + "" +data.uniqueId+ "" + "</p></div></div>\n");
-							$(".box").css("display","none");
+							console.log(Text);
+							$("")
+						$(".box").css("display","none");
 						}, error: function(jqXHR, textStatus, errorThrown) {
 							const data = JSON.parse(jqXHR.responseText);
 							alert("发送失败，请稍候再试:" + data.errorMessage);
@@ -258,8 +265,7 @@
 			}
 			//删除章节
 			$(".writer-list").on('click','.delete',function(){
-				var thisSectionId = $(this).next().text();
-				console.log($(this).next().text())
+				var thisSectionId = $(this).attr("chapterid");
 				$.ajax({
 					url:"http://localhost:8080/future-novel/api/novel/chapter/"+thisSectionId,
 					type:"delete",
@@ -267,9 +273,8 @@
 					contentType: "application/json;charset=UTF-8",
 					data: {},
 					success:function (data) {
+						window.location.href = location;
 						console.log("删除章节")
-						console.log(data)
-						window.location.href=location;
 					},error:function (data) {
 						console.log(data);
 					}
@@ -278,7 +283,6 @@
 			//删除小节
 			$(".writer-list").on('click','.delete2',function(){
 				var thisTitleId = $(this).attr("sectionId");
-				console.log($(this).next().text())
 				$.ajax({
 					url:"http://localhost:8080/future-novel/api/novel/section/"+thisTitleId,
 					type:"delete",
@@ -286,9 +290,9 @@
 					contentType: "application/json;charset=UTF-8",
 					data: {},
 					success:function (data) {
+						window.location.href = location;
 						console.log("删除小节")
 						console.log(data)
-						window.location.href=location;
 					},error:function (data) {
 						console.log(data);
 					}
@@ -369,6 +373,61 @@
 						}
 					})
 			});
+			//修改章节
+			function ModifyChapter(chapterId) {
+				var chapterIdArr = [];
+				$(".getId").each(function(){
+					chapterIdArr.push($(this).text());
+				});
+				var str5 = $("#modify-chapter-name").val();
+				if($("#modify-chapter-name").val().length==0){
+					str5=null;
+				}
+				$.ajax({
+					url:"http://localhost:8080/future-novel/api/novel/chapter/"+chapterId+"/edit",
+					type:"POST",
+					dataType: "JSON",
+					contentType:"application/json",
+					data:JSON.stringify({
+						title:str5,
+						sections:chapterIdArr,
+					}),success:function (data) {
+						console.log(data);
+						window.location.href = location;
+					},error:function (data) {
+						console.log(data);
+					}
+				})
+			}
+			//修改小节
+			function ModifySection(SectionId){
+				var activeEditor = tinymce.activeEditor;
+				var editBody = activeEditor.getBody();
+				activeEditor.selection.select(editBody);
+				var text = activeEditor.selection.getContent({"format": "html"});
+				var Text = activeEditor.selection.getContent({"format": "text"});
+				var str3=$("#title-name").val();
+				if($("#title-name").val().length==0){
+					str3=null;
+				}
+				$.ajax({
+					url:"http://localhost:8080/future-novel/api/novel/section/"+SectionId+"/edit",
+					type:"POST",
+					dataType: "JSON",
+					contentType:"application/json",
+					data: JSON.stringify({
+						title:str3,
+						text:Text,
+					}),success:function (data) {
+						alert("修改成功");
+						console.log(data);
+						window.location.href = location;
+					},error: function(jqXHR, textStatus, errorThrown) {
+					const data = JSON.parse(jqXHR.responseText);
+					alert("发送失败，请稍候再试:" + data.errorMessage);
+					}
+				})
+			};
 			$("#sure-bookName").click(function () {
 				if($("#book-name2").val().length==0){
 					alert("章节名称不能为空！");
@@ -377,19 +436,33 @@
 					AddTitle();
 				}
 			});
-
-			//添加小节
 			$(".writer-list").on('click','.first',function(){
 				$(this).next(".sec").slideToggle("slow");
 			});
+			//添加小节
 			$(".writer-list").on('click','.modify',function(){
 				$(".box").css("display","block");
+				$("#title-name").css("height",40+"px");
 				var str = $(this).attr("chapterid");
 				$("#writer-release").click(function () {
 					AddSection(str);
 				});
 			});
-			console.log(localStorage.getItem("thisUUID"))
+			$(".writer-list").on('click','.modify2',function () {
+				$("#title-name").css("height",40+"px");
+				$(".box").css("display","block");
+				var str2 = $(this).attr("sectionid");
+				$("#writer-release").click(function () {
+					ModifySection(str2);
+				});
+			});
+			$(".writer-list").on('click','.add',function () {
+				$(".modify-chapter").css("marginTop",0);
+				var str4 = $(".add").attr("chapterid");
+				$(".btn-sure").click(function () {
+					ModifyChapter(str4)
+				})
+			});
 
 
 

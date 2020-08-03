@@ -1,22 +1,20 @@
 package net.wlgzs.futurenovel.test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.util.Properties;
 import java.util.UUID;
+import javax.sql.DataSource;
 import net.wlgzs.futurenovel.typehandler.JsonNodeTypeHandler;
 import net.wlgzs.futurenovel.typehandler.UUIDTypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.math.RoundingMode;
-import java.util.Properties;
 
 @Configuration
 @MapperScan("net.wlgzs.futurenovel.dao")

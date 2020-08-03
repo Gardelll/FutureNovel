@@ -14,7 +14,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -267,6 +266,11 @@ public class TemplateController extends AbstractAppController {
         novelService.hotAddOne(novel.getUniqueId());
 
         model.addAttribute("novel", novel);
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "look-book";
     }
 
@@ -327,6 +331,11 @@ public class TemplateController extends AbstractAppController {
                 List<ReadHistory> history = readHistoryService.getReadHistory(currentAccount, new Date(System.currentTimeMillis() - Duration.ofDays(14).toMillis()), null);
                 model.addAttribute("readHistory", history);
             }
+            var tags = novelService.getTags();
+            var series = novelService.getSeries();
+
+            model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+            model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
             return "member";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);

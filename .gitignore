@@ -9,6 +9,11 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+.settings/
+.classpath
+.factorypath
+.project
+
 # idea 相关
 .idea/
 FutureNovel.iml

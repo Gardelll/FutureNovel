@@ -174,7 +174,8 @@
 /*我的书架和我的作品*/
 
 .shelf-main,
-.my-work-main {
+.work-main,
+.history-main {
     position: relative;
     margin: 20px 0;
     padding: 20px;
@@ -185,7 +186,8 @@
 }
 
 .shelf-title,
-.my-work-title {
+.work-title,
+.history-title {
     font-size: 18px;
     font-weight: 600;
     line-height: 1;
@@ -193,7 +195,8 @@
 }
 
 .shelf-list,
-.my-work-list {
+.work-list,
+.history-list {
     line-height: 0;
     margin: 20px 0 0 0;
     text-align: justify;

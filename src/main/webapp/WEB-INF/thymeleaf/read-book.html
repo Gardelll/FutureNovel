@@ -228,6 +228,16 @@
                                     <a href="###">书友</a>
                                 </h4>
                                 <p>上阵父子兵，替父从军</p>
+                                <a type="button" id="remove" style="color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;">删除</a>
+                                <a type="submit" id="pinglun" style="color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;">评论</a>
+                            </div>
+                            <div class="send-textarea" style="display: none;" id="send-textarea">
+                                <textarea placeholder="欢迎追加评论..." id="sendTextarea" style="margin: 27px 0px;width: 736px;height: 121px;"></textarea>
+                                <div class="text-tools" style="bottom: 5px;">
+                                    <a href="##" class="blue-btn" type="submit" id="fabiao">发表</a>
+                                    <a href="##" class="blue-btn" type="submit" id="quxiao">取消</a>
+                                    <i>0/150</i>
+                                </div>
                             </div>
                             <div class="send-textarea">
                                 <textarea placeholder="有想法快写下来吧..." id="sendTextarea"></textarea>
@@ -299,6 +309,7 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 <script>
     window.onmouseover = function() {
         var navCatalogBtn = document.getElementById("navCatalogBtn");
@@ -321,6 +332,14 @@
             navCatalogBtn.classList.remove("act");
         }
     }
+</script>
+<script>
+    $("#pinglun").click(function() {
+        $("#send-textarea").show();
+    });
+    $("#quxiao").click(function() {
+        $("#send-textarea").hide();
+    });
 </script>
 
 </html>

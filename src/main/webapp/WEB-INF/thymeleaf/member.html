@@ -96,16 +96,13 @@
                         </a>
                     </li>
                     <li class="side-parent" id="side-parent">
-                        <a>
+                        <a href="#history">
                             <i class="fa fa-history" style="font-size:16px"></i>
-                            <span style="vertical-align:inherit">历史</span>
+                            <span style="vertical-align:inherit">我的历史</span>
                         </a>
                         <ul class="side-group" id="side-group">
                             <li>
                                 <a href="" class="side-list-a">浏览历史</a>
-                            </li>
-                            <li>
-                                <a href="" class="side-list-a">点赞历史</a>
                             </li>
                             <li>
                                 <a href="" class="side-list-a">评论历史</a>
@@ -142,10 +139,6 @@
                             <b class="home-user-b">0</b>
                             </a>
                             <a href="###" class="mr12">
-                                点赞历史
-                            <b class="home-user-b">0</b>
-                            </a>
-                            <a href="###" class="mr12">
                                 评论历史
                             <b class="home-user-b">0</b>
                             </a>
@@ -153,13 +146,17 @@
                         </div>
                     </div>
                 </div>
+                <form id="addToHistory" method="post" class="history-main">
+                    <h2 class="history-title" id="history">我的历史</h2>
+                    <ul class="history-list" id="historyList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                </form>
                 <form id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title" id="shelf">我的书架</h2>
                     <ul class="shelf-list" id="shelfList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </form>
-                <form id="addToMyWork" method="post" class="my-work-main">
-                    <h2 class="my-work-title" id="work">我的作品</h2>
-                    <ul class="my-work-list" id="myWorkList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                <form id="addToMyWork" method="post" class="work-main">
+                    <h2 class="work-title" id="work">我的作品</h2>
+                    <ul class="work-list" id="workList" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </form>
             </div>
         </div>

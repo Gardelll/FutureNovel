@@ -89,6 +89,7 @@
 				<div class="tool-box">
 					<div class="type-list">
 						<p>
+							<a href="###" th:text="${searchBy}"></a>
 							<a href="##" style="margin: 0;padding: 0;">全部分类</a><em>·</em>
 							<a href="##">玄幻</a><em>·</em>
 							<a href="##">武侠</a><em>·</em>
@@ -110,7 +111,8 @@
 		</div>
 		<div class="rank-body" style="margin:10px 0;">
 			<ul style="overflow: hidden;">
-				<li th:each="novel:${novelIndexList}">
+				<span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
+				<li th:each="novel:${novelIndexList}" th:text="${searchBy.name()} eq 'KEYWORDS'">
 					<div class="book-rank-list" style="overflow: hidden;">
 						<div class="book-rank-img">
 							<img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;"/>
@@ -131,6 +133,32 @@
 					</div>
 				</li>
 			</ul>
+			<ul style="overflow: hidden;">
+				<span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
+				<div th:each="section:${sectionList}" th:if="!${#lists.isEmpty(sectionList)}">
+				<li th:if="${searchBy.name()} eq 'CONTENT'">
+					<div class="book-rank-list" style="overflow: hidden;">
+						<div class="book-rank-img">
+							<img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;"/>
+						</div>
+						<div class="book-rank-list-text"   style="width:425px;float:left;margin:5px 0 0 20px;">
+							<h4 style="font-size: 15px;font-weight: 400;" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).title}"></h4>
+							<p style="font-size: 10px;color: gray;margin-top: 10px;">
+								<span class="book-rank-writer" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).authors}"></span><city>|</city>
+								<span class="book-rank-type" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).tags}"></span><city>|</city>
+								<span class="book-rank-mode" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).copyright}"></span>
+							</p>
+							<span class="book-rank-synopsis" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).description}"></span>
+						</div>
+						<div class="rank-book-buttons">
+							<span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
+							<span class="rank-book-add">加入书单</span>
+						</div>
+					</div>
+						<span th:utext="${section.text}" style="color: black" class="content"></span>
+					</div>
+				</li>
+			</ul>
 		</div>
 		<div class="page-box" style="padding: 40px 0;position: relative;">
 			<div class="pagination" style="position: absolute;right: 0;">
@@ -147,7 +175,7 @@
 		<label>关键词:
 			<input name="keywords" id="keywords">
 		</label>
-		<input type="hidden" name="searchBy" value="KEYWORDS" />
+		<input type="hidden" name="searchBy" value="CONTENT" />
 		<input type="hidden" name="sortBy" value="BEST_MATCH" />
 		<button>确定</button>
 	</form>
@@ -159,7 +187,7 @@
 			$("#form").attr("action",str);
 			$("#form").submit();
 		}
-		if([[${totalPage}]]==1){
+		if([[${totalPage}]]!=1){
 			for (var i=1;i<=[[${totalPage}]];i++){
 				$(".box-page").append("<span class=\"rank-page\">" + "" +i+ "" + "</span>")
 			}

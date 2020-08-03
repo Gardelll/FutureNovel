@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<title>写小说</title>
 		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-		<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<script typet="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
 		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
 		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
 		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
@@ -236,7 +236,7 @@
 							console.log("小节信息")
 							console.log(data)
 							console.log(Text);
-							$("")
+							window.location.href=location;
 						$(".box").css("display","none");
 						}, error: function(jqXHR, textStatus, errorThrown) {
 							const data = JSON.parse(jqXHR.responseText);

@@ -222,16 +222,17 @@
     overflow: hidden;
     height: 43px;
     padding-top: 17px;
-    padding-left: 10px;
+    padding-left: 30px;
 }
 
-.classify-list dd a cite i {
+
+/* .classify-list dd a cite i {
     float: left;
     width: 24px;
     height: 24px;
     margin: 0px 8px 0 0;
     transition: margin ease-out .3s;
-}
+} */
 
 .iconfont {
     font-family: qd_iconfont!important;
@@ -527,7 +528,7 @@
 
 .hot-rec-wrap {
     overflow: hidden;
-    height: 498px;
+    height: 535px;
 }
 
 .inner-wrap {
@@ -713,6 +714,8 @@
 
 .book-list li a.book-classify i {
     font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .book-list li a.book-name {
@@ -720,7 +723,7 @@
     max-width: 154px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #1a1a1a;
+    font-size: 14x;
 }
 
 

@@ -19,32 +19,14 @@
                 <h1 class="top-logo">未来小说网</h1>
                 <div class="nav-list site-nav fl">
                     <ul>
-                        <li>
-                            <a href="###">玄幻</a>
-                        </li>
-                        <li>
-                            <a href="###">都市</a>
-                        </li>
-                        <li>
-                            <a href="###">仙侠</a>
-                        </li>
-                        <li>
-                            <a href="###">科幻</a>
-                        </li>
-                        <li>
-                            <a href="###">排行</a>
+                        <li th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} lt 6">
+                            <a href="###" th:text="${tagTwo}"></a>
                         </li>
                         <li class="more">
                             <a href="###">更多<span></span></a>
                             <div class="dropdown">
                                 <a href="###" target="_blank">全部作品</a>
-                                <a href="###" target="_blank">轻小说</a>
-                                <a href="###" target="_blank">奇幻</a>
-                                <a href="###" target="_blank">武侠</a>
-                                <a href="###" target="_blank">悬疑</a>
-                                <a href="###" target="_blank">军事</a>
-                                <a href="###" target="_blank">现实</a>
-                                <a href="###" target="_blank">体育</a>
+                                <a href="###" target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
                             </div>
                         </li>
                     </ul>
@@ -80,48 +62,33 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="border-shadow">
-        <span></span>
-        <span></span>
-    </div> -->
         <!-- 书详情 -->
         <div class="book-detail center">
             <!-- 书籍信息 -->
             <!--/*@thymesVar id="novel" type="net.wlgzs.futurenovel.bean.Novel"*/-->
             <div class="book-information cf" th:object="${novel}">
                 <div class="book-img">
-                    <a href="###" id="bookImg">
+                    <a id="bookImg">
                         <img src="../../resources/img/万族之劫.jpg" th:src="*{coverImgUrl}">
                     </a>
                 </div>
                 <div class="book-info">
                     <h1><a th:text="*{title}">万族之劫</a>
                         <span th:each="author : *{authors}">
-                            <a class="writer" href="###" target="_blank" style="margin-right: 10px;" th:text="${author}">老鹰吃小鸡</a>著
+                            <a class="writer" href="###" target="_blank" style="margin-right: 10px;" th:text="${author}">老鹰吃小鸡</a>
                         </span>
                     </h1>
                     <p class="tag">
                         <span class="blue" th:each="tag : *{tags}" th:text="${tag}">连载</span>
-                        <!--                        <span class="blue">签约</span>-->
-                        <!--                        <span class="blue">VIP</span>-->
-                        <!--                        <a href="###" class="red" target="_blank">都市</a>-->
-                        <!--                        <a href="###" class="red" target="_blank">都市异能</a>-->
                     </p>
                     <p class="intro" th:text="*{title}">重生过去、畅想未来、梦幻现实，再塑传奇人生！</p>
                     <p>
-                        <!--                        <em>325.64</em><span>万字</span><i>|</i>-->
-                        <!--                        <em>478.39</em><span>万总推荐</span><i>|</i>-->
                         <span>评分</span><em th:text="*{rating} == 0 ? '暂无' : *{rating}">22.56</em>
                     </p>
                     <p>
-                        <a class="blue-btn" href="../../WEB-INF/thymeleaf/read-book.html" id="blueBtn">免费试读</a>
+                        <a class="blue-btn" href="freeRead">免费试读</a>
                         <a class="blue-btn add-book" href="../../WEB-INF/thymeleaf/setting.html" id="addBookBtn">加入书架</a>
                     </p>
-                </div>
-                <div class="take-wrap">
-                    <a class="blue" id="subscribe" href="###">
-                        <i class="fa fa-file-text-o" style="font-size:14px">订阅</i>
-                    </a>
                 </div>
             </div>
             <!-- 作品信息 -->
@@ -134,42 +101,25 @@
                     </ul>
                 </div>
             </div>
-            <div class="book-content cf">
+            <div class="book-content cf" th:object="${novel}">
                 <div class="left-wrap fl">
                     <div class="book-info">
-                        <p style="padding: 10px 30px;border-bottom: 1px solid #e6e6e6;" th:utext="${novel.description}"> 我是这诸天万族的劫！<br> 已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢养。</p>
+                        <p style="padding: 10px 10px 30px 10px;border-bottom: 1px solid #e6e6e6;font-size: 14px;" th:utext="${novel.description}"> 我是这诸天万族的劫！ 已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢养。</p>
                     </div>
                     <div class="book-state">
                         <ul>
-                            <li>
-                                <b>作者自定义标签</b>
-                                <div class="detail">
-                                    <p class="tag-wrap">
-                                        <a class="tags" href="###" target="_blank">宅男</a>
-                                        <a class="tags" href="###" target="_blank">热血</a>
-                                        <a class="tags" href="###" target="_blank">练功流</a>
-                                    </p>
-                                </div>
-                            </li>
                             <li class="honor" id="honor">
-                                <b>荣誉动态</b>
+                                <b>出版社</b>
                                 <div class="detail">
-                                    <strong>2020-07-01 获得了男频月票榜(2020年06月)第一名</strong>
-                                    <p class="honor-icon cf">
-                                        <img src="../../resources/img/honor-rigengwanzi.png" th:src="@{/resources/img/honor-wanzhongyixin.png}">
-                                        <img src="../../resources/img/honor-wanzhongyixin.png" th:src="@{/resources/img/honor-wanzhongyixin.png}">
-                                    </p>
+                                    <strong th:text="${novel.publisher}"></strong>
+                                    <p class="honor-icon cf" style="font-size: 12px;" th:text="${novel.pubdate}"></p>
                                 </div>
                             </li>
                             <li class="update">
-                                <b>最新章节</b>
+                                <b>版权</b>
                                 <div class="detail">
                                     <p class="cf">
-                                        <a class="blue" href="##" target="_blank">第433章 大秦王（求订阅）</a>
-                                    </p>
-                                    <p class="tag-wrap" style="padding: 10px 0;">
-                                        <span class="tags red">非常勤奋</span>
-                                        <span class="tags red">连续8天更新</span>
+                                        <a class="blue" target="_blank" th:text="${novel.copyright}"></a>
                                     </p>
                                 </div>
                             </li>
@@ -180,33 +130,30 @@
                     <div class="author-info">
                         <div class="info-wrap">
                             <div class="author-photo" id="authorId">
-                                <a href="###" target="_blank">
-                                    <img src="../../resources/img/author-1.jpg" th:src="@{/resources/img/author-1.jpg}">
-                                    <span class="god">大神</span>
+                                <a id="memberImg" target="_blank">
+                                    <img>
                                 </a>
                             </div>
-                            <p>
-                                <a href="###" target="_blank">老鹰吃小鸡</a>
-                                <a class="god-light" href="###" target="_blank"></a>
+                            <p th:each="author : *{authors}">
+                                <a href="###" target="_blank" th:text="${author}"></a>
                             </p>
-                            <p>阅文集团大神作家，2018年度金键盘作家，著有《全球高武》《重生之财源滚滚》作品</p>
                         </div>
                         <div class="info-wrap">
                             <ul class="work-state cf">
                                 <li>
                                     <span class="book"></span>
-                                    <p>作品总数</p>
-                                    <p style="font-size: 14px;color: #bf2c24;">3</p>
+                                    <p>点击量</p>
+                                    <b th:text="${novel.hot}"></b>
                                 </li>
                                 <li>
                                     <span class="word"></span>
-                                    <p>累计字数</p>
-                                    <p style="font-size: 14px;color: #bf2c24;">1829万</p>
+                                    <p>评分</p>
+                                    <b th:text="${novel.rating}"></b>
                                 </li>
                                 <li>
                                     <span class="coffee"></span>
-                                    <p>创作天数</p>
-                                    <p style="font-size: 14px;color: #bf2c24;">1830</p>
+                                    <p>用户等级</p>
+                                    <b id="memberLevel"></b>
                                 </li>
                             </ul>
                         </div>
@@ -214,11 +161,11 @@
                 </div>
             </div>
             <!-- 目录 -->
-            <div class="content-nav cf">
+            <div class="content-nav cf" id="freeRead">
                 <div class="nav-wrap fl">
                     <ul>
                         <li class="bookcata actinfocata">
-                            <a id="book-catalogue" href="###">目录</a>
+                            <a id="book-catalogue">目录</a>
                         </li>
                     </ul>
                 </div>
@@ -232,7 +179,7 @@
                         </h2>
                         <ul class="cf" th:each="chapter : ${novel}">
                             <li th:each="section : ${chapter}">
-                                <a href="#" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${section.uniqueId.toString()}" target="_blank" th:text="|${chapter.title} - ${section.title}|">第1章 父子</a>
+                                <a th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${section.uniqueId.toString()}" target="_blank" th:text="|${chapter.title} - ${section.title}|">第1章 父子</a>
                             </li>
                         </ul>
                     </div>
@@ -263,5 +210,27 @@
 </body>
 
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        var memberImg = $("#memberImg").val();
+        var memberLevel = $("#memberLevel").val();
+        $.ajax({
+            url: 'http://localhost:8080/future-novel/api/account/' + id + 'info',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {
+                profileImgUrl: memberImg,
+                level: memberLevel
+            },
+            success: function(data) {
+                if (data.err == 0) {
+                    console.log(data);
+                } else {
+                    alert(data.msg)
+                }
+            }
+        });
+    });
+</script>
 
 </html>

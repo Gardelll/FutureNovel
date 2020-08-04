@@ -9,10 +9,7 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
-    <script src="../../resources/js/nav.js" type="text/javascript" th:src="@{/resources/js/navs.js}"></script>
     <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
-    <!-- <script src="../../resources/js/animation.js" type="text/javascript" th:src="@{/resources/js/animation.js}"></script> -->
-    <!-- <script src="../../resources/js/animation-2.js" type="text/javascript" th:src="@{/resources/js/animation-2.js}"></script> -->
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
@@ -64,142 +61,12 @@
             <!-- 分类菜单 -->
             <div class="classify-list fl so-awesome">
                 <dl class="cf">
-                    <dd th:each=" tags: ${tags}" th:if="${tagsStat.index} lt 2">
+                    <dd th:each=" tag: ${tags}" th:class="(${tagStat.index /2%2 == 0}) ? '' : 'even'">
                         <a href="###" target="_blank">
                             <cite>
-                                <i class="fa fa-fire"></i>
+                                <i class="fa fa-fire" style="float: left;margin-right: 12px;"></i>
                                 <span class="info">
-                                    <i th:text="${tags}"></i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-diamond"></i>
-                                <span class="info">
-                                    <i th:text="${tags}"></i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even" th:each=" tags: ${tags}" th:if="${tagsStat.index}">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-crosshairs"></i>
-                                 <span class="info">
-                                    <i th:each=" tags: ${tags}" th:text="${tags}"></i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-cube"></i>
-                                <span class="info">
-                                    <i>仙侠</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-cloud"></i>
-                                <span class="info">
-                                    <i>都市</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-certificate"></i>
-                                <span class="info">
-                                    <i>现实</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-building"></i>
-                                <span class="info">
-                                    <i>军事</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-bell"></i>
-                                <span class="info">
-                                    <i>历史</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-beer"></i>
-                                <span class="info">
-                                    <i>游戏</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-bank"></i>
-                                <span class="info">
-                                    <i>体育</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-archive"></i>
-                                <span class="info">
-                                    <i>科幻</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd class="even">
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-adjust"></i>
-                                <span class="info">
-                                    <i>悬疑</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-database"></i>
-                                <span class="info">
-                                    <i>女生网</i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                    <dd>
-                        <a href="###" target="_blank">
-                            <cite>
-                                <i class="fa fa-flash"></i>
-                                <span class="info">
-                                    <i>轻小说</i>
+                                    <i th:text="${tag}"></i>
                                 </span>
                             </cite>
                         </a>
@@ -214,7 +81,7 @@
                             <div class="sliderBW">
                                 <div id="slider_con1">
                                     <div id="list1" style="left: -748px;">
-                                        <img th:each="imgurl : ${covers}" th:src="${imgurl}">
+                                        <img th:each="imgurl : ${covers}" th:src="${imgurl}" th:if="${imgurlStat.index} lt 6">
                                     </div>
                                     <div id="buttons">
                                         <span index="1" class="on"></span>
@@ -332,13 +199,13 @@
                         <ul>
                             <li th:each=" novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 9">
                                 <div class="book-img">
-                                    <a href="###" target="_blank">
+                                    <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'">
                                         <img th:src="${novelrec.coverImgUrl}">
                                     </a>
                                 </div>
                                 <div class="book-info">
                                     <h4>
-                                        <a href="###" target="_blank" th:text="${novelrec.title}"></a>
+                                        <a th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}"></a>
                                     </h4>
                                     <p th:text="${novelrec.description}"></p>
                                     <div class="state-box cf">
@@ -354,11 +221,11 @@
                     <h3>本周强推</h3>
                     <div class="book-list">
                         <ul>
-                            <li th:each=" novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.count} lt 12">
+                            <li th:each=" novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
                                 <a class="book-classify" href="##" target="_blank">
                                     <i>「</i><i th:text="${novelrec.tags}"></i><i>」</i>
                                 </a>
-                                <a class="book-name" href="###" target="_blank" th:text="${novelrec.title}"></a>
+                                <a class="book-name" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}"></a>
                             </li>
                         </ul>
                     </div>
@@ -374,7 +241,7 @@
                         <div class="slide-box">
                             <ul id="left-slide-2" class="roundabout-holder" style="display: block;padding: 0;position: relative;">
                                 <li class="book1 roundabout-moveable-item" th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
-                                    <a href="###" target="_blank">
+                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
                                         <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
                                     </a>
                                 </li>
@@ -384,43 +251,15 @@
                             <dl>
                                 <dd class="hidden" style="display: block;" th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
                                     <h3>
-                                        <a href="###" target="_blank" th:text="${hotNovel.title}"></a>
+                                        <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
                                     </h3>
                                     <p class="total">
                                         <b th:text="${hotNovel.hot}"></b>
                                         <span>人在看</span>
                                     </p>
                                     <p class="intro" th:text="${hotNovel.description}"></p>
-                                    <a class="blue-btn" href="##" target="_blank">书籍详情</a>
+                                    <a class="blue-btn" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">书籍详情</a>
                                 </dd>
-                                <!-- <dd class="hidden" style="display: none;">
-                                    <h3>
-                                        <a href="###" target="_blank">全球刷怪</a>
-                                    </h3>
-                                    <p class="work-author">
-                                        <a href="###" target="_blank">吹个大气球9</a>
-                                    </p>
-                                    <p class="total">
-                                        <b>956,700</b>
-                                        <span>人气</span>
-                                    </p>
-                                    <p class="intro">当幻想侵入现实，当科技与人性碰撞，当世界面临抉择，当毁灭悄然到来……</p>
-                                    <a class="blue-btn" href="##" target="_blank">书籍详情</a>
-                                </dd> -->
-                                <!-- <dd class="hidden" style="display: none;">
-                                    <h3>
-                                        <a href="###" target="_blank">全球刷怪</a>
-                                    </h3>
-                                    <p class="work-author">
-                                        <a href="###" target="_blank">吹个大气球9</a>
-                                    </p>
-                                    <p class="total">
-                                        <b>956,700</b>
-                                        <span>人气</span>
-                                    </p>
-                                    <p class="intro">当幻想侵入现实，当科技与人性碰撞，当世界面临抉择，当毁灭悄然到来……</p>
-                                    <a class="blue-btn" href="##" target="_blank">书籍详情</a>
-                                </dd> -->
                             </dl>
                         </div>
                     </div>
@@ -428,16 +267,16 @@
                         <div class="line line1"></div>
                         <div class="line line2"></div>
                         <ul>
-                            <li th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 6">
+                            <li th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 3}and${hotNovelStat.index lt 10}">
                                 <div class="book-img">
-                                    <a href="###" target="_blank">
+                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
                                         <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
                                         <span th:text="${hotNovel.rating}"></span>
                                     </a>
                                 </div>
                                 <div class="book-info">
                                     <h3>
-                                        <a href="###" target="_blank" th:text="${hotNovel.title}"></a>
+                                        <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
                                     </h3>
                                     <p th:text="${hotNovel.description}"></p>
                                     <div class="state-box cf">
@@ -454,12 +293,12 @@
                         <h3>最近热门</h3>
                         <div class="book-list">
                             <ul>
-                                <li class="unfold" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
+                                <li class="unfold" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 4}and${hotNovelStat.index lt 6}">
                                     <div class="book-wrap cf">
                                         <div class="book-info fl">
                                             <h3 th:text="${hotNovel.tags}"></h3>
                                             <h4>
-                                                <a href="###" target="_blank" th:text="${hotNovel.title}"></a>
+                                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
                                             </h4>
                                             <p class="score" th:text="${hotNovel.rating}"></p>
                                             <p class="author">
@@ -467,7 +306,7 @@
                                             </p>
                                         </div>
                                         <div class="book-cover">
-                                            <a class="link" href="###" target="_blank">
+                                            <a class="link" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
                                                 <img th:src="${hotNovel.coverImgUrl}" />
                                             </a>
                                             <span></span>
@@ -475,7 +314,7 @@
                                     </div>
                                 </li>
                                 <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 8">
-                                    <a class="name" href="###" target="_blank" th:text="${hotNovel.title}"></a>
+                                    <a class="name" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
                                     <i th:text="${hotNovel.rating}"></i>
                                 </li>
                             </ul>
@@ -495,7 +334,7 @@
                                 <div class="book-wrap cf">
                                     <div class="book-info fr">
                                         <h4>
-                                            <a href="###" target="_blank" th:text="${newNovel.title}"></a>
+                                            <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
                                         </h4>
                                         <p class="digital">
                                             <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
@@ -505,7 +344,7 @@
                                         </p>
                                     </div>
                                     <div class="book-cover">
-                                        <a class="link" href="###" target="_blank">
+                                        <a class="link" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank">
                                             <img th:src="${newNovel.coverImgUrl}" />
                                         </a>
                                         <span></span>
@@ -524,14 +363,14 @@
                         <div class="update-table">
                             <table width="100%">
                                 <tbody>
-                                    <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 17">
+                                    <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} gt 2">
                                         <td>
                                             <a class="classify" href="###" target="_blank">
                                                 <i>」</i><i th:text="${newNovel.tags}"></i><i>「</i>
                                             </a>
                                         </td>
                                         <td>
-                                            <a class="name" href="###" target="_blank" th:text="${newNovel.title}"></a>
+                                            <a class="name" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
                                         </td>
                                         <td>
                                             <a class="section" href="###" target="_blank" th:text="${newNovel.publisher}"></a>
@@ -551,11 +390,11 @@
                 <div class="update-rec-wrap fr" style="margin-top: 37px;">
                     <div class="update-rec-list">
                         <ul>
-                            <li th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 3">
+                            <li th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index gt 15}and${newNovelStat.index lt 19}">
                                 <div class="book-wrap cf">
                                     <div class="book-info fr">
                                         <h4>
-                                            <a href="###" target="_blank" th:text="${newNovel.title}"></a>
+                                            <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
                                         </h4>
                                         <p class="digital">
                                             <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
@@ -565,7 +404,7 @@
                                         </p>
                                     </div>
                                     <div class="book-cover">
-                                        <a class="link" href="###" target="_blank">
+                                        <a class="link" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank">
                                             <img th:src="${newNovel.coverImgUrl}" />
                                         </a>
                                         <span></span>
@@ -599,7 +438,30 @@
             </div>
         </div>
     </div>
-
+    <script>
+        const classify_icons = [
+            "fa fa-fire",
+            "fa fa-diamond",
+            "fa fa-crosshairs",
+            "fa fa-cube",
+            "fa fa-cloud",
+            "fa fa-certificate",
+            "fa fa-building",
+            "fa fa-bell",
+            "fa fa-beer",
+            "fa fa-bank",
+            "fa fa-archive",
+            "fa fa-adjust",
+            "fa fa-database",
+            "fa fa-flash",
+        ]
+        const list = document.getElementsByClassName("classify-list")[0].getElementsByTagName("cite")
+        for (let i = 0; i < list.length; i++) {
+            const iconElement = list[i].getElementsByTagName("i")[0];
+            iconElement.removeAttribute("class")
+            iconElement.setAttribute("class", classify_icons[i])
+        }
+    </script>
     <!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script> -->
 </body>
 

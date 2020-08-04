@@ -513,7 +513,7 @@
     top: 119px;
     left: 50%;
     margin-left: -480px;
-    position: fixed;
+    position: absolute;
     width: 70px;
 }
 
@@ -619,7 +619,6 @@
 }
 
 .left-bar-list .panel-wrap .volume-list ul {
-    overflow: hidden;
     padding-left: 24px;
 }
 
@@ -631,7 +630,7 @@
 .left-bar-list .panel-wrap .volume-list li {
     font-size: 17px;
     float: left;
-    width: 370px;
+    width: 341px;
     height: 40px;
     line-height: 40px;
     border-top: 1px solid #edebeb;

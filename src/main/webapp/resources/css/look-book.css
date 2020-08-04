@@ -158,22 +158,6 @@
     border-style: solid;
 }
 
-.take-wrap {
-    font-size: 0;
-    position: absolute;
-    z-index: 1;
-    right: 32px;
-    top: 34px;
-    height: 20px;
-}
-
-.take-wrap .iconfont {
-    font-size: 14px;
-    display: inline-block;
-    min-width: 14px;
-    margin-right: 3px;
-}
-
 
 /* 作品信息和目录  */
 
@@ -262,17 +246,6 @@
     border-bottom: 1px solid #e6e6e6;
 }
 
-.book-state li .detail .tag-wrap .tags {
-    font-size: 12px;
-    display: inline-block;
-    margin-right: 8px;
-    padding: 3px 9px;
-    vertical-align: middle;
-    color: #3f5a93;
-    border: 1px solid #3f5a93;
-    border-radius: 100px;
-}
-
 .book-state li.honor {
     position: relative;
     z-index: 1;
@@ -307,26 +280,6 @@
 .book-state li .detail a.blue {
     display: inline-block;
     vertical-align: middle;
-}
-
-.book-state li .detail .tag-wrap.mt10 {
-    margin-top: 10px;
-}
-
-.book-state li .detail .tag-wrap .tags.red {
-    color: #bf2c24;
-    border: 1px solid #bf2c24;
-}
-
-.book-state li .detail .tag-wrap .tags {
-    font: 12px;
-    display: inline-block;
-    margin-right: 8px;
-    padding: 3px 9px;
-    vertical-align: middle;
-    color: #115f96;
-    border: 1px solid #115f96;
-    border-radius: 100px;
 }
 
 
@@ -384,15 +337,6 @@
     border-radius: 2px;
 }
 
-.author-info .author-photo+p {
-    font-size: 18px;
-    position: relative;
-    overflow: hidden;
-    height: 30px;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
 .author-info .author-photo+p a {
     display: inline-block;
     vertical-align: middle;
@@ -407,15 +351,6 @@
 .author-info .author-photo+p a+a {
     position: absolute;
     top: 4px;
-}
-
-.author-info .info-wrap .god-light {
-    width: 19px;
-    height: 16px;
-    background-image: url(../../resources/img/sprite-more.png);
-    background-repeat: no-repeat;
-    background-position: -299px -206px;
-    background-size: 335px;
 }
 
 .author-info .author-photo+p+p {
@@ -530,13 +465,14 @@
 .volume ul {
     overflow: hidden;
     padding: 10px;
+    display: inline-block;
 }
 
 .volume li {
     font-size: 14px;
     float: left;
     overflow: hidden;
-    width: 245px;
+    width: 215px;
     height: 40px;
     padding-right: 60px;
     border-bottom: 1px solid #ebebeb;

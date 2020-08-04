@@ -215,7 +215,7 @@
         var memberImg = $("#memberImg").val();
         var memberLevel = $("#memberLevel").val();
         $.ajax({
-            url: 'http://localhost:8080/future-novel/api/account/' + id + 'info',
+            url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()}+'/info']]*/ "/nonexist",
             type: 'GET',
             dataType: 'JSON',
             data: {

@@ -19,9 +19,6 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.packet.c2s.AddSectionRequest;
-import net.wlgzs.futurenovel.packet.c2s.EditNovelRequest;
-import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
 import net.wlgzs.futurenovel.dao.ChapterDao;
 import net.wlgzs.futurenovel.dao.NovelIndexDao;
 import net.wlgzs.futurenovel.dao.SectionDao;
@@ -30,7 +27,8 @@ import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.Chapter;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.Section;
-import net.wlgzs.futurenovel.utils.NovelNodeComparator;
+import net.wlgzs.futurenovel.packet.Requests;
+import net.wlgzs.futurenovel.packet.Responses;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -93,16 +91,17 @@ public class NovelService implements DisposableBean {
 
     /**
      * 创建小说目录
-     * @param account 所用帐号
-     * @param copyright 版权
-     * @param title 标题
-     * @param authors 作者
+     *
+     * @param account     所用帐号
+     * @param copyright   版权
+     * @param title       标题
+     * @param authors     作者
      * @param description 描述
-     * @param rating 评分
-     * @param tags 标签
-     * @param series 系列
-     * @param publisher 出版社
-     * @param pubdate 出版日期
+     * @param rating      评分
+     * @param tags        标签
+     * @param series      系列
+     * @param publisher   出版社
+     * @param pubdate     出版日期
      * @param coverImgUrl 封面图
      * @return NovelIndex 小说目录
      * @see NovelIndex
@@ -136,21 +135,22 @@ public class NovelService implements DisposableBean {
         tags.sort(String::compareToIgnoreCase);
         try {
             var novelIndex = new NovelIndex(UUID.randomUUID(),
-                    account.getUid(),
-                    title,
-                    copyright,
-                    String.join(",", authors),
-                    description,
-                    rating,
-                    String.join(",", tags),
-                    series,
-                    publisher,
-                    pubdate,
-                    0,
-                    coverImgUrl,
-                    new ArrayNode(JsonNodeFactory.instance));
+                account.getUid(),
+                title,
+                copyright,
+                String.join(",", authors),
+                description,
+                rating,
+                String.join(",", tags),
+                series,
+                publisher,
+                pubdate,
+                0,
+                coverImgUrl,
+                new ArrayNode(JsonNodeFactory.instance));
             var ret = novelIndexDao.insertNovelIndex(novelIndex);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
             return novelIndex;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -178,18 +178,21 @@ public class NovelService implements DisposableBean {
         if (novelIndex.getUploader().equals(account.getUid())) account.checkPermission();
         else account.checkPermission(Account.Permission.ADMIN);
         try {
-            if (title == null || title.isBlank()) title = String.format("第 %d 章", chapterDao.countChapterByFromNovel(novelIndex.getUniqueId()) + 1);
+            if (title == null || title.isBlank())
+                title = String.format("第 %d 章", chapterDao.countChapterByFromNovel(novelIndex.getUniqueId()) + 1);
             var chapter = new Chapter(UUID.randomUUID(), novelIndex.getUniqueId(), title.trim(), new ArrayNode(JsonNodeFactory.instance));
             var arrayNode = novelIndex.getChapters();
             arrayNode.add(chapter.getUniqueId().toString());
             var ret = chapterDao.insertChapter(chapter);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
             ret = novelIndexDao.updateNovelIndex(novelIndex.getUniqueId(),
                 null, null, null,
                 null, null, null,
                 null, null, null,
                 novelIndex.getChapters());
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新添加操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新添加操作返回了不是 1 的值：" + ret);
             return chapter;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -221,14 +224,17 @@ public class NovelService implements DisposableBean {
             if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
-            if (title == null || title.isBlank()) title = String.format("第 %d 节", sectionDao.countSectionByFromChapter(chapter.getUniqueId()) + 1);
+            if (title == null || title.isBlank())
+                title = String.format("第 %d 节", sectionDao.countSectionByFromChapter(chapter.getUniqueId()) + 1);
             var section = new Section(UUID.randomUUID(), chapter.getUniqueId(), title.trim(), text);
             var arrayNode = chapter.getSections();
             arrayNode.add(section.getUniqueId().toString());
             var ret = sectionDao.insertSection(section);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
             ret = chapterDao.updateChapter(chapter);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新操作返回了不是 1 的值：" + ret);
             return section;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -249,7 +255,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@NonNull UUID fromChapter) {
+    public List<Responses.NovelChapter.SectionInfo> getSectionInfoByFromChapter(@NonNull UUID fromChapter) {
         try {
             var list = sectionDao.getSectionInfoByFromChapter(fromChapter);
             return list == null ? List.of() : list;
@@ -259,7 +265,7 @@ public class NovelService implements DisposableBean {
     }
 
     @NonNull
-    public List<NovelChapter.SectionInfo> getSectionInfoByFromChapterList(@NonNull List<UUID> fromChapterList) {
+    public List<Responses.NovelChapter.SectionInfo> getSectionInfoByFromChapterList(@NonNull List<UUID> fromChapterList) {
         if (fromChapterList.isEmpty()) return List.of();
         try {
             var list = sectionDao.getSectionInfoByFromChapterList(fromChapterList);
@@ -288,7 +294,8 @@ public class NovelService implements DisposableBean {
                 log.warn("chapter(s) from novel({}) can not totally delete", novelIndex.getUniqueId().toString());
             }
             var ret = novelIndexDao.deleteNovelIndex(novelIndex);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -307,7 +314,8 @@ public class NovelService implements DisposableBean {
                 log.warn("section(s) from novel({}) can not delete", novelIndex.getUniqueId().toString());
             }
             var ret = chapterDao.deleteChapterById(chapterId);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -321,7 +329,8 @@ public class NovelService implements DisposableBean {
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = sectionDao.deleteSectionById(sectionId);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -362,7 +371,7 @@ public class NovelService implements DisposableBean {
         }
     }
 
-    private boolean checkAllNull(@NonNull Object ... objects) {
+    private boolean checkAllNull(@NonNull Object... objects) {
         for (var o : objects) {
             if (o instanceof CharSequence) {
                 if (((CharSequence) o).length() != 0) return false;
@@ -372,7 +381,7 @@ public class NovelService implements DisposableBean {
     }
 
     @Transactional
-    public boolean editNovelIndex(@NonNull Account account, @NonNull UUID novelId, @NonNull EditNovelRequest edit) {
+    public boolean editNovelIndex(@NonNull Account account, @NonNull UUID novelId, @NonNull Requests.EditNovelRequest edit) {
         try {
             NovelIndex novelIndex = getNovelIndex(novelId);
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
@@ -407,14 +416,15 @@ public class NovelService implements DisposableBean {
             if (account.getUid().equals(novelIndex.getUploader())) account.checkPermission();
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = chapterDao.updateChapter(chapter);
-            if (ret != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步修改操作返回了不是 1 的值：" + ret);
+            if (ret != 1)
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步修改操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
     }
 
     @Transactional
-    public boolean editSection(@NonNull Account account, @NonNull UUID sectionId, @NonNull AddSectionRequest edit) {
+    public boolean editSection(@NonNull Account account, @NonNull UUID sectionId, @NonNull Requests.AddSectionRequest edit) {
         try {
             var novelIndex = novelIndexDao.getNovelIndexBySectionId(sectionId);
             if (novelIndex == null) throw new FutureNovelException(FutureNovelException.Error.NOVEL_NOT_FOUND);
@@ -503,7 +513,6 @@ public class NovelService implements DisposableBean {
         try {
             List<Chapter> list = chapterDao.getChapterByFromNovel(fromNovel, offset, count, orderBy);
             if (list == null) return List.of();
-            list.sort(NovelNodeComparator::compareByTitle);
             return list;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -551,7 +560,7 @@ public class NovelService implements DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         future.cancel(true);
         log.info("Service destroying");
         executor.shutdownNow();

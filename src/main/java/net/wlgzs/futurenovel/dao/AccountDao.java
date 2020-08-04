@@ -2,7 +2,7 @@ package net.wlgzs.futurenovel.dao;
 
 import java.util.List;
 import java.util.UUID;
-import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
+import net.wlgzs.futurenovel.packet.Requests;
 import net.wlgzs.futurenovel.model.Account;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -28,18 +28,6 @@ public interface AccountDao {
             " #{registerDate}, #{lastLoginDate}, #{status}, #{isVIP}, #{permission},",
             " #{experience}, #{profileImgUrl})"})
     int insertAccount(Account account) throws DataAccessException;
-
-    @Select({"SELECT `userName`, `uid`, ",
-            " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
-            " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`userName` = #{userName} LIMIT 1 FOR UPDATE"})
-    Account getAccountByUsername(@Param("userName") String userName) throws DataAccessException;
-
-    @Select({"SELECT `userName`, `uid`, ",
-            " `userPass`, `email`, `phone`, `registerIP`, `lastLoginIP`,",
-            " `registerDate`, `lastLoginDate`, `status`, `isVIP`, `permission`,",
-            " `experience`, `profileImgUrl` FROM `accounts` WHERE `accounts`.`email` = #{email} LIMIT 1 FOR UPDATE"})
-    Account getAccountByEmail(@Param("email") String email) throws DataAccessException;
 
     @Select({"<script>",
             "SELECT COUNT(*) FROM `accounts`",
@@ -113,7 +101,7 @@ public interface AccountDao {
             "</set> ",
             "WHERE `accounts`.`uid` = #{uid}",
             "</script>"})
-    int editAccount(EditAccountRequest account) throws DataAccessException;
+    int editAccount(Requests.EditAccountRequest account) throws DataAccessException;
 
     @Delete("DELETE FROM `accounts` WHERE `accounts`.`uid` = #{uid}")
     int deleteAccount(Account account) throws DataAccessException;

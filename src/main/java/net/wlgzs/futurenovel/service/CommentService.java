@@ -6,7 +6,7 @@ import java.util.UUID;
 import net.wlgzs.futurenovel.dao.CommentDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Comment;
-import net.wlgzs.futurenovel.packet.s2c.CommentInfo;
+import net.wlgzs.futurenovel.packet.Responses;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -71,7 +71,7 @@ public class CommentService {
         }
     }
 
-    public List<CommentInfo> getCommentsByAccount(@NonNull UUID accountId, @NonNull int offset, @NonNull int count) {
+    public List<Responses.CommentInfo> getCommentsByAccount(@NonNull UUID accountId, @NonNull int offset, @NonNull int count) {
         try {
             var result = commentDao.getCommentInfoByAccountId(accountId, offset, count);
             if (result == null) return List.of();
@@ -81,7 +81,7 @@ public class CommentService {
         }
     }
 
-    public List<CommentInfo> getComments(UUID sectionId, @NonNull int offset, @NonNull int count) {
+    public List<Responses.CommentInfo> getComments(UUID sectionId, @NonNull int offset, @NonNull int count) {
         try {
             var result = commentDao.getCommentInfoBySectionId(sectionId, offset, count);
             if (result == null) return List.of();
@@ -91,7 +91,7 @@ public class CommentService {
         }
     }
 
-    public List<CommentInfo> getComments(@NonNull int offset, @NonNull int count) {
+    public List<Responses.CommentInfo> getComments(@NonNull int offset, @NonNull int count) {
         try {
             var result = commentDao.getCommentInfoForAdmin(offset, count);
             if (result == null) return List.of();

@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,23 +34,8 @@ import net.wlgzs.futurenovel.AppConfig;
 import net.wlgzs.futurenovel.model.BookSelf;
 import net.wlgzs.futurenovel.model.Comment;
 import net.wlgzs.futurenovel.model.ReadHistory;
-import net.wlgzs.futurenovel.packet.c2s.AddAccountRequest;
-import net.wlgzs.futurenovel.packet.c2s.AddChapterRequest;
-import net.wlgzs.futurenovel.packet.c2s.AddCommentRequest;
-import net.wlgzs.futurenovel.packet.c2s.AddSectionRequest;
-import net.wlgzs.futurenovel.packet.c2s.BookSelfAddNovelRequest;
-import net.wlgzs.futurenovel.packet.c2s.CreateBookSelfRequest;
-import net.wlgzs.futurenovel.packet.c2s.CreateNovelIndexRequest;
-import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
-import net.wlgzs.futurenovel.packet.c2s.EditExperienceRequest;
-import net.wlgzs.futurenovel.packet.c2s.EditNovelRequest;
-import net.wlgzs.futurenovel.packet.c2s.GetReadHistoryRequest;
-import net.wlgzs.futurenovel.packet.s2c.CommentInfo;
-import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
-import net.wlgzs.futurenovel.packet.c2s.LoginRequest;
-import net.wlgzs.futurenovel.packet.s2c.Novel;
-import net.wlgzs.futurenovel.packet.c2s.SearchNovelRequest;
-import net.wlgzs.futurenovel.packet.c2s.SendCaptchaRequest;
+import net.wlgzs.futurenovel.packet.Requests;
+import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
 import net.wlgzs.futurenovel.model.Account;
@@ -101,17 +87,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*",
-        methods = {
-                RequestMethod.POST,
-                RequestMethod.GET,
-                RequestMethod.PUT,
-                RequestMethod.DELETE
-        },
-        allowedHeaders = {
-                "Authorization",
-                "Content-Type",
-                "*"
-        }) // TODO 临时解决分离调试跨域问题
+    methods = {
+        RequestMethod.POST,
+        RequestMethod.GET,
+        RequestMethod.PUT,
+        RequestMethod.DELETE
+    },
+    allowedHeaders = {
+        "Authorization",
+        "Content-Type",
+        "*"
+    }) // TODO 临时解决分离调试跨域问题
 @Slf4j
 public class ApiController extends AbstractAppController {
 
@@ -138,6 +124,7 @@ public class ApiController extends AbstractAppController {
      * 用于检查用户名或邮箱是否存在
      * <p>
      * 若不存在，返回状态码 204
+     *
      * @param name 需要检查的值
      * @param type email 或 username, 默认为 username
      */
@@ -158,15 +145,16 @@ public class ApiController extends AbstractAppController {
      * 登录成功后设置 Cookie 并跳转到请求参数中 redirectTo 所指向的页面
      * <p>
      * 若请求参数不包含 redirectTo, 则使用 Session 变量中的值，或者跳转到首页
-     * @param req 请求参数，请参阅 {@link LoginRequest}
+     *
+     * @param req       请求参数，请参阅 {@link Requests.LoginRequest}
      * @param userAgent 浏览器 UA, 用于生成 Token
-     * @param request Http 请求
-     * @param response Http 响应
-     * @param session Session 服务端变量
+     * @param request   Http 请求
+     * @param response  Http 响应
+     * @param session   Session 服务端变量
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, ?> login(@RequestBody @Valid LoginRequest req,
+    public Map<String, ?> login(@RequestBody @Valid Requests.LoginRequest req,
                                 @RequestHeader(value = "User-Agent") String userAgent,
                                 HttpServletRequest request,
                                 HttpServletResponse response,
@@ -177,7 +165,7 @@ public class ApiController extends AbstractAppController {
         if (account.getStatus() == Account.Status.UNVERIFIED) {
             if (req.activateCode == null) {
                 // 1. 第一次尝试登陆，提示未验证并发送验证码
-                var sendCaptchaRequest = new SendCaptchaRequest();
+                var sendCaptchaRequest = new Requests.SendCaptchaRequest();
                 sendCaptchaRequest.email = account.getEmail();
                 sendCaptcha(request, session, sendCaptchaRequest);
                 throw new FutureNovelException(FutureNovelException.Error.USER_UNVERIFIED);
@@ -235,19 +223,20 @@ public class ApiController extends AbstractAppController {
         session.setAttribute("redirectTo", null);
         //ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectTo).body(null);
         return Map.ofEntries(
-                Map.entry("redirectTo", redirectTo),
-                Map.entry("account", account)
+            Map.entry("redirectTo", redirectTo),
+            Map.entry("account", account)
         );
     }
 
     /**
      * 注销
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
-     * @param response Http 响应
-     * @param session Session 服务端变量
+     * @param request   Http 请求
+     * @param response  Http 响应
+     * @param session   Session 服务端变量
      */
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -276,17 +265,18 @@ public class ApiController extends AbstractAppController {
      * 不包含的属性不会修改
      * <p>
      * 未发生任何改动则认为修改失败
-     * @param req 请求参数 {@link EditAccountRequest}
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param req       请求参数 {@link Requests.EditAccountRequest}
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
-     * @param session Session 服务端变量
-     * @see EditAccountRequest
+     * @param request   Http 请求
+     * @param session   Session 服务端变量
+     * @see Requests.EditAccountRequest
      */
     @PostMapping(value = "/account/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editAccount(@RequestBody @Valid EditAccountRequest req,
+    public void editAccount(@RequestBody @Valid Requests.EditAccountRequest req,
                             @CookieValue(name = "uid", defaultValue = "") String uid,
                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -308,9 +298,9 @@ public class ApiController extends AbstractAppController {
         // 检查验证码
         if (currentAccount.getUid().equals(req.uid) && (req.email != null || req.password != null)) {
             if (((req.email != null) && !req.email.equals(session.getAttribute("activateEmail"))) ||
-                    !req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) ||
-                    Optional.ofNullable((Long) session.getAttribute("activateBefore"))
-                            .map(value -> System.currentTimeMillis() > value).orElse(true)) {
+                !req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) ||
+                Optional.ofNullable((Long) session.getAttribute("activateBefore"))
+                    .map(value -> System.currentTimeMillis() > value).orElse(true)) {
                 throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
             } else {
                 session.setAttribute("activateCode", null);
@@ -326,7 +316,7 @@ public class ApiController extends AbstractAppController {
 
     @PostMapping(value = "/admin/account/experience/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editAccountExperience(@RequestBody @Valid EditExperienceRequest req,
+    public void editAccountExperience(@RequestBody @Valid Requests.EditExperienceRequest req,
                                       @CookieValue(name = "uid", defaultValue = "") String uid,
                                       @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                       @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -343,7 +333,7 @@ public class ApiController extends AbstractAppController {
     @GetMapping("/account/{uniqueId:[0-9a-f\\-]{36}}/info")
     public Map<String, ?> getAccountShortInfo(@PathVariable String uniqueId) {
         Account account = accountService.getAccount(UUID.fromString(uniqueId));
-        Map<String, Object> result = new java.util.HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("userName", account.getUserName());
         result.put("uid", account.getUidNum());
         result.put("vip", account.isVIP());
@@ -355,23 +345,25 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 管理员批量添加用户
-     * @param reqs 请求参数，一个列表
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param reqs      请求参数，一个列表
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return json 信息
-     * @see AddAccountRequest
+     * @see Requests.AddAccountRequest
      */
     @PostMapping(value = "/admin/account/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Map<String, List<?>> adminAddAccount(@RequestBody List<AddAccountRequest> reqs,
+    public Map<String, List<?>> adminAddAccount(@RequestBody List<Requests.AddAccountRequest> reqs,
                                                 @CookieValue(name = "uid", defaultValue = "") String uid,
                                                 @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                                 HttpServletRequest request) {
-        if (reqs == null || reqs.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+        if (reqs == null || reqs.isEmpty())
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -379,7 +371,7 @@ public class ApiController extends AbstractAppController {
         LinkedList<Account> success = new LinkedList<>();
         LinkedList<Map<String, ?>> failed = new LinkedList<>();
 
-        for (AddAccountRequest req : reqs) {
+        for (Requests.AddAccountRequest req : reqs) {
             try {
                 var e = new BindException(req, "list#request");
                 defaultValidator.validate(req, e);
@@ -421,11 +413,12 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 管理员批量删除用户
-     * @param uids 要删除的 uid 的列表
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param uids      要删除的 uid 的列表
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return json 信息
      */
     @DeleteMapping(value = "/admin/account/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -436,7 +429,8 @@ public class ApiController extends AbstractAppController {
                                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                                    HttpServletRequest request) {
-        if (uids == null || uids.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+        if (uids == null || uids.isEmpty())
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -449,7 +443,8 @@ public class ApiController extends AbstractAppController {
                 UUID uuid = UUID.fromString(uidStr);
                 if (uid.equals(uuid.toString())) throw new IllegalArgumentException("不能删除自己的账号");
                 Account account = accountService.getAccount(uuid);
-                if (accountService.unRegister(account) != 1) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION);
+                if (accountService.unRegister(account) != 1)
+                    throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION);
                 success.add(account);
                 commentService.clearAccountComment(account.getUid());
                 readHistoryService.clearReadHistory(account, null, null);
@@ -468,11 +463,12 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 上传图片接口
-     * @param file 文件
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param file      文件
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return json 信息
      */
     @PutMapping(value = "/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -517,25 +513,26 @@ public class ApiController extends AbstractAppController {
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable("hash") String hash) {
         try (var stream = fileService.readFile(hash)) {
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .contentLength(stream.available())
-                    .eTag(hash)
-                    .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
-                    .body(new ByteArrayResource(stream.readAllBytes()));
+                .contentType(MediaType.IMAGE_JPEG)
+                .contentLength(stream.available())
+                .eTag(hash)
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
+                .body(new ByteArrayResource(stream.readAllBytes()));
         } catch (IOException e) {
             return ResponseEntity.notFound()
-                    .build();
+                .build();
         }
     }
 
     /**
      * 获取用户管理的总页数
      * 权限：管理员
-     * @param perPage 每页显示的页数，默认20
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param perPage   每页显示的页数，默认20
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return json 数据
      */
     @GetMapping("/admin/accounts/pages")
@@ -551,9 +548,9 @@ public class ApiController extends AbstractAppController {
         currentAccount.checkPermission(Account.Permission.ADMIN);
 
         return Map.ofEntries(
-                Map.entry("per_page", perPage),
-                Map.entry("pages", accountService.getAllAccountPages(perPage)),
-                Map.entry("timestamp", System.currentTimeMillis())
+            Map.entry("per_page", perPage),
+            Map.entry("pages", accountService.getAllAccountPages(perPage)),
+            Map.entry("timestamp", System.currentTimeMillis())
         );
     }
 
@@ -561,24 +558,26 @@ public class ApiController extends AbstractAppController {
      * 获取所有的用户信息
      * 权限：管理员
      * 若无数据，返回状态码 204
-     * @param page 第几页
-     * @param perPage 每页显示的页数，默认20
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param page      第几页
+     * @param perPage   每页显示的页数，默认20
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return json 数据
      */
     @GetMapping("/admin/accounts/get")
     @ResponseBody
     public ResponseEntity<List<Account>> accountAdminGet(
-            @RequestParam(name = "page") int page,
-            @RequestParam(name = "per_page", defaultValue = "20", required = false) int perPage,
-            @CookieValue(name = "uid", defaultValue = "") String uid,
-            @CookieValue(name = "token", defaultValue = "") String tokenStr,
-            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-            HttpServletRequest request) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "per_page", defaultValue = "20", required = false) int perPage,
+        @CookieValue(name = "uid", defaultValue = "") String uid,
+        @CookieValue(name = "token", defaultValue = "") String tokenStr,
+        @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+        HttpServletRequest request) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -586,7 +585,7 @@ public class ApiController extends AbstractAppController {
         var result = accountService.getAllAccount(page, perPage);
         if (result == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                    .build();
+                .build();
         } else {
             return ResponseEntity.ok(result);
         }
@@ -598,20 +597,21 @@ public class ApiController extends AbstractAppController {
      * 创建小说信息
      * <p>
      * 权限：参见 {@link net.wlgzs.futurenovel.model.Account.Permission}
-     * @param req 请求参数，参见 {@link CreateNovelIndexRequest}
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param req       请求参数，参见 {@link Requests.CreateNovelIndexRequest}
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return 章节 json 对象
      * @see net.wlgzs.futurenovel.model.Account.Permission
-     * @see CreateNovelIndexRequest
+     * @see Requests.CreateNovelIndexRequest
      * @see NovelIndex
      */
     @PostMapping(value = "/novel/addIndex", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public NovelIndex addNovelIndex(@RequestBody @Valid CreateNovelIndexRequest req,
+    public NovelIndex addNovelIndex(@RequestBody @Valid Requests.CreateNovelIndexRequest req,
                                     @CookieValue(name = "uid", defaultValue = "") String uid,
                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -621,19 +621,20 @@ public class ApiController extends AbstractAppController {
         req.authors.replaceAll(String::trim);
         req.tags.replaceAll(String::trim);
         req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
-        if (req.tags.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
+        if (req.tags.isEmpty())
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
         if (req.series == null || req.series.isBlank()) req.series = req.title;
         return novelService.createNovelIndex(currentAccount,
-                req.copyright,
-                req.title.trim(),
-                req.authors,
-                safeHTML(req.description),
-                (byte) 0,
-                req.tags,
-                req.series,
-                req.publisher,
-                req.pubdate,
-                req.coverImgUrl);
+            req.copyright,
+            req.title.trim(),
+            req.authors,
+            safeHTML(req.description),
+            (byte) 0,
+            req.tags,
+            req.series,
+            req.publisher,
+            req.pubdate,
+            req.coverImgUrl);
     }
 
     /**
@@ -642,12 +643,13 @@ public class ApiController extends AbstractAppController {
      * 添加章节目录
      * <p>
      * 权限：上传者或管理员
+     *
      * @param fromNovel 小说的 ID
-     * @param req 请求参数，仅包含 标题
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     * @param req       请求参数，仅包含 标题
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      * @return 章节 json 对象
      * @see Chapter
      */
@@ -655,7 +657,7 @@ public class ApiController extends AbstractAppController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Chapter addChapter(@PathVariable("fromNovel") String fromNovel,
-                              @RequestBody AddChapterRequest req,
+                              @RequestBody Requests.AddChapterRequest req,
                               @CookieValue(name = "uid", defaultValue = "") String uid,
                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -673,13 +675,14 @@ public class ApiController extends AbstractAppController {
      * 添加小节
      * <p>
      * 权限：上传者或管理员
-     * @param fromNovel 小说的 ID
+     *
+     * @param fromNovel   小说的 ID
      * @param fromChapter 章节的 ID，只需前 8 位
-     * @param req 请求参数，包含标题和文本
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
-     * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param req         请求参数，包含标题和文本
+     * @param uid         Cookie：用户 ID
+     * @param tokenStr    Cookie：登陆令牌
+     * @param userAgent   Header：浏览器标识
+     * @param request     Http 请求
      * @return 小节 json 对象，不含文本
      */
     @PostMapping("/novel/{fromNovel:[0-9a-f\\-]{36}}/{fromChapter:[0-9a-f\\-]{8,36}}/addSection")
@@ -687,7 +690,7 @@ public class ApiController extends AbstractAppController {
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> addSection(@PathVariable("fromNovel") String fromNovel,
                                           @PathVariable("fromChapter") String fromChapter,
-                                          @RequestBody @Valid AddSectionRequest req,
+                                          @RequestBody @Valid Requests.AddSectionRequest req,
                                           @CookieValue(name = "uid", defaultValue = "") String uid,
                                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -709,24 +712,26 @@ public class ApiController extends AbstractAppController {
         Chapter chapter = novelService.getChapter(UUID.fromString(fromChapter));
         Section section = novelService.addSection(currentAccount, chapter, novelIndex, req.title, safeHTML(req.text));
         return Map.ofEntries(
-                Map.entry("uniqueId", section.getUniqueId().toString()),
-                Map.entry("title", section.getTitle())
+            Map.entry("uniqueId", section.getUniqueId().toString()),
+            Map.entry("title", section.getTitle())
         );
     }
 
     /**
      * 获取小说的目录信息
+     *
      * @param uniqueId 小说的 ID
      * @return json 对象
      */
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}")
     @ResponseBody
-    public Novel getNovelInfo(@PathVariable("uniqueId") String uniqueId) {
+    public Responses.Novel getNovelInfo(@PathVariable("uniqueId") String uniqueId) {
         return buildNovel(UUID.fromString(uniqueId));
     }
 
     /**
      * 获取小说的某一小节，包含文本
+     *
      * @param uniqueId 小节的 ID
      * @return json 对象
      */
@@ -740,11 +745,12 @@ public class ApiController extends AbstractAppController {
      * 删除小说（递归）
      * <p>
      * 权限：上传者或管理员
-     * @param uniqueId 小说的 ID
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param uniqueId  小说的 ID
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
+     * @param request   Http 请求
      */
     @DeleteMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -802,17 +808,19 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 获取本站所有小说
-     * @param page 页码
+     *
+     * @param page    页码
      * @param perPage 每页显示的数量
-     * @param sortBy 排序方式，参见 {@link SearchNovelRequest.SortBy}
+     * @param sortBy  排序方式，参见 {@link Requests.SearchNovelRequest.SortBy}
      * @return 小说目录的列表（不含章节目录）
      */
     @GetMapping("/admin/novel/all")
     @ResponseBody
     public ResponseEntity<List<NovelIndex>> novelGetAll(@RequestParam(name = "page") int page,
                                                         @RequestParam(name = "per_page", defaultValue = "20") int perPage,
-                                                        @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") SearchNovelRequest.SortBy sortBy) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+                                                        @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") Requests.SearchNovelRequest.SortBy sortBy) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
         final var result = novelService.getAllNovelIndex(offset, perPage, sortBy.getOrderBy());
         return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
@@ -820,6 +828,7 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 获取本站所有小说的总页数
+     *
      * @param perPage 每页显示的数量
      * @return json 数据
      */
@@ -830,17 +839,18 @@ public class ApiController extends AbstractAppController {
         long total = novelService.countAllNovelIndex();
         return Map.of(
             "per_page", perPage,
-            "pages", total / perPage + 1,
+            "pages", (total / perPage + (total >= perPage ? 0 : 1)),
             "timestamp", System.currentTimeMillis()
         );
     }
 
     /**
      * 获取某个用户上传的所有小说
+     *
      * @param accountId 用户的 ID
-     * @param page 页码
-     * @param perPage 每页显示的数量
-     * @param sortBy 排序方式，参见 {@link SearchNovelRequest.SortBy}
+     * @param page      页码
+     * @param perPage   每页显示的数量
+     * @param sortBy    排序方式，参见 {@link Requests.SearchNovelRequest.SortBy}
      * @return 小说目录的列表（不含章节目录）
      */
     @GetMapping("/novel/user/{accountId:[0-9a-f\\-]{36}}/get")
@@ -848,8 +858,9 @@ public class ApiController extends AbstractAppController {
     public ResponseEntity<List<NovelIndex>> novelGetAllFromUser(@PathVariable("accountId") String accountId,
                                                                 @RequestParam(name = "page") int page,
                                                                 @RequestParam(name = "per_page", defaultValue = "20") int perPage,
-                                                                @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") SearchNovelRequest.SortBy sortBy) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+                                                                @RequestParam(name = "sort_by", defaultValue = "HOT_DESC") Requests.SearchNovelRequest.SortBy sortBy) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
         final var result = novelService.findNovelIndexByUploader(UUID.fromString(accountId), offset, perPage, sortBy.getOrderBy());
         return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
@@ -857,8 +868,9 @@ public class ApiController extends AbstractAppController {
 
     /**
      * 获取某个用户上传的所有小说的总页数
+     *
      * @param accountId 用户的 ID
-     * @param perPage 每页显示的数量
+     * @param perPage   每页显示的数量
      * @return json 数据
      */
     @GetMapping("/novel/user/{accountId:[0-9a-f\\-]{36}}/pages")
@@ -869,7 +881,7 @@ public class ApiController extends AbstractAppController {
         long total = novelService.countNovelIndexByUploader(UUID.fromString(accountId));
         return Map.of(
             "per_page", perPage,
-            "pages", total / perPage + 1,
+            "pages", (total / perPage + (total >= perPage ? 0 : 1)),
             "timestamp", System.currentTimeMillis()
         );
     }
@@ -877,7 +889,7 @@ public class ApiController extends AbstractAppController {
     @PostMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editNovelIndex(@PathVariable("uniqueId") String uniqueId,
-                               @RequestBody @Valid EditNovelRequest req,
+                               @RequestBody @Valid Requests.EditNovelRequest req,
                                @CookieValue(name = "uid", defaultValue = "") String uid,
                                @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -886,21 +898,24 @@ public class ApiController extends AbstractAppController {
 
         if (req.tags != null) {
             req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
-            if (req.tags.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
+            if (req.tags.isEmpty())
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
         }
 
-        if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+        if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req))
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
     }
 
     @PostMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editChapter(@PathVariable("uniqueId") String uniqueId,
-                            @RequestBody @Valid AddChapterRequest req,
+                            @RequestBody @Valid Requests.AddChapterRequest req,
                             @CookieValue(name = "uid", defaultValue = "") String uid,
                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                             HttpServletRequest request) {
-        if ((req.title == null || req.title.isBlank()) && req.sectionsEdit == null) throw new IllegalArgumentException("title & sections: 不能同时为空");
+        if ((req.title == null || req.title.isBlank()) && req.sectionsEdit == null)
+            throw new IllegalArgumentException("title & sections: 不能同时为空");
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         var chapter = novelService.getChapter(UUID.fromString(uniqueId));
@@ -922,7 +937,7 @@ public class ApiController extends AbstractAppController {
     @PostMapping("/novel/section/{uniqueId:[0-9a-f\\-]{36}}/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editSection(@PathVariable("uniqueId") String uniqueId,
-                            @RequestBody AddSectionRequest req,
+                            @RequestBody Requests.AddSectionRequest req,
                             @CookieValue(name = "uid", defaultValue = "") String uid,
                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -930,16 +945,18 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException("title: 不能为空");
-        if (req.text != null && (req.text.length() < 200 || req.text.length() > 4194304)) throw new IllegalArgumentException("text: 大小必须在 200B 到 4MB 之间");
+        if (req.text != null && (req.text.length() < 200 || req.text.length() > 4194304))
+            throw new IllegalArgumentException("text: 大小必须在 200B 到 4MB 之间");
         if (req.text != null) req.text = safeHTML(req.text);
 
-        if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req)) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+        if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req))
+            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
     }
 
     @PostMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addComment(@PathVariable("sectionId") String sectionId,
-                           @RequestBody @Valid AddCommentRequest req,
+                           @RequestBody @Valid Requests.AddCommentRequest req,
                            @CookieValue(name = "uid", defaultValue = "") String uid,
                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -952,10 +969,11 @@ public class ApiController extends AbstractAppController {
 
     @GetMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment/get")
     @ResponseBody
-    public ResponseEntity<List<CommentInfo>> getCommentFromSection(@PathVariable("sectionId") String sectionId,
-                                                                   @RequestParam(name = "page") int page,
-                                                                   @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+    public ResponseEntity<List<Responses.CommentInfo>> getCommentFromSection(@PathVariable("sectionId") String sectionId,
+                                                                             @RequestParam(name = "page") int page,
+                                                                             @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
         var result = commentService.getComments(UUID.fromString(sectionId), offset, perPage);
         if (result.isEmpty()) return ResponseEntity.noContent().build();
@@ -964,10 +982,11 @@ public class ApiController extends AbstractAppController {
 
     @GetMapping("/account/{accountId:[0-9a-f\\-]{36}}/comment/get")
     @ResponseBody
-    public ResponseEntity<List<CommentInfo>> getCommentFromAccount(@PathVariable("accountId") String accountId,
-                                                                   @RequestParam(name = "page") int page,
-                                                                   @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+    public ResponseEntity<List<Responses.CommentInfo>> getCommentFromAccount(@PathVariable("accountId") String accountId,
+                                                                             @RequestParam(name = "page") int page,
+                                                                             @RequestParam(name = "per_page", defaultValue = "20") int perPage) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
         var result = commentService.getCommentsByAccount(UUID.fromString(accountId), offset, perPage);
         if (result.isEmpty()) return ResponseEntity.noContent().build();
@@ -1023,13 +1042,14 @@ public class ApiController extends AbstractAppController {
 
     @GetMapping("/comment/getAll")
     @ResponseBody
-    public ResponseEntity<List<CommentInfo>> getAllComment(@RequestParam(name = "page") int page,
-                                                           @RequestParam(name = "per_page", defaultValue = "20") int perPage,
-                                                           @CookieValue(name = "uid", defaultValue = "") String uid,
-                                                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                                                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                                                           HttpServletRequest request) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+    public ResponseEntity<List<Responses.CommentInfo>> getAllComment(@RequestParam(name = "page") int page,
+                                                                     @RequestParam(name = "per_page", defaultValue = "20") int perPage,
+                                                                     @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                                     HttpServletRequest request) {
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         int offset = (page - 1) * perPage;
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -1040,7 +1060,7 @@ public class ApiController extends AbstractAppController {
 
     @PostMapping("/account/readHistory/get")
     @ResponseBody
-    public ResponseEntity<List<ReadHistory>> getReadHistory(@RequestBody @Valid GetReadHistoryRequest req,
+    public ResponseEntity<List<ReadHistory>> getReadHistory(@RequestBody @Valid Requests.GetReadHistoryRequest req,
                                                             @CookieValue(name = "uid", defaultValue = "") String uid,
                                                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -1065,7 +1085,7 @@ public class ApiController extends AbstractAppController {
 
     @DeleteMapping("/account/readHistory/clear")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void clearReadHistory(@RequestBody @Valid GetReadHistoryRequest req,
+    public void clearReadHistory(@RequestBody @Valid Requests.GetReadHistoryRequest req,
                                  @CookieValue(name = "uid", defaultValue = "") String uid,
                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -1077,7 +1097,7 @@ public class ApiController extends AbstractAppController {
 
     @PostMapping("/bookSelf/create")
     @ResponseBody
-    public BookSelf createBookSelf(@RequestBody @Valid CreateBookSelfRequest req,
+    public BookSelf createBookSelf(@RequestBody @Valid Requests.CreateBookSelfRequest req,
                                    @CookieValue(name = "uid", defaultValue = "") String uid,
                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -1109,7 +1129,7 @@ public class ApiController extends AbstractAppController {
     @PostMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}/add")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void bookSelfAddNovel(@PathVariable("uniqueId") String uniqueId,
-                                 @RequestBody @Valid BookSelfAddNovelRequest req,
+                                 @RequestBody @Valid Requests.BookSelfAddNovelRequest req,
                                  @CookieValue(name = "uid", defaultValue = "") String uid,
                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -1117,7 +1137,8 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
-        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
         NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(req.novelIndexId));
         novelIndex.getChapters().removeAll();
         bookSelf.addNovel(AppConfig.objectMapper.valueToTree(novelIndex));
@@ -1127,7 +1148,7 @@ public class ApiController extends AbstractAppController {
     @PostMapping("/bookSelf/{uniqueId:[0-9a-f\\-]{36}}/remove")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void bookSelfRemoveNovel(@PathVariable("uniqueId") String uniqueId,
-                                    @RequestBody @Valid BookSelfAddNovelRequest req,
+                                    @RequestBody @Valid Requests.BookSelfAddNovelRequest req,
                                     @CookieValue(name = "uid", defaultValue = "") String uid,
                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
@@ -1135,7 +1156,8 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
-        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
         bookSelf.remove(UUID.fromString(req.novelIndexId));
         bookSelfService.editBookSelf(bookSelf);
     }
@@ -1150,7 +1172,8 @@ public class ApiController extends AbstractAppController {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
-        if (!bookSelf.getAccountId().equals(currentAccount.getUid())) throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+        if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
         bookSelf.clear();
         bookSelfService.editBookSelf(bookSelf);
     }
@@ -1175,7 +1198,8 @@ public class ApiController extends AbstractAppController {
         currentAccount.checkPermission();
 
         currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.valueOf(count)));
-        if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0) throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
+        if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0)
+            throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
 
         NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(novelIndexId));
         if (novelIndex.getCopyright() == NovelIndex.Copyright.FAN_FICTION || novelIndex.getCopyright() == NovelIndex.Copyright.ORIGINAL) {
@@ -1186,19 +1210,41 @@ public class ApiController extends AbstractAppController {
         accountService.updateAccountExperience(currentAccount);
     }
 
-//    // TODO 统计网站数据
-//    public Map<String, ?> statistics() {
-//
-//    }
+    @GetMapping("/statistics")
+    @ResponseBody
+    public Map<String, ?> statistics() {
+        return Map.ofEntries(
+            Map.entry("accounts", accountService.size()),
+            Map.entry("novels", novelService.countAllNovelIndex()),
+            Map.entry("timestamp", System.currentTimeMillis())
+        );
+    }
+
+    @GetMapping("/clearGarbage")
+    @ResponseBody
+    public Map<String, Long> garbageCollect(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                            HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        return Map.ofEntries(
+            Map.entry("cleared_comments", commentService.gc()),
+            Map.entry("cleared_novel_nodes", novelService.gc()),
+            Map.entry("cleared_read_histories", readHistoryService.gc()),
+            Map.entry("timestamp", System.currentTimeMillis())
+        );
+    }
 
     /**
      * 请求注册验证码
+     *
      * @param session Session 服务端变量
-     * @param req 请求参数，包含 email 字段
+     * @param req     请求参数，包含 email 字段
      */
     @PostMapping(value = "/sendCaptcha", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void sendCaptcha(HttpServletRequest request, HttpSession session, @Valid @RequestBody SendCaptchaRequest req) {
+    public void sendCaptcha(HttpServletRequest request, HttpSession session, @Valid @RequestBody Requests.SendCaptchaRequest req) {
         // TODO 对此接口添加图片验证码
         String activateCode;
         var random = new Random();
@@ -1215,11 +1261,11 @@ public class ApiController extends AbstractAppController {
                         "<p>您的邮箱验证码为：<h3>%s</h3> 10分钟内有效。</p>" +
                         "----------------------------------------------------------------------<br />" +
                         "<p>请在表单中填写该信息</p>",
-                        serverUrl == null ? serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                            .build()
-                            .normalize()
-                            .toString() : serverUrl,
-                        activateCode));
+                    serverUrl == null ? serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .build()
+                        .normalize()
+                        .toString() : serverUrl,
+                    activateCode));
             session.setAttribute("activateCode", activateCode);
             session.setAttribute("activateBefore", System.currentTimeMillis() + Duration.ofMinutes(10).toMillis());
             session.setAttribute("activateEmail", req.email);
@@ -1231,11 +1277,11 @@ public class ApiController extends AbstractAppController {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> error(Exception e) {
+    public ResponseEntity<Responses.ErrorResponse> error(Exception e) {
         log.error("error: {}", e.getLocalizedMessage());
         var response = buildErrorResponse(e);
         return ResponseEntity.status(response.status)
-                .body(response);
+            .body(response);
     }
 
 }

@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-import net.wlgzs.futurenovel.packet.NovelNode;
 import org.apache.ibatis.annotations.AutomapConstructor;
 
 /**

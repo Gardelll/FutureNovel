@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +26,8 @@ import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.NovelIndex;
 import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.model.Section;
-import net.wlgzs.futurenovel.packet.c2s.RegisterRequest;
-import net.wlgzs.futurenovel.packet.c2s.SearchNovelRequest;
-import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
-import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
+import net.wlgzs.futurenovel.packet.Requests;
+import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.BookSelfService;
 import net.wlgzs.futurenovel.service.CommentService;
@@ -64,15 +63,15 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Controller
 @CrossOrigin(origins = "*",
-        methods = {
-                RequestMethod.POST,
-                RequestMethod.GET
-        },
-        allowedHeaders = {
-                "Authorization",
-                "Content-Type",
-                "*"
-        }) // TODO 临时解决分离调试跨域问题
+    methods = {
+        RequestMethod.POST,
+        RequestMethod.GET
+    },
+    allowedHeaders = {
+        "Authorization",
+        "Content-Type",
+        "*"
+    }) // TODO 临时解决分离调试跨域问题
 @Slf4j
 public class TemplateController extends AbstractAppController {
 
@@ -92,17 +91,18 @@ public class TemplateController extends AbstractAppController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-       super.initBinder(binder);
+        super.initBinder(binder);
     }
 
     /**
      * 主页路由
-     * @param uid Cookie：用户 ID
-     * @param tokenStr Cookie：登陆令牌
+     *
+     * @param uid       Cookie：用户 ID
+     * @param tokenStr  Cookie：登陆令牌
      * @param userAgent Header：浏览器标识
-     * @param request Http 请求
-     * @param session Http Session
-     * @param model 模板属性
+     * @param request   Http 请求
+     * @param session   Http Session
+     * @param model     模板属性
      * @return 对应的视图
      */
     @GetMapping({"", "/", "/index"})
@@ -112,20 +112,15 @@ public class TemplateController extends AbstractAppController {
                        HttpServletRequest request,
                        HttpSession session,
                        Model model) {
-        var account = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
-        if (account != null) {
-            log.info("LoggedIn, account={}", account.getEmail());
-            // 已登录
-            model.addAttribute("currentAccount", account);
-        }
+        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
 
-        List<NovelIndex> random = novelService.getAllNovelIndex(0, 20, SearchNovelRequest.SortBy.RANDOM.getOrderBy());
+        List<NovelIndex> random = novelService.getAllNovelIndex(0, 20, Requests.SearchNovelRequest.SortBy.RANDOM.getOrderBy());
         model.addAttribute("suggestNovelIndexList", random);
 
-        List<NovelIndex> hot = novelService.getAllNovelIndex(0, 20, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
+        List<NovelIndex> hot = novelService.getAllNovelIndex(0, 20, Requests.SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
         model.addAttribute("hotNovelIndexList", hot);
 
-        List<NovelIndex> newest = novelService.getAllNovelIndex(0, 20, SearchNovelRequest.SortBy.CREATE_TIME_DESC.getOrderBy());
+        List<NovelIndex> newest = novelService.getAllNovelIndex(0, 20, Requests.SearchNovelRequest.SortBy.CREATE_TIME_DESC.getOrderBy());
         model.addAttribute("newestNovelIndexList", newest);
 
         List<NovelIndex> all = new LinkedList<>(new LinkedHashSet<>() {{
@@ -157,7 +152,7 @@ public class TemplateController extends AbstractAppController {
                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                            HttpServletRequest request,
                            HttpSession session) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         m.addAttribute("errorMessage", "OK");
         if (!redirectTo.isBlank()) {
             session.setAttribute("redirectTo", redirectTo);
@@ -179,15 +174,16 @@ public class TemplateController extends AbstractAppController {
 
     /**
      * 注册表单路由
-     * @param req 请求参数，详见 {@link RegisterRequest}
-     * @param m 模板属性
-     * @param request Http 请求
+     *
+     * @param req      请求参数，详见 {@link Requests.RegisterRequest}
+     * @param m        模板属性
+     * @param request  Http 请求
      * @param response Http 响应
-     * @param session Session 服务端变量
+     * @param session  Session 服务端变量
      * @return 含有错误信息的视图或跳转响应
      */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String register(@Valid RegisterRequest req,
+    public String register(@Valid Requests.RegisterRequest req,
                            BindingResult bindingResult,
                            Model m,
                            HttpServletRequest request,
@@ -198,9 +194,9 @@ public class TemplateController extends AbstractAppController {
             if (bindingResult.hasErrors()) {
                 var errMsgBuilder = new StringBuilder();
                 bindingResult.getFieldErrors().forEach(fieldError -> errMsgBuilder.append(fieldError.getField())
-                        .append(": ")
-                        .append(fieldError.getDefaultMessage())
-                        .append(";\n"));
+                    .append(": ")
+                    .append(fieldError.getDefaultMessage())
+                    .append(";\n"));
                 errMsgBuilder.delete(errMsgBuilder.length() - 2, errMsgBuilder.length());
                 throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errMsgBuilder.toString());
             }
@@ -211,9 +207,9 @@ public class TemplateController extends AbstractAppController {
             if (accountService.isEmailUsed(req.userName, null))
                 throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "用户名(" + req.userName + ")已被使用");
             if (req.email.equals(session.getAttribute("activateEmail")) &&
-                    req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
-                    Optional.ofNullable((Long) session.getAttribute("activateBefore"))
-                            .map(value -> System.currentTimeMillis() < value).orElse(false)) {
+                req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
+                Optional.ofNullable((Long) session.getAttribute("activateBefore"))
+                    .map(value -> System.currentTimeMillis() < value).orElse(false)) {
                 var account = new Account(UUID.randomUUID(),
                     req.userName,
                     BCrypt.hashpw(req.password, BCrypt.gensalt()),
@@ -261,7 +257,7 @@ public class TemplateController extends AbstractAppController {
                            HttpServletRequest request,
                            HttpSession session,
                            Model model) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         var novel = buildNovel(UUID.fromString(uniqueId));
         novelService.hotAddOne(novel.getUniqueId());
 
@@ -291,7 +287,7 @@ public class TemplateController extends AbstractAppController {
                            HttpServletRequest request,
                            HttpSession session,
                            Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
 
         var novel = buildNovel(UUID.fromString(uniqueId));
         model.addAttribute("novel", novel);
@@ -306,12 +302,54 @@ public class TemplateController extends AbstractAppController {
 
         var chapter = novel.getChapters()
             .stream()
-            .filter( c -> c.getUniqueId().equals(section.getFromChapter()))
+            .filter(c -> c.getUniqueId().equals(section.getFromChapter()))
             .findFirst()
-            .orElseGet(() -> new NovelChapter(novelService.getChapter(section.getFromChapter())));
+            .orElseGet(() -> new Responses.NovelChapter(novelService.getChapter(section.getFromChapter())));
         model.addAttribute("chapter", chapter);
+        chapter.stream().filter(sectionInfo -> sectionInfo.getUniqueId().equals(section.getUniqueId())).findFirst().ifPresent(sectionInfo -> {
+            int index = chapter.indexOf(sectionInfo);
+            if (index + 1 < chapter.size()) {
+                model.addAttribute("nextSection", chapter.get(index + 1));
+            } else {
+                int index2 = novel.indexOf(chapter);
+                if (index2 + 1 < novel.size()) {
+                    var nextChapter = novel.get(index2 + 1);
+                    model.addAttribute("nextSection", nextChapter.isEmpty() ? null : nextChapter.getSections().peek());
+                }
+            }
+            if (index > 0) {
+                model.addAttribute("previewSection", chapter.get(index - 1));
+            } else {
+                int index2 = novel.indexOf(chapter);
+                if (index2 > 1) {
+                    var preChapter = novel.get(index2 - 1);
+                    model.addAttribute("previewSection", preChapter.isEmpty() ? null : preChapter.getSections().peekLast());
+                }
+            }
+        });
 
         return "read-book";
+    }
+
+    @GetMapping({"/user"})
+    public String userCenterRedirect(@RequestParam(value = "userName", defaultValue = "") String userName,
+                             @CookieValue(name = "uid", defaultValue = "") String uid,
+                             HttpServletRequest request,
+                             Model model) {
+        if (!userName.isBlank()) {
+            try {
+                var account = accountService.getAccount(userName);
+                return String.format("redirect:/user/%s", account.getUid().toString());
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);
+            }
+        }
+        if (!uid.matches("^[0-9a-f\\-]{36}$")) {
+            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("redirectTo", request.getRequestURI());
+            return "redirect:/login";
+        }
+        return String.format("redirect:/user/%s", uid);
     }
 
     @GetMapping({"/user/{uuid:[0-9a-f\\-]{36}}"})
@@ -322,7 +360,7 @@ public class TemplateController extends AbstractAppController {
                              HttpServletRequest request,
                              HttpSession session,
                              Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (uuid == null) uuid = uid;
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
@@ -342,18 +380,8 @@ public class TemplateController extends AbstractAppController {
         }
     }
 
-    @GetMapping("/search")
-    public String search(@CookieValue(name = "uid", defaultValue = "") String uid,
-                         @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                         @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                         HttpServletRequest request,
-                         HttpSession session) {
-        checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
-        return "search";
-    }
-
     @PostMapping(value = "/search", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String doSearch(@Valid SearchNovelRequest req,
+    public String doSearch(@Valid Requests.SearchNovelRequest req,
                            @RequestParam(name = "page") int page,
                            @RequestParam(name = "per_page", defaultValue = "20") int perPage,
                            @CookieValue(name = "uid", defaultValue = "") String uid,
@@ -362,26 +390,33 @@ public class TemplateController extends AbstractAppController {
                            HttpServletRequest request,
                            HttpSession session,
                            Model model) {
-        if (page <= 0 || perPage <= 0 || perPage > 100) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        if (page <= 0 || perPage <= 0 || perPage > 100)
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         model.addAttribute("searchBy", req.searchBy);
         model.addAttribute("sortBy", req.sortBy);
         int offset = (page - 1) * perPage;
         switch (req.searchBy) {
             case HOT: {
                 long total = novelService.countAllNovelIndex();
-                List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
-                model.addAttribute("totalPage", total / perPage + 1);
+                List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, Requests.SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
+                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
                 model.addAttribute("novelIndexList", result);
                 break;
             }
             case KEYWORDS: {
-                if (req.keywords == null) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字为空");
-                String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));
-                String query = Arrays.stream(req.keywords.split("\\s+")).map(s -> "+" + s).collect(Collectors.joining(" ")) + " " + except;
+                if (req.keywords == null)
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字为空");
+                String except = req.except == null ? "" :
+                                Arrays.stream(req.except.split("\\s+"))
+                                    .map(s -> String.format("~\"%s\"", s.replaceAll("\"", "\\")))
+                                    .collect(Collectors.joining(" "));
+                String query = String.format("%s %s", Arrays.stream(req.keywords.split("\\s+"))
+                    .map(s -> String.format("\"%s\"", s.replaceAll("\"", "\\")))
+                    .collect(Collectors.joining(" ")), except);
                 long total = novelService.searchNovelIndexGetCount(query);
                 List<NovelIndex> result = novelService.searchNovelIndex(query, offset, perPage, req.sortBy.getOrderBy());
-                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
                 model.addAttribute("novelIndexList", result);
                 break;
             }
@@ -394,17 +429,58 @@ public class TemplateController extends AbstractAppController {
                 }
                 if (!currentAccount.isVIP())
                     currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.ONE));
-                if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0) throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
-                if (req.keywords == null || req.keywords.length() < 5) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字太短");
-                String except = req.except == null ? "" : Arrays.stream(req.except.split("\\s+")).map(s -> "-" + s).collect(Collectors.joining(" "));
-                String query = Arrays.stream(req.keywords.split("\\s+")).map(s -> "+" + s).collect(Collectors.joining(" ")) + " " + except;
+                if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0)
+                    throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
+                if (req.keywords == null || req.keywords.length() < 5)
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字太短");
+                String except = req.except == null ? "" :
+                                Arrays.stream(req.except.split("\\s+"))
+                                    .map(s -> String.format("~\"%s\"", s.replaceAll("\"", "\\")))
+                                    .collect(Collectors.joining(" "));
+                var keywords = req.keywords.split("\\s+");
+                String query = String.format("%s %s", Arrays.stream(keywords)
+                    .map(s -> String.format("\"%s\"", s.replaceAll("\"", "\\")))
+                    .collect(Collectors.joining(" ")), except);
                 long total = novelService.searchByContentGetCount(query);
-                // TODO 关键词着色
                 List<Section> result = novelService.searchByContent(query, offset, perPage);
+                // 关键词着色
+                for (Section section : result) {
+                    // 删除 HTML 标记，只保留文本
+                    String text = section.getText().replaceAll("<style[^>]*>[\\s\\S]*?</style>", "").replaceAll("<[^>]+>", " ").replaceAll("[\\s\r\n\t]+", " ");
+                    var queue = new LinkedList<Integer>();
+                    for (String word : keywords) {
+                        var matcher = Pattern.compile(word, Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(text);
+                        while (matcher.find()) {
+                            int a = matcher.start();
+                            // 若此着色点距离上一个不远（25 字以内），那就合并一下
+                            // 虽然这样会把中间的字符也染色，但问题不大
+                            if (!queue.isEmpty() && (a - queue.peekLast() < 25)) {
+                                queue.removeLast();
+                            } else {
+                                queue.addLast(a);
+                            }
+                            queue.addLast(matcher.end());
+                        }
+                    }
+                    var sb = new StringBuilder();
+                    while (!queue.isEmpty()) {
+                        int a = queue.poll();
+                        int b = queue.peek() == null ? text.length() : queue.poll();
+                        // 若第一个着色点不是在开头，则加上省略号
+                        if (sb.length() == 0 && a > 0) sb.append("……");
+                        sb.append(text, Math.max(0, a - 25), a) // 向前延申 25 字
+                            .append("<span style='color: red'>")
+                            .append(text, a, b) // 截取关键词染成红色
+                            .append("</span>")
+                            .append(text, b, Math.min(b + 25, text.length())); // 向后拓展 25 字
+                        if (b + 25 < text.length()) sb.append("……"); // 如果后面还有内容，则加上省略号
+                    }
+                    section.setText(sb.toString());
+                }
                 if (!result.isEmpty()) {
                     accountService.updateAccountExperience(currentAccount);
                 }
-                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
                 model.addAttribute("sectionList", result);
                 List<UUID> chapterIds = result.stream()
                     .map(Section::getFromChapter)
@@ -415,7 +491,7 @@ public class TemplateController extends AbstractAppController {
                     HashSet<UUID> containedChapterIds = new HashSet<>();
                     novelIndex.getChapters().forEach(jsonNode -> containedChapterIds.add(UUID.fromString(jsonNode.asText())));
                     for (UUID u : containedChapterIds) {
-                        if(chapterIds.contains(u)) chapterIdToNovelIndexMap.put(u, novelIndex);
+                        if (chapterIds.contains(u)) chapterIdToNovelIndexMap.put(u, novelIndex);
                     }
                 }
                 model.addAttribute("chapterIdToNovelIndexMap", chapterIdToNovelIndexMap);
@@ -426,7 +502,7 @@ public class TemplateController extends AbstractAppController {
                     throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "时间段为空");
                 long total = novelService.countNovelIndexByPubDate(req.after, req.before);
                 List<NovelIndex> result = novelService.findNovelIndexByPubDate(req.after, req.before, offset, perPage, req.sortBy.getOrderBy());
-                model.addAttribute("totalPage", total / perPage + 1);
+                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
                 model.addAttribute("novelIndexList", result);
                 break;
             }
@@ -442,7 +518,7 @@ public class TemplateController extends AbstractAppController {
                              HttpServletRequest request,
                              HttpSession session,
                              Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -461,7 +537,7 @@ public class TemplateController extends AbstractAppController {
                               HttpServletRequest request,
                               HttpSession session,
                               Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -477,7 +553,7 @@ public class TemplateController extends AbstractAppController {
                             HttpServletRequest request,
                             HttpSession session,
                             Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -494,7 +570,7 @@ public class TemplateController extends AbstractAppController {
                              HttpServletRequest request,
                              HttpSession session,
                              Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -511,7 +587,7 @@ public class TemplateController extends AbstractAppController {
                             HttpServletRequest request,
                             HttpSession session,
                             Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -528,7 +604,7 @@ public class TemplateController extends AbstractAppController {
                                HttpServletRequest request,
                                HttpSession session,
                                Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session, false);
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", "请先登录");
             model.addAttribute("redirectTo", request.getRequestURI());
@@ -541,7 +617,7 @@ public class TemplateController extends AbstractAppController {
     @ExceptionHandler(Exception.class)
     public String error(Model model, HttpServletResponse response, Exception e) {
         log.error("error: {}", e.getLocalizedMessage());
-        ErrorResponse responseErr = buildErrorResponse(e);
+        Responses.ErrorResponse responseErr = buildErrorResponse(e);
         model.addAttribute("status", responseErr.status);
         model.addAttribute("error", responseErr.error);
         model.addAttribute("cause", responseErr.cause);
@@ -553,7 +629,7 @@ public class TemplateController extends AbstractAppController {
     @Override
     @RequestMapping(path = "/error")
     public void handle(HttpServletRequest request) {
-       super.handle(request);
+        super.handle(request);
     }
 
 }

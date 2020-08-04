@@ -81,7 +81,9 @@ public interface ReadHistoryDao {
         "    ) ",
         "    <if test='after != null'> AND `read_history`.`createTime` &gt; #{after} </if> ",
         "    <if test='before != null'> AND `read_history`.`createTime` &lt; #{before} </if>",
-        "</where> </script>"
+        "</where> ",
+        "ORDER BY `read_history`.`createTime` DESC",
+        "</script>"
     })
     List<ReadHistory> getReadHistoryByAccountId(@Param("accountId") UUID accountId, @Param("after") Date after, @Param("before") Date before) throws DataAccessException;
 

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.packet.s2c.ErrorResponse;
+import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 
 /**
@@ -114,7 +114,7 @@ public class DefaultFilter extends HttpFilter {
                 double rate = (double) 60 / ((double) (tmpArr[COLLECT_COUNT - 1] - tmpArr[0]) / (COLLECT_COUNT - 1) / 1000);
                 if (rate > limit || (tmpArr[COLLECT_COUNT - 1] - tmpArr[COLLECT_COUNT - 2]) / 1000 < requestInfo.blockSeconds) {
                     log.warn("{} -- request too quickly! (path: {})", remoteAddr, uri);
-                    ErrorResponse errResponse = new ErrorResponse();
+                    Responses.ErrorResponse errResponse = new Responses.ErrorResponse();
                     errResponse.error = FutureNovelException.Error.HACK_DETECTED.name();
                     errResponse.errorMessage = FutureNovelException.Error.HACK_DETECTED.getErrorMessage();
                     errResponse.status = FutureNovelException.Error.HACK_DETECTED.getStatusCode();
@@ -137,7 +137,7 @@ public class DefaultFilter extends HttpFilter {
 
     @EqualsAndHashCode
     private static class RequestInfo {
-        public long[] lastRequestsTimeMillis = new long[COLLECT_COUNT];
+        public final long[] lastRequestsTimeMillis = new long[COLLECT_COUNT];
         public int blockSeconds = -1;
     }
 

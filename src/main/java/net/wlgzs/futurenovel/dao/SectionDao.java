@@ -2,7 +2,7 @@ package net.wlgzs.futurenovel.dao;
 
 import java.util.List;
 import java.util.UUID;
-import net.wlgzs.futurenovel.packet.s2c.NovelChapter;
+import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.model.Section;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -29,7 +29,7 @@ public interface SectionDao {
                       @Param("text") String text) throws DataAccessException;
 
     @Select("SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` = #{fromChapter}")
-    List<NovelChapter.SectionInfo> getSectionInfoByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
+    List<Responses.NovelChapter.SectionInfo> getSectionInfoByFromChapter(@Param("fromChapter") UUID fromChapter) throws DataAccessException;
 
     @Select({"<script> ",
         "SELECT `uniqueId`, `fromChapter`, `title` FROM `section` WHERE `section`.`fromChapter` IN (",
@@ -37,7 +37,7 @@ public interface SectionDao {
         "#{fromChapter}",
         "</foreach>) </script>"
     })
-    List<NovelChapter.SectionInfo> getSectionInfoByFromChapterList(List<UUID> fromChapterList) throws DataAccessException;
+    List<Responses.NovelChapter.SectionInfo> getSectionInfoByFromChapterList(List<UUID> fromChapterList) throws DataAccessException;
 
     @Delete("DELETE FROM `section` WHERE `section`.`uniqueId` = #{uniqueId}")
     int deleteSection(Section section) throws DataAccessException;

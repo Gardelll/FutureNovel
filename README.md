@@ -11,17 +11,15 @@
 >        - packet `Java DTO 类`  
 >        - controller `Spring 控制器`  
 >        - dao `数据库映射`  
->        - exception `应用异常`
->        - filter `过滤器`
->        - model `数据模型`
->        - service `Spring 数据服务`
->        - typehandler `Mybatis 数据类型映射器`
->        - utils `工具集`
->    - resources `后端相关资源文件`  
->    - webapp
->      - resources `前端相关资源文件`
->      - WEB-INF `服务器配置文件`
->        - thymeleaf `Thymeleaf 模板`
+>        - exception `应用异常`  
+>        - filter `过滤器`  
+>        - model `数据模型`  
+>        - service `Spring 数据服务`  
+>        - typehandler `Mybatis 数据类型映射器`  
+>    - webapp  
+>      - resources `前端相关资源文件`  
+>      - WEB-INF `服务器配置文件`  
+>        - thymeleaf `Thymeleaf 模板`  
 >  - test  
 >    - java `测试相关的 Java 代码`  
 >    - resources `测试相关的资源与配置`  
@@ -76,6 +74,10 @@ future.token.expire=7
 # token 浏览器 Cookie 过期时间，单位 天
 future.token.cookieExpire=30
 ```
+
++ 导入数据结构
+
+运行 SQL 脚本 `src/main/resources/database.sql`
 
 + 打包
 ```bash

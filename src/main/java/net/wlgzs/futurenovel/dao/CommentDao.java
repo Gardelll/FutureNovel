@@ -3,7 +3,7 @@ package net.wlgzs.futurenovel.dao;
 import java.util.List;
 import java.util.UUID;
 import net.wlgzs.futurenovel.model.Comment;
-import net.wlgzs.futurenovel.packet.s2c.CommentInfo;
+import net.wlgzs.futurenovel.packet.Responses;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -106,7 +106,7 @@ public interface CommentDao {
         ") AS `tmp` ",
         "WHERE `tmp`.`uniqueId` IS NOT NULL"
     })
-    List<CommentInfo> getCommentInfoByAccountId(@Param("accountId") UUID accountId, @Param("offset") int offset, @Param("count") int count) throws DataAccessException;
+    List<Responses.CommentInfo> getCommentInfoByAccountId(@Param("accountId") UUID accountId, @Param("offset") int offset, @Param("count") int count) throws DataAccessException;
 
     @Select({
         "SELECT * ",
@@ -140,7 +140,7 @@ public interface CommentDao {
         ") AS `tmp` ",
         "WHERE `tmp`.`uniqueId` IS NOT NULL"
     })
-    List<CommentInfo> getCommentInfoBySectionId(@Param("sectionId") UUID sectionId, @Param("offset") int offset, @Param("count") int count) throws DataAccessException;
+    List<Responses.CommentInfo> getCommentInfoBySectionId(@Param("sectionId") UUID sectionId, @Param("offset") int offset, @Param("count") int count) throws DataAccessException;
 
     @Select({
         "SELECT * ",
@@ -174,7 +174,7 @@ public interface CommentDao {
         ") AS `tmp` ",
         "WHERE `tmp`.`uniqueId` IS NOT NULL"
     })
-    List<CommentInfo> getCommentInfoForAdmin(@Param("offset") int offset, @Param("count") int count) throws DataAccessException;
+    List<Responses.CommentInfo> getCommentInfoForAdmin(@Param("offset") int offset, @Param("count") int count) throws DataAccessException;
 
     @Select({
         "SELECT `comment`.`uniqueId`, `comment`.`accountId`, `comment`.`sectionId`, `comment`.`rating`, `comment`.`text`, `comment`.`createTime` ",

@@ -3,7 +3,7 @@ package net.wlgzs.futurenovel.service;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.packet.c2s.EditAccountRequest;
+import net.wlgzs.futurenovel.packet.Requests;
 import net.wlgzs.futurenovel.dao.AccountDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
@@ -36,7 +36,7 @@ public class AccountService {
 
     public Account getAccount(@NonNull String username) {
         try {
-            Account account = accountDao.getAccountByUsername(username);
+            Account account = accountDao.getAccountForLogin(username);
             if (account == null) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "找不到该用户");
             return account;
         } catch (DataAccessException e) {
@@ -53,8 +53,12 @@ public class AccountService {
     }
 
     public int getAllAccountPages(int perPage) {
-        long total = accountDao.size();
-        return (int) (total / perPage + 1);
+        long total = size();
+        return (int) (total / perPage + (total >= perPage ? 0 : 1));
+    }
+
+    public long size() {
+        return accountDao.size();
     }
 
     public Account login(@NonNull String username, @NonNull String password) {
@@ -93,7 +97,7 @@ public class AccountService {
     }
 
     @Transactional
-    public boolean editAccount(@NonNull Account account, @NonNull EditAccountRequest toEdit) {
+    public boolean editAccount(@NonNull Account account, @NonNull Requests.EditAccountRequest toEdit) {
         try {
             if (toEdit.uid == null) toEdit.uid = UUID.fromString(toEdit.uuid);
 

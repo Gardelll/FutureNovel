@@ -18,7 +18,7 @@
         <div class="logo-wrap box-center">
             <div class="box-center cf" style="margin: 0 auto;" id="box-center">
                 <div class="book-shelf fr">
-                    <a target="_blank" id="numero2" th:href="@{/user}">
+                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">
                         <i class="fa fa-book" style="font-size:16px">我的书架</i>
                     </a>
                 </div>
@@ -100,24 +100,50 @@
             <div class="focus_news">
                 <div class="focus_user">
                     <div class="user_inner">
-                        <div>
+                        <div th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                             <div class="user_avatar">
-                                <a class="user_avatar_lk" th:href="@{/user}">
+                                <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
+                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
+                                </a>
+                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">
+                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
+                                    <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}">
+                                </a>
+                                <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
+                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
+                                </a>
+                            </div>
+                            <div  class="user_show">
+                                <p>
+                                    Hi~
+                                </p>
+                                <p th:if="${session.currentAccount} eq null">
+                                    <a th:href="@{/login}" class="user_login">登录</a> |
+                                    <a th:href="@{/register}" class="user_reg">注册</a>
+                                </p>
+                                <p th:if="${session.currentAccount} ne null">
+                                    <a th:text="${user.userName}" class="user_login"></a>
+                                </p>
+                                <p style="margin-top: 5px" th:if="${session.currentAccount} ne null">
+                                    <a onclick="logout()" class="user_login out">
+                                        <i class="fa fa-power-off" style="font-size:16px"></i>退出
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        <div th:if="${session.currentAccount} eq null">
+                            <div class="user_avatar">
+                                <a class="user_avatar_lk">
                                     <img th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
                             </div>
-                            <div class="user_show">
+                            <div  class="user_show">
                                 <p>
-                                    Hi~<a th:text="${userName}" th:href="@{/user}">欢迎阅读</a>
+                                    Hi~
                                 </p>
                                 <p>
                                     <a th:href="@{/login}" class="user_login">登录</a> |
                                     <a th:href="@{/register}" class="user_reg">注册</a>
-                                </p>
-                                <p style="display: none">
-                                    <a th:href="@{/login}" class="user_login out">
-                                        <i class="fa fa-power-off" style="font-size:16px"></i> 退出
-                                    </a>
                                 </p>
                             </div>
                         </div>
@@ -403,6 +429,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script>
         const classify_icons = [
             "fa fa-fire",
@@ -426,8 +453,22 @@
             iconElement.removeAttribute("class")
             iconElement.setAttribute("class", classify_icons[i])
         }
+        function logout() {
+            $.ajax({
+                url:"http://localhost:8080/future-novel/api/logout",
+                type:"GET",
+                datatype:"json",
+                contentType: "application/json;charset=UTF-8",
+                data: {},
+                success:function (data) {
+                    window.location.href=location;
+                }, error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
     </script>
-    <!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script> -->
+
 </body>
 
 </html>

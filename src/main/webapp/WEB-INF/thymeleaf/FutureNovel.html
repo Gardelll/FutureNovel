@@ -18,12 +18,12 @@
         <div class="logo-wrap box-center">
             <div class="box-center cf" style="margin: 0 auto;" id="box-center">
                 <div class="book-shelf fr">
-                    <a href="../../WEB-INF/thymeleaf/member.html" target="_blank" id="numero2">
+                    <a target="_blank" id="numero2" th:href="@{/user}">
                         <i class="fa fa-book" style="font-size:16px">我的书架</i>
                     </a>
                 </div>
                 <div class="logo fl">
-                    <a href="../../resources/FutureNovel.html">未来小说网</a>
+                    <a th:href="@{/}">未来小说网</a>
                 </div>
                 <div class="search-wrap fl">
                     <form id="formUrl" action="######" method="get" target="_blank">
@@ -44,12 +44,10 @@
                 <ul type="none" class="mainDiv">
                     <li id="first">
                         <i class="fa fa-navicon" style="font-size:24px;color: #ffffff;margin: 0 10px;"></i>
-                        <a href="##">作品分类</a>
+                        <a>作品分类</a>
                         <i class="fa fa-angle-down" style="font-size:24px;color: #ffffff;margin-left: 75px;"></i>
                     </li>
-                    <!-- <li class="navs" style="margin-left: 50px;width: 120px;"><a href="##">全部作品</a></li> -->
-                    <li class="navs" style="width: 100px;"><a href="../../WEB-INF/thymeleaf/rank.html" target="_blank">排行</a></li>
-                    <li class="navs" style="width: 130px;"><a href="../../WEB-INF/thymeleaf/WriterArea.html" target="_blank">作家专区</a></li>
+                    <li class="navs" style="width: 100px;"><a th:href="@{/search}" target="_blank">排行</a></li>
                     <li class="navs" style="width: 100px;"><a href="#pop">推荐</a></li>
                     <li class="navs" style="width: 100px;"><a href="#hotnovel">热门</a></li>
                     <li class="navs" style="width: 100px;"><a href="#newest">最新更新</a></li>
@@ -61,7 +59,7 @@
             <!-- 分类菜单 -->
             <div class="classify-list fl so-awesome">
                 <dl class="cf">
-                    <dd th:each=" tag: ${tags}" th:class="(${tagStat.index /2%2 == 0}) ? '' : 'even'">
+                    <dd th:each="tag: ${tags}" th:class="(${tagStat.index/2%2 == 0})? '':'even'">
                         <a href="###" target="_blank">
                             <cite>
                                 <i class="fa fa-fire" style="float: left;margin-right: 12px;"></i>
@@ -104,20 +102,20 @@
                     <div class="user_inner">
                         <div>
                             <div class="user_avatar">
-                                <a href="../../WEB-INF/thymeleaf/member.html" class="user_avatar_lk">
-                                    <img src="../../resources/img/logo.jpg" th:src="@{/resources/img/logo.jpg}" name="userimg" />
+                                <a class="user_avatar_lk" th:href="@{/user}">
+                                    <img th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
                             </div>
                             <div class="user_show">
                                 <p>
-                                    Hi~<a href="../../WEB-INF/thymeleaf/member.html" th:text="${userName}">欢迎阅读</a>
+                                    Hi~<a th:text="${userName}" th:href="@{/user}">欢迎阅读</a>
                                 </p>
                                 <p>
-                                    <a href="../../WEB-INF/thymeleaf/login.html" th:href="@{/login}" class="user_login">登录</a> |
-                                    <a href="../../WEB-INF/thymeleaf/register.html" th:href="@{/register}" class="user_reg">注册</a>
+                                    <a th:href="@{/login}" class="user_login">登录</a> |
+                                    <a th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
                                 <p style="display: none">
-                                    <a href="../../WEB-INF/thymeleaf/login.html" th:href="@{/login}" class="user_login out">
+                                    <a th:href="@{/login}" class="user_login out">
                                         <i class="fa fa-power-off" style="font-size:16px"></i> 退出
                                     </a>
                                 </p>
@@ -130,58 +128,25 @@
                         <h3>未来不止，未来可期</h3>
                     </div>
                     <ul class="news_list">
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">公告</span>
-                                <p>2020网文全明星</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
+                        <li class="news_item" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 1">
                             <a class="news_link">
                                 <span class="new_tag">最新</span>
-                                <p>我们的力量获奖公告</p>
+                                <p th:text="${newNovel.title}" style="display: inline-block;"></p>--
+                                <p th:text="${newNovel.authors}" style="display: inline-block;"></p>
                             </a>
                         </li>
-                        <li class="news_item">
+                        <li class="news_item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 2">
                             <a class="news_link">
-                                <span class="new_tag">最新</span>
-                                <p>同舟共济战疫有我征文</p>
+                                <span class="new_tag">热门</span>
+                                <p th:text="${hotNovel.title}" style="display: inline-block;"></p>--
+                                <p th:text="${hotNovel.authors}" style="display: inline-block;"></p>
                             </a>
                         </li>
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <p>《隐秘的角落》原著小说</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
+                        <li class="news_item" th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 6">
                             <a class="news_link">
                                 <span class="new_tag">推荐</span>
-                                <p>峡谷之巅--神秘的大西瓜 著</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <p>腾飞我的航空时代--安溪柚 著</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <p>冠冕唐皇--衣冠正伦 著</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <p>我是系统之女帝养成计划--左右言它 著</p>
-                            </a>
-                        </li>
-                        <li class="news_item">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <p>白骨大圣--咬火 著</p>
+                                <p th:text="${novelrec.title}" style="display: inline-block;"></p>--
+                                <p th:text="${novelrec.authors}" style="display: inline-block;"></p>
                             </a>
                         </li>
                     </ul>
@@ -197,7 +162,7 @@
                         <div class="line l1"></div>
                         <div class="line l2"></div>
                         <ul>
-                            <li th:each=" novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 9">
+                            <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 9">
                                 <div class="book-img">
                                     <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'">
                                         <img th:src="${novelrec.coverImgUrl}">
@@ -221,7 +186,7 @@
                     <h3>本周强推</h3>
                     <div class="book-list">
                         <ul>
-                            <li th:each=" novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
+                            <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
                                 <a class="book-classify" href="##" target="_blank">
                                     <i>「</i><i th:text="${novelrec.tags}"></i><i>」</i>
                                 </a>
@@ -240,7 +205,7 @@
                     <div class="left-info fl">
                         <div class="slide-box">
                             <ul id="left-slide-2" class="roundabout-holder" style="display: block;padding: 0;position: relative;">
-                                <li class="book1 roundabout-moveable-item" th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
+                                <li class="book1 roundabout-moveable-item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
                                     <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
                                         <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
                                     </a>
@@ -267,7 +232,7 @@
                         <div class="line line1"></div>
                         <div class="line line2"></div>
                         <ul>
-                            <li th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 3}and${hotNovelStat.index lt 10}">
+                            <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 3}and${hotNovelStat.index lt 10}">
                                 <div class="book-img">
                                     <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
                                         <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">

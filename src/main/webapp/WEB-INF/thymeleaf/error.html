@@ -1,44 +1,10 @@
-<!-- <!DOCTYPE html>
-<html lang="zh" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>错误</title>
-</head>
-
-<body>
-<h1>错误报告</h1>
-
-<p th:if="${status}">
-    <b>状态码：</b> <span th:text="${status}">status-code</span> <span
-        th:if="${reason}" th:text="'('+${reason}+')'">error ...</span>
-</p>
-
-<div
-        th:if="${cause} or ${e} or (${errorMessage} and ${errorMessage.length() != 0})">
-    <b>原因：</b> <span th:if="${error}" th:text="${error}">exception ...</span>
-    <p></p>
-    <span th:if="${errorMessage} and ${errorMessage.length() != 0}"
-          th:text="${errorMessage}">message ...</span>
-    <span th:if="${cause}" th:text="${cause}">exception ...</span>
-    <blockquote>
-        <i>此页面只用来测试</i>
-    </blockquote>
-</div>
-
-<p
-        th:unless="${cause} or ${e} or (${errorMessage} and ${errorMessage.length() != 0})">
-    未知原因 (没有异常报告)</p>
-
-</body>
-</html> -->
-
 <!DOCTYPE html>
+
 <html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>Error 404</title>
+    <title>Error</title>
     <style>
         html,
         body {
@@ -215,8 +181,7 @@
             <span th:if="${errorMessage} and ${errorMessage.length() != 0}" th:text="${errorMessage}"></span> -->
 
         </div>
-        <button class="error-button error-button-active"><a href="../../WEB-INF/thymeleaf/FutureNovel.html">返回首页</a></button>
-        <button class="error-button">联系我们</button>
+        <button class="error-button error-button-active"><a th:href="${#request.contextPath}">返回首页</a></button>
         <button class="error-button" id="more">查看详情</button>
     </div>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>

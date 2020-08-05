@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>未来小说网--登录</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <title>Document</title>
     <!-- 作为公共部分分离 -->
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-    <link rel="stylesheet" href="../../resources/css/header.css" th:href="@{/resources/css/header.css}">            
+    <link rel="stylesheet" href="../../resources/css/header.css" th:href="@{/resources/css/header.css}">
     <link rel="stylesheet" href="../../resources/css/login.css" th:href="@{/resources/css/login.css}">
     <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <!-- 作为公共部分分离/ -->
 </head>
+
 <body>
     <div class="header">
-    <div class="w">
-        <div class="top">
-            Future Book
+        <div class="w">
+            <div class="top">
+                Future Book
+            </div>
         </div>
-    </div>
     </div>
     <div class="content">
         <div class="w">
@@ -28,7 +30,7 @@
             <div class="login-wrap">
                 <div class="title-container">
                     <h2 class="title">Login</h2>
-                    <input type="text" name="us" placeholder="username" class="input-item username" id="us">     
+                    <input type="text" name="us" placeholder="username" class="input-item username" id="us">
                     <input type="password" name="ps" placeholder="password" class="input-item psw" id="ps">
                     <button class="btn" id="login">登录</button>
                     <button class="btn" id="logon">注册</button>
@@ -48,43 +50,44 @@
 </body>
 <script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 <script th:inline="javascript" async>
-    $(document).ready(function(){
-        $('#login').on('click',function(){
-        let us=$('#us').val(),
-        ps=$('#ps').val();
-        if(us=='' || ps==''){
-            popup_over('icon-sad','#d81e06',"输入内容不能为空");
-        }else if(us.length<4 || ps.length<4){
-            popup_over('icon-sad','#d81e06',"输入内容太短了吧");
-        }else {
-            $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/login']]*/ "http://localhost:8080/future-novel/api/login" ,
-                type:'post',
-                datatype:"json",
-                data:JSON.stringify({
-                    userName: us,
-                    password: ps,
-                }),
-                contentType:'application/json; charset=utf-8',
-                success: function(data){
-                    $(location).attr('href',data.redirectTo);
-                    console.log('登录成功');
-                },
-                error: function(jqXHR) {
-                    let mes = JSON.parse(jqXHR.responseText);
-                    if($.trim(mes.error)=='USER_UNVERIFIED'){  
-                        popup_over('icon-sad','#d81e06',"账号需要激活");
-                        popup_activate('activate_yes');
-                    }else{
-                        popup_over('icon-sad','#d81e06',"登录失败");
-                        
-                    }
-                }
-            })
-        }
+    $(document).ready(function() {
+        $('#login').on('click', function() {
+            let us = $('#us').val(),
+                ps = $('#ps').val();
+            if (us == '' || ps == '') {
+                popup_over('icon-sad', '#d81e06', "输入内容不能为空");
+            } else if (us.length < 4 || ps.length < 4) {
+                popup_over('icon-sad', '#d81e06', "输入内容太短了吧");
+            } else {
+                $.ajax({
+                    url: /*[[${#request.getContextPath()} + '/api/login']]*/ "http://localhost:8080/future-novel/api/login",
+                    type: 'post',
+                    datatype: "json",
+                    data: JSON.stringify({
+                        userName: us,
+                        password: ps,
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(data) {
+                        $(location).attr('href', data.redirectTo);
+                        console.log('登录成功');
+                    },
+                    error: function(jqXHR) {
+                        let mes = JSON.parse(jqXHR.responseText);
+                        if ($.trim(mes.error) == 'USER_UNVERIFIED') {
+                            popup_over('icon-sad', '#d81e06', "账号需要激活");
+                            popup_activate('activate_yes');
+                        } else {
+                            popup_over('icon-sad', '#d81e06', "登录失败");
 
-});
+                        }
+                    }
+                })
+            }
+
+        });
 
     })
 </script>
+
 </html>

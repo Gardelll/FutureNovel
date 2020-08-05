@@ -157,6 +157,11 @@ public class TemplateController extends AbstractAppController {
         if (!redirectTo.isBlank()) {
             session.setAttribute("redirectTo", redirectTo);
         }
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        m.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        m.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "register";
     }
 
@@ -169,6 +174,11 @@ public class TemplateController extends AbstractAppController {
             session.setAttribute("redirectTo", redirectTo);
         }
         model.addAttribute("errorMessage", errorMessage);
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "login";
     }
 
@@ -246,6 +256,11 @@ public class TemplateController extends AbstractAppController {
             response.setStatus(e.getError().getStatusCode());
             log.warn("注册失败，原因：{}", e.getLocalizedMessage());
         }
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        m.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        m.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "register";
     }
 
@@ -327,6 +342,11 @@ public class TemplateController extends AbstractAppController {
                 }
             }
         });
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
 
         return "read-book";
     }
@@ -507,6 +527,11 @@ public class TemplateController extends AbstractAppController {
                 break;
             }
         }
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "search";
     }
 
@@ -527,6 +552,11 @@ public class TemplateController extends AbstractAppController {
         var novel = buildNovel(UUID.fromString(uniqueId));
 
         model.addAttribute("novel", novel);
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "writer";
     }
 
@@ -543,6 +573,11 @@ public class TemplateController extends AbstractAppController {
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         return "WorkInformation";
     }
 
@@ -622,6 +657,11 @@ public class TemplateController extends AbstractAppController {
         model.addAttribute("error", responseErr.error);
         model.addAttribute("cause", responseErr.cause);
         model.addAttribute("errorMessage", responseErr.errorMessage);
+        var tags = novelService.getTags();
+        var series = novelService.getSeries();
+
+        model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
+        model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
         response.setStatus(responseErr.status);
         return "error";
     }

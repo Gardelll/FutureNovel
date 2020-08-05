@@ -140,9 +140,7 @@
                     <div class="author-info">
                         <div class="info-wrap">
                             <div class="author-photo" id="authorId">
-                                <a id="memberImg" target="_blank">
-                                    <img>
-                                </a>
+                                <a id="memberImg"></a>
                             </div>
                             <p th:each="author : *{authors}">
                                 <a href="###" target="_blank" th:text="${author}"></a>
@@ -218,29 +216,45 @@
         </div>
     </div>
 </body>
-
+<script th:inline="javascript" async></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script>
-    $(document).ready(function() {
-        var memberImg = $("#memberImg").val();
-        var memberLevel = $("#memberLevel").val();
+<script th:inline="javascript" async>
+    function GetAllInfo() {
         $.ajax({
-            url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()}+'/info']]*/ "/nonexist",
-            type: 'GET',
-            dataType: 'JSON',
-            data: {
-                profileImgUrl: memberImg,
-                level: memberLevel
-            },
+            url: /*[[${#request.getContextPath()} + '/api/novel/' + ${novel.uniqueId.toString()}]]*/ "/nonexist",
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: {},
             success: function(data) {
-                if (data.err == 0) {
-                    console.log(data);
-                } else {
-                    alert(data.msg)
-                }
-            }
+                console.log("书本信息")
+                console.log(data);
+                localStorage.setItem("UploderId", data.uploader);
+            },
+            error: function(data) {}
         });
-    });
+    }
+    GetAllInfo();
+    //得到书籍的所有信息
+    function getUploderInfo() {
+        $.ajax({
+            url: '"http://localhost:8080/future-novel/api/account/" + localStorage.getItem("UploderId") + "/info"',
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: {},
+            success: function(data) {
+                console.log(localStorage.getItem("uploader"));
+                console.log(data);
+                // $("#memberImg").append('<img src="' + data.profileImgUrl + '">');
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
+    getUploderInfo();
 </script>
+
 
 </html>

@@ -3,391 +3,391 @@
 <html>
 
 <head>
-	<meta charset="utf-8" />
-	<title>未来小说网--排行榜</title>
-	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-	<link rel="stylesheet" href="../../resources/css/all.css" th:href="@{/resources/css/all.css}">
-	<link rel="stylesheet" href="../../resources/css/all2.css" th:href="@{/resources/css/all2.css}">
-	<script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-	<link rel="stylesheet" href="../../resources/css/rank.css" th:href="@{/resources/css/rank.css}">
-	<link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
-	<!-- <script src="../../resources/js/rank.js" th:src="@{/resources/js/rank.js}"></script> -->
+    <meta charset="utf-8" />
+    <title>未来小说网--排行榜</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../resources/css/all.css" th:href="@{/resources/css/all.css}">
+    <link rel="stylesheet" href="../../resources/css/all2.css" th:href="@{/resources/css/all2.css}">
+    <script typet="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="../../resources/css/rank.css" th:href="@{/resources/css/rank.css}">
+    <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
+    <!-- <script src="../../resources/js/rank.js" th:src="@{/resources/js/rank.js}"></script> -->
 
 </head>
 
 <body>
-<!-- 导航条 -->
-<div class="fixed-nav">
-	<div class="cf" style="width: 1200px;margin: 0 auto;">
-		<h1 class="top-logo">未来小说网</h1>
-		<div class="nav-list site-nav fl">
-			<ul>
-				<li>
-					<a href="###">玄幻</a>
-				</li>
-				<li>
-					<a href="###">都市</a>
-				</li>
-				<li>
-					<a href="###">仙侠</a>
-				</li>
-				<li>
-					<a href="###">科幻</a>
-				</li>
-				<li>
-					<a href="###">排行</a>
-				</li>
-				<li class="more">
-					<a href="###">更多<span></span></a>
-					<div class="dropdown">
-						<a href="###" target="_blank">全部作品</a>
-						<a href="###" target="_blank">轻小说</a>
-						<a href="###" target="_blank">奇幻</a>
-						<a href="###" target="_blank">武侠</a>
-						<a href="###" target="_blank">悬疑</a>
-						<a href="###" target="_blank">军事</a>
-						<a href="###" target="_blank">现实</a>
-						<a href="###" target="_blank">体育</a>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<div class="nav-list min-user fr">
-			<ul>
-				<li id="min-search">
-					<form id="formUrl" method="get" target="_blank" action="">
-						<label id="fixed-search" for="topsearchSubmit">
+    <!-- 导航条 -->
+    <div class="fixed-nav">
+        <div class="cf" style="width: 1200px;margin: 0 auto;">
+            <h1 class="top-logo">未来小说网</h1>
+            <div class="nav-list site-nav fl">
+                <ul>
+                    <li>
+                        <a href="###">玄幻</a>
+                    </li>
+                    <li>
+                        <a href="###">都市</a>
+                    </li>
+                    <li>
+                        <a href="###">仙侠</a>
+                    </li>
+                    <li>
+                        <a href="###">科幻</a>
+                    </li>
+                    <li>
+                        <a href="###">排行</a>
+                    </li>
+                    <li class="more">
+                        <a href="###">更多<span></span></a>
+                        <div class="dropdown">
+                            <a href="###" target="_blank">全部作品</a>
+                            <a href="###" target="_blank">轻小说</a>
+                            <a href="###" target="_blank">奇幻</a>
+                            <a href="###" target="_blank">武侠</a>
+                            <a href="###" target="_blank">悬疑</a>
+                            <a href="###" target="_blank">军事</a>
+                            <a href="###" target="_blank">现实</a>
+                            <a href="###" target="_blank">体育</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-list min-user fr">
+                <ul>
+                    <li id="min-search">
+                        <form id="formUrl" method="get" target="_blank" action="">
+                            <label id="fixed-search" for="topsearchSubmit">
 							<i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
 						</label>
-						<input id="fixed-input" class="fixed-input hide" type="text" name="kw">
-						<input class="submit-input" type="submit" id="topsearchSubmit">
-					</form>
-				<li class="line"></li>
-				</li>
-				<li class="sign-out">
-					<a id="fixed-login" href="###">登录</a>
-					<a class="reg" href="###" target="_blank">注册</a>
-				</li>
-				<li class="line"></li>
-				<li class="book-shelf" id="top-book-shelf">
-					<a href="###" target="_blank">
-						<i class="fa fa-book" style="font-size:16px">我的书架</i>
-					</a>
-				</li>
-				<li class="avatar">
-					<a href="../../WEB-INF/thymeleaf/member.html" target="_blank">
-						<img src="../../resources/img/avatar.png">
-					</a>
-				</li>
-			</ul>
-		</div>
-	</div>
-</div>
-<div class="main-content-wrap box-center" id="main-content-wrap" style="padding-top: 150px;">
-	<div class="rank-header">
-		<h3 style="font-size: 26px;line-height: 26px;margin-bottom: 15px;font-family:宋体;font-weight: 600;">
-			未来访问榜
-		</h3>
-		<div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: rgb(247,246,242);padding: 10px;">
-			<div class="tool-box">
-				<div class="type-list">
-					<p>
-						<a href="##" style="margin: 0;padding: 0;">全部分类</a><em>·</em>
-						<a href="##">玄幻</a><em>·</em>
-						<a href="##">武侠</a><em>·</em>
-						<a href="##">奇幻</a><em>·</em>
-						<a href="##">仙侠</a><em>·</em>
-						<a href="##">都市</a><em>·</em>
-						<a href="##">现实</a><em>·</em>
-						<a href="##">军事</a><em>·</em>
-						<a href="##">历史</a><em>·</em>
-						<a href="##">体育</a><em>·</em>
-						<a href="##">科幻</a><em>·</em>
-						<a href="##">悬疑</a><em>·</em>
-						<a href="##">轻小说</a><em>·</em>
-						<a href="##">新书</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="rank-body" style="margin:10px 0;">
-		<ul style="overflow: hidden;">
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">1</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
+                            <input id="fixed-input" class="fixed-input hide" type="text" name="kw">
+                            <input class="submit-input" type="submit" id="topsearchSubmit">
+                        </form>
+                        <li class="line"></li>
+                    </li>
+                    <li class="sign-out">
+                        <a id="fixed-login" href="###">登录</a>
+                        <a class="reg" href="###" target="_blank">注册</a>
+                    </li>
+                    <li class="line"></li>
+                    <li class="book-shelf" id="top-book-shelf">
+                        <a href="###" target="_blank">
+                            <i class="fa fa-book" style="font-size:16px">我的书架</i>
+                        </a>
+                    </li>
+                    <li class="avatar">
+                        <a href="../../WEB-INF/thymeleaf/member.html" target="_blank">
+                            <img src="../../resources/img/avatar.png">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="main-content-wrap box-center" id="main-content-wrap" style="padding-top: 150px;">
+        <div class="rank-header">
+            <h3 style="font-size: 26px;line-height: 26px;margin-bottom: 15px;font-family:宋体;font-weight: 600;">
+                未来访问榜
+            </h3>
+            <div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: rgb(247,246,242);padding: 10px;">
+                <div class="tool-box">
+                    <div class="type-list">
+                        <p>
+                            <a href="##" style="margin: 0;padding: 0;">全部分类</a><em>·</em>
+                            <a href="##">玄幻</a><em>·</em>
+                            <a href="##">武侠</a><em>·</em>
+                            <a href="##">奇幻</a><em>·</em>
+                            <a href="##">仙侠</a><em>·</em>
+                            <a href="##">都市</a><em>·</em>
+                            <a href="##">现实</a><em>·</em>
+                            <a href="##">军事</a><em>·</em>
+                            <a href="##">历史</a><em>·</em>
+                            <a href="##">体育</a><em>·</em>
+                            <a href="##">科幻</a><em>·</em>
+                            <a href="##">悬疑</a><em>·</em>
+                            <a href="##">轻小说</a><em>·</em>
+                            <a href="##">新书</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rank-body" style="margin:10px 0;">
+            <ul style="overflow: hidden;">
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">1</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
 
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" /></div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">2</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">3</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">4</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">5</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">6</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">7</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">8</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;">
-					<div class="book-rank-img">
-						<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">9</span>
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="book-rank-list" style="overflow: hidden;border-bottom: none;">
-					<div class="book-rank-img">
-						<div class="book-rank-img">
-							<img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
-						</div>
-					</div>
-					<div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-						<h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
-						<p style="font-size: 10px;color: gray;margin-top: 10px;">
-							<span class="book-rank-writer">大鱼吃虾米</span>
-							<city>|</city>
-							<span class="book-rank-type">都市</span>
-							<city>|</city>
-							<span class="book-rank-mode">连载</span>
-						</p>
-						<span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
-						<span>****************************</span>
-					</div>
-					<div class="rank-book-buttons">
-						<span class="blue-btn">书籍详情</span>
-						<span class="blue-btn">加入书单</span>
-					</div>
-					<div class="rank-nums">
-						<span class="ranking">10</span>
-					</div>
-				</div>
-			</li>
-		</ul>
-	</div>
-	<div class="page-box" style="padding: 40px 0;position: relative;">
-		<div class="pagination" style="position: absolute;right: 0;">
-			<span id="prve"><</span>
-			<span class="rank-page">1</span>
-			<span class="rank-page">2</span>
-			<span class="rank-page">3</span>
-			<span class="rank-page">4</span>
-			<span id="next">></span>
-		</div>
-	</div>
-</div>
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" /></div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">2</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">3</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">4</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">5</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">6</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">7</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">8</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">9</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="book-rank-list" style="overflow: hidden;border-bottom: none;">
+                        <div class="book-rank-img">
+                            <div class="book-rank-img">
+                                <img src="../../resources/img/150.jpg" th:src="@{/resources/img/150.jpg}" style="width: 100px;float: left;" />
+                            </div>
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;">逆天邪神</h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer">大鱼吃虾米</span>
+                                <city>|</city>
+                                <span class="book-rank-type">都市</span>
+                                <city>|</city>
+                                <span class="book-rank-mode">连载</span>
+                            </p>
+                            <span class="book-rank-synopsis">我是这诸天万族的劫！已有完本作品《全球高武》《重生之财源滚滚》，没看过的书友可以去看看，新书收藏一下慢慢</span>
+                            <span>****************************</span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="blue-btn">书籍详情</span>
+                            <span class="blue-btn">加入书单</span>
+                        </div>
+                        <div class="rank-nums">
+                            <span class="ranking">10</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="page-box" style="padding: 40px 0;position: relative;">
+            <div class="pagination" style="position: absolute;right: 0;">
+                <span id="prve"><</span>
+                <span class="rank-page">1</span>
+                <span class="rank-page">2</span>
+                <span class="rank-page">3</span>
+                <span class="rank-page">4</span>
+                <span id="next">></span>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

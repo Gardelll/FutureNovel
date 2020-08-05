@@ -64,7 +64,7 @@
   font-size: 12px;
 }
 .book .but {
-  margin-left: 90%;
+  margin-left: 82%;
   margin-top: 20px;
 }
 
@@ -79,11 +79,27 @@
   opacity: .8;
 }
 /* 针对表格的样式 */
-.data_dispaly{
-  height: 60%;
-  border: 1px solid #BBBBBB;
-  padding: 5px;
+
+table tbody {
+  display: block;
+  height: 195px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-bottom: 1px solid #BBBBBB; 
 }
+
+table thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table thead { 
+  width: calc( 100% - 1em);
+  background-color: #BBBBBB;
+}
+
 /* 针对弹窗的input样式 */
 .popup_mod input{ 
   height: 35px;
@@ -144,4 +160,9 @@ input[type=checkbox]:checked::after{
   font-weight: bold;
   background-color: #009688;
 }
-
+/* 针对头像的样式 */
+tbody img{
+  width: 45;
+  height: 45px;
+  border-radius: 50%;
+}

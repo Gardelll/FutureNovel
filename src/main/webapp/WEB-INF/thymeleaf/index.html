@@ -21,14 +21,14 @@
                 <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
                 <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
             </ul>
-            <ul class="fr">
+            <ul class="fr" th:each="user:${session.currentAccount}">
                 <li class="message fl"><i class="iconfont icon-Message"></i></li>
                 <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
                 <li class="s-name fl"></li>
-                <li class="admin fl" id="admin">admin <i class="iconfont icon-downarrow"></i>
+                <li class="admin fl" id="admin"><span th:text="${user.userName}"></span><i class="iconfont icon-downarrow"></i>
                     <ul class="dropdown" id="dropdown" style="display: none;">
-                        <li><a href="javascript:">个人信息</a></li>
-                        <li><a href="javascript:">切换账号</a></li>
+                        <li><a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
+                        <li><a href="login.html" th:href="@{/login}">切换账号</a></li>
                         <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
                     </ul>
                 </li>
@@ -42,10 +42,9 @@
             <span>future book</span>
         </div>
         <ul>
-            <li><a href="backstage-book.html" th:href="@{/}">书籍管理</a></li>
+            <li><a href="backstage-book.html" th:href="@{/admin/books}">书籍管理</a></li>
             <li><a href="backstage-user.html" th:href="@{/admin/users}">用户管理</a></li>
-            <li><a href="">评论管理</a></li>
-            <li><a href="">系统管理</a></li>
+            <li><a href="backstage-comment.html" th:href="@{/admin/comments}">评论管理</a></li>
         </ul>
     </div>
     </div>

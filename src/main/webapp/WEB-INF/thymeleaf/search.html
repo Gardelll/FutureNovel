@@ -14,36 +14,18 @@
 	</head>
 	<body>
 	<div class="fixed-nav">
-		<div class="cf" id="first" style="">
+		<div class="cf" style="width: 1200px;margin: 0 auto;">
 			<h1 class="top-logo">未来小说网</h1>
 			<div class="nav-list site-nav fl">
 				<ul>
-					<li>
-						<a href="###">玄幻</a>
-					</li>
-					<li>
-						<a href="###">都市</a>
-					</li>
-					<li>
-						<a href="###">仙侠</a>
-					</li>
-					<li>
-						<a href="###">科幻</a>
-					</li>
-					<li>
-						<a href="###">排行</a>
+					<li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index} lt 6">
+						<a href="###" th:text="${tagTwo}"></a>
 					</li>
 					<li class="more">
 						<a href="###">更多<span></span></a>
 						<div class="dropdown">
 							<a href="###" target="_blank">全部作品</a>
-							<a href="###" target="_blank">轻小说</a>
-							<a href="###" target="_blank">奇幻</a>
-							<a href="###" target="_blank">武侠</a>
-							<a href="###" target="_blank">悬疑</a>
-							<a href="###" target="_blank">军事</a>
-							<a href="###" target="_blank">现实</a>
-							<a href="###" target="_blank">体育</a>
+							<a href="###" target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
 						</div>
 					</li>
 				</ul>
@@ -51,27 +33,38 @@
 			<div class="nav-list min-user fr">
 				<ul>
 					<li id="min-search">
-						<form id="formUrl" method="post" target="_blank" action="">
-							<label id="fixed-search">
+						<form id="formUrl" method="get" target="_blank" action="">
+							<label id="fixed-search" for="topsearchSubmit">
 								<i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
 							</label>
-							<input id="fixed-input" class="fixed-input hide" list="data" type="text" name="kw">
+							<input id="fixed-input" list="data" class="fixed-input hide" type="text" name="kw">
+							<input class="submit-input" type="submit" id="topsearchSubmit">
 							<div style=" max-height:150px; overflow:auto;">
-							<datalist id="data" >
+								<datalist id="data" >
 
-							</datalist>
+								</datalist>
 							</div>
 						</form>
 					<li class="line"></li>
 					</li>
-					<li class="sign-out">
+					<li class="sign-out" th:if="${session.currentAccount} eq null">
 						<a id="fixed-login" href="###">登录</a>
 						<a class="reg" href="###" target="_blank">注册</a>
 					</li>
+					<li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
+						<a href="###" th:text="${user.userName}"></a>
+						<a href="###"  th:text="${'LV'+user.level}"></a>
+					</li>
 					<li class="line"></li>
 					<li class="book-shelf" id="top-book-shelf">
-						<a href="###" target="_blank">
+						<a th:if="${session.currentAccount} ne null" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
 							<i class="fa fa-book" style="font-size:16px">我的书架</i>
+						</a>
+					</li>
+					<li class="avatar" th:each="user:${session.currentAccount}">
+						<a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+							<img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%">
+							<img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px">
 						</a>
 					</li>
 				</ul>
@@ -89,7 +82,6 @@
 				<div class="tool-box">
 					<div class="type-list">
 						<p>
-							<a href="###" th:text="${searchBy}"></a>
 							<a href="##" style="margin: 0;padding: 0;">全部分类</a><em>·</em>
 							<a href="##">玄幻</a><em>·</em>
 							<a href="##">武侠</a><em>·</em>
@@ -183,7 +175,7 @@
 
 	<script  th:inline="javascript" async>
 		function submitForm(index) {
-			var str="http://localhost:8080/future-novel/search?page="+index+"&per_page=5"
+			var str="http://localhost:8080/future-novel/search?page="+index+"&per_page=5";
 			$("#form").attr("action",str);
 			$("#form").submit();
 		}

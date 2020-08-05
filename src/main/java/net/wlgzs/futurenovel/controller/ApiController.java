@@ -1271,7 +1271,7 @@ public class ApiController extends AbstractAppController {
             session.setAttribute("activateEmail", req.email);
             DefaultFilter.blockIp(request.getRemoteAddr(), "/api/sendCaptcha", 30); // 30 秒后重试
         } catch (MailException | MessagingException e) {
-            throw new FutureNovelException(e.getLocalizedMessage());
+            throw new FutureNovelException(e.getLocalizedMessage(), e);
         }
     }
 

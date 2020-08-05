@@ -38,7 +38,7 @@ public class FutureNovelException extends RuntimeException {
     }
 
     public enum Error {
-        UNDEFINED(418, "未定义"),
+        UNDEFINED(500, "未定义"),
         ILLEGAL_ARGUMENT(400, "非法参数"),
         INVALID_TOKEN(403, "未登录"),
         INVALID_PASSWORD(403, "用户名或密码错误"),

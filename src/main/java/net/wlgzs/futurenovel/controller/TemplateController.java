@@ -56,6 +56,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -385,7 +386,7 @@ public class TemplateController extends AbstractAppController {
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
             model.addAttribute("showAccount", showAccount);
-            if (currentAccount.getUid().equals(showAccount.getUid())) {
+            if (showAccount.getUid().equals(currentAccount.getUid())) {
                 List<ReadHistory> history = readHistoryService.getReadHistory(currentAccount, new Date(System.currentTimeMillis() - Duration.ofDays(14).toMillis()), null);
                 model.addAttribute("readHistory", history);
             }
@@ -396,8 +397,30 @@ public class TemplateController extends AbstractAppController {
             model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
             return "member";
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getLocalizedMessage(), e);
         }
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String hotSearch(HttpServletRequest request) {
+        return
+            "<!DOCTYPE html>\n" +
+            "<html lang=\"zh\">\n" +
+            "<head>\n" +
+            "    <meta charset=\"UTF-8\">\n" +
+            "    <title>Redirecting</title>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "<form id=\"myForm\" action=\"" + request.getContextPath() + "/search?page=1\" method=\"post\">\n" +
+            "    <input type=\"hidden\" name=\"searchBy\" value=\"HOT\">\n" +
+            "    <input type=\"hidden\" name=\"sortBy\" value=\"HOT_DESC\">\n" +
+            "</form>\n" +
+            "<script type=\"text/javascript\">\n" +
+            "    document.getElementById(\"myForm\").submit()\n" +
+            "</script>\n" +
+            "</body>\n" +
+            "</html>\n";
     }
 
     @PostMapping(value = "/search", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -434,6 +457,7 @@ public class TemplateController extends AbstractAppController {
                 String query = String.format("%s %s", Arrays.stream(req.keywords.split("\\s+"))
                     .map(s -> String.format("\"%s\"", s.replaceAll("\"", "\\")))
                     .collect(Collectors.joining(" ")), except);
+                log.info("query = {}", query);
                 long total = novelService.searchNovelIndexGetCount(query);
                 List<NovelIndex> result = novelService.searchNovelIndex(query, offset, perPage, req.sortBy.getOrderBy());
                 model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));

@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
     <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
-    <script src="../../resources/js/search.js" type="text/javascript" th:src="@{/resources/js/search.js}"></script>
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
@@ -19,7 +18,7 @@
         <div class="logo-wrap box-center">
             <div class="box-center cf" style="margin: 0 auto;" id="box-center">
                 <div class="book-shelf fr">
-                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="${#request.contextPath}+'/user'+${session.currentAccount.uid.toString()}">
+                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}">
                         <i class="fa fa-book" style="font-size:16px">我的书架</i>
                     </a>
                 </div>
@@ -128,7 +127,7 @@
                                 <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
                                     <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
-                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                                     <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                     <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}">
                                 </a>
@@ -145,7 +144,7 @@
                                     <a th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
                                 <p th:if="${session.currentAccount} ne null" style="display: contents;cursor: pointer;">
-                                    <a th:text="${user.userName}" class="user_login" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank"></a>
+                                    <a th:text="${user.userName}" class="user_login" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank"></a>
                                 </p>
                                 <p style="margin-top: 20px" th:if="${session.currentAccount} ne null">
                                     <a onclick="logout()" class="user_login out">
@@ -453,7 +452,7 @@
         </div>
     </div>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script>
+    <script type="text/javascript">
         const classify_icons = [
             "fa fa-fire",
             "fa fa-diamond",
@@ -492,6 +491,29 @@
                 }
             })
         }
+    </script>
+    <script type="text/javascript">
+        $(".time-tip").click(function() {
+            $(".search-tool-tip").show();
+        });
+        $(".time-sure").click(function() {
+            $(".search-tool-tip").hide();
+        });
+
+        function doSearch(e) {
+            if (e != null && e.keyCOde != 13) {
+                return false;
+            }
+        }
+        $("#form").submit(function(event) {
+            var goSearch = $("#goSearch").val();
+            if (goSearch == "") {
+                alert("请输入正确格式！")
+                return false;
+            } else {
+                return true;
+            }
+        });
     </script>
 
 </body>

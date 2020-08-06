@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" th:href="@{/resources/css/all.css}">
     <script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
-    <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <link rel="stylesheet" href="../../resources/css/search.css" th:href="@{/resources/css/search.css}">
 </head>
 
@@ -56,12 +55,12 @@
                     </li>
                     <li class="line"></li>
                     <li class="book-shelf" id="top-book-shelf">
-                        <a th:if="${session.currentAccount} ne null" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+                        <a th:if="${session.currentAccount} ne null" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                             <i class="fa fa-book" style="font-size:16px">我的书架</i>
                         </a>
                     </li>
                     <li class="avatar" th:each="user:${session.currentAccount}">
-                        <a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+                        <a th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                             <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%">
                             <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;">
                         </a>
@@ -180,6 +179,8 @@
 
 </body>
 
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
 
     function submitForm(index) {

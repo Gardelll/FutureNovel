@@ -477,8 +477,9 @@
         }
 
         function logout() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/logout",
+                url: contextPath+"/api/logout",
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",

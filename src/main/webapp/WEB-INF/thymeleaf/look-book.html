@@ -277,8 +277,9 @@
     getAllAcconutShelf();
 
     function AddBookSelf(Id) {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
-            url: "http://localhost:8080/future-novel/api/bookSelf/" + Id + "/add",
+            url: contextPath+"/api/bookSelf/" + Id + "/add",
             type: "POST",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",

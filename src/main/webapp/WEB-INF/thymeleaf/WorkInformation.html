@@ -72,8 +72,9 @@
         });
 
         function GetTags() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/novel/tags/all",
+                url: contextPath+"/api/novel/tags/all",
                 type: "get",
                 data: "",
                 success: function(data) {
@@ -116,8 +117,9 @@
                     result2.push($(this).text());
                 });
                 console.log(result);
+                const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
                 $.ajax({
-                    url: "http://localhost:8080/future-novel/api/novel/addIndex",
+                    url: contextPath+"/api/novel/addIndex",
                     type: "post",
                     dataType: "JSON",
                     contentType: "application/json",
@@ -146,8 +148,9 @@
         $("#file").on("change", function() {
             var formData = new FormData;
             formData.append("file", $("#file")[0].files[0]);
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/img/upload",
+                url: contextPath+"/api/img/upload",
                 type: "put",
                 dataType: "JSON",
                 data: formData,

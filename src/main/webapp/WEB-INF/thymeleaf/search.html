@@ -87,8 +87,8 @@
         </div>
         <div class="rank-body" style="margin:10px 0;">
             <ul style="overflow: hidden;">
-                <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
-                <li th:text="${searchBy.name()} eq 'KEYWORDS'" th:each="novel:${novelIndexList}">
+                <li th:each="novel:${novelIndexList}" th:if="${searchBy.name()} eq 'KEYWORDS'">
+                    <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
                     <div class="book-rank-list" style="overflow: hidden;">
                         <div class="book-rank-img">
                             <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
@@ -112,9 +112,37 @@
                 </li>
             </ul>
             <ul style="overflow: hidden;">
-                <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
                 <div th:each="section:${sectionList}" th:if="!${#lists.isEmpty(sectionList)}">
                     <li th:if="${searchBy.name()} eq 'CONTENT'">
+                        <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
+                        <div class="book-rank-list" style="overflow: hidden;">
+                            <div class="book-rank-img">
+                                <img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;" />
+                            </div>
+                            <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                                <h4 style="font-size: 15px;font-weight: 400;" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).title}"></h4>
+                                <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                    <span class="book-rank-writer" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).authors}"></span>
+                                    <city>|</city>
+                                    <span class="book-rank-type" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).tags}"></span>
+                                    <city>|</city>
+                                    <span class="book-rank-mode" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).copyright}"></span>
+                                </p>
+                                <span class="book-rank-synopsis" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).description}"></span>
+                            </div>
+                            <div class="rank-book-buttons">
+                                <span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
+                                <span class="rank-book-add">加入书单</span>
+                            </div>
+                        </div>
+                        <span th:utext="${section.text}" style="color: black" class="content"></span>
+                    </li>
+                </div>
+            </ul>
+            <ul style="overflow: hidden;">
+                <div th:each="section:${sectionList}" th:if="!${#lists.isEmpty(sectionList)}">
+                    <li th:if="${searchBy.name()} eq 'HOT'">
+                        <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
                         <div class="book-rank-list" style="overflow: hidden;">
                             <div class="book-rank-img">
                                 <img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;" />
@@ -142,11 +170,9 @@
         </div>
         <div class="page-box" style="padding: 40px 0;position: relative;">
             <div class="pagination" style="position: absolute;right: 0;">
-                <span id="prve"><i class="fa fa-angle-left"></i></span>
                 <div class="box-page">
 
                 </div>
-                <span id="next"><i class="fa fa-angle-right"></i></span>
             </div>
         </div>
     </div>
@@ -160,16 +186,8 @@
         $("#form").attr("action", str);
         $("#form").submit();
     }
-    if ([
-            [$ {
-                totalPage
-            }]
-        ] != 1) {
-        for (var i = 1; i <= [
-                [$ {
-                    totalPage
-                }]
-            ]; i++) {
+    if ([[${totalPage}]] != 1) {
+        for (var i = 1; i <= [[${totalPage}]]; i++) {
             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
         }
     }

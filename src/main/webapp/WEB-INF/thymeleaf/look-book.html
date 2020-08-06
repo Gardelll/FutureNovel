@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/look-book.css" type="text/css" th:href="@{/resources/css/look-book.css}">
     <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
-    <script src="../../resources/js/sreach.js" th:src="@{/resources/js/sreach.js}"></script>
+    <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 </head>
 
 <body>
@@ -52,7 +52,7 @@
                             <a class="reg" href="###" th:href="@{/register}">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                            <p style="display: none"id="getUserId" th:text="${user.uid}"></p>
+                            <p style="display: none" id="getUserId" th:text="${user.uid}"></p>
                             <a href="###" th:text="${user.userName}"></a>
                             <a href="###" th:text="${'LV'+user.level}"></a>
                         </li>
@@ -105,10 +105,10 @@
                         <a class="blue-btn" href="#freeRead">免费试读</a>
                         <a class="blue-btn add-book" href="javascript:;" id="addBookBtn">加入书架</a>
                         <div id="box">
-                        <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
+                            <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
                         <option selected>请选择收藏夹</option>
                         </select>
-                        <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
+                            <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
                         </div>
                     </p>
                 </div>
@@ -238,14 +238,14 @@
     //得到上传者的所有信息
     function getUploderInfo() {
         $.ajax({
-            url:"http://localhost:8080/future-novel/api/account/"+$("#getUploaderId").text()+"/info",
+            url: "http://localhost:8080/future-novel/api/account/" + $("#getUploaderId").text() + "/info",
             type: "GET",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
             data: {},
             success: function(data) {
                 console.log(data);
-                $("#memberImg").append(" <img src='" + "" +data.profileImgUrl+ "" + "'>")
+                $("#memberImg").append(" <img src='" + "" + data.profileImgUrl + "" + "'>")
                 $("#memberLevel").text(data.level);
             },
             error: function(data) {
@@ -265,8 +265,8 @@
             data: {},
             success: function(data) {
                 console.log(data);
-                for(var i=0;i<data.length;i++){
-                    $("#Shelf").append(" <option ShelfId='"+""+data[i].uniqueId+""+"'>"+""+data[i].title+""+"</option>")
+                for (var i = 0; i < data.length; i++) {
+                    $("#Shelf").append(" <option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
                 }
             },
             error: function(data) {
@@ -275,32 +275,34 @@
         })
     }
     getAllAcconutShelf();
-    function AddBookSelf(Id){
+
+    function AddBookSelf(Id) {
         $.ajax({
-            url:"http://localhost:8080/future-novel/api/bookSelf/"+Id+"/add",
-            type:"POST",
+            url: "http://localhost:8080/future-novel/api/bookSelf/" + Id + "/add",
+            type: "POST",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
-            data:JSON.stringify({
-                novelIndexId:$("#getNovelId").text()
-            }),success:function (data) {
+            data: JSON.stringify({
+                novelIndexId: $("#getNovelId").text()
+            }),
+            success: function(data) {
                 console.log(data);
                 alert("添加成功！")
-            },error:function (data) {
+            },
+            error: function(data) {
                 console.log(data);
             }
         })
     }
-    $("#addBookBtn").click(function () {
-        $("#box").css("display","block");
+    $("#addBookBtn").click(function() {
+        $("#box").css("display", "block");
     })
 
-    $("#sureAdd").click(function () {
-        $("#box").css("display","none");
+    $("#sureAdd").click(function() {
+        $("#box").css("display", "none");
         console.log($("#Shelf option:selected").attr("ShelfId"));
         AddBookSelf($("#Shelf option:selected").attr("ShelfId"))
     })
-
 </script>
 
 

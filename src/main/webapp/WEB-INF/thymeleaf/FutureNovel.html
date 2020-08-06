@@ -19,7 +19,7 @@
         <div class="logo-wrap box-center">
             <div class="box-center cf" style="margin: 0 auto;" id="box-center">
                 <div class="book-shelf fr">
-                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">
+                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="${#request.contextPath}+'/user'+${session.currentAccount.uid.toString()}">
                         <i class="fa fa-book" style="font-size:16px">我的书架</i>
                     </a>
                 </div>

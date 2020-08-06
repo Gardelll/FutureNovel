@@ -268,7 +268,8 @@ public abstract class AbstractAppController {
 
     public void handle(HttpServletRequest request) {
         String errorMessage = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
-        int status = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        var errorStatus = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        int status = errorStatus == null ? 501 : errorStatus;
         if (errorMessage != null && !errorMessage.isBlank())
             throw new ResponseStatusException(HttpStatus.valueOf(status), errorMessage);
         else throw new ResponseStatusException(HttpStatus.valueOf(status));

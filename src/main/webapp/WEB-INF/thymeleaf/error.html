@@ -4,14 +4,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Error</title>
+    <title th:text="'错误' + (${status} ? (' - ' + ${status}) : '')">Error</title>
     <style>
         html,
         body {
             height: 100%;
             width: 100%;
-            margin: 0px;
+            margin: 0;
             background: linear-gradient(90deg, #2f3640 23%, #181b20 100%);
+            overflow: hidden;
         }
         
         .moon {
@@ -23,7 +24,7 @@
             height: 800px;
             content: '';
             border-radius: 100%;
-            box-shadow: 0px 0px 30px -4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px -4px rgba(0, 0, 0, 0.5);
         }
         
         .moon-crater1 {
@@ -148,19 +149,22 @@
         }
         
         .more-desc {
-            color: #fff;
-            position: absolute;
-            left: 540px;
+            display: block;
+            background: white;
+            color: black;
+            position: relative;
             padding: 20px;
+            visibility: hidden;
+            margin: 40px auto;
+            width: 75%;
+            height: 80%;
+            border-radius: 12px
         }
     </style>
 
 </head>
 
 <body>
-    <span th:if="${cause}" th:text="${cause}" style="display: none;color: #fff;width: 100%;height: 100%;" class="more-desc">
-        <button class="error-button error-button-active"><a th:href="${#request.contextPath}">返回首页</a></button>
-    </span>
     <div class="moon"></div>
     <div class="moon-crater moon-crater1"></div>
     <div class="moon-crater moon-crater2"></div>
@@ -171,27 +175,30 @@
     <div class="star star4"></div>
     <div class="star star5"></div>
     <div class="error">
-        <h1>错误报告</h1>
+        <h1 th:text="${status} + ' - ' + ${T(org.springframework.http.HttpStatus).valueOf(status).reasonPhrase}">错误报告</h1>
 
-        <p th:if="${status}" class="error-title">
-            <b>状态码：</b> <span th:text="${status}"></span> <span th:if="${reason}" th:text="'('+${reason}+')'">404</span>
+        <p class="error-title">
+            <b>错误代码：</b> <span th:text="${error}"></span>
         </p>
 
-        <div th:if="${cause} or ${e} or (${errorMessage} and ${errorMessage.length() != 0})" class="error-description">
-            <b>原因：</b> <span th:if="${error}" th:text="${error}"></span>
-            <!-- <p></p>
-            <span th:if="${errorMessage} and ${errorMessage.length() != 0}" th:text="${errorMessage}"></span> -->
-
+        <div th:if="${errorMessage} and ${errorMessage.length() != 0}" class="error-description">
+            <p><b>原因：</b> <span th:text="${errorMessage}"></span></p>
+            <p><b>时间：</b> <span th:text="${{#dates.createNow()}}"></span></p>
+            <p><b>请求路径：</b> <span th:text="${#request.requestURI}"></span></p>
         </div>
         <button class="error-button error-button-active"><a th:href="${#request.contextPath}">返回首页</a></button>
-        <button class="error-button" id="more">查看详情</button>
+        <button class="error-button" onclick="show_more(true)" id="more">查看详情</button>
     </div>
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <div id="more-desc" class="more-desc">
+        <button style="float: right" onclick="show_more(false)">X</button>
+        <div style="clear: both"><h3>错误详细信息</h3></div>
+        <pre style="overflow: auto; max-height: 90%" th:text="${cause}"></pre>
+    </div>
+
     <script>
-        $("#more").click(function() {
-            $(".more-desc").show();
-            $(".error").hide();
-        });
+        function show_more(value) {
+            document.getElementById("more-desc").style.visibility = value ? 'visible' : 'hidden'
+        }
     </script>
 
 </body>

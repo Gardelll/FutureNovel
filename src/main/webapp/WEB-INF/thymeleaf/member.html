@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
     <link rel="stylesheet" href="../../resources/css/member.css" type="text/css" th:href="@{/resources/css/member.css}">
     <script src="../../resources/js/down.js" type="text/javascript" th:src="@{/resources/js/down.js}"></script>
+    <script src="../../resources/js/sreach.js" th:src="@{/resources/js/sreach.js}"></script>
 
 </head>
 
@@ -37,12 +38,13 @@
                 <div class="nav-list min-user fr">
                     <ul>
                         <li id="min-search">
-                            <form id="formUrl" method="get" target="_blank" action="">
-                                <label id="fixed-search" for="topsearchSubmit">
-                                    <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
-                                </label>
-                                <input id="fixed-input" list="data" class="fixed-input hide" type="text" name="kw">
-                                <input class="submit-input" type="submit" id="topsearchSubmit">
+                            <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
+                                <button id="search-btn" type="submit" style="background-color: #2470bf;">
+                                    <i class="fa fa-search" style="font-size:16px;color: #ffffff;margin: 16px 20px 0 0;"></i>
+                                </button>
+                                <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="KEYWORDS">
+                                <!-- <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS"> -->
+                                <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
                                 <div style=" max-height:150px; overflow:auto;">
                                     <datalist id="data">
 
@@ -68,7 +70,7 @@
                         <li class="avatar" th:each="user:${session.currentAccount}">
                             <a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                                 <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%;">
-                                <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px">
+                                <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;">
                             </a>
                         </li>
                     </ul>

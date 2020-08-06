@@ -1,7 +1,6 @@
 .logo-wrap {
     overflow: hidden;
     width: 100%;
-    height: 84px
 }
 
 .logo-wrap .box-center {
@@ -54,7 +53,8 @@
     width: 348px;
     height: 38px;
     border: 1px solid #dbdbdb;
-    border-right: none
+    border-right: none;
+    margin-bottom: 10px;
 }
 
 .logo-wrap .book-shelf p:hover,
@@ -1361,5 +1361,16 @@
     font-size: 12px;
     float: right;
     margin-top: 3px;
+    color: #666;
+}
+
+.search-tool {
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+.search-tool span {
+    cursor: pointer;
     color: #666;
 }

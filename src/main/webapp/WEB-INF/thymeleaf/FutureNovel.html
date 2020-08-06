@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
     <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
+    <script src="../../resources/js/search.js" type="text/javascript" th:src="@{/resources/js/search.js}"></script>
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
@@ -25,15 +26,37 @@
                 <div class="logo fl">
                     <a th:href="@{/}">未来小说网</a>
                 </div>
-                <div class="search-wrap fl">
-                    <form id="formUrl" action="######" method="get" target="_blank">
+                <div class="search-wrap fl" style="position: relative;top: -60px;">
+                    <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
                         <p>
-                            <input class="search-box" id="s-box" name="kw" type="text" placeholder="我老婆是大明星" autocomplete="off">
+                            <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)">
                         </p>
-                        <input class="submit-input" type="submit" id="searchSubmit">
-                        <label id="search-btn" class="search-btn" for="searchSubmit">
-                        <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
-                    </label>
+                        <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
+                        <button id="search-btn" class="search-btn" for="searchSubmit" type="submit">
+                            <a onclick="doSearch(null)">
+                               <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
+                            </a>
+                        </button>
+                        <div class="search-tool" style="height: 40px;position: relative;top: 55px;left: -390px;">
+                            <span class="search-type" style="margin-right: 10px;display: inline-block;">搜索工具:</span>
+                            <input id="keyword" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="KEYWORDS">关键词
+                            <input id="content" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="CONTENT">文章内容
+                            <input id="time" type="radio" style="margin-left: 10px;margin-right: 4px;" class="time-tip" name="searchBy" value="PUBDATE">时间
+                            <input id="hot" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="HOT">最热
+                        </div>
+                        <div class="search-tool-tip" style="display: none;">
+                            <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
+                                <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                                    从
+                                    <input name="after" type="date" value="" style="text-align:center;line-height: 30px;">
+                                </p>
+                                <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                                    至
+                                    <input name="before" type="date" value="" style="text-align:center;line-height: 30px;">
+                                </p>
+                                <button class="time-sure blue-btn" style="position: relative;top: 10px;">确认</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -105,7 +128,7 @@
                                 <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
                                     <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
-                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">
+                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                                     <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                     <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}">
                                 </a>
@@ -113,18 +136,18 @@
                                     <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
                             </div>
-                            <div  class="user_show">
-                                <p>
+                            <div class="user_show">
+                                <p style="display: contents;">
                                     Hi~
                                 </p>
                                 <p th:if="${session.currentAccount} eq null">
                                     <a th:href="@{/login}" class="user_login">登录</a> |
                                     <a th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
-                                <p th:if="${session.currentAccount} ne null">
-                                    <a th:text="${user.userName}" class="user_login"></a>
+                                <p th:if="${session.currentAccount} ne null" style="display: contents;cursor: pointer;">
+                                    <a th:text="${user.userName}" class="user_login" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank"></a>
                                 </p>
-                                <p style="margin-top: 5px" th:if="${session.currentAccount} ne null">
+                                <p style="margin-top: 20px" th:if="${session.currentAccount} ne null">
                                     <a onclick="logout()" class="user_login out">
                                         <i class="fa fa-power-off" style="font-size:16px"></i>退出
                                     </a>
@@ -137,9 +160,9 @@
                                     <img th:src="@{/resources/img/logo.jpg}" name="userimg" />
                                 </a>
                             </div>
-                            <div  class="user_show">
+                            <div class="user_show">
                                 <p>
-                                    Hi~
+                                    Hi~欢迎阅读
                                 </p>
                                 <p>
                                     <a th:href="@{/login}" class="user_login">登录</a> |
@@ -453,16 +476,18 @@
             iconElement.removeAttribute("class")
             iconElement.setAttribute("class", classify_icons[i])
         }
+
         function logout() {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/logout",
-                type:"GET",
-                datatype:"json",
+                url: "http://localhost:8080/future-novel/api/logout",
+                type: "GET",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
                 data: {},
-                success:function (data) {
-                    window.location.href=location;
-                }, error: function(data) {
+                success: function(data) {
+                    window.location.href = location;
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })

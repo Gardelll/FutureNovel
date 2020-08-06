@@ -158,7 +158,9 @@
 </head>
 
 <body>
-    <span th:if="${cause}" th:text="${cause}" style="display: none;color: #fff;width: 100%;height: 100%;" class="more-desc"></span>
+    <span th:if="${cause}" th:text="${cause}" style="display: none;color: #fff;width: 100%;height: 100%;" class="more-desc">
+        <button class="error-button error-button-active"><a th:href="${#request.contextPath}">返回首页</a></button>
+    </span>
     <div class="moon"></div>
     <div class="moon-crater moon-crater1"></div>
     <div class="moon-crater moon-crater2"></div>

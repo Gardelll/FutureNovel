@@ -247,8 +247,9 @@
 			}
 			//获取内容
 			function getTitleId(titleId) {
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
-					url:"http://localhost:8080/future-novel/api/novel/section/"+titleId,
+					url:contextPath+"/api/novel/section/"+titleId,
 					type: "GET",
 					datatype:"json",
 					contentType: "application/json;charset=UTF-8",
@@ -266,8 +267,9 @@
 			//删除章节
 			$(".writer-list").on('click','.delete',function(){
 				var thisSectionId = $(this).attr("chapterid");
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
-					url:"http://localhost:8080/future-novel/api/novel/chapter/"+thisSectionId,
+					url:contextPath+"/api/novel/chapter/"+thisSectionId,
 					type:"delete",
 					datatype:"json",
 					contentType: "application/json;charset=UTF-8",
@@ -283,8 +285,9 @@
 			//删除小节
 			$(".writer-list").on('click','.delete2',function(){
 				var thisTitleId = $(this).attr("sectionId");
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
-					url:"http://localhost:8080/future-novel/api/novel/section/"+thisTitleId,
+					url:contextPath+"/api/novel/section/"+thisTitleId,
 					type:"delete",
 					datatype:"json",
 					contentType: "application/json;charset=UTF-8",
@@ -383,8 +386,9 @@
 				if($("#modify-chapter-name").val().length==0){
 					str5=null;
 				}
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
-					url:"http://localhost:8080/future-novel/api/novel/chapter/"+chapterId+"/edit",
+					url:contextPath+"/api/novel/chapter/"+chapterId+"/edit",
 					type:"POST",
 					dataType: "JSON",
 					contentType:"application/json",
@@ -410,8 +414,9 @@
 				if($("#title-name").val().length==0){
 					str3=null;
 				}
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
-					url:"http://localhost:8080/future-novel/api/novel/section/"+SectionId+"/edit",
+					url:contextPath+"/api/novel/section/"+SectionId+"/edit",
 					type:"POST",
 					dataType: "JSON",
 					contentType:"application/json",

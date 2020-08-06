@@ -181,6 +181,7 @@
 </body>
 
 <script th:inline="javascript" async>
+
     function submitForm(index) {
         var str = "http://localhost:8080/future-novel/search?page=" + index + "&per_page=5";
         $("#form").attr("action", str);

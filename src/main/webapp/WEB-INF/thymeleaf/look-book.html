@@ -20,13 +20,13 @@
                 <div class="nav-list site-nav fl">
                     <ul>
                         <li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index} lt 6">
-                            <a href="###" th:text="${tagTwo}"></a>
+                            <a th:text="${tagTwo}"></a>
                         </li>
                         <li class="more">
-                            <a href="###">更多<span></span></a>
+                            <a>更多<span></span></a>
                             <div class="dropdown">
-                                <a href="###" target="_blank">全部作品</a>
-                                <a href="###" target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
+                                <a target="_blank">全部作品</a>
+                                <a target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
                             </div>
                         </li>
                     </ul>
@@ -48,12 +48,12 @@
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} eq null">
                             <a id="fixed-login" th:href="@{/login}">登录</a>
-                            <a class="reg" href="###" th:href="@{/register}">注册</a>
+                            <a class="reg" th:href="@{/register}">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                             <p style="display: none" id="getUserId" th:text="${user.uid}"></p>
-                            <a href="###" th:text="${user.userName}"></a>
-                            <a href="###" th:text="${'LV'+user.level}"></a>
+                            <a th:text="${user.userName}"></a>
+                            <a th:text="${'LV'+user.level}"></a>
                         </li>
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
@@ -117,7 +117,7 @@
                 <div class="nav-wrap fl">
                     <ul>
                         <li class="bookinfo actinfocata">
-                            <a id="book-infopage" href="###">作品信息</a>
+                            <a id="book-infopage">作品信息</a>
                         </li>
                     </ul>
                 </div>
@@ -158,7 +158,7 @@
                                 </a>
                             </div>
                             <p th:each="author : *{authors}">
-                                <a href="###" target="_blank" th:text="${author}"></a>
+                                <a target="_blank" th:text="${author}"></a>
                             </p>
                         </div>
                         <div class="info-wrap">
@@ -215,12 +215,12 @@
                     <p>网络刷单是违法 切莫轻信有返利，网上交友套路多 卖惨要钱需当心，电子红包莫轻点 个人信息勿填写，仿冒客服来行骗 官方核实最重要，招工诈骗有套路 预交费用需谨慎，低价充值莫轻信 莫因游戏陷套路，连接WIFI要规范 确认安全再连接，抢购车票有章法 确认订单再付款，白条赊购慎使用 提升额度莫轻信，网购预付有风险 正规渠道很重要 </p>
                 </div>
                 <div class="footer-menu dib-wrap">
-                    <a href="###" target="_blank">关于未来</a>
-                    <a href="###" target="_blank">联系我们</a>
-                    <a href="###" target="_blank">加入我们</a>
-                    <a href="###" target="_blank">帮助中心</a>
-                    <a href="###" class="advice" target="_blank">提交建议</a>
-                    <a href="###" target="_blank">举报中心</a>
+                    <a target="_blank">关于未来</a>
+                    <a target="_blank">联系我们</a>
+                    <a target="_blank">加入我们</a>
+                    <a target="_blank">帮助中心</a>
+                    <a class="advice" target="_blank">提交建议</a>
+                    <a target="_blank">举报中心</a>
                 </div>
                 <div class="copy-right">
                     <p><span>Copyright © 2002-2020 www.wlgzs.net All Rights Reserved</span> 版权所有 未来工作室</p>

@@ -235,7 +235,7 @@
                     <div class="book-list">
                         <ul>
                             <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
-                                <a class="book-classify" href="##" target="_blank">
+                                <a class="book-classify" target="_blank">
                                     <i>「</i><i th:text="${novelrec.tags}"></i><i>」</i>
                                 </a>
                                 <a class="book-name" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}"></a>
@@ -353,7 +353,7 @@
                                             <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
                                         </p>
                                         <p class="author">
-                                            <a class="writer" href="###" target="_blank" th:text="${newNovel.authors}"></a>
+                                            <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
                                         </p>
                                     </div>
                                     <div class="book-cover">
@@ -370,7 +370,7 @@
                 </div>
                 <div class="update-list-wrap fl">
                     <div class="update-more cf">
-                        <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" href="###" target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
+                        <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" th:href="@{/search}" target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
                     </div>
                     <div class="update-list" id="update-list">
                         <div class="update-table">
@@ -378,7 +378,7 @@
                                 <tbody>
                                     <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} gt 2">
                                         <td>
-                                            <a class="classify" href="###" target="_blank">
+                                            <a class="classify" target="_blank">
                                                 <i>」</i><i th:text="${newNovel.tags}"></i><i>「</i>
                                             </a>
                                         </td>
@@ -386,10 +386,10 @@
                                             <a class="name" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
                                         </td>
                                         <td>
-                                            <a class="section" href="###" target="_blank" th:text="${newNovel.publisher}"></a>
+                                            <a class="section" target="_blank" th:text="${newNovel.publisher}"></a>
                                         </td>
                                         <td class="respon">
-                                            <a class="author" href="###" target="_blank" th:text="${newNovel.authors}"></a>
+                                            <a class="author" target="_blank" th:text="${newNovel.authors}"></a>
                                         </td>
                                         <td class="respon">
                                             <i th:text="${newNovel.pubdate}"></i>
@@ -413,7 +413,7 @@
                                             <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
                                         </p>
                                         <p class="author">
-                                            <a class="writer" href="###" target="_blank" th:text="${newNovel.authors}"></a>
+                                            <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
                                         </p>
                                     </div>
                                     <div class="book-cover">

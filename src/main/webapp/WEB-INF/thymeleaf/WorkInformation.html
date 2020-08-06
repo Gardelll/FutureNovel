@@ -1,6 +1,7 @@
 <!DOCTYPE>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>未来小说网--作品信息</title>
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="../../resources/css/WorkInformation.css" th:href="@{/resources/css/WorkInformation.css}">
 </head>
 <script>
-    window.onload = function () {
+    window.onload = function() {
         function getNowFormatDate() {
             var date = new Date();
             var month = date.getMonth() + 1;
@@ -30,21 +31,21 @@
             if (second >= 0 && second <= 9) {
                 second = "0" + second;
             }
-            var currentdate = date.getFullYear() + "年" + month + "月" + strDate
-                + "日 " + date.getHours() + ":" + minute+ ":" +second;
+            var currentdate = date.getFullYear() + "年" + month + "月" + strDate +
+                "日 " + date.getHours() + ":" + minute + ":" + second;
             return currentdate;
         }
         var tags = [];
-        var actor=["haha","heihei"];
-        $("#book-tags").keydown(function (event) {
-            if(event.keyCode==32){
-                if($("#book-tags").val().length>=4){
+        var actor = ["haha", "heihei"];
+        $("#book-tags").keydown(function(event) {
+            if (event.keyCode == 32) {
+                if ($("#book-tags").val().length >= 4) {
                     alert("标签不得超过三个字")
                     $("#book-tags").val("");
-                }else{
-                    var str= $("#book-tags").val();
-                    var test= " <div class=\"tags-s\">\n" +
-                        "<a href=\"###\" class=\"tags-text\">"+str+"</a>\n" +
+                } else {
+                    var str = $("#book-tags").val();
+                    var test = " <div class=\"tags-s\">\n" +
+                        "<a href=\"###\" class=\"tags-text\">" + str + "</a>\n" +
                         "<i class=\"fa fa-close close2\" ></i>\n" +
                         "</div>";
                     $(".tags").append(test);
@@ -52,144 +53,143 @@
                 }
             }
         });
-        $("#book-act").keydown(function (event) {
-            if(event.keyCode==32){
-                var str= $("#book-act").val();
-                var test= " <div class=\"tags-s\">\n" +
-                    "<a href=\"###\" class=\"tags-text2\">"+str+"</a>\n" +
+        $("#book-act").keydown(function(event) {
+            if (event.keyCode == 32) {
+                var str = $("#book-act").val();
+                var test = " <div class=\"tags-s\">\n" +
+                    "<a href=\"###\" class=\"tags-text2\">" + str + "</a>\n" +
                     "<i class=\"fa fa-close close2\" ></i>\n" +
                     "</div>";
                 $(".acts").append(test);
                 $("#book-act").val("");
             }
         });
-        $(".tags").on('click','.close2',function(){
+        $(".tags").on('click', '.close2', function() {
             $(this).parent().remove();
         });
-        $(".acts").on('click','.close2',function(){
+        $(".acts").on('click', '.close2', function() {
             $(this).parent().remove();
         });
-        function GetTags(){
+
+        function GetTags() {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/novel/tags/all",
-                type:"get",
-                data:"",
-                success:function (data) {
-                   console.log(data);
-                    for (var i=0;i<data.length;i++){
+                url: "http://localhost:8080/future-novel/api/novel/tags/all",
+                type: "get",
+                data: "",
+                success: function(data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
                         $("#tag").append(" <option value='" + "" + data[i] + "" + "'>")
                     }
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data)
                 }
             });
         }
         GetTags();
 
-        $("#create-work").click(function () {
-            if ($("#book-name").val().length >15) {
+        $("#create-work").click(function() {
+            if ($("#book-name").val().length > 15) {
                 $("#TEXT").html("书名不能超过15个字");
-            }
-            else if(!$("#book-name").val().match(/^[\u4e00-\u9fa5]+$/)){
+            } else if (!$("#book-name").val().match(/^[\u4e00-\u9fa5]+$/)) {
                 $("#TEXT").html("书名只能用汉字");
-            }
-            else if($("#book-type").val()=="-请选择-"){
+            } else if ($("#book-type").val() == "-请选择-") {
                 $("#TEXT").html("请选择书籍类型");
-            }
-            else if($("#copyright").val()=="-请选择-"){
+            } else if ($("#copyright").val() == "-请选择-") {
                 $("#TEXT").html("请选择版权");
-            }
-            else if($("#book-press").val()==""){
+            } else if ($("#book-press").val() == "") {
                 $("#TEXT").html("请输入出版社");
-            }
-            else if($("#book-intro").val().length<20||$("#book-intro").val().length>150){
+            } else if ($("#book-intro").val().length < 20 || $("#book-intro").val().length > 150) {
                 $("#TEXT").html("介绍必须在20-150字之间");
-            }else{
-                var $inputArr = $('.tags-text');
-                var result = [];
-                $inputArr.each(function(){
+            } else {
+                var  $inputArr  =  $('.tags-text');
+                var  result  =   [];
+                $inputArr.each(function() {
                     //将每个input的值放进结果集
                     result.push($(this).text());
                 });
-                var $inputArr2 = $('.tags-text2');
-                var result2 = [];
-                $inputArr2.each(function(){
+                var  $inputArr2  =  $('.tags-text2');
+                var  result2  =   [];
+                $inputArr2.each(function() {
                     //将每个input的值放进结果集
                     result2.push($(this).text());
                 });
                 console.log(result);
                 $.ajax({
-                    url:"http://localhost:8080/future-novel/api/novel/addIndex",
+                    url: "http://localhost:8080/future-novel/api/novel/addIndex",
                     type: "post",
                     dataType: "JSON",
-                    contentType:"application/json",
+                    contentType: "application/json",
                     data: JSON.stringify({
                         "copyright": $("#copyright").val(),
                         "title": $("#book-name").val(),
                         "authors": result2,
                         "description": $("#book-intro").val(),
-                        "tags":result,
+                        "tags": result,
                         "series": $("#book-type").val(),
                         "publisher": $("#book-press").val(),
-                        "pubdate":getNowFormatDate() ,
+                        "pubdate": getNowFormatDate(),
                         "coverImgUrl": $("#addIMG")[0].src
                     }),
-                    success:function (data) {
+                    success: function(data) {
                         $("#TEXT").html("创建成功");
-                        console.log( data.uniqueId );
-                      window. location.href = "/future-novel/novel/"+ data.uniqueId + "/write";
-                    },error(){
+                        console.log(data.uniqueId);
+                        window.location.href = "/future-novel/novel/" + data.uniqueId + "/write";
+                    },
+                    error() {
 
                     }
                 })
             }
         });
-        $("#file").on("change",function () {
-            var formData = new FormData ;
-            formData.append("file",$("#file")[0].files[0]);
+        $("#file").on("change", function() {
+            var formData = new FormData;
+            formData.append("file", $("#file")[0].files[0]);
             $.ajax({
                 url: "http://localhost:8080/future-novel/api/img/upload",
                 type: "put",
                 dataType: "JSON",
-                data:formData,
+                data: formData,
                 processData: false,
                 contentType: false,
-                success:function (data) {
-                    $("#sure").click(function () {
-                       $("#addIMG").attr("src",data.url);
-                       var imgurl = data.url;
+                success: function(data) {
+                    $("#sure").click(function() {
+                        $("#addIMG").attr("src", data.url);
+                        var imgurl = data.url;
                     });
-                },error(){
+                },
+                error() {
                     console.log("上传的图片有误")
                 }
-                })
-            });
+            })
+        });
     }
-
 </script>
+
 <body>
     <div class="box3">
-    <div class="work-info" style="float: right;margin: 100px 200px 100px 0;">
-        <div class="top-title">
-            <div class="top-title-box">
-                <img src="../../resources/img/book.png" th:src="@{/resources/img/book.png}" id="book-icon"/>
-                <span style="line-height: 50px;font-size:17px;color: white;float: right;">创建作品</span>
-            </div>
+        <div class="work-info" style="float: right;margin: 100px 200px 100px 0;">
+            <div class="top-title">
+                <div class="top-title-box">
+                    <img src="../../resources/img/book.png" th:src="@{/resources/img/book.png}" id="book-icon" />
+                    <span style="line-height: 50px;font-size:17px;color: white;float: right;">创建作品</span>
+                </div>
 
-        </div>
-        <div class="work-info-form">
-            <form id="info-form" action="#" method="POST">
-            <div class="form-box">
-                <div class="form-list">
-                    <dl>
-                        <dd class="">
-                            <span>作品名称</span>
-                            <input name="book-name" id="book-name" class="form-inputs" type="text" required>
-                            <p>15字内，请勿添加书名号等特殊符号</p>
-                        </dd>
-                        <dd>
-                            <span>作品类型</span>
-                            <select  id="book-type">
+            </div>
+            <div class="work-info-form">
+                <form id="info-form" action="#" method="POST">
+                    <div class="form-box">
+                        <div class="form-list">
+                            <dl>
+                                <dd class="">
+                                    <span>作品名称</span>
+                                    <input name="book-name" id="book-name" class="form-inputs" type="text" required>
+                                    <p>15字内，请勿添加书名号等特殊符号</p>
+                                </dd>
+                                <dd>
+                                    <span>作品类型</span>
+                                    <select id="book-type">
                                 <option selected>-请选择-</option>
                                 <option>玄幻</option>
                                 <option>奇幻</option>
@@ -207,66 +207,66 @@
                                 <option>轻小说</option>
                             </select>
 
-                        </dd>
-                        <dd>
-                            <span>版权</span>
-                            <select id="copyright">
+                                </dd>
+                                <dd>
+                                    <span>版权</span>
+                                    <select id="copyright">
                                 <option selected>-请选择-</option>
                                 <option>NO_COPYRIGHT</option>
                                 <option>REPRINT</option>
                                 <option>FAN_FICTION</option>
                                 <option>ORIGINAL</option>
                             </select>
-                        </dd>
-                        <dd>
-                            <span>作品标签</span>
-                            <input style="height: 30px;padding: 0;resize: none;" placeholder="(用空格隔开标签)" id="book-tags" list="tag" class="form-inputs">
-                            <datalist id="tag">
+                                </dd>
+                                <dd>
+                                    <span>作品标签</span>
+                                    <input style="height: 30px;padding: 0;resize: none;" placeholder="(用空格隔开标签)" id="book-tags" list="tag" class="form-inputs">
+                                    <datalist id="tag">
 
                             </datalist>
-                            <div class="tags">
+                                    <div class="tags">
 
-                             </div>
+                                    </div>
 
-                        </dd>
-                        <dd>
-                            <span>作者</span>
-                            <input style="height: 30px;padding: 0;resize: none;"  id="book-act" class="form-inputs">
-                            <div class="acts">
+                                </dd>
+                                <dd>
+                                    <span>作者</span>
+                                    <input style="height: 30px;padding: 0;resize: none;" id="book-act" class="form-inputs">
+                                    <div class="acts">
 
-                            </div>
+                                    </div>
 
-                        </dd>
-                        <dd>
-                            <span>出版社</span>
-                            <input name="book-press" id="book-press"  class="form-inputs" type="text" required>
-                        </dd>
-                        <dd>
-                            <span>介绍</span>
-                            <textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
-                            <p>20~500字</p>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="create">
-                    <button type="button" id="create-work" data-toggle="modal" data-target="#myModal">创建作品</button>
-                </div>
+                                </dd>
+                                <dd>
+                                    <span>出版社</span>
+                                    <input name="book-press" id="book-press" class="form-inputs" type="text" required>
+                                </dd>
+                                <dd>
+                                    <span>介绍</span>
+                                    <textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
+                                    <p>20~500字</p>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="create">
+                            <button type="button" id="create-work" data-toggle="modal" data-target="#myModal">创建作品</button>
+                        </div>
+                    </div>
+                </form>
             </div>
+        </div>
+
+        <div class="Insert-picture">
+            <p>请插入封面图片</p>
+            <form action="" style="text-align: center">
+                <input type="file" style="margin: 0 10px;" id="file" name="file">
             </form>
-        </div>
-    </div>
+            <img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG" />
+            <div class="img-box" style="display: block">
+                <input id="sure" type="submit">
+            </div>
 
-    <div class="Insert-picture">
-        <p>请插入封面图片</p>
-        <form action="" style="text-align: center">
-            <input type="file" style="margin: 0 10px;" id="file" name="file">
-        </form>
-        <img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG"/>
-        <div class="img-box" style="display: block">
-            <input id="sure"  type="submit">
         </div>
-
-    </div>
     </div>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -280,16 +280,19 @@
                         提示
                     </h4>
                 </div>
-                <div class="modal-body" >
+                <div class="modal-body">
                     <p id="TEXT"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                     </button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
     </div>
 
 </body>
+
 </html>

@@ -23,13 +23,13 @@
                 <div class="nav-list site-nav fl">
                     <ul>
                         <li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index} lt 6">
-                            <a href="###" th:text="${tagTwo}"></a>
+                            <a th:text="${tagTwo}"></a>
                         </li>
                         <li class="more">
-                            <a href="###">更多<span></span></a>
+                            <a>更多<span></span></a>
                             <div class="dropdown">
-                                <a href="###" target="_blank">全部作品</a>
-                                <a href="###" target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
+                                <a target="_blank">全部作品</a>
+                                <a target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
                             </div>
                         </li>
                     </ul>
@@ -50,12 +50,12 @@
                             <li class="line"></li>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} eq null">
-                            <a id="fixed-login" href="###">登录</a>
-                            <a class="reg" href="###" target="_blank">注册</a>
+                            <a id="fixed-login" th:href="@{/login}">登录</a>
+                            <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                            <a href="###" th:text="${user.userName}"></a>
-                            <a href="###" th:text="${'LV'+user.level}"></a>
+                            <a th:text="${user.userName}"></a>
+                            <a th:text="${'LV'+user.level}"></a>
                         </li>
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
@@ -113,7 +113,7 @@
             <div class="home-content" th:each="user:${session.currentAccount}">
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
-                        <a href="#" class="user-avatar-a">
+                        <a class="user-avatar-a">
                             <img class="user-avatar-img profileImgUrl" th:src="${user.profileImgUrl}">
                         </a>
                     </div>
@@ -124,7 +124,7 @@
                             </a>
                         </div>
                         <h3 style="display: inline-block">
-                            <a href="##" th:text="${user.userName}"></a>
+                            <a th:text="${user.userName}"></a>
                         </h3>
                         <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${user.level}"></span>
                         <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${user.experience}"></span>
@@ -252,7 +252,7 @@
                             <dl class="form-higher">
                                 <dt>验证码：</dt>
                                 <input name="activateCode" class="input" type="text" placeholder="请输入验证码" style="width: 149px;" autocomplete="off">
-                                <button href="###" type="button" id="get-code">获取验证码</button>
+                                <button type="button" id="get-code">获取验证码</button>
                             </dl>
                             <dl class="form-higher">
                                 <dt></dt>

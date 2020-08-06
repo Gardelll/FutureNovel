@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>未来小说网--搜索排行</title>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" th:href="@{/resources/css/all.css}">
     <script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
@@ -19,13 +19,13 @@
             <div class="nav-list site-nav fl">
                 <ul>
                     <li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index} lt 6">
-                        <a href="###" th:text="${tagTwo}"></a>
+                        <a th:text="${tagTwo}"></a>
                     </li>
                     <li class="more">
-                        <a href="###">更多<span></span></a>
+                        <a>更多<span></span></a>
                         <div class="dropdown">
-                            <a href="###" target="_blank">全部作品</a>
-                            <a href="###" target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
+                            <a target="_blank">全部作品</a>
+                            <a target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
                         </div>
                     </li>
                 </ul>
@@ -46,12 +46,12 @@
                         <li class="line"></li>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} eq null">
-                        <a id="fixed-login" href="###">登录</a>
-                        <a class="reg" href="###" target="_blank">注册</a>
+                        <a id="fixed-login" th:href="@{/login}">登录</a>
+                        <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                        <a href="###" th:text="${user.userName}"></a>
-                        <a href="###" th:text="${'LV'+user.level}"></a>
+                        <a th:text="${user.userName}"></a>
+                        <a th:text="${'LV'+user.level}"></a>
                     </li>
                     <li class="line"></li>
                     <li class="book-shelf" id="top-book-shelf">
@@ -74,15 +74,6 @@
             <h3 style="font-size: 26px;line-height: 26px;margin-bottom: 15px;font-family:宋体;font-weight: 600;">
                 搜索结果
             </h3>
-            <div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: #fff;padding: 10px;">
-                <div class="tool-box">
-                    <div class="type-list cf">
-                        <li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index}" style="float: left;margin: 0 10px;">
-                            <a th:text="${tagTwo}">玄幻</a>
-                        </li>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="rank-body" style="margin:10px 0;">
             <ul style="overflow: hidden;">
@@ -182,14 +173,21 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
-
     function submitForm(index) {
         var str = "http://localhost:8080/future-novel/search?page=" + index + "&per_page=5";
         $("#form").attr("action", str);
         $("#form").submit();
     }
-    if ([[${totalPage}]] != 1) {
-        for (var i = 1; i <= [[${totalPage}]]; i++) {
+    if ([
+            [$ {
+                totalPage
+            }]
+        ] != 1) {
+        for (var i = 1; i <= [
+                [$ {
+                    totalPage
+                }]
+            ]; i++) {
             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
         }
     }

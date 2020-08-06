@@ -438,6 +438,11 @@ public class TemplateController extends AbstractAppController {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         model.addAttribute("searchBy", req.searchBy);
         model.addAttribute("sortBy", req.sortBy);
+        model.addAttribute("keywords", req.keywords);
+        model.addAttribute("except", req.except);
+        model.addAttribute("after", req.after);
+        model.addAttribute("before", req.before);
+        model.addAttribute("page", page);
         int offset = (page - 1) * perPage;
         switch (req.searchBy) {
             case HOT: {

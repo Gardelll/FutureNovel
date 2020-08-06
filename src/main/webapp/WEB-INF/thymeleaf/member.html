@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>未来小说网--用户资料</title>
@@ -43,12 +44,12 @@
                                 <input id="fixed-input" list="data" class="fixed-input hide" type="text" name="kw">
                                 <input class="submit-input" type="submit" id="topsearchSubmit">
                                 <div style=" max-height:150px; overflow:auto;">
-                                    <datalist id="data" >
+                                    <datalist id="data">
 
                                     </datalist>
                                 </div>
                             </form>
-                        <li class="line"></li>
+                            <li class="line"></li>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} eq null">
                             <a id="fixed-login" href="###">登录</a>
@@ -56,7 +57,7 @@
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                             <a href="###" th:text="${user.userName}"></a>
-                            <a href="###"  th:text="${'LV'+user.level}"></a>
+                            <a href="###" th:text="${'LV'+user.level}"></a>
                         </li>
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
@@ -89,7 +90,7 @@
                         </a>
                     </li>
                     <li class="side-parent" id="side-parent">
-                        <a  href="javascript:;">
+                        <a href="javascript:;">
                             <i class="fa fa-history" style="font-size:16px"></i>
                             <span style="vertical-align:inherit">我的历史</span>
                         </a>
@@ -124,12 +125,14 @@
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
                         </div>
-                        <h3 style="display: inline-block"><a href="##" th:text="${user.userName}"></a></h3>
+                        <h3 style="display: inline-block">
+                            <a href="##" th:text="${user.userName}"></a>
+                        </h3>
                         <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${user.level}"></span>
                         <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${user.experience}"></span>
                         <div class="home-user-data">
-                            <p th:text="'邮箱:'+${user.email}"></p>
-                            <p th:text="'手机号'+${user.phone}"></p>
+                            <p>邮箱：<i th:text="${user.email}"></i></p>
+                            <p>手机号：<i th:text="${user.phone}"></i></p>
                         </div>
                     </div>
                 </div>
@@ -140,17 +143,18 @@
                             <li style="margin: 10px 0" th:each="readHistory:${readHistory}">
                                 <div class="book-rank-list" style="overflow: hidden;">
                                     <div class="book-rank-img">
-                                        <img th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;"/>
+                                        <img th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
                                     </div>
-                                    <div class="book-rank-list-text"   style="width:425px;float:left;margin:5px 0 0 20px;">
+                                    <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.novelTitle}"></h4>
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.chapterTitle}"></h4>
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.title}"></h4>
                                         <p style="font-size: 10px;color: gray;margin-top: 10px;">
-                                            <span class="book-rank-writer" th:text="${readHistory.authors}"></span><city>|</city>
+                                            <span class="book-rank-writer" th:text="${readHistory.authors}"></span>
+                                            <city>|</city>
                                         </p>
                                         <p th:text="${readHistory.createTime}"></p>
-                                       </div>
+                                    </div>
                                     <div class="rank-book-buttons">
                                         <span class="deleteReadHistory" th:attr="uniqueId=${readHistory.uniqueId}">删除</span>
                                         <span class="rank-book-details" th:attr="novelId=${readHistory.novelIndexId}">书籍详情</span>
@@ -159,7 +163,7 @@
                             </li>
                         </ul>
                     </div>
-                    <ul class="history-list"style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                    <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </form>
                 <form id="addComment" method="post" class="history-main">
                     <h2 class="history-title">评论历史</h2>
@@ -168,14 +172,15 @@
                             <li style="margin: 10px 0">
                                 <div class="book-rank-list" style="overflow: hidden;">
                                     <div class="book-rank-img">
-                                        <img style="width: 100px;float: left;"/>
+                                        <img style="width: 100px;float: left;" />
                                     </div>
-                                    <div class="book-rank-list-text"   style="width:425px;float:left;margin:5px 0 0 20px;">
+                                    <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
                                         <h4 style="font-size: 15px;font-weight: 400;"></h4>
                                         <h4 style="font-size: 15px;font-weight: 400;"></h4>
                                         <h4 style="font-size: 15px;font-weight: 400;"></h4>
                                         <p style="font-size: 10px;color: gray;margin-top: 10px;">
-                                            <span class="book-rank-writer"></span><city>|</city>
+                                            <span class="book-rank-writer"></span>
+                                            <city>|</city>
                                         </p>
                                         <p></p>
                                     </div>
@@ -187,7 +192,7 @@
                             </li>
                         </ul>
                     </div>
-                    <ul class="history-list"style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                    <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </form>
                 <form id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title">我的书架</h2>
@@ -231,17 +236,21 @@
                         <form id="setBasicForm" action="" method="post">
                             <input type="hidden" name="csrfToken" value="" class="elCsrf">
                             <dl>
+                                <dt>用户名：</dt>
                                 <input type="text" id="userName" class="input" th:value="${user.userName}">
                             </dl>
                             <dl class="form-higher">
+                                <dt>手机号：</dt>
                                 <input type="text" id="phone" class="input" th:value="${user.phone}">
                             </dl>
                             <dl class="form-higher">
+                                <dt>邮箱号：</dt>
                                 <input type="email" id="txtemailnumber" class="input" th:value="${user.email}">
                             </dl>
                             <dl class="form-higher">
+                                <dt>验证码：</dt>
                                 <input name="activateCode" class="input" type="text" placeholder="请输入验证码" style="width: 149px;" autocomplete="off">
-                                <button  href="###" type="button" id="get-code">获取验证码</button>
+                                <button href="###" type="button" id="get-code">获取验证码</button>
                             </dl>
                             <dl class="form-higher">
                                 <dt></dt>
@@ -264,9 +273,8 @@
                                 <p class="gray">支持jpg、gif、png格式图片，上传文件大小不超过5MB，图片尺寸需大于200*200。</p>
                             </div>
                             <div>
-                                <input type="file" style="margin: 0 10px;width: 180px"  class="button" id="file" name="file">
-                                <button id="sure" type="button" class="button" >确定</button>
-                                <label class="button" role="button">选择系统头像</label>
+                                <input type="file" style="margin: 0 10px;width: 180px" class="button" id="file" name="file">
+                                <button id="sure" type="button" class="button">确定<i style="font-size: 12px;color: #dcdcdc;">（请确定后再点击保存）</i></button>
                             </div>
                         </div>
                     </form>
@@ -276,22 +284,24 @@
     </div>
 
     <script>
-        function GetSeries () {
+        function GetSeries() {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/novel/series/all",
-                type:"get",
-                data:"",
-                success:function (data) {
+                url: "http://localhost:8080/future-novel/api/novel/series/all",
+                type: "get",
+                data: "",
+                success: function(data) {
                     console.log(data);
-                    for (var i=0;i<data.length;i++){
+                    for (var i = 0; i < data.length; i++) {
                         $("#data").append("<option value='" + "" + data[i] + "" + "'>")
                     }
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data.errorMessage)
                 }
             });
         }
-        GetSeries ();
+        GetSeries();
+
         function open() {
             var s = document.getElementById("mask");
             s.style.display = "block";
@@ -300,6 +310,7 @@
             var c = document.getElementById("setting-content");
             c.style.display = "block";
         }
+
         function close() {
             var s = document.getElementById("mask");
             s.style.display = "none";
@@ -320,47 +331,48 @@
             $("#tabTarget1").removeClass("checked");
             $("#tabTarget2").addClass("checked");
         });
-        $("#history").click(function () {
-            $("#addToHistory").css("display","block");
-            $("#addToShelf").css("display","none");
-            $("#addToMyWork").css("display","none");
-            $("#addComment").css("display","none");
+        $("#history").click(function() {
+            $("#addToHistory").css("display", "block");
+            $("#addToShelf").css("display", "none");
+            $("#addToMyWork").css("display", "none");
+            $("#addComment").css("display", "none");
         })
-        $("#shelf").click(function () {
-            $("#addToShelf").css("display","block");
-            $("#addToHistory").css("display","none");
-            $("#addToMyWork").css("display","none");
-            $("#addComment").css("display","none");
+        $("#shelf").click(function() {
+            $("#addToShelf").css("display", "block");
+            $("#addToHistory").css("display", "none");
+            $("#addToMyWork").css("display", "none");
+            $("#addComment").css("display", "none");
         })
-        $("#work").click(function () {
-            $("#addToMyWork").css("display","block");
-            $("#addToHistory").css("display","none");
-            $("#addToShelf").css("display","none");
-            $("#addComment").css("display","none");
+        $("#work").click(function() {
+            $("#addToMyWork").css("display", "block");
+            $("#addToHistory").css("display", "none");
+            $("#addToShelf").css("display", "none");
+            $("#addComment").css("display", "none");
         })
-        $("#comment").click(function () {
-            $("#addComment").css("display","block");
-            $("#addToMyWork").css("display","none");
-            $("#addToHistory").css("display","none");
-            $("#addToShelf").css("display","none");
+        $("#comment").click(function() {
+            $("#addComment").css("display", "block");
+            $("#addToMyWork").css("display", "none");
+            $("#addToHistory").css("display", "none");
+            $("#addToShelf").css("display", "none");
         })
     </script>
     <script th:inline="javascript" async>
-        $("#file").on("change",function () {
-            var formData = new FormData ;
-            formData.append("file",$("#file")[0].files[0]);
+        $("#file").on("change", function() {
+            var formData = new FormData;
+            formData.append("file", $("#file")[0].files[0]);
             $.ajax({
                 url: "http://localhost:8080/future-novel/api/img/upload",
                 type: "put",
                 dataType: "JSON",
-                data:formData,
+                data: formData,
                 processData: false,
                 contentType: false,
-                success:function (data) {
-                    $("#sure").click(function () {
-                        $("#profileImgUrl").attr("src",data.url);
+                success: function(data) {
+                    $("#sure").click(function() {
+                        $("#profileImgUrl").attr("src", data.url);
                     });
-                },error(){
+                },
+                error() {
                     console.log("上传的图片有误")
                 }
             })
@@ -368,39 +380,43 @@
         //获取用户信息
         function getUserInfo() {
             $.ajax({
-                user:/*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/"/nonexist",
+                user: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/ "/nonexist",
                 type: "GET",
-                datatype:"json",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
                 data: {},
-                success:function (data) {
-           //         console.log(data);
-                }, error: function(data) {
+                success: function(data) {
+                    //         console.log(data);
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
         }
         getUserInfo();
         //修改用户信息
-        $("#set").click(function () {
+        $("#set").click(function() {
             tabAccountInfo();
         })
+
         function tabAccountInfo() {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/account/edit",
+                url: "http://localhost:8080/future-novel/api/account/edit",
                 type: "POST",
-                datatype:"json",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
-                data:JSON.stringify({
-                    userName:$("#userName").val(),
-                    phone:$("#phone").val(),
-                  //email:$("#txtemailnumber").val(),
-                    profileImgUrl:$("#profileImgUrl").attr("src"),
-                  //activateCode:
-                }),success:function (data) {
+                data: JSON.stringify({
+                    userName: $("#userName").val(),
+                    phone: $("#phone").val(),
+                    //email:$("#txtemailnumber").val(),
+                    profileImgUrl: $("#profileImgUrl").attr("src"),
+                    //activateCode:
+                }),
+                success: function(data) {
                     console.log(data);
-                    window.location.href=location;
-                },err:function (data) {
+                    window.location.href = location;
+                },
+                err: function(data) {
                     console.log(data);
                 }
             })
@@ -408,31 +424,34 @@
         //获取浏览历史
         function getReadHistory() {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/account/readHistory/get",
-                type:"POST",
-                datatype:"json",
+                url: "http://localhost:8080/future-novel/api/account/readHistory/get",
+                type: "POST",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
-                data:JSON.stringify({
+                data: JSON.stringify({
 
-                }),success:function (data) {
+                }),
+                success: function(data) {
                     console.log(data)
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
         }
         getReadHistory();
         //删除某条浏览记录
-        function delegeReadHistory(HistoryId){
+        function delegeReadHistory(HistoryId) {
             $.ajax({
-                url:"http://localhost:8080/future-novel/api/account/readHistory/"+HistoryId,
-                type:"delete",
-                datatype:"json",
+                url: "http://localhost:8080/future-novel/api/account/readHistory/" + HistoryId,
+                type: "delete",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
                 data: {},
-                success:function (data) {
+                success: function(data) {
                     console.log(data)
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
@@ -440,81 +459,86 @@
         //获取用户所有小说的页数
         function geNovelAllPage() {
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/pages']]*/"/nonexist",
-                type:"GET",
-                datatype:"json",
+                url: /*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/pages']]*/ "/nonexist",
+                type: "GET",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
                 data: {
                     per_page: 5
                 },
-                success:function (data) {
+                success: function(data) {
                     console.log(data)
-                    if(data.pages!=1){
-                        for (var i=1;i<=data.pages;i++){
-                            $(".box-page").append("<span class=\"rank-page\">" + "" +i+ "" + "</span>")
+                    if (data.pages != 1) {
+                        for (var i = 1; i <= data.pages; i++) {
+                            $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
                         }
                     }
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
         }
         geNovelAllPage();
         //获取用户所有小说
-        function getAccountAllNovel(page,sortBy){
+        function getAccountAllNovel(page, sortBy) {
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/get']]*/"/nonexist",
-                type:"GET",
-                datatype:"json",
+                url: /*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/get']]*/ "/nonexist",
+                type: "GET",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
-                data:{
-                    per_page:5,
-                    page:page,
-                    sort_by:sortBy,
-                },success:function (data) {
+                data: {
+                    per_page: 5,
+                    page: page,
+                    sort_by: sortBy,
+                },
+                success: function(data) {
                     console.log(data);
-                    for(var i=0;i<data.length;i++){
-                    $("#workList").append("<li>\n" +
-                        "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
-                        "                                <div class=\"book-rank-img\">\n" +
-                        "                                <div class=\"book-rank-img\">\n" +
-                        "                                    <img src='" + "" + data[i].coverImgUrl+ "" + "' style=\"width: 100px;float: left;\"/>\n" +
-                        "                                </div>\n" +
-                        "                                <div class=\"book-rank-list-text\"   style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
-                        "                                    <h4 style=\"font-size: 15px;font-weight: 400;margin-top:10px;\">" + "" + data[i].title+ "" + "</h4>\n" +
-                        "                                    <p style=\"font-size: 10px;color: gray;margin-top: 25px;\">\n" +
-                        "                                        <span class=\"book-rank-writer\">" + "" + data[i].authors+ "" + "</span><city>|</city>\n" +
-                        "                                        <span class=\"book-rank-writer\">" + "" + data[i].publisher+ "" + "</span><city>|</city>\n" +
-                        "                                        <span class=\"book-rank-writer\">" + "" + data[i].tags+ "" + "</span><city>|</city>\n" +
-                        "                                        <span class=\"book-rank-writer\">" + ""+'共有' + data[i].chapters.length+ '章'+"" + "</span><city>|</city>\n" +
-                        "                                    </p>\n" +
-                        "                                    <span class=\"book-rank-synopsis\">" + "" + data[i].description+ "" + "</span>\n" +
-                        "                                </div>\n" +
-                        "                                <div class=\"rank-book-buttons\">\n" +
-                        "                                    <span class=\"rank-book-write\" uploaderId='"+data[i].uploader+"" + "' novelId='"+data[i].uniqueId+"' >编写书籍</span>\n" +
-                        "                                    <span class=\"rank-book-details\" uploaderId='"+data[i].uploader+"" + "' novelId='"+data[i].uniqueId+"'>书籍详情</span>\n" +
-                        "                                </div>\n" +
-                        "                            </div>\n" +
-                        "                            </div>\n" +
-                        "                        </li>");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#workList").append("<li>\n" +
+                            "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
+                            "                                <div class=\"book-rank-img\">\n" +
+                            "                                <div class=\"book-rank-img\">\n" +
+                            "                                    <img src='" + "" + data[i].coverImgUrl + "" + "' style=\"width: 100px;float: left;\"/>\n" +
+                            "                                </div>\n" +
+                            "                                <div class=\"book-rank-list-text\"   style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
+                            "                                    <h4 style=\"font-size: 15px;font-weight: 400;margin-top:10px;\">" + "" + data[i].title + "" + "</h4>\n" +
+                            "                                    <p style=\"font-size: 10px;color: gray;margin-top: 25px;\">\n" +
+                            "                                        <span class=\"book-rank-writer\">" + "" + data[i].authors + "" + "</span><city>|</city>\n" +
+                            "                                        <span class=\"book-rank-writer\">" + "" + data[i].publisher + "" + "</span><city>|</city>\n" +
+                            "                                        <span class=\"book-rank-writer\">" + "" + data[i].tags + "" + "</span><city>|</city>\n" +
+                            "                                        <span class=\"book-rank-writer\">" + "" + '共有' + data[i].chapters.length + '章' + "" + "</span><city>|</city>\n" +
+                            "                                    </p>\n" +
+                            "                                    <span class=\"book-rank-synopsis\">" + "" + data[i].description + "" + "</span>\n" +
+                            "                                </div>\n" +
+                            "                                <div class=\"rank-book-buttons\">\n" +
+                            "                                    <span class=\"rank-book-write\" uploaderId='" + data[i].uploader + "" + "' novelId='" + data[i].uniqueId + "' >编写书籍</span>\n" +
+                            "                                    <span class=\"rank-book-details\" uploaderId='" + data[i].uploader + "" + "' novelId='" + data[i].uniqueId + "'>书籍详情</span>\n" +
+                            "                                </div>\n" +
+                            "                            </div>\n" +
+                            "                            </div>\n" +
+                            "                        </li>");
                     }
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             });
         }
         //获取用户所有收藏夹
-        function getAllAcconutSelf(){
+        function getAllAcconutSelf() {
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/"/nonexist",
-                type:"GET",
-                datatype:"json",
+                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
+                type: "GET",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
-                data:{
+                data: {
 
-                },success:function (data) {
+                },
+                success: function(data) {
                     console.log(data);
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
@@ -523,16 +547,18 @@
         //获取用户评论历史
         function getAccountComment(page) {
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/comment/get']]*/"/nonexist",
-                type:"GET",
-                datatype:"json",
+                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/comment/get']]*/ "/nonexist",
+                type: "GET",
+                datatype: "json",
                 contentType: "application/json;charset=UTF-8",
-                data:{
-                    per_page:10,
-                    page:page
-                },success:function (data) {
+                data: {
+                    per_page: 10,
+                    page: page
+                },
+                success: function(data) {
                     console.log(data)
-                },error:function (data) {
+                },
+                error: function(data) {
                     console.log(data);
                 }
             })
@@ -541,64 +567,63 @@
         //更改邮箱时获取验证码
         $("#get-code").click(function() {
             const email = $("#txtemailnumber").val();
-            if (! $("#txtemailnumber").val().match(/^(\w){3,}(\.\w+)*@(\w){2,}((\.\w+)+)$/)) {
+            if (!$("#txtemailnumber").val().match(/^(\w){3,}(\.\w+)*@(\w){2,}((\.\w+)+)$/)) {
                 alert("请填写正确的邮箱地址");
                 return;
             }
-        $("#get-code").attr('disabled', true).html("30秒后可重试");
-        $.ajax({
-            url: /*[[${#request.getContextPath()} + '/api/sendCaptcha']]*/ "/",
-            type: 'POST',
-            dataType: "JSON",
-            contentType: "application/json;charset=UTF-8",
-            data: JSON.stringify({
-                email: email
-            }),
-            success: function() {
-                $("#get-code").attr('disabled', true).html("30秒后可重试");
-                const interval = setInterval(function() {
-                    const htmlobj = $("#get-code");
-                    let remaintime = parseInt(htmlobj.html().substr(0, 2));
-                    remaintime--;
-                    if (remaintime < 10) remaintime = "0" + remaintime;
-                    htmlobj.html(remaintime + "秒后可重试");
-                }, 1000);
-                setTimeout(function() {
-                    $("#get-code").attr('disabled', false).html('重新发送');
-                    clearInterval(interval);
-                }, 30000);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                const data = JSON.parse(jqXHR.responseText);
-                alert("发送失败，请稍候再试:" + data.errorMessage);
-                $("#get-code").attr('disabled', false).html("发送");
-            }
+            $("#get-code").attr('disabled', true).html("30秒后可重试");
+            $.ajax({
+                url: /*[[${#request.getContextPath()} + '/api/sendCaptcha']]*/ "/",
+                type: 'POST',
+                dataType: "JSON",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    email: email
+                }),
+                success: function() {
+                    $("#get-code").attr('disabled', true).html("30秒后可重试");
+                    const interval = setInterval(function() {
+                        const htmlobj = $("#get-code");
+                        let remaintime = parseInt(htmlobj.html().substr(0, 2));
+                        remaintime--;
+                        if (remaintime < 10) remaintime = "0" + remaintime;
+                        htmlobj.html(remaintime + "秒后可重试");
+                    }, 1000);
+                    setTimeout(function() {
+                        $("#get-code").attr('disabled', false).html('重新发送');
+                        clearInterval(interval);
+                    }, 30000);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    const data = JSON.parse(jqXHR.responseText);
+                    alert("发送失败，请稍候再试:" + data.errorMessage);
+                    $("#get-code").attr('disabled', false).html("发送");
+                }
+            });
         });
-        });
 
 
 
-        $(".rank-book-buttons").on("click",".rank-book-details",function () {
-            window.location.href="http://localhost:8080/future-novel/novel/"+$(this).attr("novelId")+"/view";
+        $(".rank-book-buttons").on("click", ".rank-book-details", function() {
+            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
         })
-        $("#workList").on("click",".rank-book-details",function () {
-            window.location.href="http://localhost:8080/future-novel/novel/"+$(this).attr("novelId")+"/view";
+        $("#workList").on("click", ".rank-book-details", function() {
+            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
         })
-        $("#workList").on("click",".rank-book-write",function () {
-            window.location.href="http://localhost:8080/future-novel/novel/"+$(this).attr("novelId")+"/write";
+        $("#workList").on("click", ".rank-book-write", function() {
+            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/write";
         })
-        $(".rank-book-buttons").on("click",".deleteReadHistory",function () {
+        $(".rank-book-buttons").on("click", ".deleteReadHistory", function() {
             delegeReadHistory($(this).attr("uniqueId"));
             window.location.href = window.location.href;
         })
-        getAccountAllNovel(1,"HOT_DESC");
-        $(".box-page").on("click",".rank-page",function () {
+        getAccountAllNovel(1, "HOT_DESC");
+        $(".box-page").on("click", ".rank-page", function() {
             $(this).toggleClass("tab");
             $(this).siblings().removeClass("tab");
             $("#workList").empty();
-            getAccountAllNovel($(this).text(),);
+            getAccountAllNovel($(this).text(), );
         })
-
     </script>
 </body>
 

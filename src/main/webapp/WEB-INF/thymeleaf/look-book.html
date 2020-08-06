@@ -36,17 +36,14 @@
                     <ul>
                         <li id="min-search">
                             <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
-                                <button id="search-btn" type="submit" style="background-color: #2470bf;">
-                                    <i class="fa fa-search" style="font-size:16px;color: #ffffff;margin: 16px 20px 0 0;"></i>
-                                </button>
-                                <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="KEYWORDS">
-                                <!-- <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS"> -->
+                                <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
+                                <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS">
                                 <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
-                                <div style=" max-height:150px; overflow:auto;">
-                                    <datalist id="data">
-
-                                    </datalist>
-                                </div>
+                                <button id="search-btn" for="searchSubmit" type="submit" style="background-color: #2470bf;">
+                                    <a onclick="doSearch(null)" style="padding-left: 5px;">
+                                        <i class="fa fa-search" style="font-size:16px;color: #ffffff;margin: 16px 20px 0 0;"></i>
+                                     </a>
+                                </button>
                             </form>
                             <li class="line"></li>
                         </li>

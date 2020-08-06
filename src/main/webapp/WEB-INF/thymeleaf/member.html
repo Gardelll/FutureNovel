@@ -59,12 +59,12 @@
                         </li>
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
-                            <a th:if="${session.currentAccount} ne null" th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+                            <a th:if="${session.currentAccount} ne null" th:href="${#request.getContextPath()}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                                 <i class="fa fa-book" style="font-size:16px">我的书架</i>
                             </a>
                         </li>
                         <li class="avatar" th:each="user:${session.currentAccount}">
-                            <a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
+                            <a th:href="${#request.getContextPath()}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                                 <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%">
                                 <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;">
                             </a>
@@ -78,7 +78,7 @@
             <!-- 侧边导航栏-->
             <div class="personal-side">
                 <ul class="side-main">
-                    <a th:href="@{/}" href="http://localhost:8080/future-novel/" class="side-ul-a">
+                    <a th:href="@{/}" class="side-ul-a">
                         <i class="fa fa-home" style="font-size:16px"></i>首页
                     </a>
                     <li class="side-parent">
@@ -136,6 +136,8 @@
                 </div>
                 <form id="addToHistory" method="post" class="history-main">
                     <h2 class="history-title">浏览历史</h2>
+                    <a href="javascript:;" id="clearAllHistory">清空所有历史</a>
+
                     <div class="readHistory">
                         <ul style="overflow:hidden;">
                             <li style="margin: 10px 0" th:each="readHistory:${readHistory}">
@@ -166,28 +168,8 @@
                 <form id="addComment" method="post" class="history-main">
                     <h2 class="history-title">评论历史</h2>
                     <div class="readHistory">
-                        <ul style="overflow:hidden;">
-                            <li style="margin: 10px 0">
-                                <div class="book-rank-list" style="overflow: hidden;">
-                                    <div class="book-rank-img">
-                                        <img style="width: 100px;float: left;" />
-                                    </div>
-                                    <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-                                        <h4 style="font-size: 15px;font-weight: 400;"></h4>
-                                        <h4 style="font-size: 15px;font-weight: 400;"></h4>
-                                        <h4 style="font-size: 15px;font-weight: 400;"></h4>
-                                        <p style="font-size: 10px;color: gray;margin-top: 10px;">
-                                            <span class="book-rank-writer"></span>
-                                            <city>|</city>
-                                        </p>
-                                        <p></p>
-                                    </div>
-                                    <div class="rank-book-buttons">
-                                        <span class="deleteReadHistory">删除</span>
-                                        <span class="rank-book-details">书籍详情</span>
-                                    </div>
-                                </div>
-                            </li>
+                        <ul id="commentHistory" style="overflow:hidden;">
+
                         </ul>
                     </div>
                     <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
@@ -289,8 +271,9 @@
     <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <script>
         function GetSeries() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/novel/series/all",
+                url: contextPath+"/api/novel/series/all",
                 type: "get",
                 data: "",
                 success: function(data) {
@@ -362,10 +345,11 @@
     </script>
     <script th:inline="javascript" async>
         $("#file").on("change", function() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             var formData = new FormData;
             formData.append("file", $("#file")[0].files[0]);
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/img/upload",
+                url:contextPath+"/api/img/upload",
                 type: "put",
                 dataType: "JSON",
                 data: formData,
@@ -404,8 +388,9 @@
         })
 
         function tabAccountInfo() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/account/edit",
+                url: contextPath+"/api/account/edit",
                 type: "POST",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -427,8 +412,9 @@
         }
         //获取浏览历史
         function getReadHistory() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/account/readHistory/get",
+                url: contextPath+"/api/account/readHistory/get",
                 type: "POST",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -446,8 +432,9 @@
         getReadHistory();
         //删除某条浏览记录
         function delegeReadHistory(HistoryId) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/account/readHistory/" + HistoryId,
+                url: contextPath+"/api/account/readHistory/" + HistoryId,
                 type: "delete",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -541,7 +528,20 @@
                     page: page
                 },
                 success: function(data) {
-                    //    console.log(data)
+                    console.log(data);
+                    for(var i=0;i<data.length;i++){
+                        $("#commentHistory").append("<li>\n" +
+                            "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
+                            "<div class=\"our-say cf\"\n" +
+                            "<h4>\n" +
+                            "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
+                            "</h4>\n" +
+                            "<p id=\"\">"+""+data[i].text+""+"</p>\n" +
+                            "<p>评分："+""+data[i].rating+""+"</p>\n" +
+                            "<a type=\"button\" class=\"remove\" commentId='"+""+data[i].uniqueId+""+"' style=\"color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;\">删除</a>\n" +
+                            "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
+                            "</li>");
+                    }
                 },
                 error: function(data) {
                     console.log(data);
@@ -549,10 +549,30 @@
             })
         }
         getAccountComment(1);
-
-        function removeAllHistory() {
+        $("#commentHistory").on("click",".remove",function () {
+            var str=$(this).attr("commentId");
+            removeComment(str);
+        })
+        function removeComment(uniqueId) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/account/readHistory/clear",
+                url:contextPath+"/api/comment/"+uniqueId,
+                type:"DELETE",
+                datatype:"JSON",
+                contentType: "application/json;charset=UTF-8",
+                data:{},
+                success:function (data) {
+                    window.location.href=location;
+                    console.log(data);
+                },error:function (data) {
+                    console.log(data)
+                }
+            })
+        }
+        function removeAllHistory() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url:contextPath+"/api/account/readHistory/clear",
                 type: "DELETE",
                 dataType: "JSON",
                 contentType: "application/json;charset=UTF-8",
@@ -615,7 +635,6 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $("#shelfList").append("<button class='removeSelf' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
                             "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList'></ul>");
@@ -656,8 +675,9 @@
             })
             //添加收藏夹
         function addShelf() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/bookSelf/create",
+                url: contextPath+"/api/bookSelf/create",
                 type: "POST",
                 datatype: "JSON",
                 contentType: "application/json;charset=UTF-8",
@@ -676,8 +696,9 @@
         }
         //删除收藏夹里边的小说
         function removeSelfNovel(bookSelfId, novelIndexId) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/bookSelf/" + bookSelfId + "/remove",
+                url:contextPath+"/api/bookSelf/" + bookSelfId + "/remove",
                 type: "POST",
                 datatype: "JSON",
                 contentType: "application/json;charset=UTF-8",
@@ -694,8 +715,9 @@
         }
         //删除收藏夹
         function removeSelf(bookSelfId) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: "http://localhost:8080/future-novel/api/bookSelf/" + bookSelfId,
+                url: contextPath+"/api/bookSelf/" + bookSelfId,
                 type: "DELETE",
                 datatype: "JSON",
                 contentType: "application/json;charset=UTF-8",
@@ -711,13 +733,16 @@
 
 
         $(".rank-book-buttons").on("click", ".rank-book-details", function() {
-            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            window.location.href = contextPath+"/novel/" + $(this).attr("novelId") + "/view";
         })
         $("#workList").on("click", ".rank-book-details", function() {
-            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            window.location.href = contextPath+"/novel/" + $(this).attr("novelId") + "/view";
         })
         $("#workList").on("click", ".rank-book-write", function() {
-            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/write";
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            window.location.href = contextPath+"/novel/" + $(this).attr("novelId") + "/write";
         })
         $(".rank-book-buttons").on("click", ".deleteReadHistory", function() {
             delegeReadHistory($(this).attr("uniqueId"));
@@ -737,7 +762,8 @@
             $(this).next().slideToggle("slow");
         })
         $(".shelf-list").on("click", ".rank-book-details", function() {
-            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            window.location.href = contextPath+"/novel/" + $(this).attr("novelId") + "/view";
         })
         $(".shelf-list").on("click", ".deleteNovelShelf", function() {
             var str1 = $(this).attr("uniqueId");

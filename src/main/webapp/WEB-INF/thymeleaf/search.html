@@ -74,6 +74,18 @@
             <h3 style="font-size: 26px;line-height: 26px;margin-bottom: 15px;font-family:宋体;font-weight: 600;">
                 搜索结果
             </h3>
+            <div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: #fff;padding: 10px;">
+                <div class="tool-box">
+                    <div class="type-list cf">
+                        <a href="javascript:;" class="SortBy"  sortBy="RANDOM">随机排序</a>
+                        <a href="javascript:;" class="SortBy"  sortBy="COPYRIGHT">版权排序</a>
+                        <a href="javascript:;" class="SortBy"  sortBy="PUBDATE">发布日期排序</a>
+                        <a href="javascript:;" class="SortBy"  sortBy="PUBLISHER">出版社排序</a>
+                        <a href="javascript:;" class="SortBy"  sortBy="RATING">评分排序</a>
+                        <a href="javascript:;" class="SortBy"  sortBy="SERIES">系列排序</a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="rank-body" style="margin:10px 0;">
             <ul style="overflow: hidden;">
@@ -173,21 +185,14 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
+
     function submitForm(index) {
         var str = "http://localhost:8080/future-novel/search?page=" + index + "&per_page=5";
         $("#form").attr("action", str);
         $("#form").submit();
     }
-    if ([
-            [$ {
-                totalPage
-            }]
-        ] != 1) {
-        for (var i = 1; i <= [
-                [$ {
-                    totalPage
-                }]
-            ]; i++) {
+    if ([[${totalPage}]] != 1) {
+        for (var i = 1; i <= [[${totalPage}]]; i++) {
             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
         }
     }
@@ -198,6 +203,10 @@
     })
     $(".rank-book-buttons").on("click", ".rank-book-details", function() {
         window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+    })
+    $(".SortBy").click(function () {
+        window.location.href=location;
+        $("#searchSubmitType").attr("value",$(this).attr("SortBy"));
     })
 </script>
 

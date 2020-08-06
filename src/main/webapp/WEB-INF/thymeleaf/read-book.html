@@ -258,8 +258,9 @@
     })
     //添加评论
     function addComment() {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
-            url:"http://localhost:8080/future-novel/api/novel/section/"+$("#getSectionId").text()+"/comment",
+            url:contextPath+"/api/novel/section/"+$("#getSectionId").text()+"/comment",
             datatype:"JSON",
             type:"POST",
             contentType: "application/json;charset=UTF-8",
@@ -269,7 +270,6 @@
             }),success:function (data) {
                 console.log(data);
                 window.location.href=location;
-                getSectionComment(1);
             },error: function(data) {
             	console.log(data)
             }
@@ -281,8 +281,9 @@
         removeComment(str);
     })
     function removeComment(uniqueId) {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
-            url:"http://localhost:8080/future-novel/api/comment/"+uniqueId,
+            url:contextPath+"/api/comment/"+uniqueId,
             type:"DELETE",
             datatype:"JSON",
             contentType: "application/json;charset=UTF-8",
@@ -295,8 +296,9 @@
         })
     }
     function getSectionComment(page) {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
-            url:"http://localhost:8080/future-novel/api/novel/section/"+$("#getSectionId").text()+"/comment/get",
+            url:contextPath+"/api/novel/section/"+$("#getSectionId").text()+"/comment/get",
             datatype:"JSON",
             type:"GET",
             contentType: "application/json;charset=UTF-8",

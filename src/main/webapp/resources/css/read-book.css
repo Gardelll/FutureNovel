@@ -643,3 +643,22 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+#rating{
+    float: left;
+    margin:28px 10px 0 10px;
+    padding: 8px 0 8px 8px;
+    background-color:white;
+    border: none;
+}
+.profileImgUrl{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    float: left;
+}
+.as{
+    font-size: 12px;
+}
+#comment li{
+    border-bottom: 1px solid #d4d4d4;
+}

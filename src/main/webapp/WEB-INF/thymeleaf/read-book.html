@@ -43,6 +43,10 @@
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                         <a href="###" th:text="${user.userName}"></a>
+                        <a href="###"  th:text="${'LV'+user.level}"></a>
+                    </li>
+                    <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
+                        <a href="###" th:text="${user.userName}"></a>
                         <a href="###" th:text="${'LV'+user.level}"></a>
                     </li>
                     <li class="line"></li>
@@ -51,10 +55,14 @@
                             <i class="fa fa-book" style="font-size:16px">我的书架</i>
                         </a>
                     </li>
-                    <li class="avatar" th:each="user:${session.currentAccount}">
+                    <li class="avatar" th:if="${session.currentAccount} eq null">
+                        <a href="../../WEB-INF/thymeleaf/member.html" target="_blank" style="margin-top: 4.5px">
+                            <img src="../../resources/img/avatar.png">
+                        </a>
+                    </li>
+                    <li class="avatar" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                         <a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}" target="_blank">
-                            <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%;">
-                            <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;">
+                            <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px">
                         </a>
                     </li>
                 </ul>
@@ -107,6 +115,7 @@
                             </a>
                             <h3 class="chapterName">
                                 <span class="content-wrap" th:text="|${chapter.title} - ${section.title}|"> 第1章 父子</span>
+                                <p id="getSectionId" style="display: none" th:text="${section.uniqueId}"></p>
                                 <span class="review-count">
                                     <i><cite></cite></i>99
                                 </span>
@@ -133,28 +142,29 @@
                                 <a class="admire admireBtn" href="##">赞赏</a>
                             </div>
                         </div>
+
                         <div class="our-say-wrap">
                             <h3>评论</h3>
-                            <div class="our-say cf" th:each=" memberCon: ${session.currentAccount}">
-                                <h4>
-                                    <a href="###" th:text="${memberCon.userName}">书友</a>
-                                </h4>
-                                <p>上阵父子兵，替父从军</p>
-                                <a type="button" id="remove" style="color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;">删除</a>
-                                <a type="submit" id="pinglun" style="color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;">评论</a>
-                            </div>
-                            <div class="send-textarea" style="display: none;" id="send-textarea" th:each=" memberCon: ${session.currentAccount}">
-                                <textarea placeholder="欢迎追加评论..." id="sendTextarea" style="margin: 27px 0px;width: 736px;height: 121px;"></textarea>
-                                <div class="text-tools" style="bottom: 5px;">
-                                    <a href="##" class="blue-btn" type="submit" id="fabiao">发表</a>
-                                    <a href="##" class="blue-btn" type="submit" id="quxiao">取消</a>
-                                    <i>0/150</i>
-                                </div>
-                            </div>
+                            <ul id="comment">
+
+                            </ul>
                             <div class="send-textarea">
+                                <select id="rating">
+                                    <option selected>选择评分</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
                                 <textarea placeholder="有想法快写下来吧..." id="sendTextarea"></textarea>
                                 <div class="text-tools fr">
-                                    <a href="##" class="blue-btn" type="submit">发表</a>
+                                    <a href="##" class="blue-btn" type="submit" id="commentSure">发表</a>
                                     <i>0/150</i>
                                 </div>
                             </div>
@@ -253,5 +263,97 @@
         $("#send-textarea").hide();
     });
 </script>
+<script th:inline="javascript" async>
+    function getSectionComment(page) {
+        $.ajax({
+            url:"http://localhost:8080/future-novel/api/novel/section/"+$("#getSectionId").text()+"/comment/get",
+            datatype:"JSON",
+            type:"GET",
+            contentType: "application/json;charset=UTF-8",
+            data:{
+                per_page:5,
+                page:page
+            },success:function (data) {
+                console.log(data);
+                console.log(data.length);
+                for(var i=0;i<data.length;i++){
+                    $("#comment").append("<li>\n" +
+                        "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
+                        "<div class=\"our-say cf\"\n" +
+                        "<h4>\n" +
+                        "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
+                        "</h4>\n" +
+                        "<p id=\"\">"+""+data[i].text+""+"</p>\n" +
+                        "<p>评分："+""+data[i].rating+""+"</p>\n" +
+                        "<a type=\"button\" class=\"remove\" commentId='"+""+data[i].uniqueId+""+"' style=\"color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;\">删除</a>\n" +
+                        "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
+                        "</li>");
+                }
+            },error:function (data) {
+                console.log(data)
+            }
+        })
+    }
+    getSectionComment(1);
+    $("#commentSure").click(function () {
+        addComment();
+    })
+    //添加评论
+    function addComment() {
+        $.ajax({
+            url:"http://localhost:8080/future-novel/api/novel/section/"+$("#getSectionId").text()+"/comment",
+            datatype:"JSON",
+            type:"POST",
+            contentType: "application/json;charset=UTF-8",
+            data:JSON.stringify({
+                rating:$("#rating").val(),
+                text:$("#sendTextarea").val(),
+            }),success:function (data) {
+                console.log(data);
+                window.location.href=location;
+            },error: function(data) {
+            	console.log(data)
+            }
+        })
+    }
+    //删除评论
+    $(".our-say-wrap").on("click",".remove",function () {
+        var str=$(this).attr("commentId");
+        removeComment(str);
+    })
+    function removeComment(uniqueId) {
+        $.ajax({
+            url:"http://localhost:8080/future-novel/api/comment/"+uniqueId,
+            type:"DELETE",
+            datatype:"JSON",
+            contentType: "application/json;charset=UTF-8",
+            data:{},
+            success:function (data) {
+                console.log(data);
+            },error:function (data) {
+                console.log(data)
+            }
+        })
+    }
+    //获取用户信息
+    function getUserInfo() {
+        $.ajax({
+            user: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/ "/nonexist",
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: {},
+            success: function(data) {
+                //         console.log(data);
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
+    getUserInfo();
+</script>
+
+
 
 </html>

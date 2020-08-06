@@ -437,6 +437,7 @@ input[type=radio] {
 
 .rank-book-details,
 .deleteReadHistory,
+.deleteNovelShelf,
 .rank-book-write {
     transition: 0.3s;
     cursor: pointer;
@@ -467,7 +468,7 @@ input[type=radio] {
     background-color: rgb(191, 44, 36);
 }
 
-.deleteReadHistory {
+.deleteReadHistory ,.deleteNovelShelf{
     line-height: 25px;
     font-size: 10px;
     height: 25px;
@@ -480,6 +481,9 @@ input[type=radio] {
 }
 
 .deleteReadHistory:hover {
+    background-color: #115f96;
+}
+.deleteNovelShelf:hover{
     background-color: #115f96;
 }
 
@@ -519,13 +523,13 @@ input[type=radio] {
     transform: scale(1.1, 1.1);
 }
 
-#addToMyWork {
+#addToShelf{
     display: block;
 }
 
 #addComment,
 #addToHistory,
-#addToShelf {
+#addToMyWork {
     display: none;
 }
 
@@ -571,6 +575,20 @@ input[type=radio] {
     padding: 7px;
     border: 1px solid #e0e0e0;
 }
+#ShelfBox{
+    display: none;
+}
+.NovelList{
+    margin: 20px 0;
+}
+.removeSelf{
+    font-size: 13px;
+    margin-right: 20px;
+    padding: 2px;
+    border: 1px solid red;
+    border-radius: 10px;
+}
+
 
 
 /* input[type=file] {

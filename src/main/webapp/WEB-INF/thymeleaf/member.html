@@ -198,7 +198,11 @@
                 </form>
                 <form id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title">我的书架</h2>
-                    <ul class="shelf-list" id="shelfList" style="height: 0px; transition: height 200ms ease 0s;">
+                    <a href="javascript:;" id="addShelf">创建收藏夹</a>
+                    <div id="ShelfBox">
+                        <input type="text" class="input" id="addShelfInput"><button type="button" id="SureToAddShelf">确定</button>
+                    </div>
+                    <ul class="shelf-list" id="shelfList" style="transition: height 200ms ease 0s;">
 
                     </ul>
                 </form>
@@ -292,7 +296,7 @@
                 type: "get",
                 data: "",
                 success: function(data) {
-                    console.log(data);
+            //        console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $("#data").append("<option value='" + "" + data[i] + "" + "'>")
                     }
@@ -415,7 +419,7 @@
                     //activateCode:
                 }),
                 success: function(data) {
-                    console.log(data);
+          //          console.log(data);
                     window.location.href = location;
                 },
                 err: function(data) {
@@ -434,7 +438,7 @@
 
                 }),
                 success: function(data) {
-                    console.log(data)
+              //      console.log(data)
                 },
                 error: function(data) {
                     console.log(data);
@@ -451,7 +455,7 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    console.log(data)
+             //       console.log(data)
                 },
                 error: function(data) {
                     console.log(data);
@@ -469,7 +473,7 @@
                     per_page: 5
                 },
                 success: function(data) {
-                    console.log(data)
+                //    console.log(data)
                     if (data.pages != 1) {
                         for (var i = 1; i <= data.pages; i++) {
                             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
@@ -495,7 +499,7 @@
                     sort_by: sortBy,
                 },
                 success: function(data) {
-                    console.log(data);
+                //    console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $("#workList").append("<li>\n" +
                             "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
@@ -527,25 +531,6 @@
                 }
             });
         }
-        //获取用户所有收藏夹
-        function getAllAcconutSelf() {
-            $.ajax({
-                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
-                type: "GET",
-                datatype: "json",
-                contentType: "application/json;charset=UTF-8",
-                data: {
-
-                },
-                success: function(data) {
-                    console.log(data);
-                },
-                error: function(data) {
-                    console.log(data);
-                }
-            })
-        }
-        getAllAcconutSelf();
         //获取用户评论历史
         function getAccountComment(page) {
             $.ajax({
@@ -558,7 +543,7 @@
                     page: page
                 },
                 success: function(data) {
-                    console.log(data)
+                //    console.log(data)
                 },
                 error: function(data) {
                     console.log(data);
@@ -566,6 +551,23 @@
             })
         }
         getAccountComment(1);
+        function removeAllHistory(){
+            $.ajax({
+                url:"http://localhost:8080/future-novel/api/account/readHistory/clear",
+                type:"DELETE",
+                dataType:"JSON",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify({}),success:function (data) {
+                 //   console.log(data);
+                    window.location.href=location;
+                },error:function (data) {
+                    console.log(data);
+                }
+            })
+        }
+        $("#clearAllHistory").click(function () {
+            removeAllHistory();
+        })
         //更改邮箱时获取验证码
         $("#get-code").click(function() {
             const email = $("#txtemailnumber").val();
@@ -603,7 +605,105 @@
                 }
             });
         });
+        //获取用户所有收藏夹
+        function getAllAcconutShelf() {
+            $.ajax({
+                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: {},
+                success: function(data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        $("#shelfList").append("<button class='removeSelf' uniqueId='"+""+data[i].uniqueId+""+"'>删除</button><a href=\"javascript:;\" uniqueId='"+""+data[i].uniqueId+""+"'  class=\"slidPar\">"+""+data[i].title+""+"</a>" +
+                            "<ul uniqueId='"+""+data[i].uniqueId+""+"' class='NovelList'></ul>");
+                        for(var j=0;j<data[i].novels.length;j++){
+                            $(".NovelList[uniqueId]").append("<li style=\"margin: 10px 0\" class='a' uniqueId='"+""+data[i].uniqueId+""+"' >\n" +
+                            "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
+                            "                                <div class=\"book-rank-img\">\n" +
+                            "                                    <img src='"+""+data[i].novels[j].coverImgUrl+""+"' style=\"width: 100px;float: left;\" />\n" +
+                            "                                </div>\n" +
+                            "                                <div class=\"book-rank-list-text\" style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
+                            "                                    <p style=\"font-size: 10px;color: gray;margin-top: 10px;\">\n" +
+                            "                                        <span class=\"book-rank-writer\">"+""+data[i].novels[j].authors+""+"</span><city>|</city>\n" +
+                            "                                        <span class=\"book-rank-writer\">"+""+data[i].novels[j].publisher+""+"</span><city>|</city>\n" +
+                            "                                        <span class=\"book-rank-writer\">"+""+data[i].novels[j].series+""+"</span><city>|</city>\n" +
+                            "                                        \n" +
+                            "                                    </p>\n" +
+                            "                                    <span class=\"book-rank-synopsis\">"+""+data[i].novels[j].description+""+"</span>\n" +
+                            "                                </div>\n" +
+                            "                                <div class=\"rank-book-buttons\">\n" +
+                            "                                    <span class=\"deleteNovelShelf\" uniqueId='"+""+data[i].uniqueId+""+"' novelId='"+""+data[i].novels[j].uniqueId+""+"'>删除</span>\n" +
+                            "                                    <span class=\"rank-book-details\" novelId='"+""+data[i].novels[j].uniqueId+""+"'>书籍详情</span>\n" +
+                            "                                </div>\n" +
+                            "                            </div>\n" +
+                            "                        </li>")
 
+                    }
+                    }
+                },
+
+                error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
+        getAllAcconutShelf();
+        $("#SureToAddShelf").click(function () {
+            addShelf();
+        })
+        //添加收藏夹
+        function addShelf(){
+            $.ajax({
+                url:"http://localhost:8080/future-novel/api/bookSelf/create",
+                type:"POST",
+                datatype:"JSON",
+                contentType: "application/json;charset=UTF-8",
+                data:JSON.stringify({
+                    title:$("#addShelfInput").val(),
+                }),
+                success:function (data) {
+                    console.log(data);
+                    $("#ShelfBox").css("display","none");
+                    window.location.href=window.location.href;
+                },error:function (data) {
+                    console.log(data);
+                }
+            })
+        }
+        //删除收藏夹里边的小说
+        function removeSelfNovel(bookSelfId,novelIndexId){
+            $.ajax({
+                url:"http://localhost:8080/future-novel/api/bookSelf/"+bookSelfId+"/remove",
+                type:"POST",
+                datatype:"JSON",
+                contentType: "application/json;charset=UTF-8",
+                data:JSON.stringify({
+                    novelIndexId :novelIndexId
+                }),
+                success:function (data) {
+                    window.location.href=location;
+                },error:function (data) {
+                    console.log(data);
+                }
+            })
+        }
+        //删除收藏夹
+        function removeSelf(bookSelfId){
+            $.ajax({
+                url:"http://localhost:8080/future-novel/api/bookSelf/"+bookSelfId,
+                type:"DELETE",
+                datatype:"JSON",
+                contentType: "application/json;charset=UTF-8",
+                data:{},
+                success:function (data) {
+                    console.log(data);
+                },error:function (data) {
+                    console.log(data);
+                }
+            })
+        }
 
 
         $(".rank-book-buttons").on("click", ".rank-book-details", function() {
@@ -626,6 +726,25 @@
             $("#workList").empty();
             getAccountAllNovel($(this).text(), );
         })
+        $("#addShelf").click(function () {
+            $("#ShelfBox").css("display","block");
+        })
+        $(".shelf-list").on("click",".slidPar",function () {
+            $(this).next().slideToggle("slow");
+        })
+        $(".shelf-list").on("click",".rank-book-details",function () {
+            window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+        })
+        $(".shelf-list").on("click",".deleteNovelShelf",function () {
+            var str1=$(this).attr("uniqueId");
+            var str2=$(this).attr("novelId");
+            removeSelfNovel(str1,str2);
+        })
+        $(".shelf-list").on("click",".removeSelf",function () {
+            var str3=$(this).attr("uniqueId");
+            removeSelf(str3);
+        })
+
     </script>
 </body>
 

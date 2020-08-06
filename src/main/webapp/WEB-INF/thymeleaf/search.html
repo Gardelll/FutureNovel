@@ -91,7 +91,7 @@
         <div class="rank-body" style="margin:10px 0;">
             <ul style="overflow: hidden;">
                 <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
-                <li th:each="novel:${novelIndexList}" th:text="${searchBy.name()} eq 'KEYWORDS'">
+                <li th:text="${searchBy.name()} eq 'KEYWORDS'" th:each="novel:${novelIndexList}">
                     <div class="book-rank-list" style="overflow: hidden;">
                         <div class="book-rank-img">
                             <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />

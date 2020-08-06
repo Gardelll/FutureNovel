@@ -486,3 +486,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+#box{
+    float: left;
+    display: none;
+}

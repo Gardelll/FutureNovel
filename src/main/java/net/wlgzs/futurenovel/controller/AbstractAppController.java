@@ -96,6 +96,15 @@ public abstract class AbstractAppController {
         binder.addCustomFormatter(defaultDateFormatter, Date.class);
     }
 
+    protected String getServerUrl() {
+        return this.serverUrl == null ?
+               this.serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                   .build()
+                   .normalize()
+                   .toString() :
+               this.serverUrl;
+    }
+
     protected boolean safeRedirect(String redirectTo) {
         String serverUrl = this.serverUrl == null ?
                            this.serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()

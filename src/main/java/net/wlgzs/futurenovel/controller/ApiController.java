@@ -478,6 +478,8 @@ public class ApiController extends AbstractAppController {
                                       @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                       @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                       HttpServletRequest request) {
+        if (getServerUrl().matches("^https?://(localhost|127.0.0.1|\\[::1]).+")) throw new FutureNovelException("禁止上传本地图片");
+
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();

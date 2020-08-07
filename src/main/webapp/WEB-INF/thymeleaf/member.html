@@ -186,6 +186,7 @@
                 </form>
                 <form id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
+                    <button class="blue-btn fl" th:href="@{/novel/create}">创建作品</button>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -270,25 +271,6 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <script>
-        function GetSeries() {
-            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-            $.ajax({
-                url: contextPath+"/api/novel/series/all",
-                type: "get",
-                data: "",
-                success: function(data) {
-                    //        console.log(data);
-                    for (var i = 0; i < data.length; i++) {
-                        $("#data").append("<option value='" + "" + data[i] + "" + "'>")
-                    }
-                },
-                error: function(data) {
-                    console.log(data.errorMessage)
-                }
-            });
-        }
-        GetSeries();
-
         function open() {
             var s = document.getElementById("mask");
             s.style.display = "block";
@@ -484,7 +466,7 @@
                     sort_by: sortBy,
                 },
                 success: function(data) {
-                    //    console.log(data);
+                     console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $("#workList").append("<li>\n" +
                             "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
@@ -635,11 +617,13 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    for (var i = 0; i < data.length; i++) {
+                    console.log(data);
+                    $("#shelfList").empty();
+                    for (let i = 0; i < data.length; i++) {
                         $("#shelfList").append("<button class='removeSelf' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
-                            "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList'></ul>");
-                        for (var j = 0; j < data[i].novels.length; j++) {
-                            $(".NovelList[uniqueId]").append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
+                            "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList' id='NovelList" + "" + data[i].uniqueId + "" + "'></ul>");
+                        for (let j = 0; j < data[i].novels.length; j++) {
+                            $("#NovelList"+data[i].uniqueId).append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
                                 "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                                 "                                <div class=\"book-rank-img\">\n" +
                                 "                                    <img src='" + "" + data[i].novels[j].coverImgUrl + "" + "' style=\"width: 100px;float: left;\" />\n" +
@@ -659,11 +643,9 @@
                                 "                                </div>\n" +
                                 "                            </div>\n" +
                                 "                        </li>")
-
                         }
                     }
                 },
-
                 error: function(data) {
                     console.log(data);
                 }
@@ -687,6 +669,10 @@
                 success: function(data) {
                     console.log(data);
                     $("#ShelfBox").css("display", "none");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#shelfList").append("<button class='removeSelf' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
+                            "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList'></ul>");
+                    }
                     window.location.href = window.location.href;
                 },
                 error: function(data) {

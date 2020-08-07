@@ -148,6 +148,7 @@
         $("#file").on("change", function() {
             var formData = new FormData;
             formData.append("file", $("#file")[0].files[0]);
+            console.log(formData)
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
                 url: contextPath+"/api/img/upload",
@@ -162,8 +163,8 @@
                         var imgurl = data.url;
                     });
                 },
-                error() {
-                    console.log("上传的图片有误")
+                error(data) {
+                    console.log(data)
                 }
             })
         });

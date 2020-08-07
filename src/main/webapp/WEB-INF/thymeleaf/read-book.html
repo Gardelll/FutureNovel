@@ -289,9 +289,9 @@
             contentType: "application/json;charset=UTF-8",
             data:{},
             success:function (data) {
-                console.log(data);
+                window.location.href=location;
             },error:function (data) {
-                console.log(data)
+               alert("无修改权限")
             }
         })
     }

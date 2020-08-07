@@ -69,6 +69,12 @@
             </div>
         </div>
     </div>
+    <div id="box">
+        <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
+            <option selected>请选择收藏夹</option>
+        </select>
+        <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
+    </div>
     <div class="main-content-wrap" id="main-content-wrap" style="background-color: #f5f5f5;">
         <div class="rank-header">
             <h3 style="font-size: 26px;line-height: 26px;margin-bottom: 15px;font-family:宋体;font-weight: 600;">
@@ -108,7 +114,7 @@
                         </div>
                         <div class="rank-book-buttons">
                             <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
-                            <span class="rank-book-add">加入书单</span>
+                            <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
                         </div>
                     </div>
                 </li>
@@ -134,7 +140,7 @@
                             </div>
                             <div class="rank-book-buttons">
                                 <span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
-                                <span class="rank-book-add">加入书单</span>
+                                <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
                             </div>
                         </div>
                         <span th:utext="${section.text}" style="color: black" class="content"></span>
@@ -162,7 +168,7 @@
                             </div>
                             <div class="rank-book-buttons">
                                 <span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
-                                <span class="rank-book-add">加入书单</span>
+                                <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
                             </div>
                         </div>
                         <span th:utext="${section.text}" style="color: black" class="content"></span>
@@ -202,6 +208,7 @@
         submitForm($(this).text());
     })
     $(".rank-book-buttons").on("click", ".rank-book-details", function() {
+        alert("123");
         window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
     })
     $(".SortBy").click(function () {

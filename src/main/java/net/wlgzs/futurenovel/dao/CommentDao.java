@@ -55,7 +55,7 @@ public interface CommentDao {
 
     @Delete({
         "<script> DELETE FROM `comment` <where> ",
-        "`comment`.`uniqueId` = #{uniqueId}, ",
+        "`comment`.`uniqueId` = #{uniqueId} ",
         "<if test='accountId != null'>AND `comment`.`accountId` = #{accountId}</if> ",
         "</where> </script>"
     })

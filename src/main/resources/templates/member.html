@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
     <link rel="stylesheet" href="../../resources/css/member.css" type="text/css" th:href="@{/resources/css/member.css}">
@@ -274,6 +275,13 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <script>
+        function popup_over(icon,color,contant){
+            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+            setTimeout(function(){
+                $('.popup_over').remove();
+                // clear('.popup_over');
+            },1500)
+        };
         function open() {
             var s = document.getElementById("mask");
             s.style.display = "block";
@@ -346,7 +354,7 @@
                     });
                 },
                 error() {
-                    console.log("上传的图片有误")
+                    popup_over('icon-sad','#d81e06',"上传图片格式有误");
                 }
             })
         });
@@ -366,7 +374,7 @@
                 }
             })
         }
-        getUserInfo();
+       // getUserInfo();
         //修改用户信息
         $("#set").click(function() {
             tabAccountInfo();
@@ -388,7 +396,10 @@
                 }),
                 success: function(data) {
                     //          console.log(data);
-                    window.location.reload();
+                    popup_over('icon-happy-l','#00ff0f',"修改成功");
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1500)
                 },
                 err: function(data) {
                     console.log(data);
@@ -414,7 +425,7 @@
                 }
             })
         }
-        getReadHistory();
+      //  getReadHistory();
         //删除某条浏览记录
         function delegeReadHistory(HistoryId) {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
@@ -425,7 +436,7 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    //       console.log(data)
+                    popup_over('icon-happy-l','#00ff0f',"删除成功");
                 },
                 error: function(data) {
                     console.log(data);
@@ -478,7 +489,7 @@
                             "                                    <img src='" + "" + data[i].coverImgUrl + "" + "' style=\"width: 100px;float: left;\"/>\n" +
                             "                                </div>\n" +
                             "                                <div class=\"book-rank-list-text\"   style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
-                            "                                    <h4 style=\"font-size: 15px;font-weight: 400;margin-top:10px;\">" + "" + data[i].title + "" + "</h4>\n" +
+                            "                                    <h4 style=\"font-size: 15px;font-weight: 400;margin-top:10px;\">" + "" + data[i].title + "" + "</h4><button class='blue-btn removeNovel' novelid='" + "" + data[i].uniqueId + "" + "'>删除</button>\n" +
                             "                                    <p style=\"font-size: 10px;color: gray;margin-top: 25px;\">\n" +
                             "                                        <span class=\"book-rank-writer\">" + "" + data[i].authors + "" + "</span><city>|</city>\n" +
                             "                                        <span class=\"book-rank-writer\">" + "" + data[i].publisher + "" + "</span><city>|</city>\n" +
@@ -538,6 +549,7 @@
             var str=$(this).attr("commentId");
             removeComment(str);
         })
+        //删除收藏夹
         function removeComment(uniqueId) {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -547,8 +559,10 @@
                 contentType: "application/json;charset=UTF-8",
                 data:{},
                 success:function (data) {
-                    window.location.reload()
-                    console.log(data);
+                    popup_over('icon-happy-l','#00ff0f',"删除成功");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
                 },error:function (data) {
                     console.log(data)
                 }
@@ -563,8 +577,10 @@
                 contentType: "application/json;charset=UTF-8",
                 data: JSON.stringify({}),
                 success: function(data) {
-                    //   console.log(data);
-                    window.location.reload()
+                    popup_over('icon-happy-l','#00ff0f',"已成功删除所有浏览记录");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -672,7 +688,10 @@
                 success: function(data) {
                     console.log(data);
                     $("#ShelfBox").css("display", "none");
-                    window.location.reload();
+                    popup_over('icon-happy-l','#00ff0f',"添加成功");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -691,7 +710,10 @@
                     novelIndexId: novelIndexId
                 }),
                 success: function(data) {
-                    window.location.reload()
+                    popup_over('icon-happy-l','#00ff0f',"删除成功");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -708,16 +730,35 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    console.log(data);
-                    window.location.reload();
+                    popup_over('icon-happy-l','#00ff0f',"删除成功");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
                 }
             })
         }
-
-
+        function removeAccoundNovel(novelId){
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url: contextPath+"/api/novel/" + novelId,
+                type: "DELETE",
+                datatype: "JSON",
+                contentType: "application/json;charset=UTF-8",
+                data: {},
+                success: function(data) {
+                    popup_over('icon-happy-l','#00ff0f',"删除成功");
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1500)
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
         $(".rank-book-buttons").on("click", ".rank-book-details", function() {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             window.location.href = contextPath+"/novel/" + $(this).attr("novelId") + "/view";
@@ -759,6 +800,10 @@
         $(".shelf-list").on("click", ".removeSelf", function() {
             var str3 = $(this).attr("uniqueId");
             removeSelf(str3);
+        })
+        $("#workList").on("click",".removeNovel",function () {
+            var str4=$(this).attr("novelId")
+            removeAccoundNovel(str4);
         })
     </script>
 </body>

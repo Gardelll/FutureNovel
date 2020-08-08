@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/read-book.css" type="text/css" th:href="@{/resources/css/read-book.css}">
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
 </head>
 
@@ -40,7 +41,7 @@
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                         <a href="###" th:text="${user.userName}"></a>
-                        <a href="###" th:text="${'LV'+user.level}"></a>
+                        <a href="###" th:text="${user.experience+'积分'}"></a>
                     </li>
                     <li class="line"></li>
                     <li class="book-shelf" id="top-book-shelf">
@@ -64,6 +65,7 @@
             <div id="chapterBox">
                 <!-- 中间阅读首页 -->
                 <div class="text-wrap" id="chapter-0" th:object="${novel}">
+                    <p style="display: none" id="getNovelId" th:text="*{uniqueId}"></p>
                     <div class="book-cover-wrap">
                         <div class="book-photo">
                             <img src="../../resources/img/万族之劫.jpg" th:src="*{coverImgUrl}" />
@@ -126,9 +128,9 @@
                         <div class="read-content" th:utext="${section.text}">
                         </div>
                         <div class="admire-wrap">
-                            <a class="report-btn" id="reportBtn" href="###"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>
+<!--                            <a class="report-btn" id="reportBtn" href="###"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
                             <div class="read-btn-box">
-                                <a class="admire admireBtn" href="##">赞赏</a>
+                                <a class="admire admireBtn reward" href="javascript:;">赞赏</a>
                             </div>
                         </div>
 
@@ -194,7 +196,7 @@
                     </a>
                 </dd>
                 <dd>
-                    <a href="###">
+                    <a href="###" class="reward">
                         <i class="fa fa-rmb" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
                         <span>打赏</span>
                     </a>
@@ -253,6 +255,13 @@
     });
 </script>
 <script th:inline="javascript" async>
+    function popup_over(icon,color,contant){
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+        setTimeout(function(){
+            $('.popup_over').remove();
+            // clear('.popup_over');
+        },1500)
+    };
     $("#commentSure").click(function () {
         addComment();
     })
@@ -268,8 +277,10 @@
                 rating:$("#rating").val(),
                 text:$("#sendTextarea").val(),
             }),success:function (data) {
-                console.log(data);
-                window.location.href=location;
+                popup_over('icon-happy-l','#00ff0f',"评论成功");
+                setTimeout(function () {
+                    window.location.reload();
+                },1500);
             },error: function(data) {
             	console.log(data)
             }
@@ -289,9 +300,13 @@
             contentType: "application/json;charset=UTF-8",
             data:{},
             success:function (data) {
-                window.location.href=location;
+                popup_over('icon-happy-l','#00ff0f',"删除成功");
+                setTimeout(function () {
+                    window.location.reload();
+                },1500);
             },error:function (data) {
-               alert("无修改权限")
+                console.log(data);
+                popup_over('icon-sad','#d81e06',"无修改权限");
             }
         })
     }
@@ -306,7 +321,6 @@
                 per_page:5,
                 page:page
             },success:function (data) {
-                console.log(data);
                 console.log(data.length);
                 for(var i=0;i<data.length;i++){
                     $("#comment").append("<li>\n" +
@@ -327,7 +341,7 @@
         })
     }
     getSectionComment(1);
-    //获取用户信息
+    //获取用户信息(暂时没用，调用已注释)
     function getUserInfo() {
         $.ajax({
             user: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/ "/nonexist",
@@ -343,7 +357,34 @@
             }
         })
     }
-    getUserInfo();
+  //  getUserInfo();
+    //赞赏功能
+    function rewardFun(novelId) {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        $.ajax({
+            url:contextPath+"/api/novel/"+novelId+"/donate",
+            type:"GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data:{
+                count:1
+            },
+            success:function (data) {
+                popup_over('icon-happy-l','#00ff0f',"赞赏成功");
+                setTimeout(function () {
+                    window.location.onload();
+                },1500)
+            },error:function (data) {
+                console.log(data);
+            }
+        })
+    }
+    $(".reward").click(function () {
+        const str= $("#getNovelId").text();
+        rewardFun(str);
+    })
+
+
 </script>
 
 

@@ -7,6 +7,7 @@
     <title>未来小说网</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/home.css" type="text/css" th:href="@{/resources/css/home.css}">
     <script src="../../resources/js/slider.js" type="text/javascript" th:src="@{/resources/js/slider.js}"></script>
@@ -83,11 +84,11 @@
             <div class="classify-list fl so-awesome">
                 <dl class="cf">
                     <dd th:each="tag: ${tags}" th:class="(${tagStat.index/2%2 == 0})? '':'even'">
-                        <a href="###" target="_blank">
+                        <a href="javascript:;" class="search-bt">
                             <cite>
                                 <i class="fa fa-fire" style="float: left;margin-right: 12px;"></i>
                                 <span class="info">
-                                    <i th:text="${tag}"></i>
+                                    <i class="getText" th:text="${tag}"></i>
                                 </span>
                             </cite>
                         </a>
@@ -148,7 +149,7 @@
                                     <a th:text="${user.userName}" class="user_login" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank"></a>
                                 </p>
                                 <p style="margin-top: 20px" th:if="${session.currentAccount} ne null">
-                                    <a onclick="logout()" class="user_login out">
+                                    <a onclick="logout()" style="cursor: pointer" class="user_login out">
                                         <i class="fa fa-power-off" style="font-size:16px"></i>退出
                                     </a>
                                 </p>
@@ -454,6 +455,13 @@
     </div>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript">
+        function popup_over(icon,color,contant){
+            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+            setTimeout(function(){
+                $('.popup_over').remove();
+                // clear('.popup_over');
+            },1500)
+        };
         const classify_icons = [
             "fa fa-fire",
             "fa fa-diamond",
@@ -486,7 +494,10 @@
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    window.location.href = location;
+                    popup_over('icon-happy-l','#00ff0f',"退出成功");
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -512,12 +523,18 @@
         $("#form").submit(function(event) {
             var goSearch = $("#goSearch").val();
             if (goSearch == "") {
-                alert("请输入正确格式！")
+                popup_over('icon-sad','#d81e06',"请输入正确格式");
                 return false;
             } else {
                 return true;
             }
         });
+        $(".search-bt").click(function () {
+            console.log($(this).children().children(".info").children().text());
+            $("#goSearch").attr("value",$(this).children().children(".info").children().text());
+            $("#form").submit();
+        })
+
     </script>
 
 </body>

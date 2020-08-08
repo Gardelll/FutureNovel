@@ -8,11 +8,19 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../../resources/css/WorkInformation.css" th:href="@{/resources/css/WorkInformation.css}">
 </head>
 <script>
     window.onload = function() {
+        function popup_over(icon,color,contant){
+            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+            setTimeout(function(){
+                $('.popup_over').remove();
+                // clear('.popup_over');
+            },1500)
+        };
         function getNowFormatDate() {
             var date = new Date();
             var month = date.getMonth() + 1;
@@ -92,17 +100,15 @@
 
         $("#create-work").click(function() {
             if ($("#book-name").val().length > 15) {
-                $("#TEXT").html("书名不能超过15个字");
-            } else if (!$("#book-name").val().match(/^[\u4e00-\u9fa5]+$/)) {
-                $("#TEXT").html("书名只能用汉字");
+                popup_over('icon-sad','#d81e06',"书名不能超过15个字");
             } else if ($("#book-type").val() == "-请选择-") {
-                $("#TEXT").html("请选择书籍类型");
+                popup_over('icon-sad','#d81e06',"请选择书籍类型");
             } else if ($("#copyright").val() == "-请选择-") {
-                $("#TEXT").html("请选择版权");
+                popup_over('icon-sad','#d81e06',"请选择版权");
             } else if ($("#book-press").val() == "") {
-                $("#TEXT").html("请输入出版社");
+                popup_over('icon-sad','#d81e06',"请输入出版社");
             } else if ($("#book-intro").val().length < 20 || $("#book-intro").val().length > 150) {
-                $("#TEXT").html("介绍必须在20-150字之间");
+                popup_over('icon-sad','#d81e06',"介绍必须在20-150字之间");
             } else {
                 var  $inputArr  =  $('.tags-text');
                 var  result  =   [];
@@ -170,7 +176,6 @@
         });
     }
 </script>
-
 <body>
     <div class="box3">
         <div class="work-info" style="float: right;margin: 100px 200px 100px 0;">
@@ -182,7 +187,6 @@
 
             </div>
             <div class="work-info-form">
-                <form id="info-form" action="#" method="POST">
                     <div class="form-box">
                         <div class="form-list">
                             <dl>
@@ -256,7 +260,6 @@
                             <button type="button" id="create-work" data-toggle="modal" data-target="#myModal">创建作品</button>
                         </div>
                     </div>
-                </form>
             </div>
         </div>
 
@@ -272,31 +275,6 @@
 
         </div>
     </div>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        提示
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <p id="TEXT"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                    </button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal -->
-    </div>
-
 </body>
 
 </html>

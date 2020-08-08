@@ -6,6 +6,7 @@
 		<title>未来小说网--写小说</title>
 		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 		<script typet="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
 		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
 		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
 		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
@@ -158,6 +159,13 @@
 			</div>
 		</div>
 		<script th:inline="javascript" async>
+			function popup_over(icon,color,contant){
+				$('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+				setTimeout(function(){
+					$('.popup_over').remove();
+					// clear('.popup_over');
+				},1500)
+			};
 			//得到书籍的所有信息
 			function GetAllInfo(){
 				$.ajax({
@@ -200,7 +208,10 @@
 						//localStorage.setItem("thisUUID",data.thisUUID);
 						//localStorage.setItem("title",data.title);
 						console.log("章节信息")
-						window.location.href = location;
+						popup_over('icon-happy-l','#00ff0f',"添加章节成功");
+						setTimeout(function () {
+							window.location.reload();
+						},1500)
 						console.log(data)
 					},error:function (data) {
 						console.log(data);
@@ -218,7 +229,7 @@
 				var Text = activeEditor.selection.getContent({"format": "text"});
 				var TextLength = Text.length;
 				if (text.length == 1) {
-					alert("内容不能为空");
+					popup_over('icon-happy-l','#00ff0f',"内容不能为空");
 				} else {
 					//创建小节的交互
 					$.ajax({
@@ -232,11 +243,10 @@
 						}),
 						success:function (data) {
 							getTitleId(data.uniqueId);
-							alert("创建成功");
-							console.log("小节信息")
-							console.log(data)
-							console.log(Text);
-							window.location.href=location;
+							popup_over('icon-happy-l','#00ff0f',"添加小节成功");
+							setTimeout(function () {
+								window.location.reload();
+							},1500)
 						$(".box").css("display","none");
 						}, error: function(jqXHR, textStatus, errorThrown) {
 							const data = JSON.parse(jqXHR.responseText);
@@ -275,8 +285,10 @@
 					contentType: "application/json;charset=UTF-8",
 					data: {},
 					success:function (data) {
-						window.location.href = location;
-						console.log("删除章节")
+						popup_over('icon-happy-l','#00ff0f',"删除章节成功");
+						setTimeout(function () {
+							window.location.reload();
+						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
@@ -293,9 +305,10 @@
 					contentType: "application/json;charset=UTF-8",
 					data: {},
 					success:function (data) {
-						window.location.href = location;
-						console.log("删除小节")
-						console.log(data)
+						popup_over('icon-happy-l','#00ff0f',"删除小节成功");
+						setTimeout(function () {
+							window.location.reload();
+						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
@@ -369,8 +382,10 @@
 							"coverImgUrl": $("#addIMG")[0].src
 						}),
 						success:function (data) {
-							console.log( data);
-							window.location.href = location;
+							popup_over('icon-happy-l','#00ff0f',"修改书本信息成功");
+							setTimeout(function () {
+								window.location.reload();
+							},1500)
 						},error(data){
 							console.log( data);
 						}
@@ -396,8 +411,10 @@
 						title:str5,
 						sections:chapterIdArr,
 					}),success:function (data) {
-						console.log(data);
-						window.location.href = location;
+						popup_over('icon-happy-l','#00ff0f',"修改章节成功");
+						setTimeout(function () {
+							window.location.reload();
+						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
@@ -424,18 +441,35 @@
 						title:str3,
 						text:Text,
 					}),success:function (data) {
-						alert("修改成功");
-						console.log(data);
-						window.location.href = location;
+						popup_over('icon-happy-l','#00ff0f',"修改内容成功");
+						setTimeout(function () {
+							window.location.reload();
+						},1500)
 					},error: function(jqXHR, textStatus, errorThrown) {
 					const data = JSON.parse(jqXHR.responseText);
 					alert("发送失败，请稍候再试:" + data.errorMessage);
 					}
 				})
 			};
+			function getContent(uniqueId){
+				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+				$.ajax({
+					url:contextPath+"/api/novel/section/"+uniqueId,
+					type:"GET",
+					dataType: "JSON",
+					contentType:"application/json",
+					data: {}
+					,success:function (data) {
+						tinyMCE.activeEditor.setContent(data.text);
+						$("#title-name").val(data.title);
+					},error: function(data) {
+						console.log(data);
+					}
+				})
+			}
 			$("#sure-bookName").click(function () {
 				if($("#book-name2").val().length==0){
-					alert("章节名称不能为空！");
+					popup_over('icon-sad','#d81e06',"章节名称不能为空");
 				}else{
 					//创建章节的交互
 					AddTitle();
@@ -457,6 +491,7 @@
 				$("#title-name").css("height",40+"px");
 				$(".box").css("display","block");
 				var str2 = $(this).attr("sectionid");
+				getContent(str2)
 				$("#writer-release").click(function () {
 					ModifySection(str2);
 				});

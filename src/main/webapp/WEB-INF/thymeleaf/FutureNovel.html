@@ -47,16 +47,17 @@
                             <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
                                 <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
                                     从
-                                    <input name="after" type="date" value="" style="text-align:center;line-height: 30px;">
+                                    <input name="after" id="after" type="date" style="text-align:center;line-height: 30px;">
                                 </p>
                                 <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
                                     至
-                                    <input name="before" type="date" value="" style="text-align:center;line-height: 30px;">
+                                    <input name="before" id="before" type="date" style="text-align:center;line-height: 30px;">
                                 </p>
                                 <button class="time-sure blue-btn" style="position: relative;top: 10px;">确认</button>
                             </div>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -498,6 +499,8 @@
             $(".search-tool-tip").show();
         });
         $(".time-sure").click(function() {
+            $("#hot").attr("after",$("#after").val());
+            $("#hot").attr("before",$("#before").val());
             $(".search-tool-tip").hide();
         });
 

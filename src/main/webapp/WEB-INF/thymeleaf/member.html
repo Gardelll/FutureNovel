@@ -134,7 +134,7 @@
                         </div>
                     </div>
                 </div>
-                <form id="addToHistory" method="post" class="history-main">
+                <div id="addToHistory" method="post" class="history-main">
                     <h2 class="history-title">浏览历史</h2>
                     <a href="javascript:;" id="clearAllHistory">清空所有历史</a>
 
@@ -164,8 +164,8 @@
                         </ul>
                     </div>
                     <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
-                </form>
-                <form id="addComment" method="post" class="history-main">
+                </div>
+                <div id="addComment" class="history-main">
                     <h2 class="history-title">评论历史</h2>
                     <div class="readHistory">
                         <ul id="commentHistory" style="overflow:hidden;">
@@ -173,8 +173,8 @@
                         </ul>
                     </div>
                     <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
-                </form>
-                <form id="addToShelf" method="post" class="shelf-main">
+                </div>
+                <div id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title">我的书架</h2>
                     <a href="javascript:;" id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
@@ -183,8 +183,8 @@
                     <ul class="shelf-list" id="shelfList" style="transition: height 200ms ease 0s;">
 
                     </ul>
-                </form>
-                <form id="addToMyWork" method="post" class="work-main">
+                </div>
+                <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
                     <button class="blue-btn fl" th:href="@{/novel/create}">创建作品</button>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
@@ -203,7 +203,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -241,6 +241,9 @@
                                 <dt></dt>
                                 <dd>
                                     <div>
+
+
+
                                         <input type="submit" id="basicMsgSubmit" class="clip">
                                         <label class="button" id="set">保存</label>
                                     </div>
@@ -250,7 +253,7 @@
                     </div>
                 </div>
                 <div id="tabTarget2" class="tab-content">
-                    <form id="setAvatarForm" action="">
+                    <div id="setAvatarForm" action="">
                         <div id="avatarChoose" class="avatar-choose">
                             <img class="avatar-show" id="profileImgUrl" th:src="${user.profileImgUrl}" alt="书友的头像">
                             <div class="avatar-text">
@@ -262,7 +265,7 @@
                                 <button id="sure" type="button" class="button">确定<i style="font-size: 12px;color: #dcdcdc;">（请确定后再点击保存）</i></button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -385,7 +388,7 @@
                 }),
                 success: function(data) {
                     //          console.log(data);
-                    window.location.href = location;
+                    window.location.reload();
                 },
                 err: function(data) {
                     console.log(data);
@@ -544,7 +547,7 @@
                 contentType: "application/json;charset=UTF-8",
                 data:{},
                 success:function (data) {
-                    window.location.href=location;
+                    window.location.reload()
                     console.log(data);
                 },error:function (data) {
                     console.log(data)
@@ -561,7 +564,7 @@
                 data: JSON.stringify({}),
                 success: function(data) {
                     //   console.log(data);
-                    window.location.href = location;
+                    window.location.reload()
                 },
                 error: function(data) {
                     console.log(data);
@@ -669,11 +672,7 @@
                 success: function(data) {
                     console.log(data);
                     $("#ShelfBox").css("display", "none");
-                    for (var i = 0; i < data.length; i++) {
-                        $("#shelfList").append("<button class='removeSelf' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
-                            "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList'></ul>");
-                    }
-                    window.location.href = window.location.href;
+                    window.location.reload();
                 },
                 error: function(data) {
                     console.log(data);
@@ -692,7 +691,7 @@
                     novelIndexId: novelIndexId
                 }),
                 success: function(data) {
-                    window.location.href = location;
+                    window.location.reload()
                 },
                 error: function(data) {
                     console.log(data);
@@ -710,6 +709,7 @@
                 data: {},
                 success: function(data) {
                     console.log(data);
+                    window.location.reload();
                 },
                 error: function(data) {
                     console.log(data);
@@ -732,7 +732,7 @@
         })
         $(".rank-book-buttons").on("click", ".deleteReadHistory", function() {
             delegeReadHistory($(this).attr("uniqueId"));
-            window.location.href = window.location.href;
+            window.location.reload()
         })
         getAccountAllNovel(1, "HOT_DESC");
         $(".box-page").on("click", ".rank-page", function() {

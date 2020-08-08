@@ -43,6 +43,11 @@
 								 </a>
 							</button>
                         </form>
+                        <form id="form2" style="" th:action="@{/search(page=1)}" method="POST" target="_blank">
+                            <input type="hidden" name="searchBy" th:value="${searchBy}">
+                            <input type="hidden" id="sortBy" name="sortBy" value="BEST_MATCH">
+                            <input type="hidden" name="keywords" th:value="${keywords}">
+                        </form>
                         <li class="line"></li>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} eq null">
@@ -83,12 +88,12 @@
             <div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: #fff;padding: 10px;">
                 <div class="tool-box">
                     <div class="type-list cf">
-                        <a href="javascript:;" class="SortBy"  sortBy="RANDOM">随机排序</a>
-                        <a href="javascript:;" class="SortBy"  sortBy="COPYRIGHT">版权排序</a>
-                        <a href="javascript:;" class="SortBy"  sortBy="PUBDATE">发布日期排序</a>
-                        <a href="javascript:;" class="SortBy"  sortBy="PUBLISHER">出版社排序</a>
-                        <a href="javascript:;" class="SortBy"  sortBy="RATING">评分排序</a>
-                        <a href="javascript:;" class="SortBy"  sortBy="SERIES">系列排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="RANDOM">随机排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="COPYRIGHT">版权排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="PUBDATE">发布日期排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="PUBLISHER">出版社排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="RATING">评分排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="SERIES">系列排序</a>
                     </div>
                 </div>
             </div>
@@ -108,21 +113,21 @@
                                 <city>|</city>
                                 <span class="book-rank-type" th:text="${novel.tags}"></span>
                                 <city>|</city>
-                                <span class="book-rank-mode">连载</span>
+                                <span class="book-rank-type" th:text="${'评分：'+novel.rating}"></span>
                             </p>
                             <span class="book-rank-synopsis" th:text="${novel.description}"></span>
                         </div>
                         <div class="rank-book-buttons">
                             <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
-                            <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
+                            <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
                         </div>
                     </div>
                 </li>
             </ul>
             <ul style="overflow: hidden;">
-                <div th:each="section:${sectionList}" th:if="!${#lists.isEmpty(sectionList)}">
-                    <li th:if="${searchBy.name()} eq 'CONTENT'">
-                        <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
+                <div th:if="${searchBy.name()} eq 'CONTENT'">
+                    <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
+                    <li th:each="section:${sectionList}" >
                         <div class="book-rank-list" style="overflow: hidden;">
                             <div class="book-rank-img">
                                 <img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;" />
@@ -135,6 +140,8 @@
                                     <span class="book-rank-type" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).tags}"></span>
                                     <city>|</city>
                                     <span class="book-rank-mode" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).copyright}"></span>
+                                    <city>|</city>
+                                    <span class="book-rank-mode" th:text="'评分：'+${chapterIdToNovelIndexMap.get(section.fromChapter).rating}"></span>
                                 </p>
                                 <span class="book-rank-synopsis" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).description}"></span>
                             </div>
@@ -148,32 +155,54 @@
                 </div>
             </ul>
             <ul style="overflow: hidden;">
-                <div th:each="section:${sectionList}" th:if="!${#lists.isEmpty(sectionList)}">
-                    <li th:if="${searchBy.name()} eq 'HOT'">
-                        <span th:if="${#lists.isEmpty(sectionList)}">无搜索结果</span>
+                    <li th:each="novel:${novelIndexList}" th:if="${searchBy.name()} eq 'HOT'">
+                        <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
                         <div class="book-rank-list" style="overflow: hidden;">
                             <div class="book-rank-img">
-                                <img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;" />
+                                <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
                             </div>
                             <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
-                                <h4 style="font-size: 15px;font-weight: 400;" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).title}"></h4>
+                                <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
                                 <p style="font-size: 10px;color: gray;margin-top: 10px;">
-                                    <span class="book-rank-writer" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).authors}"></span>
+                                    <span class="book-rank-writer" th:text="${novel.authors}"></span>
                                     <city>|</city>
-                                    <span class="book-rank-type" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).tags}"></span>
+                                    <span class="book-rank-type" th:text="${novel.tags}"></span>
                                     <city>|</city>
-                                    <span class="book-rank-mode" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).copyright}"></span>
+                                    <span class="book-rank-type" th:text="${'评分：'+novel.rating}"></span>
                                 </p>
-                                <span class="book-rank-synopsis" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).description}"></span>
+                                <span class="book-rank-synopsis" th:text="${novel.description}"></span>
                             </div>
                             <div class="rank-book-buttons">
-                                <span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
-                                <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
+                                <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
+                                <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
                             </div>
                         </div>
-                        <span th:utext="${section.text}" style="color: black" class="content"></span>
                     </li>
-                </div>
+            </ul>
+            <ul style="overflow: hidden;">
+                <li th:each="novel:${novelIndexList}" th:if="${searchBy.name()} eq 'PUBDATE'">
+                    <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
+                    <div class="book-rank-list" style="overflow: hidden;">
+                        <div class="book-rank-img">
+                            <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
+                        </div>
+                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
+                            <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                <span class="book-rank-writer" th:text="${novel.authors}"></span>
+                                <city>|</city>
+                                <span class="book-rank-type" th:text="${novel.tags}"></span>
+                                <city>|</city>
+                                <span class="book-rank-type" th:text="${'评分：'+novel.rating}"></span>
+                            </p>
+                            <span class="book-rank-synopsis" th:text="${novel.description}"></span>
+                        </div>
+                        <div class="rank-book-buttons">
+                            <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
+                            <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
         <div class="page-box" style="padding: 40px 0;position: relative;">
@@ -191,12 +220,59 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
-
-    function submitForm(index) {
-        var str = "http://localhost:8080/future-novel/search?page=" + index + "&per_page=5";
-        $("#form").attr("action", str);
-        $("#form").submit();
+    $(".rank-book-buttons").on("click", ".rank-book-add", function() {
+        $("#box").css("marginTop",-30+"px");
+        const str=$(this).attr("novelId");
+        $("#sureAdd").click(function() {
+            console.log($(this).attr("novelId"));
+            $("#box").css("marginTop",-90+"px");
+            AddBookSelf($("#Shelf option:selected").attr("Shelfid"),str)
+        })
+    })
+    function getAllAcconutShelf() {
+        $.ajax({
+            url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: {},
+            success: function(data) {
+                console.log(data);
+                for (var i = 0; i < data.length; i++) {
+                    $("#Shelf").append(" <option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
     }
+    function AddBookSelf(Id,novelId) {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        $.ajax({
+            url: contextPath+"/api/bookSelf/" + Id + "/add",
+            type: "POST",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify({
+                novelIndexId: novelId
+            }),
+            success: function(data) {
+                console.log(data);
+                alert("添加成功！")
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
+    getAllAcconutShelf();
+    function submitForm(index) {
+        var str = "http://localhost:8080/future-novel/search?page=" + index;
+        $("#form").attr("action", str);
+        $("#form2").attr("action", str);
+    }
+    console.log([[${totalPage}]]);
     if ([[${totalPage}]] != 1) {
         for (var i = 1; i <= [[${totalPage}]]; i++) {
             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
@@ -206,13 +282,13 @@
         $(this).toggleClass("tab");
         $(this).siblings().removeClass("tab");
         submitForm($(this).text());
+        $("#form2").submit();
     })
     $(".rank-book-buttons").on("click", ".rank-book-details", function() {
-        alert("123");
         window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
     })
     $(".SortBy").click(function () {
-        window.location.href=location;
+        window.location.reload();
         $("#searchSubmitType").attr("value",$(this).attr("SortBy"));
     })
 </script>

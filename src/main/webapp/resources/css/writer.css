@@ -118,22 +118,23 @@
 	position: absolute;
 }
 .add{
-	top: 8px;
+	top: 32px;
 	background-color: #3979c6;
 }
 .modify{
-	top: -20px;
+	top: 8px;
 	background-color: #8ac131;
 }
 .delete{
-	top:35px ;
+	top:56px ;
 	background-color: #cd4d4d;
 }
 .first{
 	padding-bottom:20px ;
 	border-bottom: rgb(245,245,245);
 	width: 80%;
-	margin: 20px 10px 0 10px;
+	margin: 0 10px 0 10px;
+	padding-top: 20px;
 }
 .delete2{
 	font-size: 10px;

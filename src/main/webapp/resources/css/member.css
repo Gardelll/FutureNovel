@@ -588,7 +588,14 @@ input[type=radio] {
     border: 1px solid red;
     border-radius: 10px;
 }
-
+.removeNovel{
+    margin: -13px 0 0 60px;
+    padding:0;
+    width: 50px;
+    font-size: 13px;
+    height: 25px;
+    line-height: 25px;
+}
 
 
 /* input[type=file] {

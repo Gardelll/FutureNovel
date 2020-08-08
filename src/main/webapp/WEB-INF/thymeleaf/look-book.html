@@ -6,6 +6,7 @@
     <title>未来小说网--查看书籍</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
     <link rel="stylesheet" href="../../resources/css/look-book.css" type="text/css" th:href="@{/resources/css/look-book.css}">
     <link rel="stylesheet" href="../../resources/css/fix-nav.css" type="text/css" th:href="@{/resources/css/fix-nav.css}">
@@ -235,6 +236,13 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
+    function popup_over(icon,color,contant){
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+        setTimeout(function(){
+            $('.popup_over').remove();
+            // clear('.popup_over');
+        },1500)
+    };
     //得到上传者的所有信息
     function getUploderInfo() {
         $.ajax({
@@ -254,7 +262,6 @@
         })
     }
     getUploderInfo();
-    console.log($("#getUserId").text());
     //获取用户所有收藏夹
     function getAllAcconutShelf() {
         $.ajax({
@@ -275,7 +282,6 @@
         })
     }
     getAllAcconutShelf();
-
     function AddBookSelf(Id) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
@@ -288,7 +294,7 @@
             }),
             success: function(data) {
                 console.log(data);
-                alert("添加成功！")
+                popup_over('icon-happy-l','#00ff0f',"添加成功");
             },
             error: function(data) {
                 console.log(data);

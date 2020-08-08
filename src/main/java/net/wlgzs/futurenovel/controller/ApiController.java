@@ -1,6 +1,23 @@
+/*
+ *  Copyright (C) 2020 Future Studio
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package net.wlgzs.futurenovel.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -16,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -30,18 +46,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.model.BookSelf;
-import net.wlgzs.futurenovel.model.Comment;
-import net.wlgzs.futurenovel.model.ReadHistory;
-import net.wlgzs.futurenovel.packet.Requests;
-import net.wlgzs.futurenovel.packet.Responses;
+import net.wlgzs.futurenovel.AppProperties;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.filter.DefaultFilter;
 import net.wlgzs.futurenovel.model.Account;
+import net.wlgzs.futurenovel.model.BookSelf;
 import net.wlgzs.futurenovel.model.Chapter;
+import net.wlgzs.futurenovel.model.Comment;
 import net.wlgzs.futurenovel.model.NovelIndex;
+import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.model.Section;
+import net.wlgzs.futurenovel.packet.Requests;
+import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.service.AccountService;
 import net.wlgzs.futurenovel.service.BookSelfService;
 import net.wlgzs.futurenovel.service.CommentService;
@@ -108,11 +124,12 @@ public class ApiController extends AbstractAppController {
                          ReadHistoryService readHistoryService,
                          CommentService commentService,
                          Validator defaultValidator,
-                         Properties futureNovelConfig,
+                         AppProperties futureNovelConfig,
                          FileService fileService,
                          BookSelfService bookSelfService,
-                         DateFormatter defaultDateFormatter) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter);
+                         DateFormatter defaultDateFormatter,
+                         ObjectMapper objectMapper) {
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter, objectMapper);
     }
 
     @InitBinder
@@ -208,18 +225,18 @@ public class ApiController extends AbstractAppController {
         session.setAttribute("currentAccount", account);
         var uidCookie = new Cookie("uid", account.getUid().toString());
         uidCookie.setMaxAge((int) Duration.ofDays(365).toSeconds());
-        uidCookie.setPath(request.getContextPath());
+        uidCookie.setPath(getBaseUri(request));
         response.addCookie(uidCookie);
         var tokenCookie = new Cookie("token", token.getToken());
-        tokenCookie.setMaxAge((int) Duration.ofDays(Long.parseLong(futureNovelConfig.getProperty("future.token.cookieExpire", "30"))).toSeconds());
-        tokenCookie.setPath(request.getContextPath());
+        tokenCookie.setMaxAge((int) Duration.ofDays(futureNovelConfig.getToken().getCookieExpire()).toSeconds());
+        tokenCookie.setPath(getBaseUri(request));
         response.addCookie(tokenCookie);
         String redirectTo = Optional.ofNullable(req.redirectTo)
             .filter(s -> !s.isEmpty())
             .orElseGet(() -> Optional.ofNullable((String) session.getAttribute("redirectTo"))
                 .filter(s -> !s.isEmpty())
                 .filter(this::safeRedirect)
-                .orElse(request.getContextPath()));
+                .orElse(getBaseUri(request)));
         session.setAttribute("redirectTo", null);
         //ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectTo).body(null);
         return Map.ofEntries(
@@ -253,7 +270,7 @@ public class ApiController extends AbstractAppController {
         session.setAttribute("currentAccount", null);
         var tokenCookie = new Cookie("token", null);
         tokenCookie.setMaxAge(0);
-        tokenCookie.setPath(request.getContextPath());
+        tokenCookie.setPath(getBaseUri(request));
         response.addCookie(tokenCookie);
         if (all) tokenStore.removeAll(token.getAccountUid());
         else tokenStore.removeToken(token);
@@ -925,7 +942,7 @@ public class ApiController extends AbstractAppController {
         ArrayNode sections = req.sectionsEdit == null ? null : req.sectionsEdit.stream()
             .filter(s -> s.matches("[0-9a-f\\-]{36}"))
             .collect(
-                () -> new ArrayNode(AppConfig.objectMapper.getNodeFactory()),
+                () -> new ArrayNode(objectMapper.getNodeFactory()),
                 ArrayNode::add,
                 ArrayNode::addAll
             );
@@ -1143,7 +1160,7 @@ public class ApiController extends AbstractAppController {
             throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
         NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(req.novelIndexId));
         novelIndex.getChapters().removeAll();
-        bookSelf.addNovel(AppConfig.objectMapper.valueToTree(novelIndex));
+        bookSelf.addNovel(objectMapper.valueToTree(novelIndex));
         bookSelfService.editBookSelf(bookSelf);
     }
 

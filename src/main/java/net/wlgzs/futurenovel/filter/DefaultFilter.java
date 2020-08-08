@@ -1,5 +1,22 @@
+/*
+ *  Copyright (C) 2020 Future Studio
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package net.wlgzs.futurenovel.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,9 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.AppConfig;
-import net.wlgzs.futurenovel.packet.Responses;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
+import net.wlgzs.futurenovel.packet.Responses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 过滤器，含有如下功能：<br />
@@ -27,6 +45,7 @@ import net.wlgzs.futurenovel.exception.FutureNovelException;
  */
 @Slf4j
 @WebFilter(urlPatterns = "/*", dispatcherTypes = {DispatcherType.REQUEST})
+@Component
 public class DefaultFilter extends HttpFilter {
 
     /**
@@ -59,6 +78,9 @@ public class DefaultFilter extends HttpFilter {
             "::1",
             "0:0:0:0:0:0:0:1"
     );
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 暂时封禁一个 IP
@@ -122,7 +144,7 @@ public class DefaultFilter extends HttpFilter {
                     res.setStatus(errResponse.status);
                     res.setContentType("application/json; charset=utf-8");
                     ServletOutputStream output = res.getOutputStream();
-                    output.write(AppConfig.objectMapper.writeValueAsBytes(errResponse));
+                    output.write(objectMapper.writeValueAsBytes(errResponse));
                     output.flush();
                     output.close();
                     return;

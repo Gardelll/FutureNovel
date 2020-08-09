@@ -107,7 +107,7 @@
         
     $(document).ready(function(){
         $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/novel/all/pages']]*/ "http://localhost:8080/future-novel/api/admin/novel/all/pages" ,
+                url:contextPath+"/api/admin/novel/all/pages" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage)
@@ -117,7 +117,7 @@
                     let allPage=data.pages;
                     console.log(data)
                     $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        url:contextPath+"/api/admin/novel/all" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -133,16 +133,17 @@
                                         <th style="width: 13%;">${data[i].series}</th>
                                         <th style="width: 15%;">${data[i].pubdate}</th>
                                         <th style="width: 13%;">${data[i].copyright}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
                             $('#control_page').empty();      
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页');
                             console.log(data)
                         },
-                        error: function() {
+                        error: function(jqXHR) {
                             //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     $('#gonext').on('click',function(){
@@ -151,7 +152,7 @@
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        url:contextPath+"/api/admin/novel/all",
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -167,16 +168,17 @@
                                         <th style="width: 13%;">${data[i].series}</th>
                                         <th style="width: 15%;">${data[i].pubdate}</th>
                                         <th style="width: 13%;">${data[i].copyright}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
                                     $('#control_page').empty()        
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
+                        error: function(jqXHR) {
                             //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     })
@@ -186,7 +188,7 @@
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        url:contextPath+"/api/admin/novel/all",
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -202,16 +204,17 @@
                                         <th style="width: 13%;">${data[i].series}</th>
                                         <th style="width: 15%;">${data[i].pubdate}</th>
                                         <th style="width: 13%;">${data[i].copyright}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
                             $('#control_page').empty();    
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
+                        error: function(jqXHR) {
                             //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     })
@@ -219,7 +222,7 @@
                     if($('#go').val()>=1 && $('#go').val()<=allPage){
                     curPage=$('#go').val();
                     $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                        url:contextPath+"/api/admin/novel/all",
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -235,16 +238,17 @@
                                         <th style="width: 13%;">${data[i].series}</th>
                                         <th style="width: 15%;">${data[i].pubdate}</th>
                                         <th style="width: 13%;">${data[i].copyright}</th>
-                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                        <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
                             $('#control_page').empty()        
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
+                        error: function(jqXHR) {
                             //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     }else{
@@ -256,7 +260,6 @@
                 error: function(jqXHR) {
                     let data = JSON.parse(jqXHR.responseText);
                     popup_over('icon-sad','#d81e06',data.errorMessage);
-                    console.log(data.errorMessage);
                 }
             })
 

@@ -60,7 +60,7 @@
                 popup_over('icon-sad', '#d81e06', "输入内容太短了吧");
             } else {
                 $.ajax({
-                    url: /*[[${#request.getContextPath()} + '/api/login']]*/ "http://localhost:8080/future-novel/api/login",
+                    url: /*[[${#request.getContextPath()} + '/api/login']]*/'',
                     type: 'post',
                     datatype: "json",
                     data: JSON.stringify({
@@ -74,13 +74,17 @@
                     },
                     error: function(jqXHR) {
                         let mes = JSON.parse(jqXHR.responseText);
-                        if ($.trim(mes.error) == 'USER_UNVERIFIED') {
+                        setTimeout(function(){
+                            if ($.trim(mes.error) == 'USER_UNVERIFIED') {
                             popup_over('icon-sad', '#d81e06', "账号需要激活");
-                            popup_activate('activate_yes');
+                            setTimeout(function(){
+                                popup_activate('activate_yes');
+                            },1500)
                         } else {
-                            popup_over('icon-sad', '#d81e06', "登录失败");
-
+                            popup_over('icon-sad', '#d81e06', mes.errorMessage);
                         }
+                        },100)
+            
                     }
                 })
             }

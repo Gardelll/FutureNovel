@@ -16,27 +16,16 @@
 
 package net.wlgzs.futurenovel;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.yaml.snakeyaml.Yaml;
 
 public class ServletInitializer extends SpringBootServletInitializer {
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		try (var stream = Files.newInputStream(Paths.get(new AppProperties().getAppHome(), "application.yml"))) {
-			var yaml = new Yaml();
-			Map<String, Object> configurationMap = yaml.loadAs(stream, Map.class);
-			return application.properties(configurationMap).sources(AppConfig.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.properties("spring.config.location=" + Paths.get(new AppProperties().getAppHome(), "application.yml").toAbsolutePath().toString())
+            .sources(AppConfig.class);
+    }
 
 }

@@ -16,10 +16,9 @@
 >        - model `数据模型`  
 >        - service `Spring 数据服务`  
 >        - typehandler `Mybatis 数据类型映射器`  
->    - webapp  
->      - resources `前端相关资源文件`  
->      - WEB-INF `服务器配置文件`  
->        - thymeleaf `Thymeleaf 模板`  
+>    - resources  
+>      - static `前端相关资源文件`  
+>      - templates `Thymeleaf 模板`  
 >  - test  
 >    - java `测试相关的 Java 代码`  
 >    - resources `测试相关的资源与配置`  
@@ -33,61 +32,67 @@ git clone https://gitee.com/FutureNovel/FutureNovel.git
 
 + 修改配置文件 (没有的文件需要手动创建)
 ```
-# src/main/webapp/WEB-INF/database_config.properties
-c3p0.driverClass=org.mariadb.jdbc.Driver
-c3p0.jdbcUrl=[jdbc链接]
-user=[数据库用户名]
-password=[密码]
-# 下面是数据库驱动的属性
-useSSL=false
-autoReconnect=true
-useUnicode=true
-characterEncoding=utf8
-characterSetResults=utf8
-```
+# 配置文件路径为：
+# $HOME/future-novel/application.yml
+# 若服务器 $HOME 路径不可写，可使用 JVM 参数 '-Duser.home=/path/to/writeable' 更改 $HOME 目录
 
-```
-# src/main/webapp/WEB-INF/mail_config.properties
-email_host=[发件服务器]
-email_port=465
-email_username=[邮箱账号]
-email_password=[邮箱密码]
-mail.transport.protocol=smtp # 发件协议
-mail.smtp.auth=true
-mail.smtp.ssl.enable=true # 使用 ssl
-mail.smtp.starttls.enable=true # 使用 tls (二者选一个)
-mail.debug=false
-```
+server:
+  port: 8080
+  error:
+    path: '/error'
 
-```
-# src/main/webapp/WEB-INF/future-novel_config.properties
+logging:
+  level:
+    web: debug
 
-# 文件上传目录，默认为 $HOME/future-novel/uploads
-future.uploadDir=default
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: '8MB'
+  thymeleaf:
+    cache: false
+  datasource:
+    url: 'jdbc:mariadb://127.0.0.1:3306/novel_db?useSSL=false'
+    username: 'novel_db'
+    password: '数据库密码'
+    driver-class-name: org.mariadb.jdbc.Driver
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+  mail:
+    host: '发件邮箱服务器'
+    username: '发件邮箱账号'
+    password: '发件密码'
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable:
+              true
 
-# token 保存间隔，单位 分钟
-future.token.savePeriod=10
+mybatis:
+  type-aliases-package: 'net.wlgzs.futurenovel.model'
+  type-handlers-package: 'net.wlgzs.futurenovel.typehandler'
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
 
-# token 过期时间，单位 天
-future.token.expire=7
+future: # 应用相关配置，详情见 `net.wlgzs.futurenovel.AppProperties`
+  upload-dir: '/tmp' # 文件上传目录，默认为 $HOME/future-novel/uploads
+  token:
+    savePeriod: 10 # token 保存间隔，单位 分钟
+    expire: 7 # token 过期时间，单位 天
+    cookieExpire: 30 # token 浏览器 Cookie 过期时间，单位 天
 
-# token 浏览器 Cookie 过期时间，单位 天
-future.token.cookieExpire=30
 ```
 
 + 导入数据结构
 
 运行 SQL 脚本 `src/main/resources/database.sql`
 
-+ 打包
++ 运行
 ```bash
-cd FutureNovel
-mvn clean package
-```
-
-+ 运行内置的 Tomcat
-```bash
-mvn cargo:run
+mvn clean spring-boot:run
 ```
 然后在浏览器访问 `http://localhost:8080/future-novel/` 即可
 
@@ -95,7 +100,7 @@ mvn cargo:run
 
 输入命令
 ```bash
-cd src/main/webapp/WEB-INF/thymeleaf
+cd src/main/resources/templates
 node server.js
 ```
 可以在浏览器访问 `http://localhost:8848/` 查看原始模板

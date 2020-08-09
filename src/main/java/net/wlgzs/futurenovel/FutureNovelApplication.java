@@ -22,19 +22,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.yaml.snakeyaml.Yaml;
 
 public class FutureNovelApplication {
 
-    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        Path propertiesPath = Paths.get(new AppProperties().getAppHome(), "application.yml");
+        Path propertiesPath = Paths.get(new AppProperties().getAppHome(), "application.yml").toAbsolutePath();
         if (!Files.exists(propertiesPath)) {
             try (InputStream inputStream = FutureNovelApplication.class.getResourceAsStream("/application.yml"); var out = new FileOutputStream(propertiesPath.toFile())) {
                 inputStream.transferTo(out);
-                System.err.println("配置文件已保存至" + propertiesPath.toAbsolutePath().toString());
+                System.err.println("配置文件已保存至" + propertiesPath.toString());
                 System.err.println("请修改后执行");
                 System.exit(2);
                 return;
@@ -43,16 +40,9 @@ public class FutureNovelApplication {
                 e.printStackTrace();
             }
         }
-        try (var input = Files.newInputStream(propertiesPath)) {
-            var yaml = new Yaml();
-            Map<String, Object> configurationMap = yaml.loadAs(input, Map.class);
-            new SpringApplicationBuilder().properties(configurationMap)
-                .sources(AppConfig.class)
-                .run(args);
-        } catch (IOException e) {
-            System.err.println("无法读取文件");
-            e.printStackTrace();
-        }
+        new SpringApplicationBuilder().properties("spring.config.location=" + propertiesPath.toAbsolutePath().toString())
+            .sources(AppConfig.class)
+            .run(args);
     }
 
 }

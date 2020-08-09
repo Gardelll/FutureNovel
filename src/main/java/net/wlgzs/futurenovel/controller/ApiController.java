@@ -127,14 +127,8 @@ public class ApiController extends AbstractAppController {
                          AppProperties futureNovelConfig,
                          FileService fileService,
                          BookSelfService bookSelfService,
-                         DateFormatter defaultDateFormatter,
                          ObjectMapper objectMapper) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter, objectMapper);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        super.initBinder(binder);
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper);
     }
 
     /**

@@ -80,8 +80,6 @@ public abstract class AbstractAppController {
 
     protected final AppProperties futureNovelConfig;
 
-    protected final DateFormatter defaultDateFormatter;
-
     protected final ObjectMapper objectMapper;
 
     protected String serverUrl = null;
@@ -96,7 +94,6 @@ public abstract class AbstractAppController {
                                  AppProperties futureNovelConfig,
                                  FileService fileService,
                                  BookSelfService bookSelfService,
-                                 DateFormatter defaultDateFormatter,
                                  ObjectMapper objectMapper) {
         this.tokenStore = tokenStore;
         this.accountService = accountService;
@@ -108,13 +105,7 @@ public abstract class AbstractAppController {
         this.fileService = fileService;
         this.novelService = novelService;
         this.bookSelfService = bookSelfService;
-        this.defaultDateFormatter = defaultDateFormatter;
         this.objectMapper = objectMapper;
-    }
-
-    public void initBinder(WebDataBinder binder) {
-        binder.addValidators(defaultValidator);
-        binder.addCustomFormatter(defaultDateFormatter, Date.class);
     }
 
     protected String getServerUrl() {

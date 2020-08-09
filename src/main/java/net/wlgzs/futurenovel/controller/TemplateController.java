@@ -104,14 +104,8 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                               AppProperties futureNovelConfig,
                               FileService fileService,
                               BookSelfService bookSelfService,
-                              DateFormatter defaultDateFormatter,
                               ObjectMapper objectMapper) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter, objectMapper);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        super.initBinder(binder);
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper);
     }
 
     /**
@@ -405,7 +399,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
             model.addAttribute("showAccount", showAccount);
-            if (showAccount.getUid().equals(currentAccount.getUid())) {
+            if (currentAccount != null && showAccount.getUid().equals(currentAccount.getUid())) {
                 List<ReadHistory> history = readHistoryService.getReadHistory(currentAccount, new Date(System.currentTimeMillis() - Duration.ofDays(14).toMillis()), null);
                 model.addAttribute("readHistory", history);
             }

@@ -5,6 +5,7 @@ function yes_no(contant,name,id){
 function del_num(){ 
 
 }
+const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 //搜索用户内容
 // function seek(){
 //     $(".user_phone").keyup(function(){
@@ -35,7 +36,6 @@ function seek_book(){
 }
 //搜索评论
 function seek_comment(){
-
     let sstxt=$('#seek_comment').val();
     $('table tbody tr').hide()
     setTimeout(function(){
@@ -56,7 +56,7 @@ function popup_mod(id){
     $('body').append('<div class="popup_mod" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div><div class="popup_mod" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 600px; height: 400px;"><p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px;"><span style="margin-left: 10px;">菜单编辑</span> <span style="right: 10px; position: absolute; cursor: pointer;"><a style="color: #000; text-decoration: none;" onclick="$(\'.popup_mod\').remove()">X</a></span></p><div class="row"><form class="form-horizontal"> <div class="form-group"><label class="col-md-2 control-label">名字</label><div class="col-md-6"><input type="text" class="form-control" id="food-name2" placeholder="菜品名称."></div></div><div class="form-group"><label class="col-md-2 control-label">价格</label><div class="col-md-6"><input type="text" class="form-control" id="food-price2" placeholder="菜品价格."></div></div><div class="form-group"><label class="col-md-2 control-label">描述</label><div class="col-md-6"><input type="text" class="form-control" id="food-desc" placeholder="菜品描述."></div></div><div class="form-group"><label class="col-md-2 control-label">类型</label><div class="col-md-6"><input type="text" class="form-control" id="food-type2" placeholder="菜品类型(蔬菜；水果；热菜；凉菜；西餐)."></div></div></form></div><span style="bottom: 10px; right: 15px; position: absolute;"><button type="button" class="btn btn-info btn-sm" id="submit-menu" style="margin-right: 10px;" onclick="paging_mod(this,\''+id+'\');$(\'.popup_mod\').remove()">提交</button><button type="button" class="btn btn-sm" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>');
 }
 //修改用户信息弹窗
-function popup_user(id){
+function popup_user(id,name,phone,experience){
     $('body').append(`<div class="popup_mod" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div>
     <div class="popup_mod" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 500px; height: 450px;">
         <p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px; margin-bottom: 20px;">
@@ -68,7 +68,7 @@ function popup_user(id){
                         <div class="item">
                             <label class="">用户名</label>
                             <span class="">
-                                <input type="text" class="" id="popup_user" name="user" placeholder="输入用户名"></span></div>
+                                <input type="text" value="${name}" class="" id="popup_user" name="user" placeholder="输入用户名"></span></div>
                                 <div class="item">
                                     <label class="">账号状态</label>
                                     <span class="">
@@ -80,11 +80,11 @@ function popup_user(id){
                                     </div>
                                         <div class="item">
                                             <label class="">手机号</label>
-                                            <span class=""><input type="text" id="popup_phone" name="user" placeholder="请输入手机号"></span></div>
+                                            <span class=""><input value="${phone}" type="text" id="popup_phone" name="user" placeholder="请输入手机号"></span></div>
                                             <div class="item">
                                                 <label class="">积分</label>
                                                 <span class="">
-                                                    <input type="text" id="popup_experience" name="user" placeholder="请输入">
+                                                    <input type="text" value="${experience}" id="popup_experience" name="user" placeholder="请输入">
                                                     </span>
                                                     <span class="">
                                                         <button onclick="user_exp('${id}')">修改积分</button>
@@ -95,7 +95,7 @@ function popup_user(id){
                                                     <button type="button" class="btn" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>`)
 }
 //修改小说  信息弹窗
-function popup_book(id){
+function popup_book(id,name,publisher){
     $('body').append(`<div class="popup_mod" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div>
     <div class="popup_mod" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 500px; height: 450px;">
         <p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px; margin-bottom: 20px;">
@@ -107,7 +107,7 @@ function popup_book(id){
                         <div class="item">
                             <label class="">小说名</label>
                             <span class="">
-                                <input type="text" class="" id="popup_title" name="user" placeholder="请输入"></span></div>
+                                <input value="${name}" type="text" class="" id="popup_title" name="user" placeholder="请输入"></span></div>
                                 <div class="item">
                                     <label class="">版权</label>
                                     <span class="">
@@ -118,7 +118,7 @@ function popup_book(id){
                                     </div>
                                         <div class="item">
                                             <label class="">出版社</label>
-                                            <span class=""><input type="text" id="popup_publisher" name="user" placeholder="请输入"></span></div>
+                                            <span class=""><input value="${publisher}" type="text" id="popup_publisher" name="user" placeholder="请输入"></span></div>
                                             <div class="item">
                                                 </div>
                                                 <span style="bottom: 10px; right: 15px; position: absolute;">
@@ -190,7 +190,7 @@ function refresh_user(onepage){
     $('#gopre').off('click');
     $('#gogogo').off('click');
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/api/admin/accounts/pages" ,
+        url:contextPath+'/api/admin/accounts/pages',
         type:'GET',
         data:{
             per_page: Number(onepage)
@@ -200,7 +200,7 @@ function refresh_user(onepage){
             const allPage=data.pages;
             console.log(data)
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                url:contextPath+'/api/admin/accounts/get',
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -218,16 +218,16 @@ function refresh_user(onepage){
                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                         <th style="width: 13%;">${status(data[i].status)}</th>
-                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                     </tr>`)
                     })
                     $('#control_page').empty()
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             $('#gonext').on('click',function(){
@@ -236,7 +236,7 @@ function refresh_user(onepage){
                 }
                 console.log(curPage)
                 $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                url:contextPath+"/api/admin/accounts/get" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -254,16 +254,16 @@ function refresh_user(onepage){
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                 <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                 <th style="width: 13%;">${status(data[i].status)}</th>
-                                <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                             </tr>`)
                             })
                             $('#control_page').empty()        
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             })
@@ -273,7 +273,7 @@ function refresh_user(onepage){
                 }
                 console.log(curPage)
                 $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                url:contextPath+"/api/admin/accounts/get" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -291,16 +291,16 @@ function refresh_user(onepage){
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                 <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                 <th style="width: 13%;">${status(data[i].status)}</th>
-                                <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                             </tr>`)
                             })
                             $('#control_page').empty()
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             })
@@ -308,7 +308,7 @@ function refresh_user(onepage){
                 if($('#go').val()>=1 && $('#go').val()<=allPage){
                 curPage=$('#go').val();
                 $.ajax({
-                    url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                    url:contextPath+"/api/admin/accounts/get" ,
                     type:'GET',
                     data:{
                         per_page: Number(onepage),
@@ -326,16 +326,16 @@ function refresh_user(onepage){
                                     <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                     <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                     <th style="width: 13%;">${status(data[i].status)}</th>
-                                    <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                    <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai">编辑</i></span></th>
                                 </tr>`)
                                 })
                         $('#control_page').empty()
                         $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                         console.log(data)
                     },
-                    error: function() {
-                        //const data = JSON.parse(jqXHR.responseText);
-                        popup_over('icon-sad','#d81e06',"请求失败");
+                    error: function(jqXHR) {
+                        let mes = JSON.parse(jqXHR.responseText);
+                        popup_over('icon-sad','#d81e06',mes.errorMessage);
                     }
                 })
                 }else{
@@ -358,7 +358,7 @@ function refresh_book(onepage){
     $('#gopre').off('click');
     $('#gogogo').off('click');
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/admin/novel/all/pages']]*/ "http://localhost:8080/future-novel/api/admin/novel/all/pages" ,
+        url:contextPath+"/api/admin/novel/all/pages" ,
         type:'GET',
         data:{
             per_page: Number(onepage)
@@ -368,7 +368,7 @@ function refresh_book(onepage){
             let allPage=data.pages;
             console.log(data)
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                url:contextPath+"/api/admin/novel/all" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -384,16 +384,16 @@ function refresh_book(onepage){
                                 <th style="width: 13%;">${data[i].series}</th>
                                 <th style="width: 15%;">${data[i].pubdate}</th>
                                 <th style="width: 13%;">${data[i].copyright}</th>
-                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                             </tr>`)
                             })
                     $('#control_page').empty()        
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             
@@ -403,7 +403,7 @@ function refresh_book(onepage){
                 }
                 console.log(curPage)
                 $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                url:contextPath+"/api/admin/novel/all" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -419,16 +419,16 @@ function refresh_book(onepage){
                                 <th style="width: 13%;">${data[i].series}</th>
                                 <th style="width: 15%;">${data[i].pubdate}</th>
                                 <th style="width: 13%;">${data[i].copyright}</th>
-                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                             </tr>`)
                             })
                             $('#control_page').empty()        
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             })
@@ -438,7 +438,7 @@ function refresh_book(onepage){
                 }
                 console.log(curPage)
                 $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                url:contextPath+"/api/admin/novel/all" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -454,16 +454,16 @@ function refresh_book(onepage){
                                 <th style="width: 13%;">${data[i].series}</th>
                                 <th style="width: 15%;">${data[i].pubdate}</th>
                                 <th style="width: 13%;">${data[i].copyright}</th>
-                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                             </tr>`)
                             })
                     $('#control_page').empty();    
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             })
@@ -471,7 +471,7 @@ function refresh_book(onepage){
             if($('#go').val()>=1 && $('#go').val()<=allPage){
             curPage=$('#go').val();
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/novel/all']]*/ "http://localhost:8080/future-novel/api/admin/novel/all" ,
+                url:contextPath+"/api/admin/novel/all" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage),
@@ -487,16 +487,16 @@ function refresh_book(onepage){
                                 <th style="width: 13%;">${data[i].series}</th>
                                 <th style="width: 15%;">${data[i].pubdate}</th>
                                 <th style="width: 13%;">${data[i].copyright}</th>
-                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
+                                <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                             </tr>`)
                             })
                     $('#control_page').empty()        
                     $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                     console.log(data)
                 },
-                error: function() {
-                    //const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',"请求失败");
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
             }else{
@@ -516,8 +516,9 @@ function refresh_book(onepage){
 }
 //重新获取评论
 function refresh_comment(){
+    
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/comment/getAll']]*/ "http://localhost:8080/future-novel/api/comment/getAll " ,
+        url:contextPath+"/api/comment/getAll",
         type:'GET',
         data:{
             per_page: Number(onepage),
@@ -529,7 +530,7 @@ function refresh_comment(){
             $('#a').empty();
             $.each(data,function(i){
                         $('#a').append(`<tr>
-                        <th style="width: 13%; class='comment_name'">${data[i].userName}</th>
+                        <th style="width: 13%;" class="comment_name">${data[i].userName}</th>
                         <th style="width: 20%;">${data[i].text}</th>
                         <th style="width: 4%;">${data[i].rating}</th>
                         <th style="width: 13%;">${data[i].level}</th>
@@ -538,12 +539,14 @@ function refresh_comment(){
                         <th style="width: 24%;"> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','comment_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                     </tr>`)
                     })
-            console.log(eval(''+data+''))
-            
+                    let allpage=parseInt(data[0].total/20)+1;
+                    console.log(allpage)
+            $('#control_page').empty();      
+            $('#control_page').prepend('第'+curPage+'页/共'+allpage+'页');
         },
-        error: function() {
-            //const data = JSON.parse(jqXHR.responseText);
-            popup_over('icon-sad','#d81e06',"请求失败");
+        error: function(jqXHR) {
+            let mes = JSON.parse(jqXHR.responseText);
+            popup_over('icon-sad','#d81e06',mes.errorMessage);
         }
     })
 }
@@ -560,7 +563,7 @@ function user_add(){
         if(/^1[3,5,7,8]\d{9}$/.test(phone) && /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/.test(userEmail)){
             $('.popup_mod').remove();
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/account/add']]*/'http://localhost:8080/future-novel/api/admin/account/add',
+                url:contextPath+'/api/admin/account/add',
                 type: 'post',
                 datatype:'json',
                 data: JSON.stringify(Arr),
@@ -570,9 +573,9 @@ function user_add(){
                     console.log(data);
                     refresh_user(onepage)
                 },
-                error: function(jqXHR){
-                    popup_over('icon-sad','#d81e06','添加失败');
-                    console.log(jqXHR.responseJSON.errorMessage);
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
         }else if(userName=='' || password==''){
@@ -623,58 +626,60 @@ function user_del(){
             Arr_del.push($(this).val())
         });
         $.ajax({
-            url:/*[[${#request.getContextPath()} + '/api/admin/account/delete']]*/'http://localhost:8080/future-novel/api/admin/account/delete',
+            url:contextPath+'/api/admin/account/delete',
             type: 'DELETE',
             datatype:'json',
             data: JSON.stringify(Arr_del),
             contentType: 'application/json; charset=utf-8',
             success: function(data){
                 popup_over('icon-happy-l','#1afa29','删除成功');
-                refresh_user()
+                refresh_user(onepage);
             },
-            error: function(jqXHR){
-                
-                popup_over('icon-sad','#d81e06','删除失败');
+            error: function(jqXHR) {
+                let mes = JSON.parse(jqXHR.responseText);
+                popup_over('icon-sad','#d81e06',mes.errorMessage);
             }
         })
 }
 //删除书籍
 function book_del(id){
     $.ajax({
-        url:'http://localhost:8080/future-novel/api/novel/'+id+'',
+        url:contextPath+'/api/novel/'+id+'',
         type: 'DELETE',
         contentType: 'application/json; charset=utf-8',
         success: function(data){    
             popup_over('icon-happy-l','#1afa29','删除成功');
             refresh_book(onepage);
         },
-        error: function(jqXHR){
-            
-            popup_over('icon-sad','#d81e06','删除失败');
+        error: function(jqXHR) {
+            let mes = JSON.parse(jqXHR.responseText);
+            popup_over('icon-sad','#d81e06',mes.errorMessage);
         }
     })
 }
 //删除评论
 function comment_del(id){
     $.ajax({
-        url:'http://localhost:8080/future-novel/api/comment/'+id+'',
+        url:contextPath+'/api/comment/'+id+'',
         type: 'DELETE',
         contentType: 'application/json; charset=utf-8',
         success: function(data){    
             popup_over('icon-happy-l','#1afa29','删除成功');
             refresh_comment();
         },
-        error: function(jqXHR){
-            
-            popup_over('icon-sad','#d81e06','删除失败');
+        error: function(jqXHR) {
+            let mes = JSON.parse(jqXHR.responseText);
+            popup_over('icon-sad','#d81e06',mes.errorMessage);
+            console.log(mes)
         }
     })
+    refresh_comment()
 }
 //修改积分ajax
 function user_exp(id){
     let exp=$('#popup_experience').val();
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/admin/account/experience/edit']]*/'http://localhost:8080/future-novel/api/admin/account/experience/edit',
+        url:contextPath+'/api/admin/account/experience/edit',
         type: 'POST',
         datatype: 'json',
         contentType: 'application/json; charset=utf-8',
@@ -686,9 +691,9 @@ function user_exp(id){
             popup_over('icon-happy-l','#1afa29','修改成功');
             console.log('修改积分成功')
         },
-        error: function(jqXHR){
-            
-            popup_over('icon-sad','#d81e06','修改失败');
+        error: function(jqXHR) {
+            let mes = JSON.parse(jqXHR.responseText);
+            popup_over('icon-sad','#d81e06',mes.errorMessage);
         }
     })
 }
@@ -701,7 +706,7 @@ function user_mod(id){
         if(/^1[3,5,7,8]\d{9}$/.test(phone) && userName.length>=4){
             $('.popup_mod').remove();
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/account/edit']]*/'http://localhost:8080/future-novel/api/account/edit',
+                url:contextPath+'/api/account/edit',
                 type: 'POST',
                 datatype: 'json',
                 contentType: 'application/json; charset=utf-8',
@@ -715,10 +720,9 @@ function user_mod(id){
                     popup_over('icon-happy-l','#1afa29','修改成功');
                     refresh_user(onepage)
                 },
-                error: function(jqXHR){
-                    
-                    popup_over('icon-sad','#d81e06','修改失败');
-            
+                error: function(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',mes.errorMessage);
                 }
             })
         }else if(userName.length<=4){
@@ -760,7 +764,7 @@ function book_mod(id){
     publisher=$('#popup_publisher').val();
             $('.popup_mod').remove();
             $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/account/edit']]*/'http://localhost:8080/future-novel/api/novel/'+id+'/edit',
+                url:contextPath+'/api/novel/'+id+'/edit',
                 type: 'POST',
                 datatype: 'json',
                 contentType: 'application/json; charset=utf-8',
@@ -773,11 +777,10 @@ function book_mod(id){
                     popup_over('icon-happy-l','#1afa29','修改成功');
                     refresh_book(onepage)
                 },
-                error: function(jqXHR){
-                    
-                    popup_over('icon-sad','#d81e06','修改失败');
-            
-                }
+                error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
+                        }
             })
 }
 //激活账号窗口
@@ -790,7 +793,7 @@ function activate_yes(){
         ps=$('#ps').val(),
         activate=$('#activate').val();
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/login']]*/ "http://localhost:8080/future-novel/api/login" ,
+        url:contextPath+"/api/login" ,
         type:'post',
         datatype:"json",
         data:JSON.stringify({
@@ -840,7 +843,7 @@ $('.check').on('click',function(){
 })
 function logout_user(){
     $.ajax({
-        url:/*[[${#request.getContextPath()} + '/api/logout']]*/ 'http://localhost:8080/future-novel/api/logout',
+        url:contextPath+'/api/logout',
         type:'get',
         contentType:'application/json; charset=utf-8',
         success: function(data){

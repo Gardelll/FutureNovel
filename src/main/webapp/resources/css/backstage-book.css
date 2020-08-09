@@ -107,6 +107,7 @@ table thead {
   border: 1px solid #BBBBBB;
 }
 .popup_mod select{ 
+  padding-left: 10px;
   height: 38px;
   width: 196px;
   border: 1px solid #BBBBBB;

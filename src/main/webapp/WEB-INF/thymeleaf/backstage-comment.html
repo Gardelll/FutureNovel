@@ -52,7 +52,7 @@
     <div class="contant" id="contant">
         <div class="book">
             <div class="function">
-                <span>作者名</span> <input type="text" class="seek" id="seek_comment" placeholder="请输入">
+                <span>用户名</span> <input type="text" class="seek" id="seek_comment" placeholder="请输入">
                 <button type="button" class="btn-seek" onclick="seek_comment()"><i class="iconfont icon-iconseach"></i></button>
             </div>
             <div class="function">    
@@ -92,11 +92,12 @@
 <script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 <!-- 作为公共部分分离/ -->
 <script th:inline="javascript" async>
+    
     var curPage=1,
         onepage=20;
     $(document).ready(function(){
                     $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/comment/getAll']]*/ "http://localhost:8080/future-novel/api/comment/getAll " ,
+                        url:contextPath+"/api/comment/getAll",
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -108,7 +109,7 @@
                             $('#a').empty();
                             $.each(data,function(i){
                                         $('#a').append(`<tr>
-                                        <th style="width: 13%; class='comment_name'">${data[i].userName}</th>
+                                        <th style="width: 13%;" class="comment_name">${data[i].userName}</th>
                                         <th style="width: 20%;">${data[i].text}</th>
                                         <th style="width: 4%;">${data[i].rating}</th>
                                         <th style="width: 13%;">${data[i].level}</th>
@@ -117,21 +118,17 @@
                                         <th style="width: 24%;"> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','comment_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
-                            console.log(eval(''+data+''))
-                            
-                        },
-                        error: function() {
-                            //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
-                        }
-                    })
-                    $('#gonext').on('click',function(){
-                        if(curPage>=1 && curPage<allPage){
+                                    const allpage=parseInt(data[0].total/20)+1;
+                                    console.log(allpage)
+                            $('#control_page').empty();      
+                            $('#control_page').prepend('第'+curPage+'页/共'+allpage+'页');
+                            $('#gonext').on('click',function(){
+                        if(curPage>=1 && curPage<allpage){
                             curPage=Number(curPage)+1;
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/comment/getAll']]*/ "http://localhost:8080/future-novel/api/comment/getAll " ,
+                        url:contextPath+"/api/comment/getAll" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -143,7 +140,7 @@
                             $('#a').empty();
                             $.each(data,function(i){
                                         $('#a').append(`<tr>
-                                            <th style="width: 13%; class='comment_name'">${data[i].userName}</th>
+                                        <th style="width: 13%;" class="comment_name">${data[i].userName}</th>
                                         <th style="width: 20%;">${data[i].text}</th>
                                         <th style="width: 4%;">${data[i].rating}</th>
                                         <th style="width: 13%;">${data[i].level}</th>
@@ -152,22 +149,23 @@
                                         <th style="width: 24%;"> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','comment_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
-                            console.log(eval(''+data+''))
                             
+                            $('#control_page').empty();      
+                            $('#control_page').prepend('第'+curPage+'页/共'+allpage+'页');
                         },
-                        error: function() {
-                            //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                        error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     })
-                    $('#gopre').on('click',function(){
-                        if(curPage>1 && curPage<=allPage){
+                            $('#gopre').on('click',function(){
+                        if(curPage>1 && curPage<=allpage){
                             curPage=Number(curPage)-1;
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/comment/getAll']]*/ "http://localhost:8080/future-novel/api/comment/getAll " ,
+                        url:contextPath+"/api/comment/getAll" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -179,7 +177,7 @@
                             $('#a').empty();
                             $.each(data,function(i){
                                         $('#a').append(`<tr>
-                                            <th style="width: 13%; class='comment_name'">${data[i].userName}</th>
+                                        <th style="width: 13%;" class="comment_name">${data[i].userName}</th>
                                         <th style="width: 20%;">${data[i].text}</th>
                                         <th style="width: 4%;">${data[i].rating}</th>
                                         <th style="width: 13%;">${data[i].level}</th>
@@ -188,15 +186,23 @@
                                         <th style="width: 24%;"> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','comment_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })
-                            console.log(eval(''+data+''))
-                            
+                            $('#control_page').empty();      
+                            $('#control_page').prepend('第'+curPage+'页/共'+allpage+'页');
                         },
                         error: function() {
                             //const data = JSON.parse(jqXHR.responseText);
                             popup_over('icon-sad','#d81e06',"请求失败");
                         }
                     })
+                })
+                        },
+                        error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
+                        }
                     })
+                    
+                   
 
     })        
 </script>

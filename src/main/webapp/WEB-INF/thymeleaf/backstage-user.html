@@ -142,7 +142,7 @@
         //     $(this).append('<img src=\''+url+'\'>')
         // }
         $.ajax({
-                url:/*[[${#request.getContextPath()} + '/api/admin/accounts/pages']]*/ "http://localhost:8080/future-novel/api/admin/accounts/pages" ,
+                url:contextPath+"/api/admin/accounts/pages" ,
                 type:'GET',
                 data:{
                     per_page: Number(onepage)
@@ -152,7 +152,7 @@
                     const allPage=data.pages;
                     console.log(data)
                     $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                        url:contextPath+"/api/admin/accounts/get" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -164,22 +164,22 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                        <th style="width: 5%;"><img src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                         <th style="width: 13%;">${status(data[i].status)}</th>
-                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
                                     })
 
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
-                            //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                        error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     $('#gonext').on('click',function(){
@@ -188,7 +188,7 @@
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                        url:contextPath+"/api/admin/accounts/get" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -200,22 +200,22 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" th:src="@{/resources/img/avatar.png}"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                         <th style="width: 13%;">${status(data[i].status)}</th>
-                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
                                     })
                                     $('#control_page').empty()        
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
-                            //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                        error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     })
@@ -225,7 +225,7 @@
                         }
                         console.log(curPage)
                         $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                        url:contextPath+"/api/admin/accounts/get" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -243,16 +243,16 @@
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                         <th style="width: 13%;">${status(data[i].status)}</th>
-                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
                                     })
                                     $('#control_page').empty()
                             $('#control_page').prepend('第'+curPage+'页/共'+allPage+'页')
                             console.log(data)
                         },
-                        error: function() {
-                            //const data = JSON.parse(jqXHR.responseText);
-                            popup_over('icon-sad','#d81e06',"请求失败");
+                        error: function(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            popup_over('icon-sad','#d81e06',mes.errorMessage);
                         }
                     })
                     })
@@ -260,7 +260,7 @@
                     if($('#go').val()>=1 && $('#go').val()<=allPage){
                     curPage=$('#go').val();
                     $.ajax({
-                        url:/*[[${#request.getContextPath()} + '/api/admin/accounts/get']]*/ "http://localhost:8080/future-novel/api/admin/accounts/get" ,
+                        url:contextPath+"/api/admin/accounts/get" ,
                         type:'GET',
                         data:{
                             per_page: Number(onepage),
@@ -278,7 +278,7 @@
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                         <th style="width: 13%;">${status(data[i].status)}</th>
-                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
+                                        <th style="width: 19%;"><span class="modify-user" onclick="popup_user('${data[i].uid}','${data[i].userName}','${data[i].phone}','${data[i].experience}')"><i class="iconfont icon-xiugai"> 编辑</i></span></th>
                                     </tr>`)
                                     })
                             $('#control_page').empty()

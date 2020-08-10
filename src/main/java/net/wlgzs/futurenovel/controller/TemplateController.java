@@ -1,5 +1,22 @@
+/*
+ *  Copyright (C) 2020 Future Studio
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package net.wlgzs.futurenovel.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.AbstractCollection;
@@ -10,7 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -21,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.AppProperties;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.NovelIndex;
@@ -36,6 +53,7 @@ import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -74,7 +92,7 @@ import org.springframework.web.server.ResponseStatusException;
         "*"
     }) // TODO 临时解决分离调试跨域问题
 @Slf4j
-public class TemplateController extends AbstractAppController {
+public class TemplateController extends AbstractAppController implements ErrorController {
 
     public TemplateController(TokenStore tokenStore,
                               AccountService accountService,
@@ -83,16 +101,11 @@ public class TemplateController extends AbstractAppController {
                               ReadHistoryService readHistoryService,
                               CommentService commentService,
                               Validator defaultValidator,
-                              Properties futureNovelConfig,
+                              AppProperties futureNovelConfig,
                               FileService fileService,
                               BookSelfService bookSelfService,
-                              DateFormatter defaultDateFormatter) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, defaultDateFormatter);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        super.initBinder(binder);
+                              ObjectMapper objectMapper) {
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper);
     }
 
     /**
@@ -238,7 +251,7 @@ public class TemplateController extends AbstractAppController {
                 accountService.register(account);
                 var uidCookie = new Cookie("uid", account.getUid().toString());
                 uidCookie.setMaxAge((int) Duration.ofDays(365).toSeconds());
-                uidCookie.setPath(request.getContextPath());
+                uidCookie.setPath(getBaseUri(request));
                 response.addCookie(uidCookie);
                 session.setAttribute("activateCode", null);
                 session.setAttribute("activateBefore", null);
@@ -386,7 +399,7 @@ public class TemplateController extends AbstractAppController {
         try {
             Account showAccount = accountService.getAccount(UUID.fromString(uuid));
             model.addAttribute("showAccount", showAccount);
-            if (showAccount.getUid().equals(currentAccount.getUid())) {
+            if (currentAccount != null && showAccount.getUid().equals(currentAccount.getUid())) {
                 List<ReadHistory> history = readHistoryService.getReadHistory(currentAccount, new Date(System.currentTimeMillis() - Duration.ofDays(14).toMillis()), null);
                 model.addAttribute("readHistory", history);
             }
@@ -412,7 +425,7 @@ public class TemplateController extends AbstractAppController {
             "    <title>Redirecting</title>\n" +
             "</head>\n" +
             "<body>\n" +
-            "<form id=\"myForm\" action=\"" + request.getContextPath() + "/search?page=1\" method=\"post\">\n" +
+            "<form id=\"myForm\" action=\"" + getBaseUri(request) + "search?page=1\" method=\"post\">\n" +
             "    <input type=\"hidden\" name=\"searchBy\" value=\"HOT\">\n" +
             "    <input type=\"hidden\" name=\"sortBy\" value=\"HOT_DESC\">\n" +
             "</form>\n" +
@@ -699,6 +712,11 @@ public class TemplateController extends AbstractAppController {
     @RequestMapping(path = "/error")
     public void handle(HttpServletRequest request) {
         super.handle(request);
+    }
+
+    @Override
+    public String getErrorPath() {
+        return "/error";
     }
 
 }

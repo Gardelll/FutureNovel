@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  error:
+    path: '/error'
+
+logging:
+  level:
+    web: debug
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: '8MB'
+  thymeleaf:
+    cache: false
+  datasource:
+    url: 'jdbc:mariadb://127.0.0.1:3306/novel_db?useSSL=false'
+    username: 'novel_db'
+    password: '数据库密码'
+    driver-class-name: org.mariadb.jdbc.Driver
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+  mail:
+    host: '发件邮箱服务器'
+    username: '发件邮箱账号'
+    password: '发件密码'
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable:
+              true
+
+mybatis:
+  type-aliases-package: 'net.wlgzs.futurenovel.model'
+  type-handlers-package: 'net.wlgzs.futurenovel.typehandler'
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
+future: # 应用相关配置，详情见 `net.wlgzs.futurenovel.AppProperties`
+  upload-dir: '/tmp'

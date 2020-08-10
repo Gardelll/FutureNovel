@@ -14,25 +14,18 @@
  *  limitations under the License.
  */
 
-package net.wlgzs.futurenovel.model;
+package net.wlgzs.futurenovel;
 
-import java.util.UUID;
+import java.nio.file.Paths;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-public interface NovelNode {
+public class ServletInitializer extends SpringBootServletInitializer {
 
-    /**
-     * @return 父节点 ID
-     */
-    UUID getParentUUID();
-
-    /**
-     * @return 此节点的 ID
-     */
-    UUID getThisUUID();
-
-    /**
-     * @return 标题
-     */
-    String getTitle();
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.properties("spring.config.location=" + Paths.get(new AppProperties().getAppHome(), "application.yml").toAbsolutePath().toString())
+            .sources(AppConfig.class);
+    }
 
 }

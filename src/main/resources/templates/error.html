@@ -184,7 +184,7 @@
         <div th:if="${errorMessage} and ${errorMessage.length() != 0}" class="error-description">
             <p><b>原因：</b> <span th:text="${errorMessage}"></span></p>
             <p><b>时间：</b> <span th:text="${{#dates.createNow()}}"></span></p>
-            <p><b>请求路径：</b> <span th:text="${#request.requestURI}"></span></p>
+            <p><b>请求路径：</b> <span th:text="${#request.getAttribute('javax.servlet.error.request_uri')} eq null ? ${#request.requestURI} : ${#request.getAttribute('javax.servlet.error.request_uri')}"></span></p>
         </div>
         <button class="error-button error-button-active"><a th:href="${#request.contextPath}">返回首页</a></button>
         <button class="error-button" onclick="show_more(true)" id="more">查看详情</button>

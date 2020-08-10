@@ -1,9 +1,24 @@
+/*
+ *  Copyright (C) 2020 Future Studio
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package net.wlgzs.futurenovel.service;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,6 +26,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.AppProperties;
 import net.wlgzs.futurenovel.dao.TokenDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
@@ -36,16 +52,16 @@ public class TokenStore implements DisposableBean {
 
     private final ScheduledFuture<?> future;
 
-    private final Properties futureNovelConfig;
+    private final AppProperties futureNovelConfig;
 
-    public TokenStore(TokenDao tokenDao, Properties futureNovelConfig) {
+    public TokenStore(TokenDao tokenDao, AppProperties futureNovelConfig) {
         this.tokenDao = tokenDao;
         this.futureNovelConfig = futureNovelConfig;
         var tokens = this.tokenDao.getAll();
         tokens.forEach(token -> tokenMap.put(token.getToken(), token));
         executor = Executors.newScheduledThreadPool(1);
         // Save to database every 10min;
-        future = executor.scheduleAtFixedRate(this::saveTokens, 1, Long.parseLong(futureNovelConfig.getProperty("future.token.savePeriod", "10")), TimeUnit.MINUTES);
+        future = executor.scheduleAtFixedRate(this::saveTokens, 1, futureNovelConfig.getToken().getSavePeriod(), TimeUnit.MINUTES);
     }
 
     public void removeToken(Token token) {
@@ -78,7 +94,7 @@ public class TokenStore implements DisposableBean {
         var token = tokenMap.getQuietly(tokenStr);
         if (token == null ||
                 !token.checkToken(clientIp, clientAgent, uid) ||
-                System.currentTimeMillis() - token.getLastUse() > Duration.ofDays(Long.parseLong(futureNovelConfig.getProperty("future.token.expire", "7"))).toMillis()) {
+                System.currentTimeMillis() - token.getLastUse() > Duration.ofDays(futureNovelConfig.getToken().getExpire()).toMillis()) {
             if (token != null) removeToken(token);
             return null;
         }
@@ -100,7 +116,7 @@ public class TokenStore implements DisposableBean {
             if (tokenMap.isEmpty()) return;
             int result = tokenDao.insertAll(tokenMap.values()
                     .stream()
-                    .filter(token -> System.currentTimeMillis() - token.getLastUse() < Duration.ofDays(Long.parseLong(futureNovelConfig.getProperty("future.token.expire", "7"))).toMillis())
+                    .filter(token -> System.currentTimeMillis() - token.getLastUse() < Duration.ofDays(futureNovelConfig.getToken().getExpire()).toMillis())
                     .collect(Collectors.toList()));
             log.debug("Saved {} token(s)", result);
         }

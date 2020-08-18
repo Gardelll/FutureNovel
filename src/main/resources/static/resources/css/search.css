@@ -293,6 +293,7 @@
 .book-rank-synopsis {
     height: 107px;
     overflow: auto;
+    width: 100%;
 }
 
 .tab {
@@ -311,4 +312,9 @@
     float: right;
     margin-left:80%;
     transition: 0.5s;
+}
+.book-rank-list-text{
+    width:65%;
+    float:left;
+    margin:5px 0 0 20px;
 }

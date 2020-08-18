@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.AppConfig;
 import net.wlgzs.futurenovel.dao.ChapterDao;
 import net.wlgzs.futurenovel.dao.NovelIndexDao;
 import net.wlgzs.futurenovel.dao.SectionDao;

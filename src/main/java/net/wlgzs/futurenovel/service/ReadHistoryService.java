@@ -45,7 +45,7 @@ public class ReadHistoryService {
         try {
             int ret = readHistoryDao.insertReadHistory(readHistory);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步添加操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -56,7 +56,7 @@ public class ReadHistoryService {
         try {
             int ret = readHistoryDao.deleteReadHistory(historyId, accountId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -66,8 +66,8 @@ public class ReadHistoryService {
     public void clearReadHistory(@NonNull Account account, @Nullable Date after, @Nullable Date before) {
         try {
             int ret = readHistoryDao.deleteReadHistoryByAccountId(account.getUid(), after, before);
-            if (ret == 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "清空阅读历史失败");
+            if (ret == 0)
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "清空阅读历史失败");
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

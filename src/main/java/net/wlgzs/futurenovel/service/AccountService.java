@@ -43,7 +43,7 @@ public class AccountService {
     public Account getAccount(@NonNull UUID uid) {
         try {
             Account account = accountDao.getAccount(uid);
-            if (account == null) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "找不到该用户");
+            if (account == null) throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "找不到该用户");
             return account;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -53,7 +53,7 @@ public class AccountService {
     public Account getAccount(@NonNull String username) {
         try {
             Account account = accountDao.getAccountForLogin(username);
-            if (account == null) throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "找不到该用户");
+            if (account == null) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "找不到该用户");
             return account;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);

@@ -59,7 +59,7 @@ public class CommentService {
         try {
             int ret = commentDao.deleteComment(commentId, accountId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -70,7 +70,7 @@ public class CommentService {
         try {
             int ret = commentDao.deleteCommentByAccountId(accountId);
             if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "清空用户评论失败");
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "清空用户评论失败");
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -81,7 +81,7 @@ public class CommentService {
         try {
             int ret = commentDao.deleteCommentBySectionId(sectionId);
             if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "清空小节评论失败");
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "清空小节评论失败");
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

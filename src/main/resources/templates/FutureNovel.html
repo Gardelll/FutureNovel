@@ -181,22 +181,22 @@
                         <li class="news_item" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 1">
                             <a class="news_link">
                                 <span class="new_tag">最新</span>
-                                <p th:text="${newNovel.title}" style="display: inline-block;"></p>--
-                                <p th:text="${newNovel.authors}" style="display: inline-block;"></p>
+                                <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" style="display: inline-block;"></a>--
+                                <a style="display: inline-block;" target="_blank" th:text="${newNovel.authors}"></a>
                             </a>
                         </li>
                         <li class="news_item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 2">
                             <a class="news_link">
                                 <span class="new_tag">热门</span>
-                                <p th:text="${hotNovel.title}" style="display: inline-block;"></p>--
-                                <p th:text="${hotNovel.authors}" style="display: inline-block;"></p>
+                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" style="display: inline-block;"></a>--
+                                <a th:text="${hotNovel.authors}" style="display: inline-block;"></a>
                             </a>
                         </li>
                         <li class="news_item" th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 6">
                             <a class="news_link">
                                 <span class="new_tag">推荐</span>
-                                <p th:text="${novelrec.title}" style="display: inline-block;"></p>--
-                                <p th:text="${novelrec.authors}" style="display: inline-block;"></p>
+                                <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" style="display: inline-block;"></a>--
+                                <a th:text="${novelrec.authors}" style="display: inline-block;"></a>
                             </a>
                         </li>
                     </ul>
@@ -455,12 +455,12 @@
     </div>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript">
-        function popup_over(icon,color,contant){
-            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
-            setTimeout(function(){
+        function popup_over(icon, color, contant) {
+            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
+            setTimeout(function() {
                 $('.popup_over').remove();
                 // clear('.popup_over');
-            },1500)
+            }, 1500)
         };
         const classify_icons = [
             "fa fa-fire",
@@ -486,18 +486,18 @@
         }
 
         function logout() {
-            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
             $.ajax({
-                url: contextPath+"/api/logout",
+                url: contextPath + "/api/logout",
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
                 data: {},
                 success: function(data) {
-                    popup_over('icon-happy-l','#00ff0f',"退出成功");
-                    setTimeout(function () {
+                    popup_over('icon-happy-l', '#00ff0f', "退出成功");
+                    setTimeout(function() {
                         window.location.reload();
-                    },1500)
+                    }, 1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -510,8 +510,8 @@
             $(".search-tool-tip").show();
         });
         $(".time-sure").click(function() {
-            $("#hot").attr("after",$("#after").val());
-            $("#hot").attr("before",$("#before").val());
+            $("#hot").attr("after", $("#after").val());
+            $("#hot").attr("before", $("#before").val());
             $(".search-tool-tip").hide();
         });
 
@@ -523,18 +523,17 @@
         $("#form").submit(function(event) {
             var goSearch = $("#goSearch").val();
             if (goSearch == "") {
-                popup_over('icon-sad','#d81e06',"请输入正确格式");
+                popup_over('icon-sad', '#d81e06', "请输入正确格式");
                 return false;
             } else {
                 return true;
             }
         });
-        $(".search-bt").click(function () {
+        $(".search-bt").click(function() {
             console.log($(this).children().children(".info").children().text());
-            $("#goSearch").attr("value",$(this).children().children(".info").children().text());
+            $("#goSearch").attr("value", $(this).children().children(".info").children().text());
             $("#form").submit();
         })
-
     </script>
 
 </body>

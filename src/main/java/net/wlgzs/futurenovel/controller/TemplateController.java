@@ -54,7 +54,6 @@ import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -62,12 +61,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -341,18 +338,24 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 model.addAttribute("nextSection", chapter.get(index + 1));
             } else {
                 int index2 = novel.indexOf(chapter);
-                if (index2 + 1 < novel.size()) {
+                while (index2 + 1 < novel.size()) {
                     var nextChapter = novel.get(index2 + 1);
-                    model.addAttribute("nextSection", nextChapter.isEmpty() ? null : nextChapter.getSections().peek());
+                    if (!nextChapter.isEmpty()) {
+                        model.addAttribute("nextSection", nextChapter.getSections().peek());
+                        break;
+                    } else index2++;
                 }
             }
             if (index > 0) {
                 model.addAttribute("previewSection", chapter.get(index - 1));
             } else {
                 int index2 = novel.indexOf(chapter);
-                if (index2 > 1) {
+                while (index2 > 1) {
                     var preChapter = novel.get(index2 - 1);
-                    model.addAttribute("previewSection", preChapter.isEmpty() ? null : preChapter.getSections().peekLast());
+                    if (!preChapter.isEmpty()) {
+                        model.addAttribute("previewSection", preChapter.getSections().peekLast());
+                        break;
+                    } else index2--;
                 }
             }
         });

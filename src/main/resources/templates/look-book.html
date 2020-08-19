@@ -158,8 +158,8 @@
 
                                 </a>
                             </div>
-                            <p th:each="author : *{authors}">
-                                <a target="_blank" th:text="${author}"></a>
+                            <p>
+                                <a id="uploaderName"></a>
                             </p>
                         </div>
                         <div class="info-wrap">
@@ -245,8 +245,9 @@
     };
     //得到上传者的所有信息
     function getUploderInfo() {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
-            url: "http://localhost:8080/future-novel/api/account/" + $("#getUploaderId").text() + "/info",
+            url: contextPath+"/api/account/" + $("#getUploaderId").text() + "/info",
             type: "GET",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
@@ -255,6 +256,7 @@
                 console.log(data);
                 $("#memberImg").append(" <img src='" + "" + data.profileImgUrl + "" + "'>")
                 $("#memberLevel").text(data.level);
+                $("#uploaderName").text(data.userName);
             },
             error: function(data) {
                 console.log(data);

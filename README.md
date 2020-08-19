@@ -94,7 +94,7 @@ future: # 应用相关配置，详情见 `net.wlgzs.futurenovel.AppProperties`
 ```bash
 mvn clean spring-boot:run
 ```
-然后在浏览器访问 `http://localhost:8080/future-novel/` 即可
+然后在浏览器访问 `http://localhost:8080/` 即可
 
 ## 调试前端页面
 

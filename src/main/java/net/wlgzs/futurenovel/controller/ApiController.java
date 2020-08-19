@@ -67,7 +67,6 @@ import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -76,13 +75,11 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -321,7 +318,7 @@ public class ApiController extends AbstractAppController {
         }
 
         if (!accountService.editAccount(currentAccount, req)) {
-            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
         }
     }
 
@@ -455,7 +452,7 @@ public class ApiController extends AbstractAppController {
                 if (uid.equals(uuid.toString())) throw new IllegalArgumentException("不能删除自己的账号");
                 Account account = accountService.getAccount(uuid);
                 if (accountService.unRegister(account) != 1)
-                    throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION);
+                    throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "用户不存在");
                 success.add(account);
                 commentService.clearAccountComment(account.getUid());
                 readHistoryService.clearReadHistory(account, null, null);
@@ -916,7 +913,7 @@ public class ApiController extends AbstractAppController {
         }
 
         if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req))
-            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
     }
 
     @PostMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}/edit")
@@ -963,7 +960,7 @@ public class ApiController extends AbstractAppController {
         if (req.text != null) req.text = safeHTML(req.text);
 
         if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req))
-            throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
     }
 
     @PostMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment")

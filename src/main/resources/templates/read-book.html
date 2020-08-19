@@ -156,7 +156,7 @@
                                 <textarea placeholder="有想法快写下来吧..." id="sendTextarea"></textarea>
                                 <div class="text-tools fr">
                                     <a href="javascript:;" class="blue-btn" type="submit" id="commentSure">发表</a>
-                                    <i>0/150</i>
+                                    <i id="textLength">0</i><i>/150</i>
                                 </div>
                             </div>
                         </div>
@@ -164,11 +164,12 @@
                 </div>
                 <!-- 切换章节 -->
                 <div class="chapter-control">
-                    <a id="chapterPrev" class="disabled" href="###">上一章</a>
+                    <a id="chapterPrev" th:if="${previewSection} ne null" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${previewSection.uniqueId.toString()}" href="###">上一节</a>
                     <span></span>
                     <a href="###" target="_blank">目录</a>
                     <span></span>
-                    <a id="chapterNext" href="###">下一章</a>
+                    <a id="chapterNext" th:if="${nextSection} ne null
+" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${nextSection.uniqueId.toString()}" href="###">下一节</a>
                 </div>
             </div>
         </div>
@@ -277,12 +278,16 @@
                 rating:$("#rating").val(),
                 text:$("#sendTextarea").val(),
             }),success:function (data) {
-                popup_over('icon-happy-l','#00ff0f',"评论成功");
-                setTimeout(function () {
-                    window.location.reload();
-                },1500);
+
+                    popup_over('icon-happy-l','#00ff0f',"评论成功");
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1500);
+
             },error: function(data) {
-            	console.log(data)
+                if($("#rating").val()=='选择评分')
+                popup_over('icon-sad','#d81e06',"请选择评分");
+                else if($("#sendTextarea").val()==0)popup_over('icon-sad','#d81e06',"评论内容不能为空");
             }
         })
     }
@@ -383,7 +388,11 @@
         const str= $("#getNovelId").text();
         rewardFun(str);
     })
-
+    $('#sendTextarea').bind('input propertychange', function() {
+        var borrowValue = $(this).val();
+        var repayValue = borrowValue.length;
+        $("#textLength").html(repayValue);
+    });
 
 </script>
 

@@ -187,7 +187,7 @@
                 </div>
                 <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
-                    <button class="blue-btn fl" th:href="@{/novel/create}">创建作品</button>
+                    <a class="blue-btn fl" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -575,7 +575,7 @@
                 type: "DELETE",
                 dataType: "JSON",
                 contentType: "application/json;charset=UTF-8",
-                data: JSON.stringify({}),
+                data: {},
                 success: function(data) {
                     popup_over('icon-happy-l','#00ff0f',"已成功删除所有浏览记录");
                     setTimeout(function () {

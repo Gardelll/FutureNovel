@@ -132,7 +132,7 @@
                             <div class="book-rank-img">
                                 <img th:src="${chapterIdToNovelIndexMap.get(section.fromChapter).coverImgUrl}" style="width: 100px;float: left;" />
                             </div>
-                            <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <div class="book-rank-list-text">
                                 <h4 style="font-size: 15px;font-weight: 400;" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).title}"></h4>
                                 <p style="font-size: 10px;color: gray;margin-top: 10px;">
                                     <span class="book-rank-writer" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).authors}"></span>

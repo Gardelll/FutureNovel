@@ -568,18 +568,19 @@
                 }
             })
         }
+        //删除所有历史
         function removeAllHistory() {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
                 url:contextPath+"/api/account/readHistory/clear",
                 type: "DELETE",
-                dataType: "JSON",
+                dataType: "text",
                 contentType: "application/json;charset=UTF-8",
-                data: {},
-                success: function(data) {
-                    popup_over('icon-happy-l','#00ff0f',"已成功删除所有浏览记录");
+                data:JSON.stringify({}),
+                success: function() {
+                    popup_over('icon-happy-l','#00ff0f',"已成功删除所有记录");
                     setTimeout(function () {
-                        window.location.reload()
+                        window.location.reload();
                     },1500)
                 },
                 error: function(data) {

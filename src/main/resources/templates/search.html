@@ -106,7 +106,7 @@
                         <div class="book-rank-img">
                             <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
                         </div>
-                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                        <div class="book-rank-list-text">
                             <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
                             <p style="font-size: 10px;color: gray;margin-top: 10px;">
                                 <span class="book-rank-writer" th:text="${novel.authors}"></span>
@@ -161,7 +161,7 @@
                             <div class="book-rank-img">
                                 <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
                             </div>
-                            <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                            <div class="book-rank-list-text">
                                 <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
                                 <p style="font-size: 10px;color: gray;margin-top: 10px;">
                                     <span class="book-rank-writer" th:text="${novel.authors}"></span>
@@ -186,7 +186,7 @@
                         <div class="book-rank-img">
                             <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
                         </div>
-                        <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                        <div class="book-rank-list-text">
                             <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>
                             <p style="font-size: 10px;color: gray;margin-top: 10px;">
                                 <span class="book-rank-writer" th:text="${novel.authors}"></span>
@@ -285,7 +285,8 @@
         $("#form2").submit();
     })
     $(".rank-book-buttons").on("click", ".rank-book-details", function() {
-        window.location.href = "http://localhost:8080/future-novel/novel/" + $(this).attr("novelId") + "/view";
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        window.location.href = contextPath +"/novel/"+ $(this).attr("novelId") + "/view";
     })
     $(".SortBy").click(function () {
         window.location.reload();

@@ -269,6 +269,10 @@
     //添加评论
     function addComment() {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        if($("#rating").val()=='选择评分')
+            popup_over('icon-sad','#d81e06',"请选择评分");
+        else if($("#sendTextarea").val()==0)popup_over('icon-sad','#d81e06',"评论内容不能为空");
+        else{
         $.ajax({
             url:contextPath+"/api/novel/section/"+$("#getSectionId").text()+"/comment",
             datatype:"JSON",
@@ -278,18 +282,16 @@
                 rating:$("#rating").val(),
                 text:$("#sendTextarea").val(),
             }),success:function (data) {
-
                     popup_over('icon-happy-l','#00ff0f',"评论成功");
                     setTimeout(function () {
                         window.location.reload();
                     },1500);
 
             },error: function(data) {
-                if($("#rating").val()=='选择评分')
-                popup_over('icon-sad','#d81e06',"请选择评分");
-                else if($("#sendTextarea").val()==0)popup_over('icon-sad','#d81e06',"评论内容不能为空");
+                console.log(data);
             }
         })
+        }
     }
     //删除评论
     $(".our-say-wrap").on("click",".remove",function () {
@@ -326,7 +328,6 @@
                 per_page:5,
                 page:page
             },success:function (data) {
-                console.log(data.length);
                 for(var i=0;i<data.length;i++){
                     $("#comment").append("<li>\n" +
                         "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
@@ -340,6 +341,7 @@
                         "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
                         "</li>");
                 }
+
             },error:function (data) {
                 console.log(data)
             }

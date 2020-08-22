@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>未来小说网--搜索排行</title>
+    <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/css/all.css" th:href="@{/resources/css/all.css}">
     <script src="../../resources/js/jquery-3.4.1.min.js" th:src="@{/resources/js/jquery-3.4.1.min.js}"></script>
@@ -220,6 +221,13 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
+    function popup_over(icon,color,contant){
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+        setTimeout(function(){
+            $('.popup_over').remove();
+            // clear('.popup_over');
+        },1500)
+    };
     $(".rank-book-buttons").on("click", ".rank-book-add", function() {
         $("#box").css("marginTop",-30+"px");
         const str=$(this).attr("novelId");
@@ -259,7 +267,7 @@
             }),
             success: function(data) {
                 console.log(data);
-                alert("添加成功！")
+                popup_over('icon-happy-l','#00ff0f',"添加成功");
             },
             error: function(data) {
                 console.log(data);

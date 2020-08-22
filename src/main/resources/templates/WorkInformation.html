@@ -47,7 +47,7 @@
         var actor = ["haha", "heihei"];
         $("#book-tags").keydown(function(event) {
             if (event.keyCode == 32) {
-                if ($("#book-tags").val().length >= 4) {
+                if ($("#book-tags").val().length >= 5) {
                     alert("标签不得超过三个字")
                     $("#book-tags").val("");
                 } else {
@@ -101,15 +101,15 @@
         $("#create-work").click(function() {
             if ($("#book-name").val().length > 15) {
                 popup_over('icon-sad','#d81e06',"书名不能超过15个字");
-            } else if ($("#book-type").val() == "-请选择-") {
-                popup_over('icon-sad','#d81e06',"请选择书籍类型");
+            } else if ($("#book-type").val().length == "") {
+                popup_over('icon-sad','#d81e06',"书名不能为空");
+            } else if ($("#book-type").val().length == "") {
+                popup_over('icon-sad','#d81e06',"书品系列不能为空");
             } else if ($("#copyright").val() == "-请选择-") {
                 popup_over('icon-sad','#d81e06',"请选择版权");
             } else if ($("#book-press").val() == "") {
                 popup_over('icon-sad','#d81e06',"请输入出版社");
-            } else if ($("#book-intro").val().length < 20 || $("#book-intro").val().length > 150) {
-                popup_over('icon-sad','#d81e06',"介绍必须在20-150字之间");
-            } else {
+            }else {
                 var  $inputArr  =  $('.tags-text');
                 var  result  =   [];
                 $inputArr.each(function() {
@@ -192,30 +192,14 @@
                         <div class="form-list">
                             <dl>
                                 <dd class="">
-                                    <span>作品名称</span>
+                                    <span>标题</span>
                                     <input name="book-name" id="book-name" class="form-inputs" type="text" required>
                                     <p>15字内，请勿添加书名号等特殊符号</p>
                                 </dd>
                                 <dd>
-                                    <span>作品类型</span>
-                                    <select id="book-type">
-                                <option selected>-请选择-</option>
-                                <option>玄幻</option>
-                                <option>奇幻</option>
-                                <option>武侠</option>
-                                <option>仙侠</option>
-                                <option>都市</option>
-                                <option>现实</option>
-                                <option>军事</option>
-                                <option>历史</option>
-                                <option>游戏</option>
-                                <option>体育</option>
-                                <option>科幻</option>
-                                <option>悬疑</option>
-                                <option>女生网</option>
-                                <option>轻小说</option>
-                            </select>
-
+                                    <span>系列</span>
+                                    <input id="book-type" class="form-inputs" style="width: 200px;" type="text" required>
+                                    <p>例如：魔幻，武侠，都市....</p>
                                 </dd>
                                 <dd>
                                     <span>版权</span>
@@ -228,8 +212,8 @@
                             </select>
                                 </dd>
                                 <dd>
-                                    <span>作品标签</span>
-                                    <input style="height: 30px;padding: 0;resize: none;" placeholder="(用空格隔开标签)" id="book-tags" list="tag" class="form-inputs">
+                                    <span>作品分类标签(输入空格隔开标签)</span>
+                                    <input style="height: 30px;padding: 0;resize: none;" id="book-tags" list="tag" class="form-inputs">
                                     <datalist id="tag">
 
                             </datalist>
@@ -239,7 +223,7 @@
 
                                 </dd>
                                 <dd>
-                                    <span>作者</span>
+                                    <span>作者(输入空格隔开作者)</span>
                                     <input style="height: 30px;padding: 0;resize: none;" id="book-act" class="form-inputs">
                                     <div class="acts">
 
@@ -251,9 +235,8 @@
                                     <input name="book-press" id="book-press" class="form-inputs" type="text" required>
                                 </dd>
                                 <dd>
-                                    <span>介绍</span>
+                                    <span>简介</span>
                                     <textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
-                                    <p>20~500字</p>
                                 </dd>
                             </dl>
                         </div>

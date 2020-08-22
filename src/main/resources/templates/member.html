@@ -154,7 +154,7 @@
                                             <span class="book-rank-writer" th:text="${readHistory.authors}"></span>
                                             <city>|</city>
                                         </p>
-                                        <p th:text="${readHistory.createTime}"></p>
+                                        <p th:text="${{readHistory.createTime}}+'看过'"></p>
                                     </div>
                                     <div class="rank-book-buttons">
                                         <span class="deleteReadHistory" th:attr="uniqueId=${readHistory.uniqueId}">删除</span>
@@ -548,6 +548,7 @@
         $("#commentHistory").on("click",".remove",function () {
             var str=$(this).attr("commentId");
             removeComment(str);
+            $(this).next().next().empty();
         })
         //删除收藏夹
         function removeComment(uniqueId) {
@@ -560,9 +561,6 @@
                 data:{},
                 success:function (data) {
                     popup_over('icon-happy-l','#00ff0f',"删除成功");
-                    setTimeout(function () {
-                        window.location.reload()
-                    },1500)
                 },error:function (data) {
                     console.log(data)
                 }
@@ -579,9 +577,6 @@
                 data:JSON.stringify({}),
                 success: function() {
                     popup_over('icon-happy-l','#00ff0f',"已成功删除所有记录");
-                    setTimeout(function () {
-                        window.location.reload();
-                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -590,6 +585,7 @@
         }
         $("#clearAllHistory").click(function() {
                 removeAllHistory();
+                $(".readHistory").remove();
             })
             //更改邮箱时获取验证码
         $("#get-code").click(function() {
@@ -674,7 +670,9 @@
         getAllAcconutShelf();
         $("#SureToAddShelf").click(function() {
                 addShelf();
-            })
+            $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#addShelfInput').val()+ "" + "</a>" +
+                "<ul class='NovelList' ></ul>");
+        })
             //添加收藏夹
         function addShelf() {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
@@ -690,9 +688,6 @@
                     console.log(data);
                     $("#ShelfBox").css("display", "none");
                     popup_over('icon-happy-l','#00ff0f',"添加成功");
-                    setTimeout(function () {
-                        window.location.reload()
-                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -712,9 +707,6 @@
                 }),
                 success: function(data) {
                     popup_over('icon-happy-l','#00ff0f',"删除成功");
-                    setTimeout(function () {
-                        window.location.reload()
-                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -732,9 +724,6 @@
                 data: {},
                 success: function(data) {
                     popup_over('icon-happy-l','#00ff0f',"删除成功");
-                    setTimeout(function () {
-                        window.location.reload()
-                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -751,9 +740,6 @@
                 data: {},
                 success: function(data) {
                     popup_over('icon-happy-l','#00ff0f',"删除成功");
-                    setTimeout(function () {
-                        window.location.reload()
-                    },1500)
                 },
                 error: function(data) {
                     console.log(data);
@@ -774,7 +760,7 @@
         })
         $(".rank-book-buttons").on("click", ".deleteReadHistory", function() {
             delegeReadHistory($(this).attr("uniqueId"));
-            window.location.reload()
+            $(this).parent().parent().parent().empty();
         })
         getAccountAllNovel(1, "HOT_DESC");
         $(".box-page").on("click", ".rank-page", function() {
@@ -797,14 +783,19 @@
             var str1 = $(this).attr("uniqueId");
             var str2 = $(this).attr("novelId");
             removeSelfNovel(str1, str2);
+            $(this).parent().parent().parent().remove();
         })
         $(".shelf-list").on("click", ".removeSelf", function() {
             var str3 = $(this).attr("uniqueId");
             removeSelf(str3);
+            $(this).next().next().remove();
+            $(this).next().remove();
+            $(this).remove();
         })
         $("#workList").on("click",".removeNovel",function () {
             var str4=$(this).attr("novelId")
             removeAccoundNovel(str4);
+            $(this).parent().parent().parent().parent().remove();
         })
     </script>
 </body>

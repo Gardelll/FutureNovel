@@ -18,9 +18,7 @@ package net.wlgzs.futurenovel.service;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +31,6 @@ import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.Token;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,13 +51,14 @@ public class TokenStore implements DisposableBean {
 
     private final AppProperties futureNovelConfig;
 
-    public TokenStore(TokenDao tokenDao, AppProperties futureNovelConfig) {
+    public TokenStore(TokenDao tokenDao,
+                      ScheduledExecutorService executor,
+                      AppProperties futureNovelConfig) {
         this.tokenDao = tokenDao;
+        this.executor = executor;
         this.futureNovelConfig = futureNovelConfig;
         var tokens = this.tokenDao.getAll();
         tokens.forEach(token -> tokenMap.put(token.getToken(), token));
-        executor = Executors.newScheduledThreadPool(1);
-        // Save to database every 10min;
         future = executor.scheduleAtFixedRate(this::saveTokens, 1, futureNovelConfig.getToken().getSavePeriod(), TimeUnit.MINUTES);
     }
 
@@ -69,13 +67,16 @@ public class TokenStore implements DisposableBean {
     }
 
     public void removeToken(String accessToken) {
-        tokenMap.remove(accessToken);
+        synchronized (tokenMap) {
+            tokenMap.remove(accessToken);
+        }
     }
 
     public void removeAll(UUID accountId) {
         tokenMap.forEach((k, v) -> {
-            if (v.getAccountUid().equals(accountId))
+            if (v.getAccountUid().equals(accountId)) synchronized (tokenMap) {
                 tokenMap.remove(k, v);
+            }
         });
     }
 
@@ -86,7 +87,7 @@ public class TokenStore implements DisposableBean {
                 .setClientAgent(clientAgent)
                 .setAccountUid(account.getUid())
                 .build();
-        tokenMap.put(token.getToken(), token);
+        synchronized (tokenMap) { tokenMap.put(token.getToken(), token); }
         return token;
     }
 
@@ -102,16 +103,17 @@ public class TokenStore implements DisposableBean {
         return token;
     }
 
-    public Token getToken(@Nullable String token) {
-        return Optional.ofNullable(token)
-            .map(tokenMap::get)
-            .orElseThrow(() -> new FutureNovelException(FutureNovelException.Error.INVALID_TOKEN));
-    }
-
     @Transactional
     public void saveTokens() {
         synchronized (tokenMap) {
             if (executor.isShutdown()) return;
+            var tokens = this.tokenDao.getAll();
+            tokens.forEach(token -> {
+                var old = tokenMap.put(token.getToken(), token);
+                if (old != null) {
+                    token.setLastUse(Math.max(old.getLastUse(), token.getLastUse()));
+                }
+            });
             tokenDao.clear();
             if (tokenMap.isEmpty()) return;
             int result = tokenDao.insertAll(tokenMap.values()
@@ -127,6 +129,5 @@ public class TokenStore implements DisposableBean {
         future.cancel(true);
         saveTokens();
         log.info("Service destroying");
-        executor.shutdownNow();
     }
 }

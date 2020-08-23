@@ -41,7 +41,10 @@ import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
+import net.wlgzs.futurenovel.service.SettingService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -79,6 +82,10 @@ public abstract class AbstractAppController {
 
     protected final ObjectMapper objectMapper;
 
+    protected final SettingService settingService;
+
+    protected final MessageSource messageSource;
+
     protected String serverUrl = null;
 
     public AbstractAppController(TokenStore tokenStore,
@@ -91,7 +98,9 @@ public abstract class AbstractAppController {
                                  AppProperties futureNovelConfig,
                                  FileService fileService,
                                  BookSelfService bookSelfService,
-                                 ObjectMapper objectMapper) {
+                                 ObjectMapper objectMapper,
+                                 SettingService settingService,
+                                 MessageSource messageSource) {
         this.tokenStore = tokenStore;
         this.accountService = accountService;
         this.emailService = emailService;
@@ -103,6 +112,8 @@ public abstract class AbstractAppController {
         this.novelService = novelService;
         this.bookSelfService = bookSelfService;
         this.objectMapper = objectMapper;
+        this.settingService = settingService;
+        this.messageSource = messageSource;
     }
 
     protected String getServerUrl() {
@@ -191,6 +202,10 @@ public abstract class AbstractAppController {
         return account;
     }
 
+    protected String getMessage(String code, Object ... args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
     /**
      * 根据目录索引填充完整的目录信息
      *
@@ -251,7 +266,7 @@ public abstract class AbstractAppController {
             e instanceof ServletRequestBindingException) {
             var errorMessage = e.getLocalizedMessage();
             if (errorMessage == null || errorMessage.isBlank())
-                errorMessage = FutureNovelException.Error.ILLEGAL_ARGUMENT.getErrorMessage();
+                errorMessage = getMessage("error.illegal_argument");
             e = new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errorMessage, e);
         }
         response.errorMessage = e.getLocalizedMessage();
@@ -293,10 +308,11 @@ public abstract class AbstractAppController {
     public void handle(HttpServletRequest request) {
         String errorMessage = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
         var errorStatus = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        var ex = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         int status = errorStatus == null ? 501 : errorStatus;
         if (errorMessage != null && !errorMessage.isBlank())
-            throw new ResponseStatusException(HttpStatus.valueOf(status), errorMessage);
-        else throw new ResponseStatusException(HttpStatus.valueOf(status));
+            throw new ResponseStatusException(HttpStatus.valueOf(status), errorMessage, ex);
+        else throw new ResponseStatusException(HttpStatus.valueOf(status), null, ex);
     }
 
 }

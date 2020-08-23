@@ -26,6 +26,7 @@
     - [收藏相关接口](#收藏相关接口)
     - [打赏](#打赏)
     - [统计与垃圾回收](#统计与垃圾回收)
+    - [设置全局变量](#设置全局变量)
 
 <!-- /TOC -->
 ## 概述
@@ -60,9 +61,8 @@
 |管理时所用帐号权限不足|403|PERMISSION_DENIED|无权操作|
 |上传文件超过 8MB|413|FILE_TOO_LARGE|上传的文件过大|
 |编辑小说时找不到对应的索引|404|NOVEL_NOT_FOUND|找不到小说|
-|找不到该收藏夹|404|BOOK_SELF_NOT_FOUND|找不到该收藏夹|
+|找不到该收藏夹|404|BOOK_SHELF_NOT_FOUND|找不到该收藏夹|
 |执行需要积分的操作时积分不够|403|EXP_NOT_ENOUGH|积分不足|
-|未完待续| | | |
 
 ### 数据格式
 
@@ -1457,3 +1457,48 @@ GET $URL/api/clearGarbage
     "cleared_read_histories": 0 // 被清理的无效阅读记录数量 
 }
 ```
+
+### 设置全局变量
+
+1. 添加/修改值
+
+```
+POST $URL/api/settings/put
+```
+
+>权限：管理员
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|key|String|字段名|否|
+|value|Object|值|否|
+
+若添加成功，服务端返回状态码 204 - No Content  
+若修改成功，返回原来的值
+
+2. 获取
+
+```
+GET $URL/api/settings/get
+```
+
+>请求格式：`application/x-www-form-urlencoded`
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|key|String|字段名|否|
+
+若没有值，服务端返回状态码 204 - No Content
+
+3. 删除
+
+```
+DELETE $URL/api/settings/remove
+```
+
+>权限：管理员
+>请求格式：`application/x-www-form-urlencoded`
+
+|字段|类型|含义或值|可空|
+|---|---|------------|---|
+|key|String|字段名|否|

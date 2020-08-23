@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +45,8 @@ import net.wlgzs.futurenovel.model.Section;
 import net.wlgzs.futurenovel.packet.Requests;
 import net.wlgzs.futurenovel.packet.Responses;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -73,18 +74,23 @@ public class NovelService implements DisposableBean {
     @Getter(onMethod_ = {@Synchronized})
     private final LinkedHashSet<String> series = new LinkedHashSet<>();
 
-    private final ScheduledExecutorService executor;
-
     private final ScheduledFuture<?> future;
 
     private final ObjectMapper objectMapper;
 
-    public NovelService(NovelIndexDao novelIndexDao, ChapterDao chapterDao, SectionDao sectionDao, ObjectMapper objectMapper) {
+    private final MessageSource messageSource;
+
+    public NovelService(NovelIndexDao novelIndexDao,
+                        ChapterDao chapterDao,
+                        SectionDao sectionDao,
+                        ScheduledExecutorService executor,
+                        ObjectMapper objectMapper,
+                        MessageSource messageSource) {
         this.novelIndexDao = novelIndexDao;
         this.chapterDao = chapterDao;
         this.sectionDao = sectionDao;
         this.objectMapper = objectMapper;
-        executor = Executors.newScheduledThreadPool(1);
+        this.messageSource = messageSource;
         future = executor.scheduleAtFixedRate(() -> {
             synchronized (executor) {
                 if (executor.isShutdown()) return;
@@ -169,7 +175,7 @@ public class NovelService implements DisposableBean {
                 new ArrayNode(JsonNodeFactory.instance));
             var ret = novelIndexDao.insertNovelIndex(novelIndex);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             return novelIndex;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -204,14 +210,14 @@ public class NovelService implements DisposableBean {
             arrayNode.add(chapter.getUniqueId().toString());
             var ret = chapterDao.insertChapter(chapter);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             ret = novelIndexDao.updateNovelIndex(novelIndex.getUniqueId(),
                 null, null, null,
                 null, null, null,
                 null, null, null,
                 novelIndex.getChapters());
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.update_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             return chapter;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -250,10 +256,10 @@ public class NovelService implements DisposableBean {
             arrayNode.add(section.getUniqueId().toString());
             var ret = sectionDao.insertSection(section);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             ret = chapterDao.updateChapter(chapter);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "更新操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.update_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             return section;
         } catch (DataAccessException e) {
             log.warn("database error: ", e);
@@ -314,7 +320,7 @@ public class NovelService implements DisposableBean {
             }
             var ret = novelIndexDao.deleteNovelIndex(novelIndex);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.delete_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -334,7 +340,7 @@ public class NovelService implements DisposableBean {
             }
             var ret = chapterDao.deleteChapterById(chapterId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.delete_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -349,7 +355,7 @@ public class NovelService implements DisposableBean {
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = sectionDao.deleteSectionById(sectionId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.delete_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -436,7 +442,7 @@ public class NovelService implements DisposableBean {
             else account.checkPermission(Account.Permission.ADMIN);
             var ret = chapterDao.updateChapter(chapter);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步修改操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.update_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -582,7 +588,6 @@ public class NovelService implements DisposableBean {
     public void destroy() {
         future.cancel(true);
         log.info("Service destroying");
-        executor.shutdownNow();
     }
 
 }

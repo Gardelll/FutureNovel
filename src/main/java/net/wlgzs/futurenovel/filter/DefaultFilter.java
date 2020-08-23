@@ -33,10 +33,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.packet.Responses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
+import static net.wlgzs.futurenovel.exception.FutureNovelException.Error.HACK_DETECTED;
 
 /**
  * 过滤器，含有如下功能：<br />
@@ -51,12 +54,12 @@ public class DefaultFilter extends HttpFilter {
     /**
      * 要监控请求速率限制的路径，单位：请求/分钟
      */
-    private static final Map<String, Integer> limitTable = Map.ofEntries(
-            Map.entry("/register", 2),
-            Map.entry("/api/sendCaptcha", 2),
-            Map.entry("/api/login", 12),
-            Map.entry("/search", 2)
-    );
+    private static final Map<String, Double> limitTable = new HashMap<>() {{
+        put("/register", 2d);
+        put("/api/sendCaptcha", 2d);
+        put("/api/login", 12d);
+        put("/search", 2d);
+    }};
 
     /**
      * 采样数，至少为 2
@@ -67,16 +70,16 @@ public class DefaultFilter extends HttpFilter {
      * 保存每个 IP 地址对于每个监控路径的请求时间采样
      */
     private static final ConcurrentLinkedHashMap<String, HashMap<String, RequestInfo>> limitInfo = new ConcurrentLinkedHashMap.Builder<String, HashMap<String, RequestInfo>>()
-            .maximumWeightedCapacity(500)
-            .build();
+        .maximumWeightedCapacity(500)
+        .build();
 
     /**
      * 白名单
      */
     private static final List<String> whiteList = List.of(
-            "127.0.0.1",
-            "::1",
-            "0:0:0:0:0:0:0:1"
+        "127.0.0.1",
+        "::1",
+        "0:0:0:0:0:0:0:1"
     );
 
     @Autowired
@@ -98,20 +101,32 @@ public class DefaultFilter extends HttpFilter {
         }
     }
 
+    public static void addLimitUrl(String url, double speed) {
+        synchronized (DefaultFilter.class) {
+            limitTable.put(url, speed);
+        }
+    }
+
+    public static void removeLimitUrl(String url) {
+        synchronized (DefaultFilter.class) {
+            limitTable.remove(url);
+        }
+    }
+
     private static RequestInfo getRequestInfo(String remoteAddr, String uri) {
         HashMap<String, RequestInfo> infoMap = Optional.ofNullable(limitInfo.get(remoteAddr))
-                .orElseGet(() -> {
-                    HashMap<String, RequestInfo> tmp = new HashMap<>(limitTable.size());
-                    tmp.put(uri, new RequestInfo());
-                    limitInfo.put(remoteAddr, tmp);
-                    return tmp;
-                });
+            .orElseGet(() -> {
+                HashMap<String, RequestInfo> tmp = new HashMap<>(limitTable.size());
+                tmp.put(uri, new RequestInfo());
+                limitInfo.put(remoteAddr, tmp);
+                return tmp;
+            });
         return Optional.ofNullable(infoMap.get(uri))
-                .orElseGet(() -> {
-                    var tmp = new RequestInfo();
-                    infoMap.put(uri, tmp);
-                    return tmp;
-                });
+            .orElseGet(() -> {
+                var tmp = new RequestInfo();
+                infoMap.put(uri, tmp);
+                return tmp;
+            });
     }
 
     @Override
@@ -127,7 +142,7 @@ public class DefaultFilter extends HttpFilter {
                     req.getMethod().equalsIgnoreCase("HEAD"))) || // 跳过普通浏览请求
                 req.getMethod().equalsIgnoreCase("OPTION"); // 跳过 OPTION 请求
             if (!skip && !whiteList.contains(remoteAddr) && limitTable.containsKey(uri)) {
-                int limit = limitTable.get(uri);
+                double limit = limitTable.get(uri);
                 RequestInfo requestInfo = getRequestInfo(remoteAddr, uri);
                 long[] tmpArr = new long[COLLECT_COUNT];
                 System.arraycopy(requestInfo.lastRequestsTimeMillis, 1, tmpArr, 0, COLLECT_COUNT - 1);
@@ -137,10 +152,15 @@ public class DefaultFilter extends HttpFilter {
                 if (rate > limit || (tmpArr[COLLECT_COUNT - 1] - tmpArr[COLLECT_COUNT - 2]) / 1000 < requestInfo.blockSeconds) {
                     log.warn("{} -- request too quickly! (path: {})", remoteAddr, uri);
                     Responses.ErrorResponse errResponse = new Responses.ErrorResponse();
-                    errResponse.error = FutureNovelException.Error.HACK_DETECTED.name();
-                    errResponse.errorMessage = FutureNovelException.Error.HACK_DETECTED.getErrorMessage();
-                    errResponse.status = FutureNovelException.Error.HACK_DETECTED.getStatusCode();
-                    errResponse.cause = "请求速率限制";
+                    errResponse.error = HACK_DETECTED.name();
+                    errResponse.status = HACK_DETECTED.getStatusCode();
+                    errResponse.errorMessage = errResponse.cause = "请求速率限制";
+                    var context = RequestContextUtils.findWebApplicationContext(req);
+                    MessageSource messageSource;
+                    if (context != null) {
+                        messageSource = context.getBean(MessageSource.class);
+                        errResponse.errorMessage = messageSource.getMessage(HACK_DETECTED.getErrorMessageCode(), null, HACK_DETECTED.getErrorMessageCode(), req.getLocale());
+                    }
                     res.setStatus(errResponse.status);
                     res.setContentType("application/json; charset=utf-8");
                     ServletOutputStream output = res.getOutputStream();

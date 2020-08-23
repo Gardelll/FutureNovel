@@ -17,8 +17,11 @@
 package net.wlgzs.futurenovel;
 
 import java.util.TimeZone;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +31,9 @@ import org.springframework.format.datetime.DateFormatter;
 @MapperScan("net.wlgzs.futurenovel.dao")
 @EnableConfigurationProperties(AppProperties.class)
 @Slf4j
-public class AppConfig {
+public class AppConfig implements DisposableBean {
+
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(5);
 
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
@@ -39,6 +44,16 @@ public class AppConfig {
         DateFormatter dateFormatter = new DateFormatter("yyyy年MM月dd日 HH:mm:ss");
         dateFormatter.setTimeZone(TimeZone.getDefault());
         return dateFormatter;
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return executor;
+    }
+
+    @Override
+    public void destroy() {
+        executor.shutdownNow();
     }
 
 }

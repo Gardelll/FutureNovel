@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -65,7 +64,9 @@ import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
+import net.wlgzs.futurenovel.service.SettingService;
 import net.wlgzs.futurenovel.service.TokenStore;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -124,8 +125,10 @@ public class ApiController extends AbstractAppController {
                          AppProperties futureNovelConfig,
                          FileService fileService,
                          BookSelfService bookSelfService,
-                         ObjectMapper objectMapper) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper);
+                         ObjectMapper objectMapper,
+                         SettingService settingService,
+                         MessageSource messageSource) {
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper, settingService, messageSource);
     }
 
     /**
@@ -199,7 +202,6 @@ public class ApiController extends AbstractAppController {
         // 更新帐号属性
         account.setLastLoginIP(request.getRemoteAddr());
         Optional.ofNullable(account.getLastLoginDate()).filter(date -> {
-            TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
             var lastLogin = Calendar.getInstance();
             lastLogin.setTime(date);
             int day = lastLogin.get(Calendar.DAY_OF_YEAR);
@@ -299,9 +301,9 @@ public class ApiController extends AbstractAppController {
 
         // 检查冲突
         if (req.email != null && accountService.isEmailUsed(req.email, req.uid))
-            throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "邮箱地址(" + req.email + ")已被使用");
+            throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, getMessage("register.email_already_in_use", req.email));
         if (req.userName != null && accountService.isEmailUsed(req.userName, req.uid))
-            throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "用户名(" + req.userName + ")已被使用");
+            throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, getMessage("register.username_already_in_use", req.userName));
 
         // 检查验证码
         if (currentAccount.getUid().equals(req.uid) && (req.email != null || req.password != null)) {
@@ -318,7 +320,7 @@ public class ApiController extends AbstractAppController {
         }
 
         if (!accountService.editAccount(currentAccount, req)) {
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("error.can_not_modify"));
         }
     }
 
@@ -371,7 +373,7 @@ public class ApiController extends AbstractAppController {
                                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                                 HttpServletRequest request) {
         if (reqs == null || reqs.isEmpty())
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("error.empty_argument"));
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -438,7 +440,7 @@ public class ApiController extends AbstractAppController {
                                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                                    HttpServletRequest request) {
         if (uids == null || uids.isEmpty())
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "参数为空");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("error.empty_argument"));
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission(Account.Permission.ADMIN);
@@ -449,10 +451,10 @@ public class ApiController extends AbstractAppController {
         for (String uidStr : uids) {
             try {
                 UUID uuid = UUID.fromString(uidStr);
-                if (uid.equals(uuid.toString())) throw new IllegalArgumentException("不能删除自己的账号");
+                if (uid.equals(uuid.toString())) throw new IllegalArgumentException(getMessage("admin.can_not_delete_self_account"));
                 Account account = accountService.getAccount(uuid);
                 if (accountService.unRegister(account) != 1)
-                    throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "用户不存在");
+                    throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, getMessage("admin.user_not_exist"));
                 success.add(account);
                 commentService.clearAccountComment(account.getUid());
                 readHistoryService.clearReadHistory(account, null, null);
@@ -486,13 +488,13 @@ public class ApiController extends AbstractAppController {
                                       @CookieValue(name = "token", defaultValue = "") String tokenStr,
                                       @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                                       HttpServletRequest request) {
-        if (getServerUrl().matches("^https?://(localhost|127.0.0.1|\\[::1]).+")) throw new FutureNovelException("禁止上传本地图片");
+        if (getServerUrl().matches("^https?://(localhost|127.0.0.1|\\[::1]).+")) throw new FutureNovelException(getMessage("upload.localhost_prohibit"));
 
         // 检查权限
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
         currentAccount.checkPermission();
 
-        if (file.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "文件为空");
+        if (file.isEmpty()) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("upload.empty_file"));
 
         try (ByteArrayOutputStream tmpStream = new ByteArrayOutputStream(); var in = file.getInputStream()) {
             BufferedImage image = ImageIO.read(in);
@@ -514,7 +516,7 @@ public class ApiController extends AbstractAppController {
                     Map.entry("mime", MediaType.IMAGE_JPEG_VALUE));
             }
         } catch (IOException e) {
-            throw new FutureNovelException("文件上传失败", e);
+            throw new FutureNovelException(getMessage("upload.failed"), e);
         }
     }
 
@@ -632,7 +634,7 @@ public class ApiController extends AbstractAppController {
         req.tags.replaceAll(String::trim);
         req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
         if (req.tags.isEmpty())
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("valid.field_not_valid", "tags"));
         if (req.series == null || req.series.isBlank()) req.series = req.title;
         return novelService.createNovelIndex(currentAccount,
             req.copyright,
@@ -909,11 +911,11 @@ public class ApiController extends AbstractAppController {
         if (req.tags != null) {
             req.tags = req.tags.stream().filter(s -> s.length() <= 3).collect(Collectors.toList());
             if (req.tags.isEmpty())
-                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "tags: 不合法");
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("valid.field_not_valid", "tags"));
         }
 
         if (!novelService.editNovelIndex(currentAccount, UUID.fromString(uniqueId), req))
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("error.can_not_modify"));
     }
 
     @PostMapping("/novel/chapter/{uniqueId:[0-9a-f\\-]{36}}/edit")
@@ -925,7 +927,7 @@ public class ApiController extends AbstractAppController {
                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
                             HttpServletRequest request) {
         if ((req.title == null || req.title.isBlank()) && req.sectionsEdit == null)
-            throw new IllegalArgumentException("title & sections: 不能同时为空");
+            throw new IllegalArgumentException(getMessage("valid.field_can_not_be_empty", "title & sections"));
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
         var chapter = novelService.getChapter(UUID.fromString(uniqueId));
@@ -938,7 +940,7 @@ public class ApiController extends AbstractAppController {
                 ArrayNode::addAll
             );
         if (sections != null) {
-            if (sections.isEmpty()) throw new IllegalArgumentException("没有合法的小节 ID，若要删除章节原来的内容，请先添加新的内容");
+            if (sections.isEmpty()) throw new IllegalArgumentException(getMessage("novel.edit.no_valid_section"));
             chapter.setSections(sections);
         }
         novelService.editChapter(currentAccount, chapter);
@@ -954,13 +956,13 @@ public class ApiController extends AbstractAppController {
                             HttpServletRequest request) {
         Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
 
-        if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException("title: 不能为空");
+        if (req.title != null && req.title.isBlank()) throw new IllegalArgumentException(getMessage("valid.field_can_not_be_empty", "title"));
         if (req.text != null && (req.text.length() < 200 || req.text.length() > 4194304))
-            throw new IllegalArgumentException("text: 大小必须在 200B 到 4MB 之间");
+            throw new IllegalArgumentException(getMessage("valid.field_size_not_valid", "text", "200B", "4MB"));
         if (req.text != null) req.text = safeHTML(req.text);
 
         if (!novelService.editSection(currentAccount, UUID.fromString(uniqueId), req))
-            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "修改失败");
+            throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("error.can_not_modify"));
     }
 
     @PostMapping("/novel/section/{sectionId:[0-9a-f\\-]{36}}/comment")
@@ -1148,7 +1150,7 @@ public class ApiController extends AbstractAppController {
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
         if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
-            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, getMessage("shelf.can_not_edit_others"));
         NovelIndex novelIndex = novelService.getNovelIndex(UUID.fromString(req.novelIndexId));
         novelIndex.getChapters().removeAll();
         bookSelf.addNovel(objectMapper.valueToTree(novelIndex));
@@ -1167,7 +1169,7 @@ public class ApiController extends AbstractAppController {
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
         if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
-            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, getMessage("shelf.can_not_edit_others"));
         bookSelf.remove(UUID.fromString(req.novelIndexId));
         bookSelfService.editBookSelf(bookSelf);
     }
@@ -1183,7 +1185,7 @@ public class ApiController extends AbstractAppController {
         currentAccount.checkPermission();
         BookSelf bookSelf = bookSelfService.getBookSelf(UUID.fromString(uniqueId));
         if (!bookSelf.getAccountId().equals(currentAccount.getUid()))
-            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, "这个收藏夹不属于你");
+            throw new FutureNovelException(FutureNovelException.Error.PERMISSION_DENIED, getMessage("shelf.can_not_edit_others"));
         bookSelf.clear();
         bookSelfService.editBookSelf(bookSelf);
     }
@@ -1246,6 +1248,41 @@ public class ApiController extends AbstractAppController {
         );
     }
 
+    @PostMapping("/settings/put")
+    public ResponseEntity<JsonNode> putSetting(@Valid @RequestBody Requests.PutSettingRequest req,
+                                               @CookieValue(name = "uid", defaultValue = "") String uid,
+                                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                               HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        var old = settingService.put(req.key, req.value);
+        if (old != null) return ResponseEntity.ok(old);
+        else return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/settings/remove")
+    public ResponseEntity<JsonNode> removeSetting(@RequestParam String key,
+                                                  @CookieValue(name = "uid", defaultValue = "") String uid,
+                                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                                  HttpServletRequest request) {
+        Account currentAccount = checkLogin(uid, tokenStr, request.getRemoteAddr(), userAgent, true);
+        currentAccount.checkPermission(Account.Permission.ADMIN);
+        if (key.isBlank()) throw new IllegalArgumentException("key is empty");
+        var old = settingService.remove(key, JsonNode.class);
+        if (old != null) return ResponseEntity.ok(old);
+        else return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/settings/get")
+    public ResponseEntity<JsonNode> getSetting(@RequestParam String key) {
+        if (key.isBlank()) throw new IllegalArgumentException("key is empty");
+        var value = settingService.get(key, JsonNode.class);
+        if (value != null) return ResponseEntity.ok(value);
+        else return ResponseEntity.noContent().build();
+    }
+
     /**
      * 请求注册验证码
      *
@@ -1255,7 +1292,6 @@ public class ApiController extends AbstractAppController {
     @PostMapping(value = "/sendCaptcha", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void sendCaptcha(HttpServletRequest request, HttpSession session, @Valid @RequestBody Requests.SendCaptchaRequest req) {
-        // TODO 对此接口添加图片验证码
         String activateCode;
         var random = new Random();
         final StringBuilder stringBuilder = new StringBuilder();
@@ -1264,13 +1300,8 @@ public class ApiController extends AbstractAppController {
         }
         activateCode = stringBuilder.toString();
         try {
-            emailService.sendEmail(req.email, "FutureNovel 邮箱地址验证",
-                String.format("您好，<br /><p>您收到这封邮件，是由于在 `%s` 进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。" +
-                        "如果您并没有访问过本站，或没有进行上述操作，请忽略这封邮件。您不需要退订或进行其他进一步的操作。</p><br />" +
-                        "----------------------------------------------------------------------<br />" +
-                        "<p>您的邮箱验证码为：<h3>%s</h3> 10分钟内有效。</p>" +
-                        "----------------------------------------------------------------------<br />" +
-                        "<p>请在表单中填写该信息</p>",
+            emailService.sendEmail(req.email, getMessage("email.email_verify.title", getMessage("home.title")),
+                getMessage("email.email_verify",
                     serverUrl == null ? serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                         .build()
                         .normalize()

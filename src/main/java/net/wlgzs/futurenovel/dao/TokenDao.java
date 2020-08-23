@@ -31,9 +31,9 @@ public interface TokenDao {
     void clear() throws DataAccessException;
 
     @Insert({"<script> INSERT INTO `token_store` ",
-             "(`token`, `accountUid`, `lastUse`) VALUES",
-             "<foreach collection='list' item='token' index='index' open=' ' separator=',' close=' '>",
-             "(#{token.token}, #{token.accountUid}, #{token.lastUse})",
-             "</foreach> </script>"})
+        "(`token`, `accountUid`, `lastUse`) VALUES",
+        "<foreach collection='list' item='token' index='index' open=' ' separator=',' close=' '>",
+        "(#{token.token}, #{token.accountUid}, #{token.lastUse})",
+        "</foreach> </script>"})
     int insertAll(List<Token> tokenList);
 }

@@ -24,6 +24,8 @@ import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.ReadHistory;
 import net.wlgzs.futurenovel.model.Section;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -34,9 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReadHistoryService {
 
     private final ReadHistoryDao readHistoryDao;
+    private final MessageSource messageSource;
 
-    public ReadHistoryService(ReadHistoryDao readHistoryDao) {
+    public ReadHistoryService(ReadHistoryDao readHistoryDao, MessageSource messageSource) {
         this.readHistoryDao = readHistoryDao;
+        this.messageSource = messageSource;
     }
 
     @Transactional
@@ -45,7 +49,7 @@ public class ReadHistoryService {
         try {
             int ret = readHistoryDao.insertReadHistory(readHistory);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -56,7 +60,7 @@ public class ReadHistoryService {
         try {
             int ret = readHistoryDao.deleteReadHistory(historyId, accountId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.delete_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -67,7 +71,7 @@ public class ReadHistoryService {
         try {
             int ret = readHistoryDao.deleteReadHistoryByAccountId(account.getUid(), after, before);
             if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "清空阅读历史失败");
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

@@ -32,6 +32,9 @@ spring:
           ssl:
             enable:
               true
+  messages:
+    basename: "i18n/messages"
+    encoding: UTF-8
 
 mybatis:
   type-aliases-package: 'net.wlgzs.futurenovel.model'

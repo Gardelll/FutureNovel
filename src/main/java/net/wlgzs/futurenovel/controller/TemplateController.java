@@ -52,8 +52,10 @@ import net.wlgzs.futurenovel.service.EmailService;
 import net.wlgzs.futurenovel.service.FileService;
 import net.wlgzs.futurenovel.service.NovelService;
 import net.wlgzs.futurenovel.service.ReadHistoryService;
+import net.wlgzs.futurenovel.service.SettingService;
 import net.wlgzs.futurenovel.service.TokenStore;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -101,8 +103,10 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                               AppProperties futureNovelConfig,
                               FileService fileService,
                               BookSelfService bookSelfService,
-                              ObjectMapper objectMapper) {
-        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper);
+                              ObjectMapper objectMapper,
+                              SettingService settingService,
+                              MessageSource messageSource) {
+        super(tokenStore, accountService, emailService, novelService, readHistoryService, commentService, defaultValidator, futureNovelConfig, fileService, bookSelfService, objectMapper, settingService, messageSource);
     }
 
     /**
@@ -142,10 +146,15 @@ public class TemplateController extends AbstractAppController implements ErrorCo
 
         all.sort((o1, o2) -> Long.compare(o2.getHot(), o1.getHot()));
 
-        HashSet<String> covers = all.stream()
-            .filter(novelIndex -> novelIndex.getCoverImgUrl() != null)
-            .map(NovelIndex::getCoverImgUrl).collect(HashSet::new, HashSet::add, AbstractCollection::addAll);
-        model.addAttribute("covers", List.copyOf(covers).subList(0, Math.min(10, covers.size())));
+        var covers = settingService.get("covers", List.class);
+        if (covers != null) {
+            model.addAttribute("covers", covers);
+        } else {
+            HashSet<String> covers2 = all.stream()
+                .filter(novelIndex -> novelIndex.getCoverImgUrl() != null)
+                .map(NovelIndex::getCoverImgUrl).collect(HashSet::new, HashSet::add, AbstractCollection::addAll);
+            model.addAttribute("covers", List.copyOf(covers2).subList(0, Math.min(10, covers2.size())));
+        }
 
         var tags = novelService.getTags();
         var series = novelService.getSeries();
@@ -222,11 +231,11 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, errMsgBuilder.toString());
             }
             if (!req.password.equals(req.passwordRepeat))
-                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "密码输入不一致");
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("register.different_password"));
             if (accountService.isEmailUsed(req.email, null))
-                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "邮箱地址(" + req.email + ")已被使用");
+                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, getMessage("register.email_already_in_use", req.email));
             if (accountService.isEmailUsed(req.userName, null))
-                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, "用户名(" + req.userName + ")已被使用");
+                throw new FutureNovelException(FutureNovelException.Error.USER_EXIST, getMessage("register.username_already_in_use", req.userName));
             if (req.email.equals(session.getAttribute("activateEmail")) &&
                 req.activateCode.equalsIgnoreCase((String) session.getAttribute("activateCode")) &&
                 Optional.ofNullable((Long) session.getAttribute("activateBefore"))
@@ -253,7 +262,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 session.setAttribute("activateCode", null);
                 session.setAttribute("activateBefore", null);
                 session.setAttribute("activateEmail", null);
-                m.addAttribute("errorMessage", "注册成功，请登录");
+                m.addAttribute("errorMessage", getMessage("register.success"));
                 if (req.redirectTo != null && !req.redirectTo.isBlank()) {
                     session.setAttribute("redirectTo", req.redirectTo);
                     m.addAttribute("redirectTo", req.redirectTo);
@@ -382,7 +391,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             }
         }
         if (!uid.matches("^[0-9a-f\\-]{36}$")) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -470,7 +479,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             }
             case KEYWORDS: {
                 if (req.keywords == null)
-                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字为空");
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("search.empty_keywords"));
                 String except = req.except == null ? "" :
                                 Arrays.stream(req.except.split("\\s+"))
                                     .map(s -> String.format("~\"%s\"", s.replaceAll("\"", "\\")))
@@ -488,7 +497,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             case CONTENT: {
                 if (currentAccount == null) {
                     model.asMap().clear();
-                    model.addAttribute("errorMessage", "请先登录");
+                    model.addAttribute("errorMessage", getMessage("login.please_login"));
                     model.addAttribute("redirectTo", request.getRequestURI());
                     return "redirect:/login";
                 }
@@ -497,7 +506,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0)
                     throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
                 if (req.keywords == null || req.keywords.length() < 5)
-                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "关键字太短");
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("search.keywords_are_too_short"));
                 String except = req.except == null ? "" :
                                 Arrays.stream(req.except.split("\\s+"))
                                     .map(s -> String.format("~\"%s\"", s.replaceAll("\"", "\\")))
@@ -564,7 +573,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             }
             case PUBDATE: {
                 if (req.after == null || req.before == null)
-                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "时间段为空");
+                    throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("search.empty_time_duration"));
                 long total = novelService.countNovelIndexByPubDate(req.after, req.before);
                 List<NovelIndex> result = novelService.findNovelIndexByPubDate(req.after, req.before, offset, perPage, req.sortBy.getOrderBy());
                 model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
@@ -590,7 +599,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                              Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -614,7 +623,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                               Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -635,7 +644,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                             Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -652,7 +661,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                              Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -669,7 +678,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                             Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }
@@ -686,7 +695,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                                Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
-            model.addAttribute("errorMessage", "请先登录");
+            model.addAttribute("errorMessage", getMessage("login.please_login"));
             model.addAttribute("redirectTo", request.getRequestURI());
             return "redirect:/login";
         }

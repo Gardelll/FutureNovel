@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.math.BigInteger;
 import java.util.Date;
@@ -507,6 +508,14 @@ public class Requests {
         @Email
         @Size(max = 255)
         public String email;
+    }
+
+    public static class PutSettingRequest {
+        @NotBlank
+        @Size(max = 255)
+        public String key;
+        @NotNull
+        public JsonNode value;
     }
 
 }

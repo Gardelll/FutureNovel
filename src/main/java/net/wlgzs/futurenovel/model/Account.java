@@ -160,7 +160,7 @@ public class Account implements Serializable {
     }
 
     public void checkPermission(Account.Permission ... permissions) throws FutureNovelException {
-        if (getStatus() != Account.Status.FINE) throw new FutureNovelException(FutureNovelException.Error.ACCESS_DENIED, "帐号异常");
+        if (getStatus() != Account.Status.FINE) throw new FutureNovelException(FutureNovelException.Error.ACCESS_DENIED);
         if (permissions.length == 0) return;
         for (var permission : permissions) {
             if (permission == getPermission()) return;

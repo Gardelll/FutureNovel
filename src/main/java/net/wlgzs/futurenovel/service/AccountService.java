@@ -23,6 +23,8 @@ import net.wlgzs.futurenovel.dao.AccountDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.packet.Requests;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.lang.NonNull;
@@ -36,14 +38,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
     private final AccountDao accountDao;
 
-    public AccountService(AccountDao accountDao) {
+    private final MessageSource messageSource;
+
+    public AccountService(AccountDao accountDao, MessageSource messageSource) {
         this.accountDao = accountDao;
+        this.messageSource = messageSource;
     }
 
     public Account getAccount(@NonNull UUID uid) {
         try {
             Account account = accountDao.getAccount(uid);
-            if (account == null) throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "找不到该用户");
+            if (account == null)
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("admin.user_not_exist", null, LocaleContextHolder.getLocale()));
             return account;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -53,7 +59,8 @@ public class AccountService {
     public Account getAccount(@NonNull String username) {
         try {
             Account account = accountDao.getAccountForLogin(username);
-            if (account == null) throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, "找不到该用户");
+            if (account == null)
+                throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, messageSource.getMessage("admin.user_not_exist", null, LocaleContextHolder.getLocale()));
             return account;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -93,7 +100,7 @@ public class AccountService {
         try {
             int ret = accountDao.insertAccount(account);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DuplicateKeyException e) {
             throw new FutureNovelException(FutureNovelException.Error.USER_EXIST);
         } catch (DataAccessException e) {
@@ -171,8 +178,7 @@ public class AccountService {
     }
 
 
-
-    private boolean checkAllNull(Object ... objects) {
+    private boolean checkAllNull(Object... objects) {
         for (var o : objects) {
             if (o instanceof CharSequence) {
                 if (((CharSequence) o).length() != 0) return false;

@@ -24,6 +24,8 @@ import net.wlgzs.futurenovel.dao.BookSelfDao;
 import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.model.Account;
 import net.wlgzs.futurenovel.model.BookSelf;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,12 @@ public class BookSelfService {
 
     private final ObjectMapper objectMapper;
 
-    public BookSelfService(BookSelfDao bookSelfDao, ObjectMapper objectMapper) {
+    private final MessageSource messageSource;
+
+    public BookSelfService(BookSelfDao bookSelfDao, ObjectMapper objectMapper, MessageSource messageSource) {
         this.bookSelfDao = bookSelfDao;
         this.objectMapper = objectMapper;
+        this.messageSource = messageSource;
     }
 
     @Transactional
@@ -47,7 +52,7 @@ public class BookSelfService {
             var bookSelf = new BookSelf(UUID.randomUUID(), account.getUid(), title, new ArrayNode(objectMapper.getNodeFactory()));
             int ret = bookSelfDao.insertBookSelf(bookSelf);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步添加操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.insert_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
             return bookSelf;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
@@ -59,7 +64,7 @@ public class BookSelfService {
         try {
             int ret = bookSelfDao.deleteBookSelf(bookSelfId);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "逐步删除操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, messageSource.getMessage("database.delete_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -70,7 +75,7 @@ public class BookSelfService {
         try {
             int ret = bookSelfDao.deleteBookSelvesByAccountId(accountId);
             if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND, "清理失败");
+                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -87,7 +92,7 @@ public class BookSelfService {
         try {
             int ret = bookSelfDao.editBookSelf(bookSelf);
             if (ret != 1)
-                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, "逐步修改操作返回了不是 1 的值：" + ret);
+                throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, messageSource.getMessage("database.update_one_not_except", new Object[] {ret}, LocaleContextHolder.getLocale()));
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -96,7 +101,7 @@ public class BookSelfService {
     public BookSelf getBookSelf(@NonNull UUID bookSelfId) {
         try {
             var ret = bookSelfDao.getBookSelf(bookSelfId);
-            if (ret == null) throw new FutureNovelException(FutureNovelException.Error.BOOK_SELF_NOT_FOUND);
+            if (ret == null) throw new FutureNovelException(FutureNovelException.Error.BOOK_SHELF_NOT_FOUND);
             return ret;
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);

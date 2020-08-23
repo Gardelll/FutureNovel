@@ -221,8 +221,7 @@
     display: block;
     overflow: hidden;
     height: 43px;
-    padding-top: 17px;
-    padding-left: 30px;
+    padding: 17px;
 }
 
 
@@ -1044,6 +1043,8 @@
     color: #fff;
     background: #bf2c24;
     padding: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     border-bottom: none;
 }
 
@@ -1304,6 +1305,7 @@
 .update-wrap .update-list-wrap .update-list table td {
     border-bottom: 1px solid #ebebeb;
     width: 23px;
+    padding: 0 3px;
 }
 
 .update-wrap .update-list-wrap .update-list table td a.classify {
@@ -1361,9 +1363,11 @@
 
 .update-wrap .update-list-wrap .update-list table td i {
     font-size: 12px;
-    float: right;
     margin-top: 3px;
     color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
 }
 
 .search-tool {

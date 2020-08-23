@@ -36,7 +36,7 @@
                     <ul>
                         <li id="min-search">
                             <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
-                                <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
+                                <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)">
                                 <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS">
                                 <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
                                 <button id="search-btn" for="searchSubmit" type="submit" style="background-color: #2470bf;">
@@ -236,18 +236,18 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
-    function popup_over(icon,color,contant){
-        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
-        setTimeout(function(){
+    function popup_over(icon, color, contant) {
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
+        setTimeout(function() {
             $('.popup_over').remove();
             // clear('.popup_over');
-        },1500)
+        }, 1500)
     };
     //得到上传者的所有信息
     function getUploderInfo() {
-        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
         $.ajax({
-            url: contextPath+"/api/account/" + $("#getUploaderId").text() + "/info",
+            url: contextPath + "/api/account/" + $("#getUploaderId").text() + "/info",
             type: "GET",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
@@ -284,10 +284,11 @@
         })
     }
     getAllAcconutShelf();
+
     function AddBookSelf(Id) {
-        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
         $.ajax({
-            url: contextPath+"/api/bookSelf/" + Id + "/add",
+            url: contextPath + "/api/bookSelf/" + Id + "/add",
             type: "POST",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
@@ -296,7 +297,7 @@
             }),
             success: function(data) {
                 console.log(data);
-                popup_over('icon-happy-l','#00ff0f',"添加成功");
+                popup_over('icon-happy-l', '#00ff0f', "添加成功");
             },
             error: function(data) {
                 console.log(data);

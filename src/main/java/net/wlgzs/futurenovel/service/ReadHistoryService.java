@@ -69,9 +69,7 @@ public class ReadHistoryService {
     @Transactional
     public void clearReadHistory(@NonNull Account account, @Nullable Date after, @Nullable Date before) {
         try {
-            int ret = readHistoryDao.deleteReadHistoryByAccountId(account.getUid(), after, before);
-            if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
+            readHistoryDao.deleteReadHistoryByAccountId(account.getUid(), after, before);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

@@ -72,9 +72,7 @@ public class CommentService {
     @Transactional
     public void clearAccountComment(@NonNull UUID accountId) {
         try {
-            int ret = commentDao.deleteCommentByAccountId(accountId);
-            if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
+            commentDao.deleteCommentByAccountId(accountId);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }
@@ -83,9 +81,7 @@ public class CommentService {
     @Transactional
     public void clearSectionComment(@NonNull UUID sectionId) {
         try {
-            int ret = commentDao.deleteCommentBySectionId(sectionId);
-            if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
+            commentDao.deleteCommentBySectionId(sectionId);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

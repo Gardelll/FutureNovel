@@ -73,9 +73,7 @@ public class BookSelfService {
     @Transactional
     public void clearAccountBookSelves(@NonNull UUID accountId) {
         try {
-            int ret = bookSelfDao.deleteBookSelvesByAccountId(accountId);
-            if (ret == 0)
-                throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);
+            bookSelfDao.deleteBookSelvesByAccountId(accountId);
         } catch (DataAccessException e) {
             throw new FutureNovelException(FutureNovelException.Error.DATABASE_EXCEPTION, e.getLocalizedMessage(), e);
         }

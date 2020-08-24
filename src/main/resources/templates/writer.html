@@ -27,84 +27,69 @@
 				<div class="work-info">
 					<div class="top-title">
 						<div class="top-title-box">
-							<span style="line-height: 50px;font-size:17px;color: white;float: right;">修改作品</span>
-						</div>
-
+							<span style="line-height: 50px;font-size:17px;color: white;float: left;">修改作品</span>
+							<img id="closeInfo" src="../../resources/img/close.png" style="width: 20px;height: 20px;display: inline-block;float: right;margin-top: 15px" th:src="@{/resources/img/close.png}"/></div>
 					</div>
 					<div class="work-info-form">
-						<form id="info-form" action="#" method="POST">
-							<div class="form-box">
-								<div class="form-list">
-									<dl>
-										<dd class="">
-											<input name="book-name" id="book-name" class="form-inputs" type="text" required>
-											<p>15字内，请勿添加书名号等特殊符号</p>
-										</dd>
-										<dd>
-											<span>作品类型</span>
-											<select  id="book-type">
-												<option selected>-请选择-</option>
-												<option>玄幻</option>
-												<option>奇幻</option>
-												<option>武侠</option>
-												<option>仙侠</option>
-												<option>都市</option>
-												<option>现实</option>
-												<option>军事</option>
-												<option>历史</option>
-												<option>游戏</option>
-												<option>体育</option>
-												<option>科幻</option>
-												<option>悬疑</option>
-												<option>女生网</option>
-												<option>轻小说</option>
-											</select>
+						<div class="form-box">
+							<div class="form-list">
+								<dl>
+									<dd class="">
+										<span>标题</span>
+										<input name="book-name" id="book-name" class="form-inputs" type="text" required>
+										<p>15字内，请勿添加书名号等特殊符号</p>
+									</dd>
+									<dd>
+										<span>系列</span>
+										<input id="book-type" class="form-inputs" style="width: 200px;" type="text" required>
+										<p>例如：魔幻，武侠，都市....</p>
+									</dd>
+									<dd>
+										<span>版权</span>
+										<select id="copyright">
+											<option selected>-请选择-</option>
+											<option>公版</option>
+											<option>转载</option>
+											<option>同人</option>
+											<option>原创</option>
+										</select>
+									</dd>
+									<dd>
+										<span>作品分类标签(输入空格隔开标签)</span>
+										<input style="height: 30px;padding: 0;resize: none;" id="book-tags" list="tag" class="form-inputs">
+										<datalist id="tag">
 
-										</dd>
-										<dd>
-											<span>版权</span>
-											<select id="copyright">
-												<option selected>-请选择-</option>
-												<option>NO_COPYRIGHT</option>
-												<option>REPRINT</option>
-												<option>FAN_FICTION</option>
-												<option>ORIGINAL</option>
-											</select>
-										</dd>
-										<dd>
-											<span>作品标签</span>
-											<input style="height: 30px;padding: 0;resize: none;"  id="book-tags" placeholder="(用空格隔开标签)" list="tag" class="form-inputs">
-											<datalist id="tag">
+										</datalist>
+										<div class="tags">
 
-											</datalist>
-											<div class="tags">
+										</div>
 
-											</div>
+									</dd>
+									<dd>
+										<span>作者(输入空格隔开作者)</span>
+										<input style="height: 30px;padding: 0;resize: none;" id="book-act" class="form-inputs">
+										<div class="acts">
 
-										</dd>
-										<dd>
-											<span>出版社</span>
-											<input name="book-press" id="book-press"  class="form-inputs" type="text" required>
-										</dd>
-										<dd>
-											<span>介绍</span>
-											<textarea class="form-inputs" id="book-intro" style="resize: none;font-size:20px;height: 70px"></textarea>
-											<p>20~500字</p>
-										</dd>
-									</dl>
-								</div>
-								<div class="create">
-									<button type="button" id="create-work" data-toggle="modal" data-target="#myModal">修改作品</button>
-								</div>
+										</div>
+
+									</dd>
+									<dd>
+										<span>出版社</span>
+										<input name="book-press" id="book-press" class="form-inputs" type="text" required>
+									</dd>
+								</dl>
 							</div>
-						</form>
+							<div class="create">
+								<button type="button" id="create-work" data-toggle="modal" data-target="#myModal">创建作品</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div class="Insert-picture">
 					<p>请插入封面图片</p>
 					<form action="" style="text-align: center">
-						<input type="file" style="margin: 0 10px;" id="file" name="file">
+						<input type="file" style="margin: 0 10px;" id="image_file"  name="image_file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
 					</form>
 					<img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG"/>
 					<div class="img-box" style="display: block">
@@ -166,6 +151,42 @@
 					// clear('.popup_over');
 				},1500)
 			};
+			//标签
+			$("#book-tags").keydown(function(event) {
+				if (event.keyCode == 32) {
+					if ($("#book-tags").val().length >= 5) {
+						alert("标签不得超过三个字")
+						$("#book-tags").val("");
+					} else {
+						var str = $("#book-tags").val();
+						var test = " <div class=\"tags-s\">\n" +
+								"<a href=\"###\" class=\"tags-text\">" + str + "</a>\n" +
+								"<i class=\"fa fa-close close2\" ></i>\n" +
+								"</div>";
+						$(".tags").append(test);
+						$("#book-tags").val("");
+					}
+				}
+			});
+			//作者
+			$("#book-act").keydown(function(event) {
+				if (event.keyCode == 32) {
+					var str = $("#book-act").val();
+					var test = " <div class=\"tags-s\">\n" +
+							"<a href=\"###\" class=\"tags-text2\">" + str + "</a>\n" +
+							"<i class=\"fa fa-close close2\" ></i>\n" +
+							"</div>";
+					$(".acts").append(test);
+					$("#book-act").val("");
+				}
+			});
+
+			$(".tags").on('click', '.close2', function() {
+				$(this).parent().remove();
+			});
+			$(".acts").on('click', '.close2', function() {
+				$(this).parent().remove();
+			});
 			//得到书籍的所有信息
 			function GetAllInfo(){
 				$.ajax({
@@ -192,7 +213,7 @@
 					}
 				})
 			};
-			GetAllInfo();
+		//	GetAllInfo();
 			//添加章节
 			function AddTitle(){
 				$.ajax({
@@ -211,7 +232,7 @@
 						popup_over('icon-happy-l','#00ff0f',"添加章节成功");
 						setTimeout(function () {
 							window.location.reload();
-						},1500)
+						},0)
 						console.log(data)
 					},error:function (data) {
 						console.log(data);
@@ -239,14 +260,11 @@
 						contentType: "application/json;charset=UTF-8",
 						data: JSON.stringify({
 							title:$("#title-name").val(),
-							text:Text,
+							text:text,
 						}),
 						success:function (data) {
 							getTitleId(data.uniqueId);
 							popup_over('icon-happy-l','#00ff0f',"添加小节成功");
-							setTimeout(function () {
-								window.location.reload();
-							},1500)
 						$(".box").css("display","none");
 						}, error: function(jqXHR, textStatus, errorThrown) {
 							const data = JSON.parse(jqXHR.responseText);
@@ -286,13 +304,11 @@
 					data: {},
 					success:function (data) {
 						popup_over('icon-happy-l','#00ff0f',"删除章节成功");
-						setTimeout(function () {
-							window.location.reload();
-						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
 				})
+				$(this).parent().parent().remove();
 			})
 			//删除小节
 			$(".writer-list").on('click','.delete2',function(){
@@ -306,13 +322,11 @@
 					data: {},
 					success:function (data) {
 						popup_over('icon-happy-l','#00ff0f',"删除小节成功");
-						setTimeout(function () {
-							window.location.reload();
-						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
 				})
+				$(this).parent().remove();
 			})
 			//获取创建小说的日期
 			function getNowFormatDate() {
@@ -350,19 +364,26 @@
 					//将每个input的值放进结果集
 					result.push($(this).text());
 				});
+				var  $inputArr2  =  $('.tags-text2');
+				var  result2  =   [];
+				$inputArr2.each(function() {
+					//将每个input的值放进结果集
+					result2.push($(this).text());
+				});
 				if($("#book-name").val().length==0){
 					BookName=null;
-				}if($("#book-type").val()=="-请选择-"){
+				}if($("#book-type").val()==""){
 					BookType = null;
 				}if($("#copyright").val()=="-请选择-"){
 					copyright=null;
 				}if($("#book-press").val()==""){
 					BookPrese=null;
-				}if($("#book-intro").val().length==0){
-					BookIntro=null;
 				}if($("#addIMG").src=="../../resources/img/addimg.png"){
 					$("#addIMG")[0].src=null;
 				}if(result.length==0){
+					result=null;
+				}
+				if(result2.length==0){
 					result=null;
 				}
 					$.ajax({
@@ -371,11 +392,11 @@
 						dataType: "JSON",
 						contentType:"application/json",
 						data: JSON.stringify({
-							"copyright":copyright,
+							"copyright": $("#copyright").val().length==0?null:$("#copyright").val()=='公版'?"NO_COPYRIGHT":$("#copyright").val()=='转载'?"REPRINT":$("#copyright").val()=='同人'?"FAN_FICTION":"ORIGINAL",
 							"title": BookName,
-							"authors": ["haha","hehe"],
+							"authors": null,
 							"description":BookIntro,
-							"tags":result,
+							"tags":null,
 							"series": BookType,
 							"publisher": BookPrese,
 							"pubdate":getNowFormatDate() ,
@@ -383,9 +404,7 @@
 						}),
 						success:function (data) {
 							popup_over('icon-happy-l','#00ff0f',"修改书本信息成功");
-							setTimeout(function () {
-								window.location.reload();
-							},1500)
+								$(".modify-Novel").css("top",-1000+"px");
 						},error(data){
 							console.log( data);
 						}
@@ -412,9 +431,6 @@
 						sections:chapterIdArr,
 					}),success:function (data) {
 						popup_over('icon-happy-l','#00ff0f',"修改章节成功");
-						setTimeout(function () {
-							window.location.reload();
-						},1500)
 					},error:function (data) {
 						console.log(data);
 					}
@@ -439,12 +455,9 @@
 					contentType:"application/json",
 					data: JSON.stringify({
 						title:str3,
-						text:Text,
+						text:text,
 					}),success:function (data) {
 						popup_over('icon-happy-l','#00ff0f',"修改内容成功");
-						setTimeout(function () {
-							window.location.reload();
-						},1500)
 					},error: function(jqXHR, textStatus, errorThrown) {
 					const data = JSON.parse(jqXHR.responseText);
 					alert("发送失败，请稍候再试:" + data.errorMessage);
@@ -483,27 +496,45 @@
 				$(".box").css("display","block");
 				$("#title-name").css("height",40+"px");
 				var str = $(this).attr("chapterid");
+				let _this=this;
 				$("#writer-release").click(function () {
 					AddSection(str);
+					$(_this).parent().append("<div class='sec' >\n" +
+							"\t\t\t\t\t\t\t\t<div class='works-content'>\n" +
+							"\t\t\t\t\t\t\t\t\t<span class=\"neirong\">" + "" + $("#title-name").val() + "" + "</span>\n" +
+							"\t\t\t\t\t\t\t\t\t<button class=\"modify2\">修改</button>\n" +
+							"\t\t\t\t\t\t\t\t\t<button class=\"delete2\">删除</button>\n" +
+							"\t\t\t\t\t\t\t\t</div>\n" +
+							"\t\t\t\t\t\t\t</div>")
 				});
 			});
 			$(".writer-list").on('click','.modify2',function () {
 				$("#title-name").css("height",40+"px");
 				$(".box").css("display","block");
 				var str2 = $(this).attr("sectionid");
+				let _this=this;
 				getContent(str2)
 				$("#writer-release").click(function () {
 					ModifySection(str2);
+					$(_this).prev().text($("#title-name").val());
+					$(".box").css("display","none");
 				});
 			});
 			$(".writer-list").on('click','.add',function () {
 				$(".modify-chapter").css("marginTop",0);
-				var str4 = $(".add").attr("chapterid");
+				var str4 = $(this).attr("chapterid");
+				let _this=this;
 				$(".btn-sure").click(function () {
-					ModifyChapter(str4)
+					ModifyChapter(str4);
+					console.log(_this);
+					if($("#modify-chapter-name").val().length!=0){
+					$(_this).next().next().children("p").text($("#modify-chapter-name").val());
+					}
 				})
 			});
-
+			$("#closeInfo").click(function () {
+				$(".modify-Novel").css("top",-1000+"px");
+			})
 
 
 

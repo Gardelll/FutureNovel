@@ -522,9 +522,8 @@
             }
         }
         $("#form").submit(function(event) {
-            var goSearch = $("#goSearch").val();
-            if (goSearch == "") {
-                popup_over('icon-sad', '#d81e06', "请输入正确格式");
+            var goSearch1 = $("#goSearch1").val();
+            if (goSearch1 == "") {
                 return false;
             } else {
                 return true;
@@ -532,7 +531,7 @@
         });
         $(".search-bt").click(function() {
             console.log($(this).children().children(".info").children().text());
-            $("#goSearch").attr("value", $(this).children().children(".info").children().text());
+            $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
             $("#form").submit();
         })
     </script>

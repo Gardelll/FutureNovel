@@ -130,7 +130,7 @@
                     dataType: "JSON",
                     contentType: "application/json",
                     data: JSON.stringify({
-                        "copyright": $("#copyright").val(),
+                        "copyright": $("#copyright").val()=='公版'?"NO_COPYRIGHT":$("#copyright").val()=='转载'?"REPRINT":$("#copyright").val()=='同人'?"FAN_FICTION":"ORIGINAL",
                         "title": $("#book-name").val(),
                         "authors": result2,
                         "description": $("#book-intro").val(),
@@ -151,9 +151,9 @@
                 })
             }
         });
-        $("#file").on("change", function() {
+        $("#image_file").on("change", function() {
             var formData = new FormData;
-            formData.append("file", $("#file")[0].files[0]);
+            formData.append("image_file", $("#image_file")[0].files[0]);
             console.log(formData)
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -205,10 +205,10 @@
                                     <span>版权</span>
                                     <select id="copyright">
                                 <option selected>-请选择-</option>
-                                <option>NO_COPYRIGHT</option>
-                                <option>REPRINT</option>
-                                <option>FAN_FICTION</option>
-                                <option>ORIGINAL</option>
+                                <option>公版</option>
+                                <option>转载</option>
+                                <option>同人</option>
+                                <option>原创</option>
                             </select>
                                 </dd>
                                 <dd>
@@ -250,7 +250,7 @@
         <div class="Insert-picture">
             <p>请插入封面图片</p>
             <form action="" style="text-align: center">
-                <input type="file" style="margin: 0 10px;" id="file"  name="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
+                <input type="file" style="margin: 0 10px;" id="image_file"  name="image_file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
             </form>
             <img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG" />
             <div class="img-box" style="display: block">

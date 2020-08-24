@@ -87,7 +87,7 @@
 	color: #a6a6a6;
 	position: absolute;
 	left: 20px;
-	top: 10px;
+	top: 30px;
 	font-size: 17px;
 }
 .sec{
@@ -327,7 +327,7 @@
 	border-top: none;
 	padding: 10px;
 	font-size: 15px;
-	height: 80px;
+	height: 40px;
 	overflow: auto;
 
 }
@@ -375,7 +375,7 @@
 	min-width: 820px;
 	overflow: hidden;
 	width: 80%;
-	margin: 0 auto;
+	margin:50px auto 100px auto;
 }
 .work-info{
 	float: right;
@@ -411,5 +411,15 @@
 	border: none;
 	border-radius: 5px;
 	transition: 0.5s;
+}
+.acts {
+	margin-left: 120px;
+	width: 300px;
+	border: 1px solid #e6e6e6;
+	border-top: none;
+	padding: 10px;
+	font-size: 15px;
+	height: 40px;
+	overflow: auto;
 }
 

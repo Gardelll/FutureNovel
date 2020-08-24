@@ -276,7 +276,8 @@
     }
     getAllAcconutShelf();
     function submitForm(index) {
-        var str = "http://localhost:8080/future-novel/search?page=" + index;
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        var str = contextPath+"/search?page=" + index;
         $("#form").attr("action", str);
         $("#form2").attr("action", str);
     }

@@ -55,7 +55,7 @@
                             <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                            <a th:text="${user.userName}"></a>
+                            <a id="USERNAME" th:text="${user.userName}"></a>
                             <a th:text="${'LV'+user.level}"></a>
                         </li>
                         <li class="line"></li>
@@ -489,7 +489,7 @@
                             "                                    <img src='" + "" + data[i].coverImgUrl + "" + "' style=\"width: 100px;float: left;\"/>\n" +
                             "                                </div>\n" +
                             "                                <div class=\"book-rank-list-text\"   style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
-                            "                                    <h4 style=\"font-size: 15px;font-weight: 400;margin-top:10px;\">" + "" + data[i].title + "" + "</h4><button class='blue-btn removeNovel' novelid='" + "" + data[i].uniqueId + "" + "'>删除</button>\n" +
+                            "                                    <h4 style=\"font-size: 15px;display: inline-block;margin-top:10px;\">" + "" + data[i].title + "" + "</h4><button class='blue-btn removeNovel' novelid='" + "" + data[i].uniqueId + "" + "'>删除</button>\n" +
                             "                                    <p style=\"font-size: 10px;color: gray;margin-top: 25px;\">\n" +
                             "                                        <span class=\"book-rank-writer\">" + "" + data[i].authors + "" + "</span><city>|</city>\n" +
                             "                                        <span class=\"book-rank-writer\">" + "" + data[i].publisher + "" + "</span><city>|</city>\n" +
@@ -528,7 +528,7 @@
                     for(var i=0;i<data.length;i++){
                         $("#commentHistory").append("<li>\n" +
                             "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
-                            "<div class=\"our-say cf\"\n" +
+                            "<div style='margin-left: 90px' class=\"our-say cf\"\n" +
                             "<h4>\n" +
                             "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
                             "</h4>\n" +
@@ -670,10 +670,16 @@
         getAllAcconutShelf();
         $("#SureToAddShelf").click(function() {
                 addShelf();
-            $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#addShelfInput').val()+ "" + "</a>" +
-                "<ul class='NovelList' ></ul>");
+            if($('#addShelfInput').val()==''){
+                $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#USERNAME').text()+'的书架'+ "" + "</a>" +
+                    "<ul class='NovelList' ></ul>");
+            }
+                if($('#addShelfInput').val()!=''){
+                    $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#addShelfInput').val()+ "" + "</a>" +
+                        "<ul class='NovelList' ></ul>");
+                }
         })
-            //添加收藏夹
+        //添加收藏夹
         function addShelf() {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -682,7 +688,7 @@
                 datatype: "JSON",
                 contentType: "application/json;charset=UTF-8",
                 data: JSON.stringify({
-                    title: $("#addShelfInput").val(),
+                    title:  $("#addShelfInput").val().length==0?null:$("#addShelfInput").val(),
                 }),
                 success: function(data) {
                     console.log(data);

@@ -106,8 +106,8 @@
                         <a class="blue-btn add-book" href="javascript:;" id="addBookBtn">加入书架</a>
                         <div id="box">
                             <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
-                        <option selected>请选择收藏夹</option>
-                        </select>
+                                <option selected>请选择收藏夹</option>
+                            </select>
                             <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
                         </div>
                     </p>
@@ -310,8 +310,10 @@
 
     $("#sureAdd").click(function() {
         $("#box").css("display", "none");
-        console.log($("#Shelf option:selected").attr("ShelfId"));
         AddBookSelf($("#Shelf option:selected").attr("ShelfId"))
+        if($("#Shelf").children().length==1){
+            popup_over('icon-happy-l', '#00ff0f', "请先创建收藏夹");
+        }
     })
 </script>
 

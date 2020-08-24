@@ -437,7 +437,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             "    <title>Redirecting</title>\n" +
             "</head>\n" +
             "<body>\n" +
-            "<form id=\"myForm\" action=\"" + getBaseUri(request) + "search?page=1\" method=\"post\">\n" +
+            "<form id=\"myForm\" action=\"" + request.getContextPath() + "/search?page=1\" method=\"post\">\n" +
             "    <input type=\"hidden\" name=\"searchBy\" value=\"HOT\">\n" +
             "    <input type=\"hidden\" name=\"sortBy\" value=\"HOT_DESC\">\n" +
             "</form>\n" +

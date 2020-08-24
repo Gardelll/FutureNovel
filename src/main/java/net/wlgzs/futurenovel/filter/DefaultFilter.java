@@ -58,7 +58,7 @@ public class DefaultFilter extends HttpFilter {
         put("/register", 2d);
         put("/api/sendCaptcha", 2d);
         put("/api/login", 12d);
-        put("/search", 2d);
+        put("/search", 6d);
     }};
 
     /**

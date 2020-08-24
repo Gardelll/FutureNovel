@@ -132,7 +132,7 @@ public class Requests {
     }
 
     public static class CreateBookSelfRequest {
-        @Size(min = 1)
+        @Size(max = 255)
         public String title;
     }
 

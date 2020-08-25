@@ -490,3 +490,12 @@
     float: left;
     display: none;
 }
+#ShelfBox{
+    margin-top: 10px;
+    display: none;
+}
+#addShelfInput{
+    border: rgb(84,122,226) 1px solid;
+    padding: 5px 0;
+    margin-top: 10px;
+}

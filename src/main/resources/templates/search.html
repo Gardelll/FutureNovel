@@ -76,10 +76,14 @@
         </div>
     </div>
     <div id="box">
+        <div></div>
         <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
             <option selected>请选择收藏夹</option>
         </select>
         <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
+    </div>
+    <div id="ShelfBox">
+        <input type="text" class="input" id="addShelfInput"><button type="button" class="blue-btn" id="SureToAddShelf">确定</button>
     </div>
     <div class="main-content-wrap" id="main-content-wrap" style="background-color: #f5f5f5;">
         <div class="rank-header">
@@ -228,14 +232,47 @@
             // clear('.popup_over');
         },1500)
     };
-    $(".rank-book-buttons").on("click", ".rank-book-add", function() {
-        $("#box").css("marginTop",-30+"px");
-        const str=$(this).attr("novelId");
-        $("#sureAdd").click(function() {
-            console.log($(this).attr("novelId"));
-            $("#box").css("marginTop",-90+"px");
-            AddBookSelf($("#Shelf option:selected").attr("Shelfid"),str)
+    //添加收藏夹
+    function addShelf() {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        $.ajax({
+            url: contextPath+"/api/bookSelf/create",
+            type: "POST",
+            datatype: "JSON",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify({
+                title:  $("#addShelfInput").val().length==0?null:$("#addShelfInput").val(),
+            }),
+            success: function(data) {
+                console.log(data);
+                $("#ShelfBox").css("display", "none");
+                popup_over('icon-happy-l','#00ff0f',"添加成功");
+            },
+            error: function(data) {
+                console.log(data);
+            }
         })
+    }
+    $(".rank-book-buttons").on("click", ".rank-book-add", function() {
+        if($("#ShelfLength").text()==1){
+            $("#ShelfBox").css("marginTop",-30+"px");
+            popup_over('icon-happy-l', '#00ff0f', "请先创建收藏夹");
+            $("#SureToAddShelf").click(function () {
+                addShelf();
+                popup_over('icon-happy-l', '#00ff0f', "创建成功");
+                setTimeout(function () {
+                    window.location.reload();
+                },1500)
+            })
+        }else{
+            $("#box").css("marginTop",-30+"px");
+            const str=$(this).attr("novelId");
+            $("#sureAdd").click(function() {
+                console.log($(this).attr("novelId"));
+                $("#box").css("marginTop",-90+"px");
+                AddBookSelf($("#Shelf option:selected").attr("Shelfid"),str)
+            })
+        }
     })
     function getAllAcconutShelf() {
         $.ajax({
@@ -245,9 +282,13 @@
             contentType: "application/json;charset=UTF-8",
             data: {},
             success: function(data) {
-                console.log(data);
-                for (var i = 0; i < data.length; i++) {
-                    $("#Shelf").append(" <option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
+                if(data!=undefined){
+                    for (var i = 0; i < data.length; i++) {
+                        $("#Shelf").append("<option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
+                    }
+                }
+                else{
+                    $("#Shelf").append("<p style='display: none;' id='ShelfLength'>1</p>");
                 }
             },
             error: function(data) {

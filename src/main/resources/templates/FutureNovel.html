@@ -454,7 +454,7 @@
         </div>
     </div>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript" async>
         function popup_over(icon, color, contant) {
             $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
             setTimeout(function() {

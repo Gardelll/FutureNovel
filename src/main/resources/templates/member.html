@@ -157,7 +157,7 @@
                                         <p th:text="${{readHistory.createTime}}+'看过'"></p>
                                     </div>
                                     <div class="rank-book-buttons">
-                                        <span class="deleteReadHistory" th:attr="uniqueId=${readHistory.uniqueId}">删除</span>
+                                        <span class="deleteReadHistory blue-btn" th:attr="uniqueId=${readHistory.uniqueId}">删除</span>
                                         <span class="rank-book-details" th:attr="novelId=${readHistory.novelIndexId}">书籍详情</span>
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@
                     <h2 class="shelf-title">我的书架</h2>
                     <a href="javascript:;" id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
-                        <input type="text" class="input" id="addShelfInput"><button type="button" id="SureToAddShelf">确定</button>
+                        <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
                     </div>
                     <ul class="shelf-list" id="shelfList" style="transition: height 200ms ease 0s;">
 
@@ -187,7 +187,7 @@
                 </div>
                 <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
-                    <a class="blue-btn fl" th:href="@{/novel/create}">创建作品</a>
+                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -353,8 +353,9 @@
                         $("#profileImgUrl").attr("src", data.url);
                     });
                 },
-                error() {
-                    popup_over('icon-sad','#d81e06',"上传图片格式有误");
+                error: function(jqXHR, textStatus, errorThrown) {
+                    const data = JSON.parse(jqXHR.responseText);
+                    popup_over('icon-sad','#d81e06',data.errorMessage);
                 }
             })
         });
@@ -548,9 +549,9 @@
         $("#commentHistory").on("click",".remove",function () {
             var str=$(this).attr("commentId");
             removeComment(str);
-            $(this).next().next().empty();
+            $(this).parent().parent().remove();
         })
-        //删除收藏夹
+        //删除评论历史
         function removeComment(uniqueId) {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -636,7 +637,7 @@
                     console.log(data);
                     $("#shelfList").empty();
                     for (let i = 0; i < data.length; i++) {
-                        $("#shelfList").append("<button class='removeSelf' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
+                        $("#shelfList").append("<button class='removeSelf blue-btn' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
                             "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList' id='NovelList" + "" + data[i].uniqueId + "" + "'></ul>");
                         for (let j = 0; j < data[i].novels.length; j++) {
                             $("#NovelList"+data[i].uniqueId).append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
@@ -654,7 +655,7 @@
                                 "                                    <span class=\"book-rank-synopsis\">" + "" + data[i].novels[j].description + "" + "</span>\n" +
                                 "                                </div>\n" +
                                 "                                <div class=\"rank-book-buttons\">\n" +
-                                "                                    <span class=\"deleteNovelShelf\" uniqueId='" + "" + data[i].uniqueId + "" + "' novelId='" + "" + data[i].novels[j].uniqueId + "" + "'>删除</span>\n" +
+                                "                                    <span class=\"deleteNovelShelf blue-btn\" uniqueId='" + "" + data[i].uniqueId + "" + "' novelId='" + "" + data[i].novels[j].uniqueId + "" + "'>删除</span>\n" +
                                 "                                    <span class=\"rank-book-details\" novelId='" + "" + data[i].novels[j].uniqueId + "" + "'>书籍详情</span>\n" +
                                 "                                </div>\n" +
                                 "                            </div>\n" +
@@ -671,11 +672,11 @@
         $("#SureToAddShelf").click(function() {
                 addShelf();
             if($('#addShelfInput').val()==''){
-                $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#USERNAME').text()+'的书架'+ "" + "</a>" +
+                $("#shelfList").prepend("<button class='removeSelf blue-btn'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#USERNAME').text()+'的书架'+ "" + "</a>" +
                     "<ul class='NovelList' ></ul>");
             }
                 if($('#addShelfInput').val()!=''){
-                    $("#shelfList").prepend("<button class='removeSelf'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#addShelfInput').val()+ "" + "</a>" +
+                    $("#shelfList").prepend("<button class='removeSelf blue-btn'>删除</button><a href=\"javascript:;\"  class=\"slidPar\">" + "" + $('#addShelfInput').val()+ "" + "</a>" +
                         "<ul class='NovelList' ></ul>");
                 }
         })

@@ -166,7 +166,6 @@
                 success: function(data) {
                     $("#sure").click(function() {
                         $("#addIMG").attr("src", data.url);
-                        var imgurl = data.url;
                     });
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

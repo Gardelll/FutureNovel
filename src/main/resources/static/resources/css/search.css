@@ -308,7 +308,7 @@
 }
 #box{
     position: fixed;
-    margin-top: -90px;
+    margin-top: -125px;
     float: right;
     margin-left:80%;
     transition: 0.5s;
@@ -317,4 +317,16 @@
     width:65%;
     float:left;
     margin:5px 0 0 20px;
+}
+#ShelfBox{
+    position: fixed;
+    margin-top: -125px;
+    float: right;
+    margin-left:77%;
+    transition: 0.5s;
+}
+#addShelfInput{
+    border: rgb(84,122,226) 1px solid;
+    padding: 5px 0;
+    margin-top: 10px;
 }

@@ -581,13 +581,6 @@ input[type=radio] {
 .NovelList{
     margin: 20px 0;
 }
-.removeSelf{
-    font-size: 13px;
-    margin-right: 20px;
-    padding: 2px;
-    border: 1px solid red;
-    border-radius: 10px;
-}
 .removeNovel{
     margin: -13px 0 0 60px;
     padding:0;

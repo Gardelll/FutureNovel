@@ -110,6 +110,9 @@
                             </select>
                             <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
                         </div>
+                        <div id="ShelfBox">
+                            <input type="text" class="input" id="addShelfInput"><button type="button" class="blue-btn" id="SureToAddShelf">确定</button>
+                        </div>
                     </p>
                 </div>
             </div>
@@ -243,6 +246,27 @@
             // clear('.popup_over');
         }, 1500)
     };
+    //添加收藏夹
+    function addShelf() {
+        const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+        $.ajax({
+            url: contextPath+"/api/bookSelf/create",
+            type: "POST",
+            datatype: "JSON",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify({
+                title:  $("#addShelfInput").val().length==0?null:$("#addShelfInput").val(),
+            }),
+            success: function(data) {
+                console.log(data);
+                $("#ShelfBox").css("display", "none");
+                popup_over('icon-happy-l','#00ff0f',"添加成功");
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
     //得到上传者的所有信息
     function getUploderInfo() {
         const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
@@ -273,9 +297,13 @@
             contentType: "application/json;charset=UTF-8",
             data: {},
             success: function(data) {
-                console.log(data);
-                for (var i = 0; i < data.length; i++) {
-                    $("#Shelf").append(" <option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
+                if(data!=undefined){
+                    for (var i = 0; i < data.length; i++) {
+                        $("#Shelf").append("<option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
+                    }
+                }
+                else{
+                    $("#Shelf").append("<p style='display: none;' id='ShelfLength'>1</p>");
                 }
             },
             error: function(data) {
@@ -305,7 +333,19 @@
         })
     }
     $("#addBookBtn").click(function() {
-        $("#box").css("display", "block");
+        if($("#ShelfLength").text()==1){
+            $("#ShelfBox").css("display","block");
+            popup_over('icon-happy-l', '#00ff0f', "请先创建收藏夹");
+            $("#SureToAddShelf").click(function () {
+                addShelf();
+                popup_over('icon-happy-l', '#00ff0f', "创建成功");
+                setTimeout(function () {
+                    window.location.reload();
+                },1500)
+            })
+        }else{
+            $("#box").css("display", "block");
+        }
     })
 
     $("#sureAdd").click(function() {

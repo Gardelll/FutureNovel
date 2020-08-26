@@ -675,6 +675,16 @@ public class TemplateController extends AbstractAppController implements ErrorCo
         return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "backstage-comment");
     }
 
+    @GetMapping({"/admin/posters"})
+    public ModelAndView postersAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                     HttpServletRequest request,
+                                     HttpSession session,
+                                     Model model) {
+        return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "backstage-poster");
+    }
+
     private ModelAndView checkAdminAndRedirect(String uid,
                                                String tokenStr,
                                                String clientIp,

@@ -139,7 +139,7 @@
                         "series": $("#book-type").val(),
                         "publisher": $("#book-press").val(),
                         "pubdate": getNowFormatDate(),
-                        "coverImgUrl": $("#addIMG")[0].src
+                        "coverImgUrl":$("#image-to-crop").attr("src")
                     }),
                     success: function(data) {
                         $("#TEXT").html("创建成功");

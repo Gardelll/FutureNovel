@@ -130,7 +130,8 @@
                         <div class="admire-wrap">
 <!--                            <a class="report-btn" id="reportBtn" href="###"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
                             <div class="read-btn-box">
-                                <a class="admire admireBtn reward" href="javascript:;">赞赏</a>
+                                <a class="admire admireBtn reward" th:if="${session.currentAccount} ne null" href="javascript:;">赞赏</a>
+                                <a class="admire admireBtn reward" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}"}>赞赏</a>
                             </div>
                         </div>
 
@@ -328,6 +329,7 @@
                 per_page:5,
                 page:page
             },success:function (data) {
+                if(data!=undefined){
                 for(var i=0;i<data.length;i++){
                     $("#comment").append("<li>\n" +
                         "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
@@ -341,30 +343,13 @@
                         "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
                         "</li>");
                 }
-
+                }
             },error:function (data) {
                 console.log(data)
             }
         })
     }
     getSectionComment(1);
-    //获取用户信息(暂时没用，调用已注释)
-    function getUserInfo() {
-        $.ajax({
-            user: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/ "/nonexist",
-            type: "GET",
-            datatype: "json",
-            contentType: "application/json;charset=UTF-8",
-            data: {},
-            success: function(data) {
-                //         console.log(data);
-            },
-            error: function(data) {
-                console.log(data);
-            }
-        })
-    }
-  //  getUserInfo();
     //赞赏功能
     function rewardFun(novelId) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';

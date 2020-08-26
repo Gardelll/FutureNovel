@@ -144,8 +144,6 @@
                                     <city>|</city>
                                     <span class="book-rank-type" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).tags}"></span>
                                     <city>|</city>
-                                    <span class="book-rank-mode" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).copyright}"></span>
-                                    <city>|</city>
                                     <span class="book-rank-mode" th:text="'评分：'+${chapterIdToNovelIndexMap.get(section.fromChapter).rating}"></span>
                                 </p>
                                 <span class="book-rank-synopsis" th:text="${chapterIdToNovelIndexMap.get(section.fromChapter).description}"></span>
@@ -204,7 +202,8 @@
                         </div>
                         <div class="rank-book-buttons">
                             <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
-                            <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                            <span class="rank-book-add" th:if="${session.currentAccount} ne null" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                            <span class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}" th:attr="novelId=${novel.uniqueId}">加入书单</span>
                         </div>
                     </div>
                 </li>

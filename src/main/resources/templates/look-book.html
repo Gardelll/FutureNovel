@@ -48,7 +48,7 @@
                             <li class="line"></li>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} eq null">
-                            <a id="fixed-login" th:href="@{/login}">登录</a>
+                            <a id="fixed-login" th:href="@{/login}" >登录</a>
                             <a class="reg" th:href="@{/register}">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
@@ -103,7 +103,8 @@
                     </p>
                     <p>
                         <a class="blue-btn" href="#freeRead">免费试读</a>
-                        <a class="blue-btn add-book" href="javascript:;" id="addBookBtn">加入书架</a>
+                        <a class="blue-btn add-book"  th:if="${session.currentAccount} ne null"  href="javascript:;" id="addBookBtn">加入书架</a>
+                        <a class="blue-btn add-book" id="addBookBtn" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}">加入书架</a>
                         <div id="box">
                             <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
                                 <option selected>请选择收藏夹</option>

@@ -18,11 +18,11 @@
     <div class="header">
         <div class="w">
             <div class="top">
-                Future Book
+                未来小说网
             </div>
         </div>
     </div>
-    <div class="content">
+    <div class="content" >
         <div class="w">
             <div class="login-img">
                 <img src="../../resources/img/loginBg.jpg" th:src="@{/resources/img/loginBg.jpg}" alt="login">
@@ -46,6 +46,7 @@
                 </div>
             </div>
         </div>
+        <div class="popup_over" id="jump_reason" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont icon-sad" style="font-size: 30px;color: #1afa29;"></i><span style="font-size: 16px; position: relative; bottom: 5px;" th:text="${errorMessage}"> </span></div>
     </div>
 </body>
 <script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
@@ -91,6 +92,13 @@
 
         });
 
+        if($('#jump_reason').text()== 'OK'){
+            $('#jump_reason').css('display','none');
+        }else{
+            setInterval(() => {
+            $('#jump_reason').css('display','none');
+        }, 2000);
+        }
     })
 </script>
 

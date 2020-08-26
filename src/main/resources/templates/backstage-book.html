@@ -46,6 +46,7 @@
             <li class="active"><a href="backstage-book.html" th:href="@{/admin/books}">书籍管理</a></li>
             <li><a href="backstage-user.html" th:href="@{/admin/users}">用户管理</a></li>
             <li><a href="backstage-comment.html" th:href="@{/admin/comments}">评论管理</a></li>
+            <li><a href="backstage-poster.html" th:href="@{/admin/posters}">海报管理</a></li>
         </ul>
     </div>
     </div>
@@ -96,12 +97,9 @@
     </div>
 <!-- 作为公共部分分离/ -->
 </body>
-<!-- 作为公共部分分离 -->
-<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
-</script>
-<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
-<!-- 作为公共部分分离/ -->
+
 <script th:inline="javascript" async>
+    const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
     var curPage=1,
         onepage=$('#change_item').find('option:selected').val();
         
@@ -265,4 +263,9 @@
 
     })        
 </script>
+<!-- 作为公共部分分离 -->
+<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
+</script>
+<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
+<!-- 作为公共部分分离/ -->
 </html>

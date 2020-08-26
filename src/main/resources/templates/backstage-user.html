@@ -46,6 +46,7 @@
                 <li><a href="backstage-book.html" th:href="@{/admin/books}">书籍管理</a></li>
                 <li class="active"><a href="backstage-user.html" th:href="@{/admin/users}">用户管理</a></li>
                 <li><a href="backstage-comment.html" th:href="@{/admin/comments}">评论管理</a></li>
+                <li><a href="backstage-poster.html" th:href="@{/admin/posters}">海报管理</a></li>
     
             </ul>
         </div>
@@ -100,13 +101,8 @@
             </div>
         </div>
     </body>
-<!-- 作为公共部分分离 -->
-<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
-</script>
-<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}">
-</script>
-<!-- 作为公共部分分离/ -->
 <script th:inline="javascript" async>
+    const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
     var curPage=1,
         onepage=$('#change_item_user').find('option:selected').val();
     $(document).ready(function(){
@@ -164,9 +160,9 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}"></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
-                                        <th style="width: 4%;">${data[i].experience}</th>
+                                        <th style="width: 4%;" class="user_exper";>${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
                                         <th style="width: 15%;">${lastLoginDate(data[i].lastLoginDate)}</th>
                                         <th style="width: 13%;">${status(data[i].status)}</th>
@@ -200,7 +196,7 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" th:src="@{/resources/img/avatar.png}"></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -237,7 +233,7 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -272,7 +268,7 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;">${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -305,4 +301,10 @@
             
     })        
 </script>
+<!-- 作为公共部分分离 -->
+<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
+</script>
+<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}">
+</script>
+<!-- 作为公共部分分离/ -->
 </html>

@@ -5,7 +5,7 @@ function yes_no(contant,name,id){
 function del_num(){ 
 
 }
-const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+
 //搜索用户内容
 // function seek(){
 //     $(".user_phone").keyup(function(){
@@ -212,7 +212,7 @@ function refresh_user(onepage){
                         $('#a').append(`<tr>
                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                         <th style="width: 13%;">${data[i].userName}</th>
-                        <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                         <th style="width: 4%;">${data[i].experience}</th>
                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -248,7 +248,7 @@ function refresh_user(onepage){
                                 $('#a').append(`<tr>
                                 <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                 <th style="width: 13%;">${data[i].userName}</th>
-                                <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                 <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                 <th style="width: 4%;">${data[i].experience}</th>
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -285,7 +285,7 @@ function refresh_user(onepage){
                                 $('#a').append(`<tr>
                                 <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                 <th style="width: 13%;">${data[i].userName}</th>
-                                <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                 <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                 <th style="width: 4%;">${data[i].experience}</th>
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -320,7 +320,7 @@ function refresh_user(onepage){
                                     $('#a').append(`<tr>
                                     <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                     <th style="width: 13%;">${data[i].userName}</th>
-                                    <th style="width: 5%;"><img src=${data[i].profileImgUrl}></img></th>
+                                    <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
                                     <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                     <th style="width: 4%;">${data[i].experience}</th>
                                     <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -641,7 +641,8 @@ function user_del(){
             }
         })
 }
-//删除书籍
+//删除
+
 function book_del(id){
     $.ajax({
         url:contextPath+'/api/novel/'+id+'',
@@ -857,6 +858,32 @@ function logout_user(){
             console.log(jqXHR.responseJSON.errorMessage);
         }
     })
+}
+//判断当前图片是否存在
+function isHasImg(src){
+    var img = new Image();
+    img.src = src;
+    img.onload = function(){
+        if( img.width > 0 || img.height > 0  ){
+            onImgExistNotify(img.src,true,3);
+        }
+        else{
+            onImgExistNotify(img.src,false,2);
+        }
+    } 
+     
+    img.onerror = function(){
+        onImgExistNotify(img.src,false,1);
+    }   
+}
+
+function onImgExistNotify(src,bExist,iPlace){//图片src是否存在通知
+    if( bExist ){
+        console.log("图片src="+src+"存在"+iPlace);
+    }
+    else{
+        console.log("图片src="+src+"不存在"+iPlace);
+    }
 }
 //获取当前登录用户名
 

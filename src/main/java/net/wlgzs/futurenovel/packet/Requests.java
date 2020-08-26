@@ -424,7 +424,7 @@ public class Requests {
         /**
          * 查询包含关键词，空格分隔
          */
-        @Size(min = 2, max = 4096)
+        @Size(min = 1, max = 4096)
         public String keywords;
 
         /**

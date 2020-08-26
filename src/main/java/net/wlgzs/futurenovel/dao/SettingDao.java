@@ -16,7 +16,6 @@
 
 package net.wlgzs.futurenovel.dao;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.dao.DataAccessException;
@@ -24,16 +23,10 @@ import org.springframework.dao.DataAccessException;
 public interface SettingDao {
 
     @Select("INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES (#{key}, #{value})")
-    int add(@Param("key") String key, @Param("value") String value) throws DataAccessException;
+    void add(@Param("key") String key, @Param("value") String value) throws DataAccessException;
 
     @Select("UPDATE `settings` SET `setting_value` = #{value} WHERE `setting_key` = #{key}")
-    int update(String key, String value) throws DataAccessException;
-
-    @Select("INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES (#{key}, #{value})")
-    int addJson(@Param("key") String key, @Param("value") JsonNode jsonValue) throws DataAccessException;
-
-    @Select("UPDATE `settings` SET `setting_value` = #{value} WHERE `setting_key` = #{key}")
-    int updateJson(@Param("key") String key, @Param("value") JsonNode jsonValue) throws DataAccessException;
+    void update(String key, String value) throws DataAccessException;
 
     @Select("SELECT `setting_value` FROM `settings` WHERE `setting_key` = #{key}")
     String get(@Param("key") String key) throws DataAccessException;

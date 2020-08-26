@@ -116,7 +116,12 @@ public abstract class AbstractAppController {
         this.messageSource = messageSource;
     }
 
-    protected String getServerUrl() {
+    /**
+     * 从 Request 获取当前服务端的 URL 地址
+     *
+     * @return 服务器 URL 地址
+     */
+    public String getServerUrl() {
         return this.serverUrl == null ?
                this.serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                    .build()
@@ -202,8 +207,22 @@ public abstract class AbstractAppController {
         return account;
     }
 
-    protected String getMessage(String code, Object ... args) {
+    protected String getMessage(String code, Object... args) {
         return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
+    /**
+     * 获取当前请求的 URL（包含 GET 参数）
+     *
+     * @return 当前请求的 URL（包含 GET 参数）
+     */
+    public String getRequestUri() {
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().encode().build();
+        var path = uri.getPath();
+        var query = uri.getQuery();
+        if (path == null) path = "/";
+        if (query != null) return path + "?" + query;
+        else return path;
     }
 
     /**
@@ -300,7 +319,7 @@ public abstract class AbstractAppController {
             response.status = ((HttpStatusCodeException) e).getStatusCode().value();
         } else {
             response.error = e.getClass().getSimpleName();
-            response.status = HttpStatus.I_AM_A_TEAPOT.value();
+            response.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
         }
         return response;
     }

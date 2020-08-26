@@ -75,6 +75,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * HTML 页面的控制器
@@ -213,12 +214,12 @@ public class TemplateController extends AbstractAppController implements ErrorCo
      * @return 含有错误信息的视图或跳转响应
      */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String register(@Valid Requests.RegisterRequest req,
-                           BindingResult bindingResult,
-                           Model m,
-                           HttpServletRequest request,
-                           HttpServletResponse response,
-                           HttpSession session) {
+    public ModelAndView register(@Valid Requests.RegisterRequest req,
+                                 BindingResult bindingResult,
+                                 Model m,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 HttpSession session) {
         m.addAttribute("errorMessage", "OK");
         try {
             if (bindingResult.hasErrors()) {
@@ -267,7 +268,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                     session.setAttribute("redirectTo", req.redirectTo);
                     m.addAttribute("redirectTo", req.redirectTo);
                 }
-                return "redirect:/login";
+                return new ModelAndView("redirect:/login", m.asMap());
             } else throw new FutureNovelException(FutureNovelException.Error.WRONG_ACTIVATE_CODE);
         } catch (FutureNovelException e) {
             m.addAttribute("errorMessage", e.getLocalizedMessage());
@@ -281,7 +282,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
 
         m.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
         m.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
-        return "register";
+        return new ModelAndView("register", m.asMap());
     }
 
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/view")
@@ -306,11 +307,11 @@ public class TemplateController extends AbstractAppController implements ErrorCo
     }
 
     @GetMapping("/novel/read")
-    public String bookRead(@RequestParam("sectionId") String sectionIdStr, Model model) {
+    public ModelAndView bookRead(@RequestParam("sectionId") String sectionIdStr, Model model) {
         final UUID sectionId = UUID.fromString(sectionIdStr);
         final var novelIndex = novelService.findNovelIndexBySectionId(sectionId);
         model.addAttribute("sectionId", sectionIdStr);
-        return String.format("redirect:/novel/%s/read", novelIndex.getUniqueId().toString());
+        return new ModelAndView(String.format("redirect:/novel/%s/read", novelIndex.getUniqueId().toString()), model.asMap());
     }
 
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/read")
@@ -378,24 +379,24 @@ public class TemplateController extends AbstractAppController implements ErrorCo
     }
 
     @GetMapping({"/user"})
-    public String userCenterRedirect(@RequestParam(value = "userName", defaultValue = "") String userName,
-                             @CookieValue(name = "uid", defaultValue = "") String uid,
-                             HttpServletRequest request,
-                             Model model) {
+    public ModelAndView userCenterRedirect(@RequestParam(value = "userName", defaultValue = "") String userName,
+                                           @CookieValue(name = "uid", defaultValue = "") String uid,
+                                           HttpServletRequest request,
+                                           Model model) {
         if (!userName.isBlank()) {
             try {
                 var account = accountService.getAccount(userName);
-                return String.format("redirect:/user/%s", account.getUid().toString());
+                return new ModelAndView(String.format("redirect:/user/%s", account.getUid().toString()), model.asMap());
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, null, e);
             }
         }
         if (!uid.matches("^[0-9a-f\\-]{36}$")) {
             model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
+            model.addAttribute("redirectTo", getRequestUri());
+            return new ModelAndView("redirect:/login", model.asMap());
         }
-        return String.format("redirect:/user/%s", uid);
+        return new ModelAndView(String.format("redirect:/user/%s", uid), model.asMap());
     }
 
     @GetMapping({"/user/{uuid:[0-9a-f\\-]{36}}"})
@@ -429,8 +430,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
     @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
     public String hotSearch(HttpServletRequest request) {
-        return
-            "<!DOCTYPE html>\n" +
+        return "<!DOCTYPE html>\n" +
             "<html lang=\"zh\">\n" +
             "<head>\n" +
             "    <meta charset=\"UTF-8\">\n" +
@@ -449,15 +449,15 @@ public class TemplateController extends AbstractAppController implements ErrorCo
     }
 
     @PostMapping(value = "/search", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String doSearch(@Valid Requests.SearchNovelRequest req,
-                           @RequestParam(name = "page") int page,
-                           @RequestParam(name = "per_page", defaultValue = "20") int perPage,
-                           @CookieValue(name = "uid", defaultValue = "") String uid,
-                           @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                           @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                           HttpServletRequest request,
-                           HttpSession session,
-                           Model model) {
+    public ModelAndView doSearch(@Valid Requests.SearchNovelRequest req,
+                                 @RequestParam(name = "page") int page,
+                                 @RequestParam(name = "per_page", defaultValue = "20") int perPage,
+                                 @CookieValue(name = "uid", defaultValue = "") String uid,
+                                 @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                 @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                 HttpServletRequest request,
+                                 HttpSession session,
+                                 Model model) {
         if (page <= 0 || perPage <= 0 || perPage > 100)
             throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT);
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
@@ -498,14 +498,14 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 if (currentAccount == null) {
                     model.asMap().clear();
                     model.addAttribute("errorMessage", getMessage("login.please_login"));
-                    model.addAttribute("redirectTo", request.getRequestURI());
-                    return "redirect:/login";
+                    model.addAttribute("redirectTo", getRequestUri());
+                    return new ModelAndView("redirect:/login", model.asMap());
                 }
                 if (!currentAccount.isVIP())
                     currentAccount.setExperience(currentAccount.getExperience().subtract(BigInteger.ONE));
                 if (currentAccount.getExperience().compareTo(BigInteger.ZERO) < 0)
                     throw new FutureNovelException(FutureNovelException.Error.EXP_NOT_ENOUGH);
-                if (req.keywords == null || req.keywords.length() < 5)
+                if (req.keywords == null || req.keywords.length() < 2)
                     throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("search.keywords_are_too_short"));
                 String except = req.except == null ? "" :
                                 Arrays.stream(req.except.split("\\s+"))
@@ -586,22 +586,22 @@ public class TemplateController extends AbstractAppController implements ErrorCo
 
         model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
         model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
-        return "search";
+        return new ModelAndView("search", model.asMap());
     }
 
     @GetMapping("/novel/{uniqueId:[0-9a-f\\-]{36}}/write")
-    public String novelWrite(@PathVariable("uniqueId") String uniqueId,
-                             @CookieValue(name = "uid", defaultValue = "") String uid,
-                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                             HttpServletRequest request,
-                             HttpSession session,
-                             Model model) {
+    public ModelAndView novelWrite(@PathVariable("uniqueId") String uniqueId,
+                                   @CookieValue(name = "uid", defaultValue = "") String uid,
+                                   @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                   @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                   HttpServletRequest request,
+                                   HttpSession session,
+                                   Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
+            model.addAttribute("redirectTo", getRequestUri());
+            return new ModelAndView("redirect:/login", model.asMap());
         }
         var novel = buildNovel(UUID.fromString(uniqueId));
 
@@ -611,96 +611,85 @@ public class TemplateController extends AbstractAppController implements ErrorCo
 
         model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
         model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
-        return "writer";
+        return new ModelAndView("writer", model.asMap());
     }
 
     @GetMapping("/novel/create")
-    public String novelCreate(@CookieValue(name = "uid", defaultValue = "") String uid,
-                              @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                              @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                              HttpServletRequest request,
-                              HttpSession session,
-                              Model model) {
+    public ModelAndView novelCreate(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                    @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                    @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                    HttpServletRequest request,
+                                    HttpSession session,
+                                    Model model) {
         Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
+            model.addAttribute("redirectTo", getRequestUri());
+            return new ModelAndView("redirect:/login", model.asMap());
         }
         var tags = novelService.getTags();
         var series = novelService.getSeries();
 
         model.addAttribute("tags", List.copyOf(tags).subList(0, Math.min(14, tags.size())));
         model.addAttribute("series", List.copyOf(series).subList(0, Math.min(20, series.size())));
-        return "WorkInformation";
+        return new ModelAndView("WorkInformation", model.asMap());
     }
 
     @GetMapping({"/admin/", "/admin", "/admin/index"})
-    public String adminHome(@CookieValue(name = "uid", defaultValue = "") String uid,
-                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                            HttpServletRequest request,
-                            HttpSession session,
-                            Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
-        if (currentAccount == null) {
-            model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
-        }
-        currentAccount.checkPermission(Account.Permission.ADMIN);
-        return "index";
+    public ModelAndView adminHome(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                  HttpServletRequest request,
+                                  HttpSession session,
+                                  Model model) {
+        return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "index");
     }
 
     @GetMapping({"/admin/books"})
-    public String novelAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
-                             @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                             @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                             HttpServletRequest request,
-                             HttpSession session,
-                             Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
-        if (currentAccount == null) {
-            model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
-        }
-        currentAccount.checkPermission(Account.Permission.ADMIN);
-        return "backstage-book";
+    public ModelAndView novelAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                   @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                   @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                   HttpServletRequest request,
+                                   HttpSession session,
+                                   Model model) {
+        return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "backstage-book");
     }
 
     @GetMapping({"/admin/users"})
-    public String userAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
-                            @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                            @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                            HttpServletRequest request,
-                            HttpSession session,
-                            Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
-        if (currentAccount == null) {
-            model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
-        }
-        currentAccount.checkPermission(Account.Permission.ADMIN);
-        return "backstage-user";
+    public ModelAndView userAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                  @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                  @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                  HttpServletRequest request,
+                                  HttpSession session,
+                                  Model model) {
+        return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "backstage-user");
     }
 
     @GetMapping({"/admin/comments"})
-    public String commentAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
-                               @CookieValue(name = "token", defaultValue = "") String tokenStr,
-                               @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
-                               HttpServletRequest request,
-                               HttpSession session,
-                               Model model) {
-        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, request.getRemoteAddr(), userAgent, session);
+    public ModelAndView commentAdmin(@CookieValue(name = "uid", defaultValue = "") String uid,
+                                     @CookieValue(name = "token", defaultValue = "") String tokenStr,
+                                     @RequestHeader(value = "User-Agent", required = false, defaultValue = "") String userAgent,
+                                     HttpServletRequest request,
+                                     HttpSession session,
+                                     Model model) {
+        return checkAdminAndRedirect(uid, tokenStr, request.getRemoteAddr(), userAgent, session, model, "backstage-comment");
+    }
+
+    private ModelAndView checkAdminAndRedirect(String uid,
+                                               String tokenStr,
+                                               String clientIp,
+                                               String userAgent,
+                                               HttpSession session,
+                                               Model model,
+                                               String defaultView) {
+        Account currentAccount = checkLoginAndSetSession(uid, tokenStr, clientIp, userAgent, session);
         if (currentAccount == null) {
             model.addAttribute("errorMessage", getMessage("login.please_login"));
-            model.addAttribute("redirectTo", request.getRequestURI());
-            return "redirect:/login";
+            model.addAttribute("redirectTo", getRequestUri());
+            return new ModelAndView("redirect:/login", model.asMap());
         }
         currentAccount.checkPermission(Account.Permission.ADMIN);
-        return "backstage-comment";
+        return new ModelAndView(defaultView, model.asMap());
     }
 
     @ExceptionHandler(Exception.class)

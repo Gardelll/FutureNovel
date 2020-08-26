@@ -1,10 +1,11 @@
 <!DOCTYPE>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <html>
 
 <head>
     <meta charset="UTF-8">
     <title>未来小说网--作品信息</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
@@ -151,29 +152,6 @@
                 })
             }
         });
-        $("#image_file").on("change", function() {
-            var formData = new FormData;
-            formData.append("image_file", $("#image_file")[0].files[0]);
-            console.log(formData)
-            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-            $.ajax({
-                url: contextPath+"/api/img/upload",
-                type: "put",
-                dataType: "JSON",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    $("#sure").click(function() {
-                        $("#addIMG").attr("src", data.url);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                	const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',data.errorMessage);
-                }
-            })
-        });
     }
 </script>
 <body>
@@ -245,19 +223,123 @@
                     </div>
             </div>
         </div>
-
-        <div class="Insert-picture">
-            <p>请插入封面图片</p>
-            <form action="" style="text-align: center">
-                <input type="file" style="margin: 0 10px;" id="image_file"  name="image_file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
-            </form>
-            <img src="../../resources/img/addimg.png" th:src="@{/resources/img/addimg.png}" id="addIMG" />
-            <div class="img-box" style="display: block">
-                <input id="sure" type="submit">
-            </div>
-
-        </div>
     </div>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="upload-part" class="upload-img">
+            <p>双击切换选择与移动，支持拖动</p>
+            <img id="image-to-crop" onclick="document.getElementById('img-input').click()" class="preview-img"  th:src="@{/resources/img/addimg.png}"/>
+            <label for="img-input">选择图片</label><br />
+            <input type="file" accept="image/*" id="img-input"></input>
+            <br />
+            <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 190px;"></input>
+            <br />
+            <button id="confirm-btn">确认并上传</button>
+        </div>
+        <div class='progress-mask'>
+        </div>
+        <div class="progress">
+            <!-- 可以替换成进度条之类的 -->
+            <h1>请稍后...</h1>
+        </div>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.js"></script>
+        <script  th:inline="javascript" async>
+            function show_progress(value) {
+                document.getElementsByClassName("progress-mask")[0].style.visibility = value ? 'visible' : 'hidden';
+                document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
+            }
+            const image = document.getElementById('image-to-crop');
+            $('#img-input').change(function() {
+                var path = this.value;
+                if (path == undefined || path == null || path == '') {
+                    alert("未选择文件");
+                    return;
+                }
+                const cropper = image.cropper;
+                if (cropper != undefined) {
+                    cropper.destroy();
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    image.setAttribute('src', e.target.result);
+                    const cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        rotatable: true
+                    });
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+            $('#rotate-input').change(function() {
+                const cropper = image.cropper;
+                if (cropper != undefined) {
+                    cropper.rotateTo(this.value);
+                }
+            });
+            $('#confirm-btn').click(function() {
+                const cropper = image.cropper;
+                const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+                if (cropper != undefined) {
+                    show_progress(true);
+                    cropper.getCroppedCanvas().toBlob(function(blob) {
+                        const formData = new FormData();
+                        formData.append('file', blob);
+                        $.ajax({
+                            url:contextPath+"/api/img/upload",
+                            method: 'PUT',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success(data) {
+                                console.log(data);
+                                cropper.destroy();
+                                image.setAttribute('src', data.url);
+                                show_progress(false);
+                            },
+                            error(jqXHR) {
+                                const data = JSON.parse(jqXHR.responseText);
+                                console.log(data);
+                                alert(data.errorMessage);
+                                show_progress(false);
+
+                            }
+                        });
+                    });
+                } else {
+                    alert("未选择文件");
+                }
+            });
+            const uploadDropBox = document.getElementById("upload-part");
+            function doNothing(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            uploadDropBox.addEventListener('dragenter', doNothing, false);
+            uploadDropBox.addEventListener('dragover', doNothing, false);
+            uploadDropBox.addEventListener('drop', function(e) {
+                doNothing(e);
+                const dt = e.dataTransfer;
+                if (dt.files == undefined || dt.files.length == 0) return;
+                const imgFile = dt.files[0];
+                if (imgFile != undefined && imgFile.type.startsWith('image/')) {
+                    const cropper = image.cropper;
+                    if (cropper != undefined) {
+                        cropper.destroy();
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        image.setAttribute('src', e.target.result);
+                        const cropper = new Cropper(image, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            rotatable: true
+                        });
+                    }
+                    reader.readAsDataURL(imgFile);
+                }
+            }, false);
+        </script>
+
 </body>
 
 </html>

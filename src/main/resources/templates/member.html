@@ -6,6 +6,7 @@
     <title>未来小说网--用户资料</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
@@ -209,7 +210,7 @@
         </div>
     </div>
     <div class="mask" id="mask"></div>
-    <div class="setting-content" id="setting-content" style="width: 548.4px;height:506px;display: none;">
+    <div class="setting-content" id="setting-content" style="width: 625.4px;height:506px;display: none;">
         <div class="setting-record">
             <div class="tabs" id="tabView">
                 <a class="tabTarget1 checked">基本设置</a>
@@ -242,9 +243,6 @@
                                 <dt></dt>
                                 <dd>
                                     <div>
-
-
-
                                         <input type="submit" id="basicMsgSubmit" class="clip">
                                         <label class="button" id="set">保存</label>
                                     </div>
@@ -256,14 +254,20 @@
                 <div id="tabTarget2" class="tab-content">
                     <div id="setAvatarForm" action="">
                         <div id="avatarChoose" class="avatar-choose">
-                            <img class="avatar-show" id="profileImgUrl" th:src="${user.profileImgUrl}" alt="书友的头像">
-                            <div class="avatar-text">
-                                <p>本地上传: 选择本地图片编辑后上传 (上传头像将会在2个工作日内进行审核，通过后需重新登录显示新头像)。</p>
-                                <p class="gray">支持jpg、gif、png格式图片，上传文件大小不超过5MB，图片尺寸需大于200*200。</p>
+                            <img class="avatar-show" style="float: left;margin-left: 40px;" id="profileImgUrl" th:src="${user.profileImgUrl}" alt="书友的头像">
+                            <img id="image-to-crop" style="float: left;width: 80px;height: 80px" onclick="document.getElementById('img-input').click()" class="preview-img" th:src="@{/resources/img/addimg.png}" />
+                            <noscript>You need to enable JavaScript to run this app.</noscript>
+                            <div id="upload-part" class="upload-img">
+                                <label for="img-input">选择图片</label><br />
+                                <input type="file" accept="image/*" id="img-input"></input>
+                                <br />
+                                <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 100%;"></input>
+                                <br />
+                                <button class="blue-btn" id="confirm-btn">确认并上传</button>
                             </div>
-                            <div>
-                                <input type="file" style="margin: 0 10px;width: 180px" class="button" id="file" name="file">
-                                <button id="sure" type="button" class="button">确定<i style="font-size: 12px;color: #dcdcdc;">（请确定后再点击保存）</i></button>
+                            <div class="progress">
+                                <!-- 可以替换成进度条之类的 -->
+                                <h1>请稍后...</h1>
                             </div>
                         </div>
                     </div>
@@ -272,9 +276,104 @@
         </div>
     </div>
 
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
-    <script>
+    <script  th:inline="javascript" async>
+        function show_progress(value) {
+            document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
+        }
+        const image = document.getElementById('image-to-crop');
+        $('#img-input').change(function() {
+            var path = this.value;
+            if (path == undefined || path == null || path == '') {
+                alert("未选择文件");
+                return;
+            }
+            const cropper = image.cropper;
+            if (cropper != undefined) {
+                cropper.destroy();
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                image.setAttribute('src', e.target.result);
+                const cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    rotatable: true
+                });
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+        $('#rotate-input').change(function() {
+            const cropper = image.cropper;
+            if (cropper != undefined) {
+                cropper.rotateTo(this.value);
+            }
+        });
+        $('#confirm-btn').click(function() {
+            const cropper = image.cropper;
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            if (cropper != undefined) {
+                show_progress(true);
+                cropper.getCroppedCanvas().toBlob(function(blob) {
+                    const formData = new FormData();
+                    formData.append('file', blob);
+                    $.ajax({
+                        url:contextPath+"/api/img/upload",
+                        method: 'PUT',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success(data) {
+                            console.log(data);
+                            cropper.destroy();
+                            image.setAttribute('src', data.url);
+                            show_progress(false);
+                            tabAccountInfo();
+                        },
+                        error(jqXHR) {
+                            const data = JSON.parse(jqXHR.responseText);
+                            console.log(data);
+                            alert(data.errorMessage);
+                            show_progress(false);
+                        }
+                    });
+                });
+            } else {
+                alert("未选择文件");
+            }
+        });
+        const uploadDropBox = document.getElementById("upload-part");
+        function doNothing(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        uploadDropBox.addEventListener('dragenter', doNothing, false);
+        uploadDropBox.addEventListener('dragover', doNothing, false);
+        uploadDropBox.addEventListener('drop', function(e) {
+            doNothing(e);
+            const dt = e.dataTransfer;
+            if (dt.files == undefined || dt.files.length == 0) return;
+            const imgFile = dt.files[0];
+            if (imgFile != undefined && imgFile.type.startsWith('image/')) {
+                const cropper = image.cropper;
+                if (cropper != undefined) {
+                    cropper.destroy();
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    image.setAttribute('src', e.target.result);
+                    const cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        rotatable: true
+                    });
+                }
+                reader.readAsDataURL(imgFile);
+            }
+        }, false);
         function popup_over(icon,color,contant){
             $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
             setTimeout(function(){
@@ -337,28 +436,6 @@
         })
     </script>
     <script th:inline="javascript" async>
-        $("#file").on("change", function() {
-            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-            var formData = new FormData;
-            formData.append("file", $("#file")[0].files[0]);
-            $.ajax({
-                url:contextPath+"/api/img/upload",
-                type: "put",
-                dataType: "JSON",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    $("#sure").click(function() {
-                        $("#profileImgUrl").attr("src", data.url);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    const data = JSON.parse(jqXHR.responseText);
-                    popup_over('icon-sad','#d81e06',data.errorMessage);
-                }
-            })
-        });
         //获取用户信息
         function getUserInfo() {
             $.ajax({
@@ -392,7 +469,7 @@
                     userName: $("#userName").val(),
                     phone: $("#phone").val(),
                     //email:$("#txtemailnumber").val(),
-                    profileImgUrl: $("#profileImgUrl").attr("src"),
+                    profileImgUrl: $("#image-to-crop").attr("src"),
                     //activateCode:
                 }),
                 success: function(data) {

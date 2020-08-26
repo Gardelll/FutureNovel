@@ -223,7 +223,6 @@
                     </div>
             </div>
         </div>
-    </div>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="upload-part" class="upload-img">
             <p>双击切换选择与移动，支持拖动</p>
@@ -233,17 +232,26 @@
             <br />
             <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 190px;"></input>
             <br />
-            <button id="confirm-btn">确认并上传</button>
+            <button id="confirm-btn" class="blue-btn">确认并上传</button>
         </div>
+    </div>
         <div class='progress-mask'>
         </div>
         <div class="progress">
             <!-- 可以替换成进度条之类的 -->
             <h1>请稍后...</h1>
         </div>
+
         <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.js"></script>
         <script  th:inline="javascript" async>
+            function popup_over(icon,color,contant){
+                $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
+                setTimeout(function(){
+                    $('.popup_over').remove();
+                    // clear('.popup_over');
+                },1500)
+            };
             function show_progress(value) {
                 document.getElementsByClassName("progress-mask")[0].style.visibility = value ? 'visible' : 'hidden';
                 document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
@@ -252,7 +260,7 @@
             $('#img-input').change(function() {
                 var path = this.value;
                 if (path == undefined || path == null || path == '') {
-                    alert("未选择文件");
+                    popup_over('icon-sad','#d81e06',"请先选择图片");
                     return;
                 }
                 const cropper = image.cropper;
@@ -263,7 +271,7 @@
                 reader.onload = function(e) {
                     image.setAttribute('src', e.target.result);
                     const cropper = new Cropper(image, {
-                        aspectRatio: 1,
+                        aspectRatio: 3/4,
                         viewMode: 1,
                         rotatable: true
                     });
@@ -306,7 +314,7 @@
                         });
                     });
                 } else {
-                    alert("未选择文件");
+                    popup_over('icon-sad','#d81e06',"未选择文件");
                 }
             });
             const uploadDropBox = document.getElementById("upload-part");

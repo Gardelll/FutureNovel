@@ -61,6 +61,14 @@
             <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 100%;"></input>
             <br />
             <button id="confirm-btn">确认并上传</button>
+            <select name="status" class="item" id="posters_page" οnchange="checkinfo_location();" >
+                <option value="1" >第一张</option>
+                <option value="2" >第二张</option>
+                <option value="3" >第三张</option>
+                <option value="4" >第四张</option>
+                <option value="5" >第五张</option>
+            </select>
+            <span style="font-size: 14px;">(选择页码)</span>
         </div>
         <div class='progress-mask'>
         </div>
@@ -83,6 +91,38 @@
 //     }
 // });
 let contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({        
+                url:contextPath+"/api/settings/put",
+                type: 'POST',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data:JSON.stringify({
+                    key: '1',
+                    value: 'https://gardel.top/future-novel/api/img/fdb93a60b39f1149666d27c305dfcede'
+                }),
+                          success(data) {
+                            alert('成功')
+                          },
+                          error(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            console.log(mes);
+                          }
+                        });
+                $.ajax({        url:contextPath+"/api/settings/get",
+                type: 'GET',
+                
+                contentType: 'application/x-www-form-urlencoded',
+                data:{
+                    key: 'one',
+                },
+                          success(data) {
+                            console.log(data)
+                          },
+                          error(jqXHR) {
+                            let mes = JSON.parse(jqXHR.responseText);
+                            console.log(mes);
+                          }
+                        });
 function show_progress(value) {
                 document.getElementsByClassName("progress-mask")[0].style.visibility = value ? 'visible' : 'hidden';
                 document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
@@ -128,8 +168,9 @@ function show_progress(value) {
                           processData: false,
                           contentType: false,
                           success(data) {
-                            console.log(data);
+                            console.log(data.url);
                             cropper.destroy();
+                            posters_put($('#posters_page').find('option:selected').val(),data.url);
                             image.setAttribute('src', data.url);
                             show_progress(false);
                           },

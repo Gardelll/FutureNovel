@@ -5,7 +5,27 @@ function yes_no(contant,name,id){
 function del_num(){ 
 
 }
-
+//上传海报地址
+function posters_put(key,url){
+    $.ajax({        
+        url:contextPath+"/api/settings/put",
+        type: 'POST',
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data:JSON.stringify({
+            key: key,
+            value: url
+        }),
+                  success(data) {
+                    popup_over('icon-happy-l','#1afa29','添加成功');
+                  },
+                  error(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    console.log(mes);
+                    popup_over('icon-happy-l','#1afa29',mes.errorMessage);
+                  }
+                });
+}
 //搜索用户内容
 // function seek(){
 //     $(".user_phone").keyup(function(){

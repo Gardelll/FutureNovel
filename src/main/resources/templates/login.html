@@ -32,7 +32,7 @@
                     <h2 class="title">Login</h2>
                     <input type="text" name="us" placeholder="username" class="input-item username" id="us">
                     <input type="password" name="ps" placeholder="password" class="input-item psw" id="ps">
-                    <button class="btn" id="login">登录</button>
+                    <button class="btn" id="login" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">登录</button>
                     <button class="btn" id="logon">注册</button>
                     <div class="icon">
                         <input type="text" name="activate" placeholder="请输入验证码">

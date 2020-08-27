@@ -24,6 +24,7 @@ import net.wlgzs.futurenovel.exception.FutureNovelException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -56,6 +57,7 @@ public class SettingService {
     }
 
     @Nullable
+    @Transactional
     @SuppressWarnings("unchecked")
     public <T> T put(@NonNull String key, @NonNull T value) {
         Object oldValue = get(key, value.getClass());
@@ -88,6 +90,7 @@ public class SettingService {
     }
 
     @Nullable
+    @Transactional
     public <T> T remove(@NonNull String key, @NonNull Class<T> tClass) {
         T oldValue = get(key, tClass);
         if (0 == settingDao.remove(key)) throw new FutureNovelException(FutureNovelException.Error.ITEM_NOT_FOUND);

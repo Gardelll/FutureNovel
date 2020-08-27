@@ -16,22 +16,25 @@
 
 package net.wlgzs.futurenovel.dao;
 
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.dao.DataAccessException;
 
 public interface SettingDao {
 
-    @Select("INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES (#{key}, #{value})")
+    @Insert("INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES (#{key}, #{value})")
     void add(@Param("key") String key, @Param("value") String value) throws DataAccessException;
 
-    @Select("UPDATE `settings` SET `setting_value` = #{value} WHERE `setting_key` = #{key}")
-    void update(String key, String value) throws DataAccessException;
+    @Update("UPDATE `settings` SET `setting_value` = #{value} WHERE `setting_key` = #{key}")
+    void update(@Param("key") String key, @Param("value") String value) throws DataAccessException;
 
     @Select("SELECT `setting_value` FROM `settings` WHERE `setting_key` = #{key}")
     String get(@Param("key") String key) throws DataAccessException;
 
-    @Select("DELETE FROM `settings` WHERE `setting_key` = #{key}")
-    int remove(String key) throws DataAccessException;
+    @Delete("DELETE FROM `settings` WHERE `setting_key` = #{key}")
+    int remove(@Param("key") String key) throws DataAccessException;
 
 }

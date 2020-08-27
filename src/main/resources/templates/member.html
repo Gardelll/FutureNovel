@@ -17,6 +17,8 @@
 </head>
 
 <body>
+    <p style="display: none" th:if="${session.currentAccount} ne null" id="AccoundId" th:text="${session.currentAccount.uid}"></p>
+     <p style="display: none" id="pd" th:text="session.currentAccount eq null"></p>
     <div class="wrap">
         <!-- 导航条 -->
         <div class="fixed-nav">
@@ -84,13 +86,21 @@
                         <i class="fa fa-home" style="font-size:16px"></i>首页
                     </a>
                     <li class="side-parent">
-                        <a href="javascript:open()">
+                        <a href="javascript:open()" th:if="${session.currentAccount} ne null">
+                            <i class="fa fa-edit" style="font-size:16px"></i>
+                            <span style="vertical-align: inherit">修改</span>
+                        </a>
+                        <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">
                             <i class="fa fa-edit" style="font-size:16px"></i>
                             <span style="vertical-align: inherit">修改</span>
                         </a>
                     </li>
                     <li class="side-parent" id="side-parent">
-                        <a href="javascript:;">
+                        <a  th:if="${session.currentAccount} ne null" href="javascript:;">
+                            <i class="fa fa-history" style="font-size:16px"></i>
+                            <span style="vertical-align:inherit">我的历史</span>
+                        </a>
+                        <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">
                             <i class="fa fa-history" style="font-size:16px"></i>
                             <span style="vertical-align:inherit">我的历史</span>
                         </a>
@@ -103,16 +113,120 @@
                             </li>
                         </ul>
                     </li>
-                    <a id="shelf" href="javascript:;" class="side-ul-a">
+                    <a id="shelf" th:if="${session.currentAccount} ne null" href="javascript:;" class="side-ul-a">
                         <i class="fa fa-book" style="font-size:16px"></i>我的书架
                     </a>
-                    <a id="work" href="javascript:;" class="side-ul-a">
+                    <a id="shelf" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}"  class="side-ul-a">
+                        <i class="fa fa-book" style="font-size:16px"></i>我的书架
+                    </a>
+                    <a id="work" th:if="${session.currentAccount} ne null" href="javascript:;" class="side-ul-a">
+                        <i class="fa fa-folder-o" style="font-size:16px"></i>我的作品
+                    </a>
+                    <a id="work" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" class="side-ul-a">
                         <i class="fa fa-folder-o" style="font-size:16px"></i>我的作品
                     </a>
                 </ul>
             </div>
+
+
+
+
             <!-- 中间内容-->
-            <div class="home-content" th:each="user:${session.currentAccount}">
+            <div class="home-content" th:if="${session.currentAccount} eq null">
+                <div class="home-user-wrap">
+                    <div class="home-user-avatar">
+                        <a class="user-avatar-a">
+                            <img class="user-avatar-img profileImgUrl" th:src="@{/resources/img/avatar.png}">
+                        </a>
+                    </div>
+                    <div class="home-user">
+                        <div class="blue-btn-little">
+                            <a href="javascript:open()" class="button-a button-icon">
+                                <i class="fa fa-cog" style="font-size:16px"></i>
+                            </a>
+                        </div>
+                        <h3 style="display: inline-block">
+                            <a>未登录</a>
+                        </h3>
+                    </div>
+                </div>
+                <div id="addToHistory" method="post" class="history-main">
+                    <h2 class="history-title">浏览历史</h2>
+                    <a href="javascript:;" id="clearAllHistory">清空所有历史</a>
+                    <div class="readHistory">
+                        <ul style="overflow:hidden;">
+                            <li style="margin: 10px 0" th:each="readHistory:${readHistory}">
+                                <div class="book-rank-list" style="overflow: hidden;">
+                                    <div class="book-rank-img">
+                                        <img th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
+                                    </div>
+                                    <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
+                                        <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.novelTitle}"></h4>
+                                        <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.chapterTitle}"></h4>
+                                        <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.title}"></h4>
+                                        <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                            <span class="book-rank-writer" th:text="${readHistory.authors}"></span>
+                                            <city>|</city>
+                                        </p>
+                                        <p th:text="${{readHistory.createTime}}+'看过'"></p>
+                                    </div>
+                                    <div class="rank-book-buttons">
+                                        <span class="deleteReadHistory blue-btn" th:attr="uniqueId=${readHistory.uniqueId}">删除</span>
+                                        <span class="rank-book-details" th:attr="novelId=${readHistory.novelIndexId}">书籍详情</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                </div>
+                <div id="addComment" class="history-main">
+                    <h2 class="history-title">评论历史</h2>
+                    <div class="readHistory">
+                        <ul id="commentHistory" style="overflow:hidden;">
+
+                        </ul>
+                    </div>
+                    <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
+                </div>
+                <div id="addToShelf" method="post" class="shelf-main">
+                    <h2 class="shelf-title">我的书架</h2>
+                    <a href="javascript:;" th:if="${session.currentAccount} ne null" id="addShelf">创建收藏夹</a>
+                    <a  th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th id="addShelf">创建收藏夹</a>
+                    <div id="ShelfBox">
+                        <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
+                    </div>
+                    <ul class="shelf-list" id="shelfList" style="transition: height 200ms ease 0s;">
+
+                    </ul>
+                </div>
+                <div id="addToMyWork" method="post" class="work-main">
+                    <h2 class="work-title">我的作品</h2>
+                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:href="@{/novel/create}">创建作品</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBLISHER');" sortBy="PUBLISHER">出版社排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RATING');" sortBy="RATING">评分排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'SERIES');" sortBy="SERIES">系列排序</a>
+                    <ul class="work-list" id="workList" style="transition: height 200ms ease 0s;">
+
+                    </ul>
+                    <div class="page-box" style="padding: 40px 0;position: relative;">
+                        <div class="pagination" style="position: absolute;right: 0;">
+                            <div class="box-page">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- 中间内容-->
+            <div class="home-content" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
                         <a class="user-avatar-a">
@@ -189,12 +303,12 @@
                 <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
                     <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:href="@{/novel/create}">创建作品</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'PUBLISHER');" sortBy="PUBLISHER">出版社排序</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'RATING');" sortBy="RATING">评分排序</a>
-                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();getAccountAllNovel(1,'SERIES');" sortBy="SERIES">系列排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBLISHER');" sortBy="PUBLISHER">出版社排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RATING');" sortBy="RATING">评分排序</a>
+                    <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'SERIES');" sortBy="SERIES">系列排序</a>
                     <ul class="work-list" id="workList" style="transition: height 200ms ease 0s;">
 
                     </ul>
@@ -281,6 +395,7 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <script  th:inline="javascript" async>
+        if($("#pd").text()=="false"){
         function show_progress(value) {
             document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
         }
@@ -374,6 +489,7 @@
                 reader.readAsDataURL(imgFile);
             }
         }, false);
+        }
         function popup_over(icon,color,contant){
             $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
             setTimeout(function(){
@@ -436,24 +552,6 @@
         })
     </script>
     <script th:inline="javascript" async>
-        //获取用户信息
-        function getUserInfo() {
-            $.ajax({
-                user: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/info']]*/ "/nonexist",
-                type: "GET",
-                datatype: "json",
-                contentType: "application/json;charset=UTF-8",
-                data: {},
-                success: function(data) {
-                    //         console.log(data);
-                },
-                error: function(data) {
-                    console.log(data);
-                }
-            })
-        }
-       // getUserInfo();
-        //修改用户信息
         $("#set").click(function() {
             tabAccountInfo();
         })
@@ -523,8 +621,9 @@
         }
         //获取用户所有小说的页数
         function geNovelAllPage() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: /*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/pages']]*/ "/nonexist",
+                url: contextPath + '/api/novel/user/' + $("#AccoundId").text() +'/pages',
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -544,11 +643,15 @@
                 }
             })
         }
-        geNovelAllPage();
+        if($("#pd").text()=="false") {
+            geNovelAllPage();
+        }
+
         //获取用户所有小说
         function getAccountAllNovel(page, sortBy) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: /*[[${#request.getContextPath()} + '/api/novel/user/' + ${session.currentAccount.uid.toString()} +'/get']]*/ "/nonexist",
+                url:contextPath+'/api/novel/user/' + $("#AccoundId").text() +'/get',
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -558,7 +661,7 @@
                     sort_by: sortBy,
                 },
                 success: function(data) {
-                     console.log(data);
+                     if(data!=undefined){
                     for (var i = 0; i < data.length; i++) {
                         $("#workList").append("<li>\n" +
                             "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
@@ -584,16 +687,20 @@
                             "                            </div>\n" +
                             "                        </li>");
                     }
+                     }
                 },
                 error: function(data) {
-                    console.log(data);
+                    if($("#pd").text()=="false") {
+                        console.log(data);
+                    }
                 }
             });
         }
         //获取用户评论历史
         function getAccountComment(page) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/comment/get']]*/ "/nonexist",
+                url:contextPath + '/api/account/' + $("#AccoundId").text() +'/comment/get',
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -602,7 +709,6 @@
                     page: page
                 },
                 success: function(data) {
-                    console.log(data);
                     for(var i=0;i<data.length;i++){
                         $("#commentHistory").append("<li>\n" +
                             "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
@@ -622,7 +728,10 @@
                 }
             })
         }
-        getAccountComment(1);
+        if($("#pd").text()=="false") {
+            getAccountComment(1);
+        }
+
         $("#commentHistory").on("click",".remove",function () {
             var str=$(this).attr("commentId");
             removeComment(str);
@@ -704,8 +813,9 @@
         });
         //获取用户所有收藏夹
         function getAllAcconutShelf() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
-                url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
+                url:contextPath + '/api/account/' + $("#AccoundId").text() +'/bookSelves',
                 type: "GET",
                 datatype: "json",
                 contentType: "application/json;charset=UTF-8",
@@ -745,7 +855,12 @@
                 }
             })
         }
-        getAllAcconutShelf();
+
+        if($("#pd").text()=="false") {
+            getAllAcconutShelf();
+        }
+
+
         $("#SureToAddShelf").click(function() {
                 addShelf();
             if($('#addShelfInput').val()==''){
@@ -846,12 +961,17 @@
             delegeReadHistory($(this).attr("uniqueId"));
             $(this).parent().parent().parent().empty();
         })
-        getAccountAllNovel(1, "HOT_DESC");
+        if($("#pd").text()=="false") {
+            getAccountAllNovel(1, "HOT_DESC");
+        }
         $(".box-page").on("click", ".rank-page", function() {
             $(this).toggleClass("tab");
             $(this).siblings().removeClass("tab");
             $("#workList").empty();
-            getAccountAllNovel($(this).text(), );
+            if($("#pd").text()=="false") {
+                getAccountAllNovel($(this).text(),"HOT_DESC");
+            }
+
         })
         $("#addShelf").click(function() {
             $("#ShelfBox").css("display", "block");

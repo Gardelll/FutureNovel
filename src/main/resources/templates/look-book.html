@@ -104,7 +104,7 @@
                     <p>
                         <a class="blue-btn" href="#freeRead">免费试读</a>
                         <a class="blue-btn add-book"  th:if="${session.currentAccount} ne null"  href="javascript:;" id="addBookBtn">加入书架</a>
-                        <a class="blue-btn add-book" id="addBookBtn" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}">加入书架</a>
+                        <a class="blue-btn add-book" id="addBookBtn" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">加入书架</a>
                         <div id="box">
                             <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
                                 <option selected>请选择收藏夹</option>
@@ -279,6 +279,7 @@
             data: {},
             success: function(data) {
                 console.log(data);
+                $("#memberImg").attr("href",contextPath+'/user/'+$("#getUploaderId").text());
                 $("#memberImg").append(" <img src='" + "" + data.profileImgUrl + "" + "'>")
                 $("#memberLevel").text(data.level);
                 $("#uploaderName").text(data.userName);
@@ -291,9 +292,9 @@
     getUploderInfo();
     //获取用户所有收藏夹
     function getAllAcconutShelf() {
+        const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
         $.ajax({
-            url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
-            type: "GET",
+            url:contextPath + '/api/account/'+$("#getUserId").text()+'/bookSelves',
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
             data: {},
@@ -313,7 +314,6 @@
         })
     }
     getAllAcconutShelf();
-
     function AddBookSelf(Id) {
         const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
         $.ajax({

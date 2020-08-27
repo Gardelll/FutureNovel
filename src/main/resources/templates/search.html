@@ -33,6 +33,7 @@
             </div>
             <div class="nav-list min-user fr">
                 <ul>
+                    <p id="pd" style="display: none" th:text="${session.currentAccount} eq null"></p>
                     <li id="min-search">
                         <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
                             <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
@@ -56,6 +57,7 @@
                         <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
+                        <p style="display: none" th:text="${session.currentAccount.uid.toString()}" id="AccoundId"></p>
                         <a th:text="${user.userName}"></a>
                         <a th:text="${'LV'+user.level}"></a>
                     </li>
@@ -124,7 +126,8 @@
                         </div>
                         <div class="rank-book-buttons">
                             <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
-                            <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                            <span class="rank-book-add" th:if="${session.currentAccount} ne null" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                            <a class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th:attr="novelId=${novel.uniqueId}">加入书单</a>
                         </div>
                     </div>
                 </li>
@@ -150,7 +153,8 @@
                             </div>
                             <div class="rank-book-buttons">
                                 <span class="rank-book-details" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">书籍详情</span>
-                                <span class="rank-book-add" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
+                                <span class="rank-book-add" th:if="${session.currentAccount} ne null" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</span>
+                                <a class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th:attr="novelId=${chapterIdToNovelIndexMap.get(section.fromChapter).uniqueId}">加入书单</a>
                             </div>
                         </div>
                         <span th:utext="${section.text}" style="color: black" class="content"></span>
@@ -177,7 +181,8 @@
                             </div>
                             <div class="rank-book-buttons">
                                 <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
-                                <span class="rank-book-add" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                                <span class="rank-book-add" th:if="${session.currentAccount} ne null" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                                <a class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th:attr="novelId=${novel.uniqueId}">加入书单</a>
                             </div>
                         </div>
                     </li>
@@ -203,7 +208,7 @@
                         <div class="rank-book-buttons">
                             <span class="rank-book-details" th:attr="novelId=${novel.uniqueId}">书籍详情</span>
                             <span class="rank-book-add" th:if="${session.currentAccount} ne null" th:attr="novelId=${novel.uniqueId}">加入书单</span>
-                            <span class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}" th:attr="novelId=${novel.uniqueId}">加入书单</span>
+                            <a class="rank-book-add" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th:attr="novelId=${novel.uniqueId}">加入书单</a>
                         </div>
                     </div>
                 </li>
@@ -252,6 +257,7 @@
             }
         })
     }
+    console.log($("#ShelfLength").text());
     $(".rank-book-buttons").on("click", ".rank-book-add", function() {
         if($("#ShelfLength").text()==1){
             $("#ShelfBox").css("marginTop",-30+"px");
@@ -272,10 +278,12 @@
                 AddBookSelf($("#Shelf option:selected").attr("Shelfid"),str)
             })
         }
+
     })
     function getAllAcconutShelf() {
-        $.ajax({
-            url: /*[[${#request.getContextPath()} + '/api/account/' + ${session.currentAccount.uid.toString()} +'/bookSelves']]*/ "/nonexist",
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+            url:contextPath + '/api/account/'+$("#AccoundId").text()+'/bookSelves',
             type: "GET",
             datatype: "json",
             contentType: "application/json;charset=UTF-8",
@@ -285,9 +293,9 @@
                     for (var i = 0; i < data.length; i++) {
                         $("#Shelf").append("<option ShelfId='" + "" + data[i].uniqueId + "" + "'>" + "" + data[i].title + "" + "</option>")
                     }
-                }
-                else{
-                    $("#Shelf").append("<p style='display: none;' id='ShelfLength'>1</p>");
+            }
+               else{
+                   $("#box").append("<p style='display: none;' id='ShelfLength'>1</p>");
                 }
             },
             error: function(data) {
@@ -295,6 +303,7 @@
             }
         })
     }
+    getAllAcconutShelf();
     function AddBookSelf(Id,novelId) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
@@ -314,14 +323,12 @@
             }
         })
     }
-    getAllAcconutShelf();
     function submitForm(index) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         var str = contextPath+"/search?page=" + index;
         $("#form").attr("action", str);
         $("#form2").attr("action", str);
     }
-    console.log([[${totalPage}]]);
     if ([[${totalPage}]] != 1) {
         for (var i = 1; i <= [[${totalPage}]]; i++) {
             $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")

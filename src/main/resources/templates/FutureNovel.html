@@ -477,26 +477,6 @@
                             console.log(mes);
                           }
                         });
-                        setTimeout(() => {
-                            $.ajax({        
-                url:contextPath+"/api/settings/remove",
-                type: 'DELETE',
-                
-                contentType: 'application/x-www-form-urlencoded',
-                data:{
-                    key: i,
-                },
-                          success(data) {
-                            console.log('已删除');
-                            
-                          },
-                          error(jqXHR) {
-                            let mes = JSON.parse(jqXHR.responseText);
-                            console.log(mes);
-                            console.log('删除失败');
-                          }
-                        });
-                        }, 1000);
             }
             
         }

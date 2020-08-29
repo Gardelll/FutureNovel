@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <html>
 
@@ -53,7 +53,7 @@
                         <li class="line"></li>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} eq null">
-                        <a id="fixed-login" th:href="@{/login}">登录</a>
+                        <a id="fixed-login" th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}">登录</a>
                         <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">

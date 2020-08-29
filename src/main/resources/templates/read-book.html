@@ -36,12 +36,12 @@
                         <li class="line"></li>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} eq null">
-                        <a id="fixed-login" href="###">登录</a>
-                        <a class="reg" href="###" target="_blank">注册</a>
+                        <a id="fixed-login" th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}">登录</a>
+                        <a class="reg" th:href="@{/register}" target="_blank">注册</a>
                     </li>
                     <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                        <a href="###" th:text="${user.userName}"></a>
-                        <a href="###" th:text="${user.experience+'积分'}"></a>
+                        <a th:text="${user.userName}"></a>
+                        <a th:text="${user.experience+'积分'}"></a>
                     </li>
                     <li class="line"></li>
                     <li class="book-shelf" id="top-book-shelf">
@@ -72,7 +72,7 @@
                         </div>
                         <h1 th:text="*{title}">万族之劫</h1>
                         <h2 th:each="author : *{authors}">
-                            <a href="###" target="_blank" th:text="${author}">老鹰吃小鸡</a>著
+                            <a target="_blank" th:text="${author}">老鹰吃小鸡</a>著
                         </h2>
                         <div class="info-list cf">
                             <ul>
@@ -90,20 +90,17 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3>与<span>203.03万</span>位书友共同开启《万族之劫》的都市之旅</h3>
-                        <h4>
-                            <em>「</em>盟主<em>」</em><a href="###" target="_blank">壶中日月，袖里乾坤。</a>
-                            <em>「</em>盟主<em>」</em><a href="###" target="_blank">幻羽</a>
-                        </h4>
+<!--                        <h3>与<span>203.03万</span>位书友共同开启《万族之劫》的都市之旅</h3>-->
+<!--                        <h4>-->
+<!--                            <em>「</em>盟主<em>」</em><a target="_blank">壶中日月，袖里乾坤。</a>-->
+<!--                            <em>「</em>盟主<em>」</em><a target="_blank">幻羽</a>-->
+<!--                        </h4>-->
                     </div>
                 </div>
                 <!-- 中间阅读章节内容 -->
                 <div class="text-wrap" id="chapter-1">
                     <div class="main-text-wrap">
                         <div class="text-head">
-                            <a class="book-mark" href="###" title="书签">
-                                <i class="fa fa-bookmark" style="font-size:36px;color: rgba(0, 0, 0, .4);"></i>
-                            </a>
                             <h3 class="chapterName">
                                 <span class="content-wrap" th:text="|${chapter.title} - ${section.title}|"> 第1章 父子</span>
                                 <p id="getSectionId" style="display: none" th:text="${section.uniqueId}"></p>
@@ -113,10 +110,10 @@
                             </h3>
                             <div class="text-info cf">
                                 <div class="info fl">
-                                    <a href="###" target="_blank">
+                                    <a target="_blank">
                                         <i class="fa fa-file" style="font-size:16px;display: inline-block;min-width: 16px;margin-right: 6px;vertical-align: -2px;"></i> <a th:text="${novel.title}">万族之劫</a>
                                     </a>
-                                    <a href="###" target="_blank">
+                                    <a target="_blank">
                                         <i class="fa fa-user-circle" style="font-size:16px;display: inline-block;min-width: 16px;margin-right: 6px;vertical-align: -2px;"></i> <a th:each="author : ${novel.authors}" th:text="|${author} |">老鹰吃小鸡</a>
                                     </a>
                                     <i class="fa fa-file-text" style="font-size:16px;color: rgba(0, 0, 0, .4);display: inline-block;min-width: 16px;margin-right: 6px;vertical-align: -2px;" th:text="|${section.text.length()}字|">3152字</i>
@@ -128,10 +125,10 @@
                         <div class="read-content" th:utext="${section.text}">
                         </div>
                         <div class="admire-wrap">
-<!--                            <a class="report-btn" id="reportBtn" href="###"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
+<!--                            <a class="report-btn" id="reportBtn"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
                             <div class="read-btn-box">
                                 <a class="admire admireBtn reward" th:if="${session.currentAccount} ne null" href="javascript:;">赞赏</a>
-                                <a class="admire admireBtn reward" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}"}>赞赏</a>
+                                <a class="admire admireBtn reward" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}"}>赞赏</a>
                             </div>
                         </div>
 
@@ -156,8 +153,7 @@
                                 </select>
                                 <textarea placeholder="有想法快写下来吧..." id="sendTextarea"></textarea>
                                 <div class="text-tools fr">
-                                    <a href="javascript:;" th:if="${session.currentAccount} ne null"  class="blue-btn" type="submit" id="commentSure">发表</a>
-                                    <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}"  class="blue-btn" type="submit">发表</a>
+                                    <a href="javascript:;" class="blue-btn" type="submit" id="commentSure">发表</a>
                                     <i id="textLength">0</i><i>/150</i>
                                 </div>
                             </div>
@@ -166,12 +162,12 @@
                 </div>
                 <!-- 切换章节 -->
                 <div class="chapter-control">
-                    <a id="chapterPrev" th:if="${previewSection} ne null" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${previewSection.uniqueId.toString()}" href="###">上一节</a>
+                    <a id="chapterPrev" th:if="${previewSection} ne null" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${previewSection.uniqueId.toString()}">上一节</a>
                     <span></span>
-                    <a href="###" target="_blank">目录</a>
+                    <a target="_blank">目录</a>
                     <span></span>
                     <a id="chapterNext" th:if="${nextSection} ne null
-" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${nextSection.uniqueId.toString()}" href="###">下一节</a>
+" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${nextSection.uniqueId.toString()}">下一节</a>
                 </div>
             </div>
         </div>
@@ -181,13 +177,13 @@
         <div class="left-bar-list" id="leftBarList">
             <dl>
                 <dd id="navCatalogBtn">
-                    <a href="###">
+                    <a>
                         <i class="fa fa-list" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
                         <span>目录</span>
                     </a>
                 </dd>
                 <dd>
-                    <a href="###" th:href="@{/}">
+                    <a th:href="@{/}">
                         <i class="fa fa-book" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
                         <span>书架</span>
                     </a>
@@ -199,11 +195,7 @@
                     </a>
                 </dd>
                 <dd>
-                    <a  th:if="${session.currentAccount} ne null" href="###"  class="reward">
-                        <i class="fa fa-rmb" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
-                        <span>打赏</span>
-                    </a>
-                    <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" class="reward">
+                    <a class="reward">
                         <i class="fa fa-rmb" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
                         <span>打赏</span>
                     </a>
@@ -219,7 +211,7 @@
                         <div class="volume-list" style="display: block;">
                             <ul class="cf" th:each="chapter1 : ${novel}">
                                 <li th:each="section1 : ${chapter1}">
-                                    <a href="#" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${section1.uniqueId.toString()}" target="_blank" th:text="|${chapter1.title} - ${section1.title}|">第1章 父子</a>
+                                    <a th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${section1.uniqueId.toString()}" target="_blank" th:text="|${chapter1.title} - ${section1.title}|">第1章 父子</a>
                                 </li>
                             </ul>
                         </div>
@@ -340,12 +332,12 @@
                         "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
                         "<div class=\"our-say cf\"\n" +
                         "<h4>\n" +
-                        "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
+                        "<a>"+""+data[i].userName+""+"</a><a class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
                         "</h4>\n" +
                         "<p id=\"\">"+""+data[i].text+""+"</p>\n" +
                         "<p>评分："+""+data[i].rating+""+"</p>\n" +
                         "<a type=\"button\" class=\"remove\" commentId='"+""+data[i].uniqueId+""+"' style=\"color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;\">删除</a>\n" +
-                        "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
+                        "<a class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
                         "</li>");
                 }
                 }

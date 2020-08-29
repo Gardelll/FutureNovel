@@ -142,7 +142,7 @@
                                     Hi~
                                 </p>
                                 <p th:if="${session.currentAccount} eq null">
-                                    <a th:href="@{/login}" class="user_login">登录</a> |
+                                    <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}" class="user_login">登录</a> |
                                     <a th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
                                 <p th:if="${session.currentAccount} ne null" style="display: contents;cursor: pointer;">
@@ -166,7 +166,7 @@
                                     Hi~欢迎阅读
                                 </p>
                                 <p>
-                                    <a th:href="@{/login}" class="user_login">登录</a> |
+                                    <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}" class="user_login">登录</a> |
                                     <a th:href="@{/register}" class="user_reg">注册</a>
                                 </p>
                             </div>
@@ -181,22 +181,22 @@
                         <li class="news_item" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 1">
                             <a class="news_link">
                                 <span class="new_tag">最新</span>
-                                <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" style="display: inline-block;"></a>--
-                                <a style="display: inline-block;" target="_blank" th:text="${newNovel.authors}"></a>
+                                <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}" style="display: inline-block;"></a>--
+                                <a style="display: inline-block;" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
                             </a>
                         </li>
                         <li class="news_item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 2">
                             <a class="news_link">
                                 <span class="new_tag">热门</span>
-                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" style="display: inline-block;"></a>--
-                                <a th:text="${hotNovel.authors}" style="display: inline-block;"></a>
+                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" th:text="${hotNovel.title}" th:title="${hotNovel.title}" target="_blank" style="display: inline-block;"></a>--
+                                <a th:text="${hotNovel.authors}" th:title="${hotNovel.authors}" style="display: inline-block;"></a>
                             </a>
                         </li>
                         <li class="news_item" th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 6">
                             <a class="news_link">
                                 <span class="new_tag">推荐</span>
-                                <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" style="display: inline-block;"></a>--
-                                <a th:text="${novelrec.authors}" style="display: inline-block;"></a>
+                                <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" th:text="${novelrec.title}" th:title="${novelrec.title}" style="display: inline-block;"></a>--
+                                <a th:text="${novelrec.authors}" th:title="${novelrec.authors}" style="display: inline-block;"></a>
                             </a>
                         </li>
                     </ul>
@@ -238,9 +238,9 @@
                         <ul>
                             <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
                                 <a class="book-classify" target="_blank">
-                                    <i>「</i><i th:text="${novelrec.tags}"></i><i>」</i>
+                                    <i>「</i><i th:text="${novelrec.tags}" th:title="${novelrec.tags}"></i><i>」</i>
                                 </a>
-                                <a class="book-name" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}"></a>
+                                <a class="book-name" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}" th:title="${novelrec.title}"></a>
                             </li>
                         </ul>
                     </div>
@@ -296,7 +296,7 @@
                                     <p th:text="${hotNovel.description}"></p>
                                     <div class="state-box cf">
                                         <i th:text="${hotNovel.tags}"></i>
-                                        <a class="author" href="###" target="_blank" th:text="${hotNovel.authors}"></a>
+                                        <a class="author" target="_blank" th:text="${hotNovel.authors}"></a>
                                     </div>
                                 </div>
                             </li>
@@ -311,13 +311,13 @@
                                 <li class="unfold" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 4}and${hotNovelStat.index lt 6}">
                                     <div class="book-wrap cf">
                                         <div class="book-info fl">
-                                            <h3 th:text="${hotNovel.tags}"></h3>
+                                            <h3 th:text="${hotNovel.tags}" th:title="${hotNovel.tags}"></h3>
                                             <h4>
-                                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
+                                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
                                             </h4>
                                             <p class="score" th:text="${hotNovel.rating}"></p>
                                             <p class="author">
-                                                <a class="writer" href="###" target="_blank" th:text="${hotNovel.authors}"></a>
+                                                <a class="writer" target="_blank" th:text="${hotNovel.authors}" th:title="${hotNovel.authors}"></a>
                                             </p>
                                         </div>
                                         <div class="book-cover">
@@ -329,7 +329,7 @@
                                     </div>
                                 </li>
                                 <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 8">
-                                    <a class="name" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
+                                    <a class="name" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
                                     <i th:text="${hotNovel.rating}"></i>
                                 </li>
                             </ul>
@@ -376,25 +376,25 @@
                     </div>
                     <div class="update-list" id="update-list">
                         <div class="update-table">
-                            <table width="100%">
+                            <table style="width: 100%">
                                 <tbody>
                                     <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} gt 2">
-                                        <td>
+                                        <td style="width: 9%">
                                             <a class="classify" target="_blank">
-                                                <i>「</i><i th:text="${newNovel.tags}"></i><i>」</i>
+                                                <i>「</i><i th:text="${newNovel.tags}" th:title="${newNovel.tags}"></i><i>」</i>
                                             </a>
                                         </td>
-                                        <td style="min-width: 40px;">
-                                            <a class="name" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
+                                        <td style="min-width: 40px;width: 9%">
+                                            <a class="name" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"></a>
                                         </td>
-                                        <td style="max-width: 23px;">
-                                            <a class="section" target="_blank" th:text="${newNovel.publisher}"></a>
+                                        <td style="width: 9%">
+                                            <a class="section" target="_blank" th:text="${newNovel.publisher}" th:title="${newNovel.publisher}"></a>
                                         </td>
-                                        <td class="respon">
-                                            <a class="author" target="_blank" th:text="${newNovel.authors}"></a>
+                                        <td class="respon" style="width: 9%">
+                                            <a class="author" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
                                         </td>
-                                        <td class="respon">
-                                            <i th:text="${{newNovel.pubdate}}"></i>
+                                        <td class="respon" style="width: 35%">
+                                            <i th:text="${newNovel.pubdate}" th:title="${newNovel.pubdate}"></i>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -559,7 +559,12 @@
             console.log($(this).children().children(".info").children().text());
             $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
             $("#form").submit();
-        })
+        });
+        // 图片加载不出来时
+        //
+        // $('img').error(function(){
+        //     $(this).attr('src',"img/loading.jpg");
+        // })
     </script>
     <script type="text/javascript">
         function dateFormat(date) {
@@ -633,6 +638,7 @@
         // }
         // let date = new Date()
         // dateFormat("yyyy年MM月dd日 00:00:00", date);
+
     </script>
 
 </body>

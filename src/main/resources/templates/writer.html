@@ -551,7 +551,10 @@
 				plugins: ["link code"], //插件区，激活控件
 				language:"zh_CN",//名称前后显示，影响控件显示位置
 			});
-
+            // 图片加载不出来时
+			$("img").one("error", function(){
+				$(this).attr("th:src", "@{/img/loading.jpg");
+			});
 		</script>
 	</body>
 </html>

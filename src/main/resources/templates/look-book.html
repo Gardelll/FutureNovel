@@ -48,7 +48,7 @@
                             <li class="line"></li>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} eq null">
-                            <a id="fixed-login" th:href="@{/login}" >登录</a>
+                            <a id="fixed-login" th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}">登录</a>
                             <a class="reg" th:href="@{/register}">注册</a>
                         </li>
                         <li class="sign-out" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
@@ -91,7 +91,7 @@
                 <div class="book-info">
                     <h1><a th:text="*{title}">万族之劫</a>
                         <span th:each="author : *{authors}">
-                            <a class="writer" href="###" target="_blank" style="margin-right: 10px;" th:text="${author}">老鹰吃小鸡</a>
+                            <a class="writer" target="_blank" style="margin-right: 10px;" th:text="${author}">老鹰吃小鸡</a>
                         </span>
                     </h1>
                     <p class="tag">

@@ -490,7 +490,6 @@
 .news_item {
     max-width: 160px;
     white-space: nowrap;
-    text-overflow: ellipsis;
     overflow: hidden;
     color: #999;
     margin-bottom: 6px;
@@ -1202,7 +1201,6 @@
 
 .update-wrap .update-rec-list .book-wrap .book-info .digital {
     font-size: 0;
-    height: 20px;
 }
 
 .book-wrap .book-info p.author {
@@ -1304,8 +1302,7 @@
 .hot-classify-wrap li .book-wrap.bd,
 .update-wrap .update-list-wrap .update-list table td {
     border-bottom: 1px solid #ebebeb;
-    width: 23px;
-    padding: 0 3px;
+    padding: 0 5px;
 }
 
 .update-wrap .update-list-wrap .update-list table td a.classify {

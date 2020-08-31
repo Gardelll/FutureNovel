@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>未来小说网</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <link rel="stylesheet" href="../../resources/css/all.css" type="text/css" th:href="@{/resources/css/all.css}">
@@ -14,636 +15,682 @@
 </head>
 
 <body data-dynamic="false" style="zoom:1;">
-    <div class="wrap" style="background-color: #f5f5f5;">
-        <!-- 头部 -->
-        <div class="logo-wrap box-center">
-            <div class="box-center cf" style="margin: 0 auto;" id="box-center">
-                <div class="book-shelf fr">
-                    <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}">
-                        <i class="fa fa-book" style="font-size:16px">我的书架</i>
-                    </a>
-                </div>
-                <div class="logo fl">
-                    <a th:href="@{/}">未来小说网</a>
-                </div>
-                <div class="search-wrap fl" style="position: relative;top: -60px;">
-                    <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
-                        <p>
-                            <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)">
-                        </p>
-                        <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
-                        <button id="search-btn" class="search-btn" for="searchSubmit" type="submit">
-                            <a onclick="doSearch(null)">
-                               <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
-                            </a>
-                        </button>
-                        <div class="search-tool" style="height: 40px;position: relative;top: 55px;left: -390px;">
-                            <span class="search-type" style="margin-right: 10px;display: inline-block;">搜索工具:</span>
-                            <input id="keyword" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="KEYWORDS" checked>关键词
-                            <input id="content" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="CONTENT">文章内容
-                            <input id="time" type="radio" style="margin-left: 10px;margin-right: 4px;" class="time-tip" name="searchBy" value="PUBDATE">时间
-                            <input id="hot" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy" value="HOT">最热
+<div class="wrap" style="background-color: #f5f5f5;">
+    <!-- 头部 -->
+    <div class="logo-wrap box-center">
+        <div class="box-center cf" style="margin: 0 auto;" id="box-center">
+            <div class="book-shelf fr">
+                <a th:if="${session.currentAccount} ne null" target="_blank" id="numero2"
+                   th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}">
+                    <i class="fa fa-book" style="font-size:16px">我的书架</i>
+                </a>
+            </div>
+            <div class="logo fl">
+                <a th:href="@{/}">未来小说网</a>
+            </div>
+            <div class="search-wrap fl" style="position: relative;top: -60px;">
+                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
+                    <p>
+                        <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入..."
+                               onkeyup="doSearch(event)">
+                    </p>
+                    <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
+                    <button id="search-btn" class="search-btn" for="searchSubmit" type="submit">
+                        <a onclick="doSearch(null)">
+                            <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
+                        </a>
+                    </button>
+                    <div class="search-tool" style="height: 40px;position: relative;top: 55px;left: -390px;">
+                        <span class="search-type" style="margin-right: 10px;display: inline-block;">搜索工具:</span>
+                        <input id="keyword" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy"
+                               value="KEYWORDS" checked>关键词
+                        <input id="content" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy"
+                               value="CONTENT">文章内容
+                        <input id="time" type="radio" style="margin-left: 10px;margin-right: 4px;" class="time-tip"
+                               name="searchBy" value="PUBDATE">时间
+                        <input id="hot" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy"
+                               value="HOT">最热
+                    </div>
+                    <div class="search-tool-tip" style="display: none;">
+                        <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
+                            <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                                从
+                                <input name="after" id="after" type="date" style="text-align:center;line-height: 30px;">
+                            </p>
+                            <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                                至
+                                <input name="before" id="before" type="date"
+                                       style="text-align:center;line-height: 30px;">
+                            </p>
+                            <button class="time-sure blue-btn" for="searchSubmit" type="submit"
+                                    style="position: relative;top: 10px;">确认
+                            </button>
                         </div>
-                        <div class="search-tool-tip" style="display: none;">
-                            <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
-                                <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
-                                    从
-                                    <input name="after" id="after" type="date" style="text-align:center;line-height: 30px;">
-                                </p>
-                                <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
-                                    至
-                                    <input name="before" id="before" type="date" style="text-align:center;line-height: 30px;">
-                                </p>
-                                <button class="time-sure blue-btn" for="searchSubmit" type="submit" style="position: relative;top: 10px;">确认</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!-- 导航栏 -->
+    <div class="top-nav" style="background-color: #2470bf;">
+        <div id="top-box-center">
+            <ul type="none" class="mainDiv">
+                <li id="first">
+                    <i class="fa fa-navicon" style="font-size:24px;color: #ffffff;margin: 0 10px;"></i>
+                    <a>作品分类</a>
+                    <i class="fa fa-angle-down" style="font-size:24px;color: #ffffff;margin-left: 75px;"></i>
+                </li>
+                <li class="navs" style="width: 100px;"><a th:href="@{/search}" target="_blank">排行</a></li>
+                <li class="navs" style="width: 100px;"><a href="#pop">推荐</a></li>
+                <li class="navs" style="width: 100px;"><a href="#hotnovel">热门</a></li>
+                <li class="navs" style="width: 100px;"><a href="#newest">最新更新</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- 中上部 -->
+    <div class="focus-wrap box-center mb40 cf">
+        <!-- 分类菜单 -->
+        <div class="classify-list fl so-awesome">
+            <dl class="cf">
+                <dd th:each="tag: ${tags}" th:class="(${tagStat.index/2%2 == 0})? '':'even'">
+                    <a href="javascript:;" class="search-bt">
+                        <cite>
+                            <i class="fa fa-fire" style="float: left;margin: 5px 12px 5px 0;"></i>
+                            <span class="info">
+                                    <i class="getText" th:text="${tag}"></i>
+                                </span>
+                        </cite>
+                    </a>
+                </dd>
+            </dl>
+        </div>
+        <!-- 轮播图 -->
+        <div class="focus-box fl">
+            <div class="focus-slider">
+                <div class="focus_in2">
+                    <div class="focus_slider clearfix">
+                        <div class="sliderBW">
+                            <div id="slider_con1">
+                                <div id="list1" style="left: -748px;">
+                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}"
+                                         th:if="${imgurlStat.index} lt 6">
+                                </div>
+                                <div id="buttons">
+                                    <span index="1" class="on"></span>
+                                    <span index="2"></span>
+                                    <span index="3"></span>
+                                    <span index="4"></span>
+                                    <span index="5"></span>
+                                </div>
+                                <a href="javascript:;" id="prev" class="arrow">&lt;</a>
+                                <a href="javascript:;" id="next" class="arrow">&gt;</a>
                             </div>
                         </div>
-                    </form>
-
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- 导航栏 -->
-        <div class="top-nav" style="background-color: #2470bf;">
-            <div id="top-box-center">
-                <ul type="none" class="mainDiv">
-                    <li id="first">
-                        <i class="fa fa-navicon" style="font-size:24px;color: #ffffff;margin: 0 10px;"></i>
-                        <a>作品分类</a>
-                        <i class="fa fa-angle-down" style="font-size:24px;color: #ffffff;margin-left: 75px;"></i>
+        <!-- 公告 -->
+        <div class="focus_news">
+            <div class="focus_user">
+                <div class="user_inner">
+                    <div th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
+                        <div class="user_avatar">
+                            <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
+                                <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}"
+                                     name="userimg"/>
+                            </a>
+                            <a th:if="${session.currentAccount} ne null" class="user_avatar_lk"
+                               th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}"
+                               target="_blank">
+                                <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}"
+                                     name="userimg"/>
+                                <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}">
+                            </a>
+                            <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
+                                <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}"
+                                     name="userimg"/>
+                            </a>
+                        </div>
+                        <div class="user_show">
+                            <p style="display: contents;">
+                                Hi~
+                            </p>
+                            <p th:if="${session.currentAccount} eq null">
+                                <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}"
+                                   class="user_login">登录</a> |
+                                <a th:href="@{/register}" class="user_reg">注册</a>
+                            </p>
+                            <p th:if="${session.currentAccount} ne null" style="display: contents;cursor: pointer;">
+                                <a th:text="${user.userName}" class="user_login"
+                                   th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}"
+                                   target="_blank"></a>
+                            </p>
+                            <p style="margin-top: 20px" th:if="${session.currentAccount} ne null">
+                                <a onclick="logout()" style="cursor: pointer" class="user_login out">
+                                    <i class="fa fa-power-off" style="font-size:16px"></i>退出
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div th:if="${session.currentAccount} eq null">
+                        <div class="user_avatar">
+                            <a class="user_avatar_lk">
+                                <img th:src="@{/resources/img/logo.jpg}" name="userimg"/>
+                            </a>
+                        </div>
+                        <div class="user_show">
+                            <p>
+                                Hi~欢迎阅读
+                            </p>
+                            <p>
+                                <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}"
+                                   class="user_login">登录</a> |
+                                <a th:href="@{/register}" class="user_reg">注册</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="news2">
+                <div class="news_hd">
+                    <h3>未来不止，未来可期</h3>
+                </div>
+                <ul class="news_list">
+                    <li class="news_item" th:each="newNovel: ${newestNovelIndexList}"
+                        th:if="${newNovelStat.index} lt 1">
+                        <a class="news_link">
+                            <span class="new_tag">最新</span>
+                            <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                               target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"
+                               style="display: inline-block;"></a>--
+                            <a style="display: inline-block;" target="_blank" th:text="${newNovel.authors}"
+                               th:title="${newNovel.authors}"></a>
+                        </a>
                     </li>
-                    <li class="navs" style="width: 100px;"><a th:href="@{/search}" target="_blank">排行</a></li>
-                    <li class="navs" style="width: 100px;"><a href="#pop">推荐</a></li>
-                    <li class="navs" style="width: 100px;"><a href="#hotnovel">热门</a></li>
-                    <li class="navs" style="width: 100px;"><a href="#newest">最新更新</a></li>
+                    <li class="news_item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 2">
+                        <a class="news_link">
+                            <span class="new_tag">热门</span>
+                            <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                               th:text="${hotNovel.title}" th:title="${hotNovel.title}" target="_blank"
+                               style="display: inline-block;"></a>--
+                            <a th:text="${hotNovel.authors}" th:title="${hotNovel.authors}"
+                               style="display: inline-block;"></a>
+                        </a>
+                    </li>
+                    <li class="news_item" th:each="novelrec: ${suggestNovelIndexList}"
+                        th:if="${novelrecStat.index} lt 6">
+                        <a class="news_link">
+                            <span class="new_tag">推荐</span>
+                            <a target="_blank"
+                               th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'"
+                               th:text="${novelrec.title}" th:title="${novelrec.title}"
+                               style="display: inline-block;"></a>--
+                            <a th:text="${novelrec.authors}" th:title="${novelrec.authors}"
+                               style="display: inline-block;"></a>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <!-- 中上部 -->
-        <div class="focus-wrap box-center mb40 cf">
-            <!-- 分类菜单 -->
-            <div class="classify-list fl so-awesome">
-                <dl class="cf">
-                    <dd th:each="tag: ${tags}" th:class="(${tagStat.index/2%2 == 0})? '':'even'">
-                        <a href="javascript:;" class="search-bt">
-                            <cite>
-                                <i class="fa fa-fire" style="float: left;margin: 5px 12px 5px 0;"></i>
-                                <span class="info">
-                                    <i class="getText" th:text="${tag}"></i>
-                                </span>
-                            </cite>
-                        </a>
-                    </dd>
-                </dl>
-            </div>
-            <!-- 轮播图 -->
-            <div class="focus-box fl">
-                <div class="focus-slider">
-                    <div class="focus_in2">
-                        <div class="focus_slider clearfix">
-                            <div class="sliderBW">
-                                <div id="slider_con1">
-                                    <div id="list1" style="left: -748px;">
-                                        <img th:each="imgurl : ${covers}" th:src="${imgurl}" th:if="${imgurlStat.index} lt 6">
-                                    </div>
-                                    <div id="buttons">
-                                        <span index="1" class="on"></span>
-                                        <span index="2"></span>
-                                        <span index="3"></span>
-                                        <span index="4"></span>
-                                        <span index="5"></span>
-                                    </div>
-                                    <a href="javascript:;" id="prev" class="arrow">&lt;</a>
-                                    <a href="javascript:;" id="next" class="arrow">&gt;</a>
+    </div>
+    <!-- 中部--1 推荐 -->
+    <div class="hot-rec-wrap box-center mb40" id="pop">
+        <div class="inner-wrap cf">
+            <div class="left-wrap fl">
+                <h3>推荐</h3>
+                <div class="type-new-list cf">
+                    <div class="line l1"></div>
+                    <div class="line l2"></div>
+                    <ul>
+                        <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 9">
+                            <div class="book-img">
+                                <a target="_blank"
+                                   th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'">
+                                    <img th:src="${novelrec.coverImgUrl}">
+                                </a>
+                            </div>
+                            <div class="book-info">
+                                <h4>
+                                    <a th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'"
+                                       target="_blank" th:text="${novelrec.title}"></a>
+                                </h4>
+                                <p th:text="${novelrec.description}"></p>
+                                <div class="state-box cf">
+                                    <i th:text="${novelrec.tags}"></i>
+                                    <a class="author default" target="_blank" th:text="${novelrec.authors}"></a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <!-- 公告 -->
-            <div class="focus_news">
-                <div class="focus_user">
-                    <div class="user_inner">
-                        <div th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
-                            <div class="user_avatar">
-                                <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
-                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
-                                </a>
-                                <a th:if="${session.currentAccount} ne null" class="user_avatar_lk" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
-                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
-                                    <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}">
-                                </a>
-                                <a th:if="${session.currentAccount} eq null" class="user_avatar_lk">
-                                    <img th:if="${session.currentAccount} eq null" th:src="@{/resources/img/logo.jpg}" name="userimg" />
-                                </a>
-                            </div>
-                            <div class="user_show">
-                                <p style="display: contents;">
-                                    Hi~
-                                </p>
-                                <p th:if="${session.currentAccount} eq null">
-                                    <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}" class="user_login">登录</a> |
-                                    <a th:href="@{/register}" class="user_reg">注册</a>
-                                </p>
-                                <p th:if="${session.currentAccount} ne null" style="display: contents;cursor: pointer;">
-                                    <a th:text="${user.userName}" class="user_login" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank"></a>
-                                </p>
-                                <p style="margin-top: 20px" th:if="${session.currentAccount} ne null">
-                                    <a onclick="logout()" style="cursor: pointer" class="user_login out">
-                                        <i class="fa fa-power-off" style="font-size:16px"></i>退出
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                        <div th:if="${session.currentAccount} eq null">
-                            <div class="user_avatar">
-                                <a class="user_avatar_lk">
-                                    <img th:src="@{/resources/img/logo.jpg}" name="userimg" />
-                                </a>
-                            </div>
-                            <div class="user_show">
-                                <p>
-                                    Hi~欢迎阅读
-                                </p>
-                                <p>
-                                    <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()}, errorMessage='请先登录')}" class="user_login">登录</a> |
-                                    <a th:href="@{/register}" class="user_reg">注册</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="news2">
-                    <div class="news_hd">
-                        <h3>未来不止，未来可期</h3>
-                    </div>
-                    <ul class="news_list">
-                        <li class="news_item" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 1">
-                            <a class="news_link">
-                                <span class="new_tag">最新</span>
-                                <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}" style="display: inline-block;"></a>--
-                                <a style="display: inline-block;" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
+            <div class="right-wrap mb6 fr">
+                <h3>本周强推</h3>
+                <div class="book-list">
+                    <ul>
+                        <li th:each="novelrec: ${suggestNovelIndexList}"
+                            th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
+                            <a class="book-classify" target="_blank">
+                                <i>「</i><i th:text="${novelrec.tags}" th:title="${novelrec.tags}"></i><i>」</i>
                             </a>
-                        </li>
-                        <li class="news_item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 2">
-                            <a class="news_link">
-                                <span class="new_tag">热门</span>
-                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" th:text="${hotNovel.title}" th:title="${hotNovel.title}" target="_blank" style="display: inline-block;"></a>--
-                                <a th:text="${hotNovel.authors}" th:title="${hotNovel.authors}" style="display: inline-block;"></a>
-                            </a>
-                        </li>
-                        <li class="news_item" th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 6">
-                            <a class="news_link">
-                                <span class="new_tag">推荐</span>
-                                <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" th:text="${novelrec.title}" th:title="${novelrec.title}" style="display: inline-block;"></a>--
-                                <a th:text="${novelrec.authors}" th:title="${novelrec.authors}" style="display: inline-block;"></a>
-                            </a>
+                            <a class="book-name"
+                               th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'"
+                               target="_blank" th:text="${novelrec.title}" th:title="${novelrec.title}"></a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <!-- 中部--1 推荐 -->
-        <div class="hot-rec-wrap box-center mb40" id="pop">
-            <div class="inner-wrap cf">
-                <div class="left-wrap fl">
-                    <h3>推荐</h3>
-                    <div class="type-new-list cf">
-                        <div class="line l1"></div>
-                        <div class="line l2"></div>
-                        <ul>
-                            <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index} lt 9">
-                                <div class="book-img">
-                                    <a target="_blank" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'">
-                                        <img th:src="${novelrec.coverImgUrl}">
-                                    </a>
-                                </div>
-                                <div class="book-info">
-                                    <h4>
-                                        <a th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}"></a>
-                                    </h4>
-                                    <p th:text="${novelrec.description}"></p>
-                                    <div class="state-box cf">
-                                        <i th:text="${novelrec.tags}"></i>
-                                        <a class="author default" target="_blank" th:text="${novelrec.authors}"></a>
-                                    </div>
-                                </div>
+    </div>
+    <!-- 中部--2 热门作品 -->
+    <div class="finish-book-wrap box-center" id="hotnovel">
+        <div class="cf" id="numero">
+            <div class="left-wrap-2 fl">
+                <h3>热门作品</h3>
+                <div class="left-info fl">
+                    <div class="slide-box">
+                        <ul id="left-slide-2" class="roundabout-holder"
+                            style="display: block;padding: 0;position: relative;">
+                            <li class="book1 roundabout-moveable-item" th:each="hotNovel: ${hotNovelIndexList}"
+                                th:if="${hotNovelStat.index} lt 1">
+                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                   target="_blank">
+                                    <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
+                                </a>
                             </li>
                         </ul>
                     </div>
+                    <div class="info-text">
+                        <dl>
+                            <dd class="hidden" style="display: block;" th:each=" hotNovel: ${hotNovelIndexList}"
+                                th:if="${hotNovelStat.index} lt 1">
+                                <h3>
+                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                       target="_blank" th:text="${hotNovel.title}"></a>
+                                </h3>
+                                <p class="total">
+                                    <b th:text="${hotNovel.hot}"></b>
+                                    <span>人在看</span>
+                                </p>
+                                <p class="intro" th:text="${hotNovel.description}"></p>
+                                <a class="blue-btn"
+                                   th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                   target="_blank">书籍详情</a>
+                            </dd>
+                        </dl>
+                    </div>
                 </div>
-                <div class="right-wrap mb6 fr">
-                    <h3>本周强推</h3>
+                <div class="center-book-list fl">
+                    <div class="line line1"></div>
+                    <div class="line line2"></div>
+                    <ul>
+                        <li th:each="hotNovel: ${hotNovelIndexList}"
+                            th:if="${hotNovelStat.index gt 3}and${hotNovelStat.index lt 10}">
+                            <div class="book-img">
+                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                   target="_blank">
+                                    <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
+                                    <span th:text="${hotNovel.rating}"></span>
+                                </a>
+                            </div>
+                            <div class="book-info">
+                                <h3>
+                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                       target="_blank" th:text="${hotNovel.title}"></a>
+                                </h3>
+                                <p th:text="${hotNovel.description}"></p>
+                                <div class="state-box cf">
+                                    <i th:text="${hotNovel.tags}"></i>
+                                    <a class="author" target="_blank" th:text="${hotNovel.authors}"></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="right-wrap-2 fr">
+                <div class="score-list">
+                    <h3>最近热门</h3>
                     <div class="book-list">
                         <ul>
-                            <li th:each="novelrec: ${suggestNovelIndexList}" th:if="${novelrecStat.index gt 3}and${novelrecStat.index lt 16}">
-                                <a class="book-classify" target="_blank">
-                                    <i>「</i><i th:text="${novelrec.tags}" th:title="${novelrec.tags}"></i><i>」</i>
-                                </a>
-                                <a class="book-name" th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'" target="_blank" th:text="${novelrec.title}" th:title="${novelrec.title}"></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 中部--2 热门作品 -->
-        <div class="finish-book-wrap box-center" id="hotnovel">
-            <div class="cf" id="numero">
-                <div class="left-wrap-2 fl">
-                    <h3>热门作品</h3>
-                    <div class="left-info fl">
-                        <div class="slide-box">
-                            <ul id="left-slide-2" class="roundabout-holder" style="display: block;padding: 0;position: relative;">
-                                <li class="book1 roundabout-moveable-item" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
-                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
-                                        <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="info-text">
-                            <dl>
-                                <dd class="hidden" style="display: block;" th:each=" hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 1">
-                                    <h3>
-                                        <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
-                                    </h3>
-                                    <p class="total">
-                                        <b th:text="${hotNovel.hot}"></b>
-                                        <span>人在看</span>
-                                    </p>
-                                    <p class="intro" th:text="${hotNovel.description}"></p>
-                                    <a class="blue-btn" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">书籍详情</a>
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                    <div class="center-book-list fl">
-                        <div class="line line1"></div>
-                        <div class="line line2"></div>
-                        <ul>
-                            <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 3}and${hotNovelStat.index lt 10}">
-                                <div class="book-img">
-                                    <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
-                                        <img th:src="${hotNovel.coverImgUrl}" style="display: inline;">
-                                        <span th:text="${hotNovel.rating}"></span>
-                                    </a>
-                                </div>
-                                <div class="book-info">
-                                    <h3>
-                                        <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}"></a>
-                                    </h3>
-                                    <p th:text="${hotNovel.description}"></p>
-                                    <div class="state-box cf">
-                                        <i th:text="${hotNovel.tags}"></i>
-                                        <a class="author" target="_blank" th:text="${hotNovel.authors}"></a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="right-wrap-2 fr">
-                    <div class="score-list">
-                        <h3>最近热门</h3>
-                        <div class="book-list">
-                            <ul>
-                                <li class="unfold" th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index gt 4}and${hotNovelStat.index lt 6}">
-                                    <div class="book-wrap cf">
-                                        <div class="book-info fl">
-                                            <h3 th:text="${hotNovel.tags}" th:title="${hotNovel.tags}"></h3>
-                                            <h4>
-                                                <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
-                                            </h4>
-                                            <p class="score" th:text="${hotNovel.rating}"></p>
-                                            <p class="author">
-                                                <a class="writer" target="_blank" th:text="${hotNovel.authors}" th:title="${hotNovel.authors}"></a>
-                                            </p>
-                                        </div>
-                                        <div class="book-cover">
-                                            <a class="link" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank">
-                                                <img th:src="${hotNovel.coverImgUrl}" />
-                                            </a>
-                                            <span></span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 8">
-                                    <a class="name" th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
-                                    <i th:text="${hotNovel.rating}"></i>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 中部--3  最新更新 -->
-        <div class="update-wrap box-center mb40 cf" id="newest">
-            <div style="padding: 20px;">
-                <div class="update-rec-wrap fl">
-                    <h3>最新更新</h3>
-                    <div class="update-rec-list">
-                        <ul>
-                            <li th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 3">
+                            <li class="unfold" th:each="hotNovel: ${hotNovelIndexList}"
+                                th:if="${hotNovelStat.index gt 4}and${hotNovelStat.index lt 6}">
                                 <div class="book-wrap cf">
-                                    <div class="book-info fr">
+                                    <div class="book-info fl">
+                                        <h3 th:text="${hotNovel.tags}" th:title="${hotNovel.tags}"></h3>
                                         <h4>
-                                            <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
+                                            <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                               target="_blank" th:text="${hotNovel.title}"
+                                               th:title="${hotNovel.title}"></a>
                                         </h4>
-                                        <p class="digital">
-                                            <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
-                                        </p>
+                                        <p class="score" th:text="${hotNovel.rating}"></p>
                                         <p class="author">
-                                            <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
+                                            <a class="writer" target="_blank" th:text="${hotNovel.authors}"
+                                               th:title="${hotNovel.authors}"></a>
                                         </p>
                                     </div>
                                     <div class="book-cover">
-                                        <a class="link" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank">
-                                            <img th:src="${newNovel.coverImgUrl}" />
+                                        <a class="link"
+                                           th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                           target="_blank">
+                                            <img th:src="${hotNovel.coverImgUrl}"/>
                                         </a>
                                         <span></span>
                                     </div>
                                 </div>
-                                <p class="info" th:text="${newNovel.description}"></p>
+                            </li>
+                            <li th:each="hotNovel: ${hotNovelIndexList}" th:if="${hotNovelStat.index} lt 8">
+                                <a class="name"
+                                   th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
+                                   target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
+                                <i th:text="${hotNovel.rating}"></i>
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div class="update-list-wrap fl">
-                    <div class="update-more cf">
-                        <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" th:href="@{/search}" target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
-                    </div>
-                    <div class="update-list" id="update-list">
-                        <div class="update-table">
-                            <table style="width: 100%">
-                                <tbody>
-                                    <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} gt 2">
-                                        <td style="width: 9%">
-                                            <a class="classify" target="_blank">
-                                                <i>「</i><i th:text="${newNovel.tags}" th:title="${newNovel.tags}"></i><i>」</i>
-                                            </a>
-                                        </td>
-                                        <td style="min-width: 40px;width: 9%">
-                                            <a class="name" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"></a>
-                                        </td>
-                                        <td style="width: 9%">
-                                            <a class="section" target="_blank" th:text="${newNovel.publisher}" th:title="${newNovel.publisher}"></a>
-                                        </td>
-                                        <td class="respon" style="width: 9%">
-                                            <a class="author" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
-                                        </td>
-                                        <td class="respon" style="width: 35%">
-                                            <i th:text="${newNovel.pubdate}" th:title="${newNovel.pubdate}"></i>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="update-rec-wrap fr" style="margin-top: 37px;">
-                    <div class="update-rec-list">
-                        <ul>
-                            <li th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index gt 15}and${newNovelStat.index lt 19}">
-                                <div class="book-wrap cf">
-                                    <div class="book-info fr">
-                                        <h4>
-                                            <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank" th:text="${newNovel.title}"></a>
-                                        </h4>
-                                        <p class="digital">
-                                            <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
-                                        </p>
-                                        <p class="author">
-                                            <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
-                                        </p>
-                                    </div>
-                                    <div class="book-cover">
-                                        <a class="link" th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'" target="_blank">
-                                            <img th:src="${newNovel.coverImgUrl}" />
-                                        </a>
-                                        <span></span>
-                                    </div>
-                                </div>
-                                <p class="info" th:text="${newNovel.description}"></p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer">
-            <div class="box-center cf">
-                <div class="footer-text">
-                    <p>网络刷单是违法 切莫轻信有返利，网上交友套路多 卖惨要钱需当心，电子红包莫轻点 个人信息勿填写，仿冒客服来行骗 官方核实最重要，招工诈骗有套路 预交费用需谨慎，低价充值莫轻信 莫因游戏陷套路，连接WIFI要规范 确认安全再连接，抢购车票有章法 确认订单再付款，白条赊购慎使用 提升额度莫轻信，网购预付有风险 正规渠道很重要 </p>
-                </div>
-                <div class="footer-menu dib-wrap">
-                    <a href="https://www.wlgzs.net/" target="_blank">关于未来</a>
-                    <a href="https://www.wlgzs.net/" target="_blank">联系我们</a>
-                    <a href="https://www.wlgzs.net/" target="_blank">加入我们</a>
-                    <a href="https://www.wlgzs.net/" target="_blank">帮助中心</a>
-                    <a href="https://www.wlgzs.net/" class="advice" target="_blank">提交建议</a>
-                    <a href="https://www.wlgzs.net/" target="_blank">举报中心</a>
-                </div>
-                <div class="copy-right">
-                    <p><span>Copyright © 2002-2020 www.wlgzs.net All Rights Reserved</span> 版权所有 未来工作室</p>
-                    <p>请所有作者发布作品时务必遵守国家互联网信息管理办法规定，我们拒绝任何色情小说，一经发现，即作删除！举报电话：010-59357051</p>
-                    <p>本站所收录的作品、社区话题、用户评论、用户上传内容或图片等均属用户个人行为。如前述内容侵害您的权益，欢迎举报投诉，一经核实，立即删除，本站不承担任何责任</p>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" th:inline="javascript" async>
-    let contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-        function posters_get(){
-            let List1=$('#list1');
-            
-            for(let i=1;i<6;i++){
-            $.ajax({        
-                url:contextPath+"/api/settings/get",
+    <!-- 中部--3  最新更新 -->
+    <div class="update-wrap box-center mb40 cf" id="newest">
+        <div style="padding: 20px;">
+            <div class="update-rec-wrap fl">
+                <h3>最新更新</h3>
+                <div class="update-rec-list">
+                    <ul>
+                        <li th:each="newNovel: ${newestNovelIndexList}" th:if="${newNovelStat.index} lt 3">
+                            <div class="book-wrap cf">
+                                <div class="book-info fr">
+                                    <h4>
+                                        <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                                           target="_blank" th:text="${newNovel.title}"></a>
+                                    </h4>
+                                    <p class="digital">
+                                        <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
+                                    </p>
+                                    <p class="author">
+                                        <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
+                                    </p>
+                                </div>
+                                <div class="book-cover">
+                                    <a class="link"
+                                       th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                                       target="_blank">
+                                        <img th:src="${newNovel.coverImgUrl}"/>
+                                    </a>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <p class="info" th:text="${newNovel.description}"></p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="update-list-wrap fl">
+                <div class="update-more cf">
+                    <a style="color: #3f5a93;float: right;font-size: 12px;margin-top: 7px;" th:href="@{/search}"
+                       target="_blank">更多<i class="fa fa-angle-right" style="font-size: 16px;margin-left: 6px;"></i></a>
+                </div>
+                <div class="update-list" id="update-list">
+                    <div class="update-table">
+                        <table style="width: 100%">
+                            <tbody>
+                            <tr style="line-height: 31px;" th:each="newNovel: ${newestNovelIndexList}"
+                                th:if="${newNovelStat.index} gt 2">
+                                <td style="width: 9%">
+                                    <a class="classify" target="_blank">
+                                        <i>「</i><i th:text="${newNovel.tags}" th:title="${newNovel.tags}"></i><i>」</i>
+                                    </a>
+                                </td>
+                                <td style="min-width: 40px;width: 9%">
+                                    <a class="name"
+                                       th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                                       target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"></a>
+                                </td>
+                                <td style="width: 9%">
+                                    <a class="section" target="_blank" th:text="${newNovel.publisher}"
+                                       th:title="${newNovel.publisher}"></a>
+                                </td>
+                                <td class="respon" style="width: 9%">
+                                    <a class="author" target="_blank" th:text="${newNovel.authors}"
+                                       th:title="${newNovel.authors}"></a>
+                                </td>
+                                <td class="respon" style="width: 35%">
+                                    <i th:text="${newNovel.pubdate}" th:title="${newNovel.pubdate}"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="update-rec-wrap fr" style="margin-top: 37px;">
+                <div class="update-rec-list">
+                    <ul>
+                        <li th:each="newNovel: ${newestNovelIndexList}"
+                            th:if="${newNovelStat.index gt 15}and${newNovelStat.index lt 19}">
+                            <div class="book-wrap cf">
+                                <div class="book-info fr">
+                                    <h4>
+                                        <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                                           target="_blank" th:text="${newNovel.title}"></a>
+                                    </h4>
+                                    <p class="digital">
+                                        <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
+                                    </p>
+                                    <p class="author">
+                                        <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
+                                    </p>
+                                </div>
+                                <div class="book-cover">
+                                    <a class="link"
+                                       th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
+                                       target="_blank">
+                                        <img th:src="${newNovel.coverImgUrl}"/>
+                                    </a>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <p class="info" th:text="${newNovel.description}"></p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="box-center cf">
+            <div class="footer-text">
+                <p>网络刷单是违法 切莫轻信有返利，网上交友套路多 卖惨要钱需当心，电子红包莫轻点 个人信息勿填写，仿冒客服来行骗 官方核实最重要，招工诈骗有套路 预交费用需谨慎，低价充值莫轻信
+                    莫因游戏陷套路，连接WIFI要规范 确认安全再连接，抢购车票有章法 确认订单再付款，白条赊购慎使用 提升额度莫轻信，网购预付有风险 正规渠道很重要 </p>
+            </div>
+            <div class="footer-menu dib-wrap">
+                <a href="https://www.wlgzs.net/" target="_blank">关于未来</a>
+                <a href="https://www.wlgzs.net/" target="_blank">联系我们</a>
+                <a href="https://www.wlgzs.net/" target="_blank">加入我们</a>
+                <a href="https://www.wlgzs.net/" target="_blank">帮助中心</a>
+                <a href="https://www.wlgzs.net/" class="advice" target="_blank">提交建议</a>
+                <a href="https://www.wlgzs.net/" target="_blank">举报中心</a>
+            </div>
+            <div class="copy-right">
+                <p><span>Copyright © 2002-2020 www.wlgzs.net All Rights Reserved</span> 版权所有 未来工作室</p>
+                <p>请所有作者发布作品时务必遵守国家互联网信息管理办法规定，我们拒绝任何色情小说，一经发现，即作删除！举报电话：010-59357051</p>
+                <p>本站所收录的作品、社区话题、用户评论、用户上传内容或图片等均属用户个人行为。如前述内容侵害您的权益，欢迎举报投诉，一经核实，立即删除，本站不承担任何责任</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" th:inline="javascript" async>
+    let contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+
+    function posters_get() {
+        let List1 = $('#list1');
+
+        for (let i = 1; i < 6; i++) {
+            $.ajax({
+                url: contextPath + "/api/settings/get",
                 type: 'GET',
-                
+
                 contentType: 'application/x-www-form-urlencoded',
-                data:{
+                data: {
                     key: i,
                 },
-                          success(data) {
-                            console.log(data);
-                            List1.children('img')[i].src=data;
-                          },
-                          error(jqXHR) {
-                            let mes = JSON.parse(jqXHR.responseText);
-                            console.log(mes);
-                          }
-                        });
-            }
-            
-        }
-        posters_get();
-        function popup_over(icon, color, contant) {
-            $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
-            setTimeout(function() {
-                $('.popup_over').remove();
-                // clear('.popup_over');
-            }, 1500)
-        };
-
-        const classify_icons = [
-            "fa fa-fire",
-            "fa fa-diamond",
-            "fa fa-crosshairs",
-            "fa fa-cube",
-            "fa fa-cloud",
-            "fa fa-certificate",
-            "fa fa-building",
-            "fa fa-bell",
-            "fa fa-beer",
-            "fa fa-bank",
-            "fa fa-archive",
-            "fa fa-adjust",
-            "fa fa-database",
-            "fa fa-flash",
-        ]
-        const list = document.getElementsByClassName("classify-list")[0].getElementsByTagName("cite")
-        for (let i = 0; i < list.length; i++) {
-            const iconElement = list[i].getElementsByTagName("i")[0];
-            iconElement.removeAttribute("class")
-            iconElement.setAttribute("class", classify_icons[i])
-        }
-
-        function logout() {
-            const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
-            $.ajax({
-                url: contextPath + "/api/logout",
-                type: "GET",
-                datatype: "json",
-                contentType: "application/json;charset=UTF-8",
-                data: {},
-                success: function(data) {
-                    popup_over('icon-happy-l', '#00ff0f', "退出成功");
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500)
-                },
-                error: function(data) {
+                success(data) {
                     console.log(data);
+                    List1.children('img')[i].src = data;
+                },
+                error(jqXHR) {
+                    let mes = JSON.parse(jqXHR.responseText);
+                    console.log(mes);
                 }
             });
         }
-    </script>
-    <script type="text/javascript">
-        $(".time-tip").click(function() {
-            $(".search-tool-tip").show();
-        });
-        $(".time-sure").click(function() {
-            $("#time").attr("after", $("#after").val());
-            $("#time").attr("before", $("#before").val());
-            $(".search-tool-tip").hide();
-        });
 
-        function doSearch(e) {
-            if (e != null && e.keyCOde != 13) {
-                return false;
+    }
+
+    posters_get();
+
+    function popup_over(icon, color, contant) {
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
+        setTimeout(function () {
+            $('.popup_over').remove();
+            // clear('.popup_over');
+        }, 1500)
+    };
+
+    const classify_icons = [
+        "fa fa-fire",
+        "fa fa-diamond",
+        "fa fa-crosshairs",
+        "fa fa-cube",
+        "fa fa-cloud",
+        "fa fa-certificate",
+        "fa fa-building",
+        "fa fa-bell",
+        "fa fa-beer",
+        "fa fa-bank",
+        "fa fa-archive",
+        "fa fa-adjust",
+        "fa fa-database",
+        "fa fa-flash",
+    ]
+    const list = document.getElementsByClassName("classify-list")[0].getElementsByTagName("cite")
+    for (let i = 0; i < list.length; i++) {
+        const iconElement = list[i].getElementsByTagName("i")[0];
+        iconElement.removeAttribute("class")
+        iconElement.setAttribute("class", classify_icons[i])
+    }
+
+    function logout() {
+        const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
+        $.ajax({
+            url: contextPath + "/api/logout",
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: {},
+            success: function (data) {
+                popup_over('icon-happy-l', '#00ff0f', "退出成功");
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1500)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(".time-tip").click(function () {
+        $(".search-tool-tip").show();
+    });
+    $(".time-sure").click(function () {
+        $("#time").attr("after", $("#after").val());
+        $("#time").attr("before", $("#before").val());
+        $(".search-tool-tip").hide();
+    });
+
+    function doSearch(e) {
+        if (e != null && e.keyCOde != 13) {
+            return false;
+        }
+    }
+
+    $("#form").submit(function (event) {
+        var goSearch1 = $("#goSearch1").val();
+        if (goSearch1 == "") {
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $(".search-bt").click(function () {
+        console.log($(this).children().children(".info").children().text());
+        $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
+        $("#form").submit();
+    });
+
+</script>
+<script type="text/javascript">
+
+    function dateFormat(date) {
+        var oldSubmit;
+        var form = document.getElementById("form");
+        if (form != null && form != 'undefined') {
+            //备份submit函数
+            form.oldSubmit = form.submit;
+            //覆盖submit函数以实现拦截
+            form.submit = function () {
+                //提交前做的操作..
+                var after = document.getElementById("after").value;
+                var before = document.getElementById("before").value;
+                after = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
+                before = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
+                return after;
+                return before;
+                //掉原函数来提交
+                form.oldSubmit();
             }
         }
-        $("#form").submit(function(event) {
-            var goSearch1 = $("#goSearch1").val();
-            if (goSearch1 == "") {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        $(".search-bt").click(function() {
-            console.log($(this).children().children(".info").children().text());
-            $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
-            $("#form").submit();
-        });
-        // 图片加载不出来时
-        //
-        // $('img').error(function(){
-        //     $(this).attr('src',"img/loading.jpg");
-        // })
-    </script>
-    <script type="text/javascript">
-        function dateFormat(date) {
-            var str = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
-            return str;
-        }
-        let date = new Date();
-        dateFormat(date);
-        // $(function() {
-        //     $.ajax({
-        //         time_after = $("#form input[name='after']").map(function() {
-        //             return ($(this).val());
-        //         }).get().join('&')
-        //     });
 
-        // });
-        // $(function() {
-        //     $.ajax({
-        //         time_before = $("#form input[name='after']").map(function() {
-        //             return ($(this).val());
-        //         }).get().join('&')
-        //     });
+    }
 
-        // });
-        // function getNowFormatDate() {
-        //     var date = new Date();
-        //     var year = $("#after").date.getFullYear();
-        //     var month = $("#after").date.getMonth() + 1;
-        //     var strDate = $("#after").date.getDate();
-        //     if (month >= 1 && month <= 9) {
-        //         month = "0" + month;
-        //     }
-        //     if (strDate >= 0 && strDate <= 9) {
-        //         strDate = "0" + strDate;
-        //     }
-        //     var currentdate = year + "年" + month + "月" + strDate +
-        //         "日 " + "00:00:00";
-        //     return currentdate;
+    let date = new Date();
+    dateFormat(date);
 
-        //     var year_b = $("#after").date.getFullYear();
-        //     var month_b = $("#after").date.getMonth() + 1;
-        //     var strDate_b = $("#after").date.getDate();
-        //     if (month_b >= 1 && month_b <= 9) {
-        //         month_b = "0" + month_b;
-        //     }
-        //     if (strDate_b >= 0 && strDate_b <= 9) {
-        //         strDate_b = "0" + strDate_b;
-        //     }
-        //     var currentdate_b = year_b + "年" + month_b + "月" + strDate_b +
-        //         "日 " + "00:00:00";
-        //     return currentdate_b;
-        // }
+    // 图片加载不出来时
+    // $('img').error(function(){
+    //     $(this).attr('src',"static/resources/img/loading.jpg");
+    // });
+    var errorimg = document.getElementsByTagName("img")[0].getAttribute("src");
+    if(errorimg==null){
+        img.src="static/resources/img/loading.jpg";
+    }
 
-        // function dateFormat(fmt, date) {
-        //     let ret;
-        //     const opt = {
-        //         "Y+": date.getFullYear().toString(), // 年
-        //         "m+": (date.getMonth() + 1).toString(), // 月
-        //         "d+": date.getDate().toString(), // 日
-        //         // "H+": date.getHours().toString(), // 时
-        //         // "M+": date.getMinutes().toString(), // 分
-        //         // "S+": date.getSeconds().toString() // 秒
-        //     };
-        //     for (let k in opt) {
-        //         ret = new RegExp("(" + k + ")").exec(fmt);
-        //         if (ret) {
-        //             fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-        //         };
-        //     };
-        //     return fmt;
-        // }
-        // let date = new Date()
-        // dateFormat("yyyy年MM月dd日 00:00:00", date);
+    function imgerror(img){
+        img.src="static/resources/img/loading.jpg";
+        img.onerror=null;
+        //控制不要一直跳动
+    }
 
-    </script>
 
-</body>
+    // 方法三
+    // //     document.querySelectorAll("img").forEach((img)=>{
+    // //         if(img.getAttribute("src")==null){
+    // //             img.src="img/loading.jpg";
+    // //         }
+    // //     })
+    // 图片加载不出来
+    // 方法四
+    // if ($("img").getAttribute("src") == null) {
+    //     $("img").src = "img/loading.jpg";
+    // }
+</script>
 
-</html>
 </body>
 
 </html>

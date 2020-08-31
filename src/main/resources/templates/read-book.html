@@ -128,7 +128,7 @@
 <!--                            <a class="report-btn" id="reportBtn"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
                             <div class="read-btn-box">
                                 <a class="admire admireBtn reward" th:if="${session.currentAccount} ne null" href="javascript:;">赞赏</a>
-                                <a class="admire admireBtn reward" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}"}>赞赏</a>
+                                <a class="admire admireBtn reward" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${#request.requestURI})}">赞赏</a>
                             </div>
                         </div>
 
@@ -328,8 +328,8 @@
             },success:function (data) {
                 if(data!=undefined){
                 for(var i=0;i<data.length;i++){
-                    $("#comment").append("<li>\n" +
-                        "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
+                    $("#comment").append("<li>\" +
+                        "<a><img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\"></a>\n" +
                         "<div class=\"our-say cf\"\n" +
                         "<h4>\n" +
                         "<a>"+""+data[i].userName+""+"</a><a class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +

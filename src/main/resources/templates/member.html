@@ -64,7 +64,8 @@
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
                             <a th:if="${session.currentAccount} ne null" th:href="${#request.getContextPath()}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
-                                <i class="fa fa-book" style="font-size:16px">我的书架</i>
+                                <i class="fa fa-book" style="font-size:16px" th:if="${session.currentAccount} eq ${showAccount}">我的书架</i>
+                                <i class="fa fa-book" style="font-size:16px" th:if="${session.currentAccount} ne ${showAccount}">ta的书架</i>
                             </a>
                         </li>
                         <li class="avatar" th:each="user:${session.currentAccount}">
@@ -85,7 +86,7 @@
                     <a th:href="@{/}" class="side-ul-a">
                         <i class="fa fa-home" style="font-size:16px"></i>首页
                     </a>
-                    <li class="side-parent">
+                    <li class="side-parent" th:if="${showAccount}eq null">
                         <a href="javascript:open()" th:if="${session.currentAccount} ne null">
                             <i class="fa fa-edit" style="font-size:16px"></i>
                             <span style="vertical-align: inherit">修改</span>
@@ -95,12 +96,8 @@
                             <span style="vertical-align: inherit">修改</span>
                         </a>
                     </li>
-                    <li class="side-parent" id="side-parent">
-                        <a  th:if="${session.currentAccount} ne null" href="javascript:;">
-                            <i class="fa fa-history" style="font-size:16px"></i>
-                            <span style="vertical-align:inherit">我的历史</span>
-                        </a>
-                        <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">
+                    <li th:if="${session.currentAccount} ne null" class="side-parent" id="side-parent">
+                        <a href="javascript:;">
                             <i class="fa fa-history" style="font-size:16px"></i>
                             <span style="vertical-align:inherit">我的历史</span>
                         </a>
@@ -113,17 +110,29 @@
                             </li>
                         </ul>
                     </li>
-                    <a id="shelf" th:if="${session.currentAccount} ne null" href="javascript:;" class="side-ul-a">
+                    <a id="shelf" th:if="${session.currentAccount} ne null and ${session.currentAccount}eq${showAccount}" href="javascript:;" class="side-ul-a">
                         <i class="fa fa-book" style="font-size:16px"></i>我的书架
                     </a>
-                    <a id="shelf" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}"  class="side-ul-a">
-                        <i class="fa fa-book" style="font-size:16px"></i>我的书架
+                    <a id="shelf" th:if="${session.currentAccount} ne null and ${session.currentAccount}ne${showAccount}" href="javascript:;" class="side-ul-a">
+                        <i class="fa fa-book" style="font-size:16px"></i>ta的书架
                     </a>
-                    <a id="work" th:if="${session.currentAccount} ne null" href="javascript:;" class="side-ul-a">
+                    <a id="shelf" th:if="${session.currentAccount} eq null and ${showAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}"  class="side-ul-a">
+                        <i class="fa fa-book" style="font-size:16px"></i>ta的书架
+                    </a>
+                    <a id="shelf" th:if="${session.currentAccount} eq null and ${showAccount} ne null" class="side-ul-a">
+                        <i class="fa fa-book" style="font-size:16px"></i>ta的书架
+                    </a>
+                    <a id="work" th:if="${session.currentAccount} ne null and ${session.currentAccount}eq${showAccount}" href="javascript:;" class="side-ul-a">
                         <i class="fa fa-folder-o" style="font-size:16px"></i>我的作品
                     </a>
-                    <a id="work" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" class="side-ul-a">
+                    <a id="work" th:if="${session.currentAccount} ne null and ${session.currentAccount}ne${showAccount}" href="javascript:;" class="side-ul-a">
+                        <i class="fa fa-folder-o" style="font-size:16px"></i>ta的作品
+                    </a>
+                    <a id="work" th:if="${session.currentAccount} eq null and ${showAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" class="side-ul-a">
                         <i class="fa fa-folder-o" style="font-size:16px"></i>我的作品
+                    </a>
+                    <a id="work" th:if="${session.currentAccount} eq null and ${showAccount} ne null" class="side-ul-a">
+                        <i class="fa fa-folder-o" style="font-size:16px"></i>ta的作品
                     </a>
                 </ul>
             </div>
@@ -135,22 +144,31 @@
             <div class="home-content" th:if="${session.currentAccount} eq null">
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
-                        <a class="user-avatar-a">
+                        <a class="user-avatar-a" th:if="${showAccount} eq null">
                             <img class="user-avatar-img profileImgUrl" th:src="@{/resources/img/avatar.png}">
+                        </a>
+                        <a class="user-avatar-a" th:if="${showAccount} ne null">
+                            <img class="user-avatar-img profileImgUrl" th:src="${showAccount.profileImgUrl}">
                         </a>
                     </div>
                     <div class="home-user">
-                        <div class="blue-btn-little">
+                        <div class="blue-btn-little" th:if="${showAccount} eq null">
                             <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
                         </div>
-                        <h3 style="display: inline-block">
+                        <h3 th:if="${showAccount} eq null" style="display: inline-block">
                             <a>未登录</a>
                         </h3>
+                        <h3 th:if="${showAccount} ne null" style="display: inline-block">
+                            <a th:text="${showAccount.userName}"></a>
+                        </h3>
+                        <span th:if="${showAccount}ne null" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${showAccount.level}"></span>
+                        <span th:if="${showAccount}ne null" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${showAccount.experience}"></span>
+
                     </div>
                 </div>
-                <div id="addToHistory" method="post" class="history-main">
+                <div th:if="${showAccount} ne null" id="addToHistory" method="post" class="history-main">
                     <h2 class="history-title">浏览历史</h2>
                     <a href="javascript:;" id="clearAllHistory">清空所有历史</a>
                     <div class="readHistory">
@@ -202,7 +220,7 @@
                 </div>
                 <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
-                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:href="@{/novel/create}">创建作品</a>
+                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -229,22 +247,31 @@
             <div class="home-content" th:if="${session.currentAccount} ne null" th:each="user:${session.currentAccount}">
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
-                        <a class="user-avatar-a">
+                        <a class="user-avatar-a" th:if="${session.currentAccount} eq ${showAccount}">
                             <img class="user-avatar-img profileImgUrl" th:src="${user.profileImgUrl}">
+                        </a>
+                        <a class="user-avatar-a" th:if="${session.currentAccount} ne ${showAccount}">
+                            <img class="user-avatar-img profileImgUrl" th:src="${showAccount.profileImgUrl}">
                         </a>
                     </div>
                     <div class="home-user">
-                        <div class="blue-btn-little">
+                        <div class="blue-btn-little" th:if="${showAccount} eq null">
                             <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
                         </div>
-                        <h3 style="display: inline-block">
+                        <h3 style="display: inline-block" th:if="${session.currentAccount} eq ${showAccount}">
                             <a th:text="${user.userName}"></a>
                         </h3>
-                        <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${user.level}"></span>
-                        <span style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${user.experience}"></span>
-                        <div class="home-user-data">
+                        <h3 style="display: inline-block" th:if="${session.currentAccount} ne ${showAccount}">
+                            <a th:text="${showAccount.userName}"></a>
+                        </h3>
+                        <span th:if="${session.currentAccount} eq ${showAccount}" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${user.level}"></span>
+                        <span th:if="${session.currentAccount} eq ${showAccount}" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${user.experience}"></span>
+                        <span th:if="${session.currentAccount} ne ${showAccount}" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'等级:'+${showAccount.level}"></span>
+                        <span th:if="${session.currentAccount} ne ${showAccount}" style="color: whitesmoke;display: inline-block;margin: 0 5px" th:text="'积分:'+${showAccount.experience}"></span>
+
+                        <div class="home-user-data" th:if="${session.currentAccount} eq ${showAccount}">
                             <p>邮箱：<i th:text="${user.email}"></i></p>
                             <p>手机号：<i th:text="${user.phone}"></i></p>
                         </div>
@@ -291,8 +318,9 @@
                     <ul class="history-list" style="height: 0px; transition: height 200ms ease 0s;"></ul>
                 </div>
                 <div id="addToShelf" method="post" class="shelf-main">
-                    <h2 class="shelf-title">我的书架</h2>
-                    <a href="javascript:;" id="addShelf">创建收藏夹</a>
+                    <h2 class="shelf-title" th:if="${session.currentAccount} eq ${showAccount}">我的书架</h2>
+                    <h2 class="shelf-title" th:if="${session.currentAccount} ne ${showAccount}">ta的书架</h2>
+                    <a href="javascript:;" th:if="${showAccount} eq ${session.currentAccount}" id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
                         <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
                     </div>
@@ -301,15 +329,18 @@
                     </ul>
                 </div>
                 <div id="addToMyWork" method="post" class="work-main">
-                    <h2 class="work-title">我的作品</h2>
-                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:href="@{/novel/create}">创建作品</a>
+                    <h2 class="work-title" th:if="${session.currentAccount} eq ${showAccount}">我的作品</h2>
+                    <h2 class="work-title" th:if="${session.currentAccount} ne ${showAccount}">ta的作品</h2>
+                    <div th:if="${session.currentAccount} eq ${showAccount}">
+                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBLISHER');" sortBy="PUBLISHER">出版社排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RATING');" sortBy="RATING">评分排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'SERIES');" sortBy="SERIES">系列排序</a>
-                    <ul class="work-list" id="workList" style="transition: height 200ms ease 0s;">
+                    </div>
+                        <ul class="work-list" id="workList" style="transition: height 200ms ease 0s;">
 
                     </ul>
                     <div class="page-box" style="padding: 40px 0;position: relative;">
@@ -393,7 +424,6 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-    <script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
     <script  th:inline="javascript" async>
         if($("#pd").text()=="false"){
         function show_progress(value) {
@@ -552,6 +582,10 @@
         })
     </script>
     <script th:inline="javascript" async>
+        const showAccount = /*[[${showAccount}]]*/{};
+        const currentAccount = /*[[${session.currentAccount}]]*/{};
+        console.log(showAccount);
+        console.log(currentAccount);
         $("#set").click(function() {
             tabAccountInfo();
         })
@@ -647,7 +681,37 @@
             geNovelAllPage();
         }
 
-        //获取用户所有小说
+        //获取当前显示用户所有小说的页数
+        function geShowNovelAllPage() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url: contextPath + '/api/novel/user/' + showAccount.uid +'/pages',
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: {
+                    per_page: 5
+                },
+                success: function(data) {
+                    //    console.log(data)
+                    if (data.pages != 1) {
+                        for (var i = 1; i <= data.pages; i++) {
+                            $(".box-page").append("<span class=\"rank-page\">" + "" + i + "" + "</span>")
+                        }
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
+        if($("#pd").text()=="false"&&JSON.stringify(showAccount)==JSON.stringify(currentAccount)) {
+            geNovelAllPage();
+        }else if(JSON.stringify(showAccount)!=JSON.stringify(currentAccount)){
+            geShowNovelAllPage();
+        }
+
+        //获取当前登录用户所有小说
         function getAccountAllNovel(page, sortBy) {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -663,6 +727,7 @@
                 success: function(data) {
                      if(data!=undefined){
                     for (var i = 0; i < data.length; i++) {
+
                         $("#workList").append("<li>\n" +
                             "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                             "                                <div class=\"book-rank-img\">\n" +
@@ -688,6 +753,55 @@
                             "                        </li>");
                     }
                      }
+                },
+                error: function(data) {
+                    if($("#pd").text()=="false") {
+                        console.log(data);
+                    }
+                }
+            });
+        }
+        //获取当前显示用户所有小说
+        function getShowAccountAllNovel(page, sortBy) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url:contextPath+'/api/novel/user/' + showAccount.uid +'/get',
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: {
+                    per_page: 5,
+                    page: page,
+                    sort_by: sortBy,
+                },
+                success: function(data) {
+                    if(data!=undefined){
+                        console.log(data);
+                        for (var i = 0; i < data.length; i++) {
+                            $("#workList").append("<li>\n" +
+                                "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
+                                "                                <div class=\"book-rank-img\">\n" +
+                                "                                <div class=\"book-rank-img\">\n" +
+                                "                                    <img src='" + "" + data[i].coverImgUrl + "" + "' style=\"width: 100px;float: left;\"/>\n" +
+                                "                                </div>\n" +
+                                "                                <div class=\"book-rank-list-text\"   style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
+                                "                                    <h4 style=\"font-size: 15px;display: inline-block;margin-top:10px;\">" + "" + data[i].title + "" + "</h4>\n" +
+                                "                                    <p style=\"font-size: 10px;color: gray;margin-top: 25px;\">\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].authors + "" + "</span><city>|</city>\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].publisher + "" + "</span><city>|</city>\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].tags + "" + "</span><city>|</city>\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + '共有' + data[i].chapters.length + '章' + "" + "</span><city>|</city>\n" +
+                                "                                    </p>\n" +
+                                "                                    <span class=\"book-rank-synopsis\">" + "" + data[i].description + "" + "</span>\n" +
+                                "                                </div>\n" +
+                                "                                <div class=\"rank-book-buttons\">\n" +
+                                "                                    <span class=\"rank-book-details\" uploaderId='" + data[i].uploader + "" + "' novelId='" + data[i].uniqueId + "'>书籍详情</span>\n" +
+                                "                                </div>\n" +
+                                "                            </div>\n" +
+                                "                            </div>\n" +
+                                "                        </li>");
+                        }
+                    }
                 },
                 error: function(data) {
                     if($("#pd").text()=="false") {
@@ -855,9 +969,54 @@
                 }
             })
         }
+        //获取当前显示用户所有收藏夹
+        function getAllShowAcconutShelf() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url:contextPath + '/api/account/' + showAccount.uid +'/bookSelves',
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: {},
+                success: function(data) {
+                    console.log(data);
+                    $("#shelfList").empty();
+                    for (let i = 0; i < data.length; i++) {
+                        $("#shelfList").append("<a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
+                            "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList' id='NovelList" + "" + data[i].uniqueId + "" + "'></ul>");
+                        for (let j = 0; j < data[i].novels.length; j++) {
+                            $("#NovelList"+data[i].uniqueId).append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
+                                "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
+                                "                                <div class=\"book-rank-img\">\n" +
+                                "                                    <img src='" + "" + data[i].novels[j].coverImgUrl + "" + "' style=\"width: 100px;float: left;\" />\n" +
+                                "                                </div>\n" +
+                                "                                <div class=\"book-rank-list-text\" style=\"width:425px;float:left;margin:5px 0 0 20px;\">\n" +
+                                "                                    <p style=\"font-size: 10px;color: gray;margin-top: 10px;\">\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].novels[j].authors + "" + "</span><city>|</city>\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].novels[j].publisher + "" + "</span><city>|</city>\n" +
+                                "                                        <span class=\"book-rank-writer\">" + "" + data[i].novels[j].series + "" + "</span><city>|</city>\n" +
+                                "                                        \n" +
+                                "                                    </p>\n" +
+                                "                                    <span class=\"book-rank-synopsis\">" + "" + data[i].novels[j].description + "" + "</span>\n" +
+                                "                                </div>\n" +
+                                "                                <div class=\"rank-book-buttons\">\n" +
+                                "                                    <span class=\"rank-book-details\" novelId='" + "" + data[i].novels[j].uniqueId + "" + "'>书籍详情</span>\n" +
+                                "                                </div>\n" +
+                                "                            </div>\n" +
+                                "                        </li>")
+                        }
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
 
-        if($("#pd").text()=="false") {
+        if($("#pd").text()=="false"&&JSON.stringify(currentAccount)==JSON.stringify(showAccount)) {
             getAllAcconutShelf();
+        }else if(JSON.stringify(currentAccount)!=JSON.stringify(showAccount)){
+            getAllShowAcconutShelf();
         }
 
 
@@ -961,15 +1120,20 @@
             delegeReadHistory($(this).attr("uniqueId"));
             $(this).parent().parent().parent().empty();
         })
-        if($("#pd").text()=="false") {
+        if($("#pd").text()=="false"&&JSON.stringify(currentAccount)==JSON.stringify(showAccount)) {
             getAccountAllNovel(1, "HOT_DESC");
+        }
+        if(JSON.stringify(currentAccount)!=JSON.stringify(showAccount)) {
+            getShowAccountAllNovel(1,"HOT_DESC");
         }
         $(".box-page").on("click", ".rank-page", function() {
             $(this).toggleClass("tab");
             $(this).siblings().removeClass("tab");
             $("#workList").empty();
-            if($("#pd").text()=="false") {
+            if($("#pd").text()=="false"&&JSON.stringify(showAccount)==JSON.stringify(currentAccount)) {
                 getAccountAllNovel($(this).text(),"HOT_DESC");
+            }else if(JSON.stringify(showAccount)!=JSON.stringify(currentAccount)){
+                getShowAccountAllNovel($(this).text(),"HOT_DESC")
             }
 
         })

@@ -35,7 +35,7 @@
                 <ul>
                     <p id="pd" style="display: none" th:text="${session.currentAccount} eq null"></p>
                     <li id="min-search">
-                        <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
+                        <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}">
                             <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
                             <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS">
                             <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
@@ -45,9 +45,9 @@
 								 </a>
 							</button>
                         </form>
-                        <form id="form2" style="" th:action="@{/search(page=1)}" method="POST" target="_blank">
+                        <form id="form2" style="" th:action="@{/search(page=1,per_page=5)}" method="POST">
                             <input type="hidden" name="searchBy" th:value="${searchBy}">
-                            <input type="hidden" id="sortBy" name="sortBy" value="BEST_MATCH">
+                            <input type="hidden" id="sortBy" name="sortBy" th:value="${sortBy}">
                             <input type="hidden" name="keywords" th:value="${keywords}">
                         </form>
                         <li class="line"></li>
@@ -95,12 +95,12 @@
             <div class="rank-toolbar-wrap" style="margin-bottom:20px;line-height: 50px;background-color: #fff;padding: 10px;">
                 <div class="tool-box">
                     <div class="type-list cf">
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="RANDOM">随机排序</a>
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="COPYRIGHT">版权排序</a>
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="PUBDATE">发布日期排序</a>
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="PUBLISHER">出版社排序</a>
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="RATING_DESC">评分排序</a>
-                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value',$(this).attr('sortBy'));$('#form2').submit();" sortBy="SERIES">系列排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','RANDOM');$('#form2').submit();" sortBy="RANDOM">随机排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','COPYRIGHT');$('#form2').submit();" sortBy="COPYRIGHT">版权排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','PUBDATE');$('#form2').submit();" sortBy="PUBDATE">发布日期排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','PUBLISHER');$('#form2').submit();" sortBy="PUBLISHER">出版社排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','RATING_DESC');$('#form2').submit();" sortBy="RATING_DESC">评分排序</a>
+                        <a href="javascript:;" class="SortBy" onclick="$('#sortBy').attr('value','SERIES');$('#form2').submit();" sortBy="SERIES">系列排序</a>
                     </div>
                 </div>
             </div>
@@ -227,7 +227,6 @@
 </body>
 
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
     function popup_over(icon,color,contant){
         $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
@@ -303,7 +302,9 @@
             }
         })
     }
-    getAllAcconutShelf();
+    if($("#pd").text()=="false") {
+        getAllAcconutShelf();
+    }
     function AddBookSelf(Id,novelId) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
         $.ajax({
@@ -325,7 +326,7 @@
     }
     function submitForm(index) {
         const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-        var str = contextPath+"/search?page=" + index;
+        var str = contextPath+"/search?page=" + index+"&per_page=5";
         $("#form").attr("action", str);
         $("#form2").attr("action", str);
     }
@@ -345,7 +346,6 @@
         window.location.href = contextPath +"/novel/"+ $(this).attr("novelId") + "/view";
     })
     $(".SortBy").click(function () {
-        window.location.reload();
         $("#searchSubmitType").attr("value",$(this).attr("SortBy"));
     })
 </script>

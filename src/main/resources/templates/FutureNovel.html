@@ -113,8 +113,7 @@
                         <div class="sliderBW">
                             <div id="slider_con1">
                                 <div id="list1" style="left: -748px;">
-                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}"
-                                         th:if="${imgurlStat.index} lt 6">
+                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}" th:if="${imgurlStat.index} lt 6">
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>
@@ -526,32 +525,50 @@
 <script type="text/javascript" th:inline="javascript" async>
     let contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 
-    function posters_get() {
-        let List1 = $('#list1');
+    // function posters_get() {
+    //     let List1 = $('#list1');
 
-        for (let i = 1; i < 6; i++) {
-            $.ajax({
-                url: contextPath + "/api/settings/get",
-                type: 'GET',
+        
+    //     $.ajax({
+    //                 url: contextPath + "/api/settings/get",
+    //                 type: 'GET',
+    
+    //                 contentType: 'application/x-www-form-urlencoded',
+    //                 data: {
+    //                     key: 'covers',
+    //                 },
+    //                 success(data) {
+    //                     console.log(data);
+                       
+    //                     data[parseInt(4)]='https://gardel.top/future-novel/api/img/cdc3d531211ecee879b48094ee803d9f';
+    //                     $.ajax({        
+    //                                 url:contextPath+"/api/settings/put",
+    //                                 type: 'POST',
+    //                                 datatype: 'json',
+    //                                 contentType: 'application/json; charset=utf-8',
+    //                                 data:JSON.stringify({
+    //                                     key: 'covers',
+    //                                     value: data
+    //                                 }),
+    //                                           success(data) {
+    //                                             popup_over('icon-happy-l','#1afa29','添加成功');
+    //                                           },
+    //                                           error(jqXHR) {
+    //                                             let mes = JSON.parse(jqXHR.responseText);
+    //                                             console.log(mes);
+    //                                             popup_over('icon-happy-l','#1afa29',mes.errorMessage);
+    //                                           }
+    //                                         });
+    //                 },
+    //                 error(jqXHR) {
+    //                     let mes = JSON.parse(jqXHR.responseText);
+    //                     console.log(mes);
+    //                 }
+    //             });
+    //     }
 
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    key: i,
-                },
-                success(data) {
-                    console.log(data);
-                    List1.children('img')[i].src = data;
-                },
-                error(jqXHR) {
-                    let mes = JSON.parse(jqXHR.responseText);
-                    console.log(mes);
-                }
-            });
-        }
 
-    }
-
-    posters_get();
+    // posters_get();
 
     function popup_over(icon, color, contant) {
         $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');

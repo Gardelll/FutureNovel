@@ -6,44 +6,90 @@ function del_num(){
 
 }
 //上传海报地址
-function posters_put(key,url){
-    $.ajax({        
-        url:contextPath+"/api/settings/remove",
-        type: 'DELETE',
+function posters_put(index,url){
+    // $.ajax({         
+    //     url:contextPath+"/api/settings/remove",
+    //     type: 'DELETE',
         
-        contentType: 'application/x-www-form-urlencoded',
-        data:{
-            key: key,
-        },
-                  success(data) {
-                    console.log('已删除');
-                  },
-                  error(jqXHR) {
-                    let mes = JSON.parse(jqXHR.responseText);
-                    console.log(mes);
-                    console.log('删除失败');
-                  }
+    //     contentType: 'application/x-www-form-urlencoded',
+    //     data:{
+    //         key: key,
+    //     },
+    //               success(data) {
+    //                 console.log('已删除');
+    //               },
+    //               error(jqXHR) {
+    //                 let mes = JSON.parse(jqXHR.responseText);
+    //                 console.log(mes);
+    //                 console.log('删除失败');
+    //               }
+    //             });
+            $.ajax({
+                    url: contextPath + "/api/settings/get",
+                    type: 'GET',
+    
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        key: 'covers',
+                    },
+                    success(data) {
+                        console.log(data);
+                        //确定修改的位置
+                        if(index == 5){
+                            data[parseInt(index)]=url;
+                            data[0]=url;
+                        }else if(index== 1){
+                            data[parseInt(index)]=url;
+                            data[6]=url;
+                        }else{
+                            data[parseInt(index)]=url;
+                        }
+                        $.ajax({        
+                                    url:contextPath+"/api/settings/put",
+                                    type: 'POST',
+                                    datatype: 'json',
+                                    contentType: 'application/json; charset=utf-8',
+                                    data:JSON.stringify({
+                                        key: 'covers',
+                                        value: data
+                                    }),
+                                              success(data) {
+                                                popup_over('icon-happy-l','#1afa29','添加成功');
+                                              },
+                                              error(jqXHR) {
+                                                let mes = JSON.parse(jqXHR.responseText);
+                                                console.log(mes);
+                                                popup_over('icon-happy-l','#1afa29',mes.errorMessage);
+                                              }
+                                            });
+                    },
+                    error(jqXHR) {
+                        let mes = JSON.parse(jqXHR.responseText);
+                        console.log(mes);
+                    }
                 });
-                setTimeout(() => {
-                    $.ajax({        
-                        url:contextPath+"/api/settings/put",
-                        type: 'POST',
-                        datatype: 'json',
-                        contentType: 'application/json; charset=utf-8',
-                        data:JSON.stringify({
-                            key: key,
-                            value: url
-                        }),
-                                  success(data) {
-                                    popup_over('icon-happy-l','#1afa29','添加成功');
-                                  },
-                                  error(jqXHR) {
-                                    let mes = JSON.parse(jqXHR.responseText);
-                                    console.log(mes);
-                                    popup_over('icon-happy-l','#1afa29',mes.errorMessage);
-                                  }
-                                });
-                }, 100);
+                // setTimeout(() => {
+                //     $.ajax({        
+                //         url:contextPath+"/api/settings/put",
+                //         type: 'POST',
+                //         datatype: 'json',
+                //         contentType: 'application/json; charset=utf-8',
+                //         data:JSON.stringify({
+                //             key: 'covers',
+                //             value: [
+
+                //             ]
+                //         }),
+                //                   success(data) {
+                //                     popup_over('icon-happy-l','#1afa29','添加成功');
+                //                   },
+                //                   error(jqXHR) {
+                //                     let mes = JSON.parse(jqXHR.responseText);
+                //                     console.log(mes);
+                //                     popup_over('icon-happy-l','#1afa29',mes.errorMessage);
+                //                   }
+                //                 });
+                // }, 100);
 }
 //搜索用户内容
 // function seek(){

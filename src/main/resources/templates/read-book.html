@@ -254,12 +254,12 @@
     });
 </script>
 <script th:inline="javascript" async>
-    function popup_over(icon,color,contant){
-        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
-        setTimeout(function(){
+    function popup_over(icon, color, contant) {
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
+        setTimeout(function() {
             $('.popup_over').remove();
             // clear('.popup_over');
-        },1500)
+        }, 1500)
     };
     $("#commentSure").click(function () {
         addComment();
@@ -328,8 +328,9 @@
             },success:function (data) {
                 if(data!=undefined){
                 for(var i=0;i<data.length;i++){
-                    $("#comment").append("<li>\" +
-                        "<a><img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\"></a>\n" +
+                    $("#comment").append("<p id='AccountID' style='display: none'>" + "" + data[i].accountId+ "" + "</p>")
+                    $("#comment").append("<li>\n" +
+                        "<img style='cursor:pointer;' id='btn' src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" alt=\"\">\n" +
                         "<div class=\"our-say cf\"\n" +
                         "<h4>\n" +
                         "<a>"+""+data[i].userName+""+"</a><a class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
@@ -377,7 +378,10 @@
         var repayValue = borrowValue.length;
         $("#textLength").html(repayValue);
     });
-
+    $("#comment").on("click","#btn",function () {
+        const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
+        window.location.href=contextPath+'/user/'+$("#AccountID").text();
+    })
 </script>
 
 

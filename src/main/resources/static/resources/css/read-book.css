@@ -379,13 +379,15 @@
     margin-bottom: 24px;
 }
 
-.main-text-wrap .author-say-wrap .author-say,
-.main-text-wrap .our-say-wrap .our-say {
+.main-text-wrap .author-say-wrap .author-say{
     position: relative;
     z-index: 1;
     padding-left: 56px;
 }
-
+.our-say{
+    z-index: 1;
+    padding-left: 56px;
+}
 .main-text-wrap .author-say-wrap .author-say .avatar,
 .main-text-wrap .our-say-wrap .our-say .member {
     position: absolute;

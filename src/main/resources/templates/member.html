@@ -41,7 +41,7 @@
                 <div class="nav-list min-user fr">
                     <ul>
                         <li id="min-search">
-                            <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
+                            <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}">
                                 <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
                                 <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS">
                                 <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
@@ -64,8 +64,7 @@
                         <li class="line"></li>
                         <li class="book-shelf" id="top-book-shelf">
                             <a th:if="${session.currentAccount} ne null" th:href="${#request.getContextPath()}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
-                                <i class="fa fa-book" style="font-size:16px" th:if="${session.currentAccount} eq ${showAccount}">我的书架</i>
-                                <i class="fa fa-book" style="font-size:16px" th:if="${session.currentAccount} ne ${showAccount}">ta的书架</i>
+                                <i class="fa fa-book" style="font-size:16px">我的书架</i>
                             </a>
                         </li>
                         <li class="avatar" th:each="user:${session.currentAccount}">
@@ -86,8 +85,8 @@
                     <a th:href="@{/}" class="side-ul-a">
                         <i class="fa fa-home" style="font-size:16px"></i>首页
                     </a>
-                    <li class="side-parent" th:if="${showAccount}eq null">
-                        <a href="javascript:open()" th:if="${session.currentAccount} ne null">
+                    <li class="side-parent">
+                        <a href="javascript:open()" th:if="${session.currentAccount} ne null and ${session.currentAccount} eq ${showAccount}">
                             <i class="fa fa-edit" style="font-size:16px"></i>
                             <span style="vertical-align: inherit">修改</span>
                         </a>
@@ -96,7 +95,7 @@
                             <span style="vertical-align: inherit">修改</span>
                         </a>
                     </li>
-                    <li th:if="${session.currentAccount} ne null" class="side-parent" id="side-parent">
+                    <li th:if="${session.currentAccount} ne null and ${showAccount}eq ${session.currentAccount}" class="side-parent" id="side-parent">
                         <a href="javascript:;">
                             <i class="fa fa-history" style="font-size:16px"></i>
                             <span style="vertical-align:inherit">我的历史</span>
@@ -109,6 +108,34 @@
                                 <a id="comment" href="javascript:;" class="side-list-a">评论历史</a>
                             </li>
                         </ul>
+                    </li>
+                    <li th:if="${session.currentAccount} ne null and ${showAccount}ne ${session.currentAccount}" class="side-parent" id="side-parent">
+                        <a href="javascript:;">
+                            <i class="fa fa-history" style="font-size:16px"></i>
+                            <span style="vertical-align:inherit">我的历史</span>
+                        </a>
+                        <ul class="side-group" id="side-group">
+                            <li>
+                                <a id="comment" href="javascript:;" class="side-list-a">评论历史</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li th:if="${session.currentAccount} eq null and ${showAccount}ne null" class="side-parent" id="side-parent">
+                        <a href="javascript:;">
+                            <i class="fa fa-history" style="font-size:16px"></i>
+                            <span style="vertical-align:inherit">我的历史</span>
+                        </a>
+                        <ul class="side-group" id="side-group">
+                            <li>
+                                <a id="comment" href="javascript:;" class="side-list-a">评论历史</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li th:if="${session.currentAccount} eq null and ${showAccount}eq null" class="side-parent" id="side-parent">
+                        <a th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">
+                            <i class="fa fa-history" style="font-size:16px"></i>
+                            <span style="vertical-align:inherit">我的历史</span>
+                        </a>
                     </li>
                     <a id="shelf" th:if="${session.currentAccount} ne null and ${session.currentAccount}eq${showAccount}" href="javascript:;" class="side-ul-a">
                         <i class="fa fa-book" style="font-size:16px"></i>我的书架
@@ -842,8 +869,41 @@
                 }
             })
         }
-        if($("#pd").text()=="false") {
+        //获取当前显示用户的评论历史
+        function getshowAccountComment(page) {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            $.ajax({
+                url:contextPath + '/api/account/' + showAccount.uid +'/comment/get',
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: {
+                    per_page: 10,
+                    page: page
+                },
+                success: function(data) {
+                    for(var i=0;i<data.length;i++){
+                        $("#commentHistory").append("<li>\n" +
+                            "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
+                            "<div style='margin-left: 90px' class=\"our-say cf\"\n" +
+                            "<h4>\n" +
+                            "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
+                            "</h4>\n" +
+                            "<p id=\"\">"+""+data[i].text+""+"</p>\n" +
+                            "<p>评分："+""+data[i].rating+""+"</p>\n" +
+                            "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
+                            "</li>");
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            })
+        }
+        if($("#pd").text()=="false" && JSON.stringify(currentAccount)==JSON.stringify(showAccount)) {
             getAccountComment(1);
+        }else if(JSON.stringify(currentAccount)!=JSON.stringify(showAccount)){
+            getshowAccountComment(1);
         }
 
         $("#commentHistory").on("click",".remove",function () {

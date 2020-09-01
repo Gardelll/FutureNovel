@@ -498,7 +498,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 if (currentAccount == null) {
                     model.asMap().clear();
                     model.addAttribute("errorMessage", getMessage("login.please_login"));
-                    model.addAttribute("redirectTo", getRequestUri());
+                    model.addAttribute("redirectTo", getServerUrl());
                     return new ModelAndView("redirect:/login", model.asMap());
                 }
                 if (!currentAccount.isVIP())

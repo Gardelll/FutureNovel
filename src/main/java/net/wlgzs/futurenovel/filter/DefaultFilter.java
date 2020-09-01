@@ -33,10 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import net.wlgzs.futurenovel.exception.FutureNovelException;
 import net.wlgzs.futurenovel.packet.Responses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import static net.wlgzs.futurenovel.exception.FutureNovelException.Error.HACK_DETECTED;
@@ -48,7 +47,6 @@ import static net.wlgzs.futurenovel.exception.FutureNovelException.Error.HACK_DE
  */
 @Slf4j
 @WebFilter(urlPatterns = "/*", dispatcherTypes = {DispatcherType.REQUEST})
-@Component
 public class DefaultFilter extends HttpFilter {
 
     /**
@@ -81,9 +79,6 @@ public class DefaultFilter extends HttpFilter {
         "::1",
         "0:0:0:0:0:0:0:1"
     );
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * 暂时封禁一个 IP
@@ -157,16 +152,22 @@ public class DefaultFilter extends HttpFilter {
                     errResponse.errorMessage = errResponse.cause = "请求速率限制";
                     var context = RequestContextUtils.findWebApplicationContext(req);
                     MessageSource messageSource;
+                    ObjectMapper objectMapper = null;
                     if (context != null) {
                         messageSource = context.getBean(MessageSource.class);
+                        objectMapper = context.getBean(ObjectMapper.class);
                         errResponse.errorMessage = messageSource.getMessage(HACK_DETECTED.getErrorMessageCode(), null, HACK_DETECTED.getErrorMessageCode(), req.getLocale());
                     }
                     res.setStatus(errResponse.status);
                     res.setContentType("application/json; charset=utf-8");
                     ServletOutputStream output = res.getOutputStream();
-                    output.write(objectMapper.writeValueAsBytes(errResponse));
-                    output.flush();
-                    output.close();
+                    if (output != null && objectMapper != null) {
+                        output.write(objectMapper.writeValueAsBytes(errResponse));
+                        output.flush();
+                        output.close();
+                    } else {
+                        throw new FutureNovelException(HACK_DETECTED);
+                    }
                     return;
                 }
                 if ((tmpArr[COLLECT_COUNT - 1] - tmpArr[COLLECT_COUNT - 2]) / 1000 > requestInfo.blockSeconds)

@@ -110,7 +110,10 @@
                 popup_over('icon-sad','#d81e06',"请选择版权");
             } else if ($("#book-press").val() == "") {
                 popup_over('icon-sad','#d81e06',"请输入出版社");
-            }else {
+            }else if($("#image-to-crop").attr("src")=="/resources/img/addimg.png"){
+                popup_over('icon-sad','#d81e06',"请选择封面图");
+            }
+            else {
                 var  $inputArr  =  $('.tags-text');
                 var  result  =   [];
                 $inputArr.each(function() {

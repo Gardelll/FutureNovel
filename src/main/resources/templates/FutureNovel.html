@@ -29,14 +29,14 @@
                 <a th:href="@{/}">未来小说网</a>
             </div>
             <div class="search-wrap fl" style="position: relative;top: -60px;">
-                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}">
+                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}" onsubmit="checked_one()">
                     <p>
-                        <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入..."
-                               onkeyup="doSearch(event)">
+                        <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入...">
                     </p>
                     <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
+                    <input class="submit-input" type="hidden" id="searchSubmitHot" name="sortBy" value="HOT">
                     <button id="search-btn" class="search-btn" for="searchSubmit" type="submit">
-                        <a onclick="doSearch(null)">
+                        <a>
                             <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
                         </a>
                     </button>
@@ -521,7 +521,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.js"></script>
 <script type="text/javascript" th:inline="javascript" async>
     let contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 
@@ -631,18 +631,10 @@
         $(".search-tool-tip").hide();
     });
 
-    function doSearch(e) {
-        if (e != null && e.keyCOde != 13) {
-            return false;
-        }
-    }
-
     $("#form").submit(function (event) {
         var goSearch1 = $("#goSearch1").val();
         if (goSearch1 == "") {
-            return false;
-        } else {
-            return true;
+            $("#goSearch1").val('ignored');
         }
     });
     $(".search-bt").click(function () {
@@ -650,12 +642,30 @@
         $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
         $("#form").submit();
     });
+    // 图片加载不出来时
 
+    $("img").each(function (){
+        var errorimg =$(this).attr("src");
+        if(errorimg===""){
+            errorimg="img/loading.jpg";
+        }
+    });
 </script>
 <script type="text/javascript">
+    function checked_one(){
+        var timeVal=$('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal=$('input:radio[value="HOT"]:checked').val();
+        var submit_input=$(".submit-input").val();
+        if(timeVal!=null||hotVal!=null) {
+            console.log("test")
+            return true;
+        }
+        if(submit_input==""){
+            return false;
+        }
+    }
 
     function dateFormat(date) {
-        var oldSubmit;
         var form = document.getElementById("form");
         if (form != null && form != 'undefined') {
             //备份submit函数
@@ -664,48 +674,21 @@
             form.submit = function () {
                 //提交前做的操作..
                 var after = document.getElementById("after").value;
-                var before = document.getElementById("before").value;
+                console.log(after);
+                // var before = document.getElementById("before").value;
                 after = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
-                before = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
+                // before = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
                 return after;
-                return before;
-                //掉原函数来提交
+                // return before;
+                //用原函数来提交
                 form.oldSubmit();
             }
         }
 
     }
-
     let date = new Date();
     dateFormat(date);
 
-    // 图片加载不出来时
-    // $('img').error(function(){
-    //     $(this).attr('src',"static/resources/img/loading.jpg");
-    // });
-    var errorimg = document.getElementsByTagName("img")[0].getAttribute("src");
-    if(errorimg==null){
-        img.src="static/resources/img/loading.jpg";
-    }
-
-    function imgerror(img){
-        img.src="static/resources/img/loading.jpg";
-        img.onerror=null;
-        //控制不要一直跳动
-    }
-
-
-    // 方法三
-    // //     document.querySelectorAll("img").forEach((img)=>{
-    // //         if(img.getAttribute("src")==null){
-    // //             img.src="img/loading.jpg";
-    // //         }
-    // //     })
-    // 图片加载不出来
-    // 方法四
-    // if ($("img").getAttribute("src") == null) {
-    //     $("img").src = "img/loading.jpg";
-    // }
 </script>
 
 </body>

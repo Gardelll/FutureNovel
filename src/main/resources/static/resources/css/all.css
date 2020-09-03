@@ -50,7 +50,8 @@ a img {
 a {
     text-decoration: none;
     color: #262626;
-    outline: 0
+    outline: 0;
+    cursor: pointer;
 }
 
 a:hover {
@@ -78,7 +79,7 @@ input::-ms-clear {
 }
 
 label {
-    cursor: pointer
+    cursor: pointer;
 }
 
 i {

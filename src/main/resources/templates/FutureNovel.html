@@ -29,7 +29,7 @@
                 <a th:href="@{/}">未来小说网</a>
             </div>
             <div class="search-wrap fl" style="position: relative;top: -60px;">
-                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1)}" onsubmit="checked_one()">
+                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}" onsubmit="checked_one()">
                     <p>
                         <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入...">
                     </p>
@@ -55,14 +55,15 @@
                         <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
                             <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
                                 从
-                                <input name="after" id="after" type="date" style="text-align:center;line-height: 30px;">
+                                <input id="after" type="date" style="text-align:center;line-height: 30px;">
+                                <input type="hidden" name="after" value="">
                             </p>
                             <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
                                 至
-                                <input name="before" id="before" type="date"
-                                       style="text-align:center;line-height: 30px;">
+                                <input id="before" type="date" style="text-align:center;line-height: 30px;">
+                                <input type="hidden" name="before" value="">
                             </p>
-                            <button class="time-sure blue-btn" for="searchSubmit" type="submit"
+                            <button class="time-sure blue-btn" id="timeBtn" type="submit"
                                     style="position: relative;top: 10px;">确认
                             </button>
                         </div>
@@ -113,7 +114,8 @@
                         <div class="sliderBW">
                             <div id="slider_con1">
                                 <div id="list1" style="left: -748px;">
-                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}" th:if="${imgurlStat.index} lt 6">
+                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}"
+                                         th:if="${imgurlStat.index} lt 6">
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>
@@ -528,18 +530,18 @@
     // function posters_get() {
     //     let List1 = $('#list1');
 
-        
+
     //     $.ajax({
     //                 url: contextPath + "/api/settings/get",
     //                 type: 'GET',
-    
+
     //                 contentType: 'application/x-www-form-urlencoded',
     //                 data: {
     //                     key: 'covers',
     //                 },
     //                 success(data) {
     //                     console.log(data);
-                       
+
     //                     data[parseInt(4)]='https://gardel.top/future-novel/api/img/cdc3d531211ecee879b48094ee803d9f';
     //                     $.ajax({        
     //                                 url:contextPath+"/api/settings/put",
@@ -574,7 +576,6 @@
         $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
         setTimeout(function () {
             $('.popup_over').remove();
-            // clear('.popup_over');
         }, 1500)
     };
 
@@ -621,7 +622,7 @@
         });
     }
 </script>
-<script type="text/javascript">
+<script th:inline="javascript" type="text/javascript" async>
     $(".time-tip").click(function () {
         $(".search-tool-tip").show();
     });
@@ -643,51 +644,65 @@
         $("#form").submit();
     });
     // 图片加载不出来时
-
-    $("img").each(function (){
-        var errorimg =$(this).attr("src");
-        if(errorimg===""){
-            errorimg="img/loading.jpg";
-        }
-    });
+    //11111111111
+    // $("img").each(function () {
+    //     var errorimg = $(this).attr("th:src");
+    //     console.log(errorimg);
+    //     if (errorimg == undefined || errorimg == "" || errorimg.length < 1) {
+    //         console.log("test");
+    //         errorimg =/*[[@{/resources/img/loading.jpg}]]*/ "../../resources/img/loading.jpg";
+    //         console.log(errorimg);
+    //     }
+    // });
+    //222222222222
+    // $("img").each(function(){
+    //     var me = $(this);
+    //     if(me.is("[src!='']")){
+    //         return true;
+    //     }else{
+    //         me.is("[src=../../resources/img/loading.jpg]")
+    //     }
+    // });
+    //3333333333333
+    // window.onload = function () {
+    //     var objArry = document.getElementsByTagName("img");
+    //     for (var i = 0; i < objArry.length; i++) {
+    //         if (objArry[i].src == undefined || objArry[i].src == "" || objArry[i].src.length < 1) {
+    //             objArry[i].src = "../../resources/img/loading.jpg";
+    //         }
+    //     }
+    // }
 </script>
 <script type="text/javascript">
-    function checked_one(){
-        var timeVal=$('input:radio[value="PUBDATE"]:checked').val();
-        var hotVal=$('input:radio[value="HOT"]:checked').val();
-        var submit_input=$(".submit-input").val();
-        if(timeVal!=null||hotVal!=null) {
-            console.log("test")
+    function checked_one() {
+        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal = $('input:radio[value="HOT"]:checked').val();
+        var submit_input = $(".submit-input").val();
+        if (timeVal != null || hotVal != null) {
             return true;
         }
-        if(submit_input==""){
+        if (submit_input == "") {
             return false;
         }
     }
 
-    function dateFormat(date) {
-        var form = document.getElementById("form");
-        if (form != null && form != 'undefined') {
-            //备份submit函数
-            form.oldSubmit = form.submit;
-            //覆盖submit函数以实现拦截
-            form.submit = function () {
-                //提交前做的操作..
-                var after = document.getElementById("after").value;
-                console.log(after);
-                // var before = document.getElementById("before").value;
-                after = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
-                // before = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日 00:00:00";
-                return after;
-                // return before;
-                //用原函数来提交
-                form.oldSubmit();
-            }
-        }
 
+    window.onload = function(){
+        var after = document.getElementById("after");
+        var before = document.getElementById("before");
+        var timeBtn = document.getElementById("timeBtn");
+        timeBtn.onclick = function () {
+            var afterStr = after.value.split("-");
+            var afterValue = afterStr[0] + "年" + afterStr[1] + "月" + afterStr[2] + "日 00:00:00";
+            var beforeStr = before.value.split("-");
+            var beforeValue = beforeStr[0] + "年" + beforeStr[1] + "月" + beforeStr[2] + "日 00:00:00";
+
+            $("input[name='after']").attr("value",afterValue)
+            console.log($("#after").attr("value"))
+            $("input[name='before']").attr("value",beforeValue)
+
+        }
     }
-    let date = new Date();
-    dateFormat(date);
 
 </script>
 

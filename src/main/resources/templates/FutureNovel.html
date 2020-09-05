@@ -29,7 +29,8 @@
                 <a th:href="@{/}">未来小说网</a>
             </div>
             <div class="search-wrap fl" style="position: relative;top: -60px;">
-                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}" onsubmit="checked_one()">
+                <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}"
+                      onsubmit="checked_one()">
                     <p>
                         <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入...">
                     </p>
@@ -40,7 +41,7 @@
                             <i class="fa fa-search" style="font-size:16px;color: #ffffff;"></i>
                         </a>
                     </button>
-                    <div class="search-tool" style="height: 40px;position: relative;top: 55px;left: -390px;">
+                    <div class="search-tool" style="height: 35px;position: relative;top: 55px;left: -390px;">
                         <span class="search-type" style="margin-right: 10px;display: inline-block;">搜索工具:</span>
                         <input id="keyword" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy"
                                value="KEYWORDS" checked>关键词
@@ -51,22 +52,21 @@
                         <input id="hot" type="radio" style="margin-left: 10px;margin-right: 4px;" name="searchBy"
                                value="HOT">最热
                     </div>
-                    <div class="search-tool-tip" style="display: none;">
-                        <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;">
-                            <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
-                                从
-                                <input id="after" type="date" style="text-align:center;line-height: 30px;">
-                                <input type="hidden" name="after" value="">
-                            </p>
-                            <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
-                                至
-                                <input id="before" type="date" style="text-align:center;line-height: 30px;">
-                                <input type="hidden" name="before" value="">
-                            </p>
-                            <button class="time-sure blue-btn" id="timeBtn" type="submit"
-                                    style="position: relative;top: 10px;">确认
-                            </button>
-                        </div>
+                    <div class="tip" style="position: relative;top: 45px;left: 0px;width: 460px;height:60px;display: none;">
+                        <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                            <span style="margin-left: 10px">从</span>
+                            <input id="after" type="date" style="text-align:center;line-height: 30px;">
+                            <input type="hidden" name="after" value="">
+                        </p>
+                        <p style="width: 170px;height: 30px;border: 1px solid #dbdbdb;">
+                            <span style="margin-left: 10px">至</span>
+                            <input id="before" type="date"
+                                   style="text-align:center;line-height: 30px;">
+                            <input type="hidden" name="before" value="">
+                        </p>
+                        <button class="time-sure blue-btn" id="timeBtn" type="submit"
+                                style="position: relative;top: 10px;">确认
+                        </button>
                     </div>
                 </form>
 
@@ -256,12 +256,12 @@
                             <div class="book-info">
                                 <h4>
                                     <a th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'"
-                                       target="_blank" th:text="${novelrec.title}"></a>
+                                       target="_blank" th:text="${novelrec.title}" th:title="${novelrec.title}"></a>
                                 </h4>
-                                <p th:text="${novelrec.description}"></p>
+                                <p th:text="${novelrec.description}" th:title="${novelrec.description}"></p>
                                 <div class="state-box cf">
-                                    <i th:text="${novelrec.tags}"></i>
-                                    <a class="author default" target="_blank" th:text="${novelrec.authors}"></a>
+                                    <i th:text="${novelrec.tags}" th:title="${novelrec.tags}"></i>
+                                    <a class="author default" target="_blank" th:text="${novelrec.authors}" th:title="${novelrec.authors}"></a>
                                 </div>
                             </div>
                         </li>
@@ -310,13 +310,13 @@
                                 th:if="${hotNovelStat.index} lt 1">
                                 <h3>
                                     <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
-                                       target="_blank" th:text="${hotNovel.title}"></a>
+                                       target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
                                 </h3>
                                 <p class="total">
                                     <b th:text="${hotNovel.hot}"></b>
                                     <span>人在看</span>
                                 </p>
-                                <p class="intro" th:text="${hotNovel.description}"></p>
+                                <p class="intro" th:text="${hotNovel.description}" th:title="${hotNovel.description}"></p>
                                 <a class="blue-btn"
                                    th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
                                    target="_blank">书籍详情</a>
@@ -340,12 +340,12 @@
                             <div class="book-info">
                                 <h3>
                                     <a th:href="${#request.contextPath}+'/novel/'+${hotNovel.uniqueId.toString()}+'/view'"
-                                       target="_blank" th:text="${hotNovel.title}"></a>
+                                       target="_blank" th:text="${hotNovel.title}" th:title="${hotNovel.title}"></a>
                                 </h3>
-                                <p th:text="${hotNovel.description}"></p>
+                                <p th:text="${hotNovel.description}" th:title="${hotNovel.description}"></p>
                                 <div class="state-box cf">
-                                    <i th:text="${hotNovel.tags}"></i>
-                                    <a class="author" target="_blank" th:text="${hotNovel.authors}"></a>
+                                    <i th:text="${hotNovel.tags}" th:title="${hotNovel.tags}"></i>
+                                    <a class="author" target="_blank" th:text="${hotNovel.authors}" th:title="${hotNovel.authors}"></a>
                                 </div>
                             </div>
                         </li>
@@ -407,13 +407,13 @@
                                 <div class="book-info fr">
                                     <h4>
                                         <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
-                                           target="_blank" th:text="${newNovel.title}"></a>
+                                           target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"></a>
                                     </h4>
                                     <p class="digital">
-                                        <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
+                                        <span style="font-size: 12px;" th:text="${newNovel.tags}" th:title="${newNovel.tags}"></span>
                                     </p>
                                     <p class="author">
-                                        <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
+                                        <a class="writer" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
                                     </p>
                                 </div>
                                 <div class="book-cover">
@@ -425,7 +425,7 @@
                                     <span></span>
                                 </div>
                             </div>
-                            <p class="info" th:text="${newNovel.description}"></p>
+                            <p class="info" th:text="${newNovel.description}" th:title="${newNovel.description}"></p>
                         </li>
                     </ul>
                 </div>
@@ -477,13 +477,13 @@
                                 <div class="book-info fr">
                                     <h4>
                                         <a th:href="${#request.contextPath}+'/novel/'+${newNovel.uniqueId.toString()}+'/view'"
-                                           target="_blank" th:text="${newNovel.title}"></a>
+                                           target="_blank" th:text="${newNovel.title}" th:title="${newNovel.title}"></a>
                                     </h4>
                                     <p class="digital">
-                                        <span style="font-size: 12px;" th:text="${newNovel.tags}"></span>
+                                        <span style="font-size: 12px;" th:text="${newNovel.tags}" th:title="${newNovel.tags}"></span>
                                     </p>
                                     <p class="author">
-                                        <a class="writer" target="_blank" th:text="${newNovel.authors}"></a>
+                                        <a class="writer" target="_blank" th:text="${newNovel.authors}" th:title="${newNovel.authors}"></a>
                                     </p>
                                 </div>
                                 <div class="book-cover">
@@ -495,7 +495,7 @@
                                     <span></span>
                                 </div>
                             </div>
-                            <p class="info" th:text="${newNovel.description}"></p>
+                            <p class="info" th:text="${newNovel.description}" th:title="${newNovel.description}"></p>
                         </li>
                     </ul>
                 </div>
@@ -505,8 +505,7 @@
     <div class="footer">
         <div class="box-center cf">
             <div class="footer-text">
-                <p>网络刷单是违法 切莫轻信有返利，网上交友套路多 卖惨要钱需当心，电子红包莫轻点 个人信息勿填写，仿冒客服来行骗 官方核实最重要，招工诈骗有套路 预交费用需谨慎，低价充值莫轻信
-                    莫因游戏陷套路，连接WIFI要规范 确认安全再连接，抢购车票有章法 确认订单再付款，白条赊购慎使用 提升额度莫轻信，网购预付有风险 正规渠道很重要 </p>
+                <p>网络刷单是违法，切莫轻信有返利；网上交友套路多，卖惨要钱需当心；电子红包莫轻点，个人信息勿填写；仿冒客服来行骗，官方核实最重要；招工诈骗有套路，预交费用需谨慎；低价充值莫轻信，莫因游戏陷套路；连接WIFI要规范，确认安全再连接；抢购车票有章法，确认订单再付款；白条赊购慎使用，提升额度莫轻信；网购预付有风险，正规渠道很重要。</p>
             </div>
             <div class="footer-menu dib-wrap">
                 <a href="https://www.wlgzs.net/" target="_blank">关于未来</a>
@@ -527,52 +526,7 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.js"></script>
 <script type="text/javascript" th:inline="javascript" async>
     let contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-
-    // function posters_get() {
-    //     let List1 = $('#list1');
-
-
-    //     $.ajax({
-    //                 url: contextPath + "/api/settings/get",
-    //                 type: 'GET',
-
-    //                 contentType: 'application/x-www-form-urlencoded',
-    //                 data: {
-    //                     key: 'covers',
-    //                 },
-    //                 success(data) {
-    //                     console.log(data);
-
-    //                     data[parseInt(4)]='https://gardel.top/future-novel/api/img/cdc3d531211ecee879b48094ee803d9f';
-    //                     $.ajax({        
-    //                                 url:contextPath+"/api/settings/put",
-    //                                 type: 'POST',
-    //                                 datatype: 'json',
-    //                                 contentType: 'application/json; charset=utf-8',
-    //                                 data:JSON.stringify({
-    //                                     key: 'covers',
-    //                                     value: data
-    //                                 }),
-    //                                           success(data) {
-    //                                             popup_over('icon-happy-l','#1afa29','添加成功');
-    //                                           },
-    //                                           error(jqXHR) {
-    //                                             let mes = JSON.parse(jqXHR.responseText);
-    //                                             console.log(mes);
-    //                                             popup_over('icon-happy-l','#1afa29',mes.errorMessage);
-    //                                           }
-    //                                         });
-    //                 },
-    //                 error(jqXHR) {
-    //                     let mes = JSON.parse(jqXHR.responseText);
-    //                     console.log(mes);
-    //                 }
-    //             });
-    //     }
-
-
-    // posters_get();
-
+//标签的图片
     function popup_over(icon, color, contant) {
         $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
         setTimeout(function () {
@@ -602,7 +556,7 @@
         iconElement.removeAttribute("class")
         iconElement.setAttribute("class", classify_icons[i])
     }
-
+//用户退出
     function logout() {
         const contextPath = /*[[${#request.getContextPath()}]]*/ 'http://localhost:8080/future-novel';
         $.ajax({
@@ -622,15 +576,25 @@
             }
         });
     }
+    //按照热度搜索
+    function checked_one() {
+        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal = $('input:radio[value="HOT"]:checked').val();
+        var submit_input = $(".submit-input").val();
+        if (timeVal != null || hotVal != null) {
+            return true;
+        }
+        if (submit_input == "") {
+            return false;
+        }
+    }
 </script>
 <script th:inline="javascript" type="text/javascript" async>
     $(".time-tip").click(function () {
-        $(".search-tool-tip").show();
+        $(".tip").show();
     });
     $(".time-sure").click(function () {
-        $("#time").attr("after", $("#after").val());
-        $("#time").attr("before", $("#before").val());
-        $(".search-tool-tip").hide();
+        $(".tip").hide();
     });
 
     $("#form").submit(function (event) {

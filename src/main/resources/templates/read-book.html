@@ -165,10 +165,9 @@
                 <div class="chapter-control">
                     <a id="chapterPrev" th:if="${previewSection} ne null" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${previewSection.uniqueId.toString()}">上一节</a>
                     <span></span>
-                    <a target="_blank">目录</a>
+                    <a href="../../WEB-INF/thymeleaf/look-book.html" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/view#freeRead'" target="_blank">目录</a>
                     <span></span>
-                    <a id="chapterNext" th:if="${nextSection} ne null
-" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${nextSection.uniqueId.toString()}">下一节</a>
+                    <a id="chapterNext" th:if="${nextSection} ne null" th:href="${#request.contextPath}+'/novel/'+${novel.uniqueId.toString()}+'/read?sectionId='+${nextSection.uniqueId.toString()}">下一节</a>
                 </div>
             </div>
         </div>
@@ -184,7 +183,7 @@
                     </a>
                 </dd>
                 <dd>
-                    <a th:href="@{/}">
+                    <a th:if="${session.currentAccount} ne null" th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
                         <i class="fa fa-book" style="font-size:20px;display: block;width: 16px;height: 16px;margin: 0 auto 6px;transition: color .3s;color: #000;"></i>
                         <span>书架</span>
                     </a>

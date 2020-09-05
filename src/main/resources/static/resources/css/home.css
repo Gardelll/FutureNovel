@@ -802,7 +802,7 @@
 .info-text .intro {
     font-size: 12px;
     overflow: hidden;
-    height: 66px;
+    height: 63px;
     margin-bottom: 20px;
     text-align: left;
     color: #626260;
@@ -954,7 +954,7 @@
 .center-book-list ul li .book-info p {
     font-size: 12px;
     overflow: hidden;
-    height: 34px;
+    height: 32px;
     margin-bottom: 10px;
     color: #666;
     text-overflow: ellipsis;
@@ -985,6 +985,7 @@
 .state-box .author {
     display: block;
     overflow: hidden;
+    text-overflow: ellipsis;
     height: 18px;
     margin-top: 2px;
     padding-right: 10px;
@@ -1267,7 +1268,7 @@
 .update-wrap .update-rec-list p.info {
     font-size: 12px;
     overflow: hidden;
-    height: 50px;
+    height: 48px;
     color: #666;
     text-overflow: ellipsis;
 }

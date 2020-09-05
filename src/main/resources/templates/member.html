@@ -179,7 +179,7 @@
                         </a>
                     </div>
                     <div class="home-user">
-                        <div class="blue-btn-little">
+                        <div class="blue-btn-little" th:if="${showAccount} eq null">
                             <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
@@ -237,9 +237,10 @@
                 <div id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title">我的书架</h2>
                     <a href="javascript:;" th:if="${session.currentAccount} ne null" id="addShelf">创建收藏夹</a>
-                    <a  th:if="${session.currentAccount} eq null and ${showAccount}eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th id="addShelf">创建收藏夹</a>
+                    <a th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th:id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
-                        <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
+                        <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput" autocomplete="off">
+                        <button type="button" id="SureToAddShelf" class="blue-btn" style="width: 65px">确定</button>
                     </div>
                     <ul class="shelf-list" id="shelfList" style="transition: height 200ms ease 0s;">
 
@@ -247,7 +248,7 @@
                 </div>
                 <div id="addToMyWork" method="post" class="work-main">
                     <h2 class="work-title">我的作品</h2>
-                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
+                    <a class="blue-btn fr" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -275,10 +276,10 @@
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
                         <a class="user-avatar-a" th:if="${session.currentAccount} eq ${showAccount}">
-                            <img class="user-avatar-img profileImgUrl" th:if="${user.profileImgUrl}ne null" th:src="${user.profileImgUrl}">
+                            <img class="user-avatar-img profileImgUrl" th:src="${user.profileImgUrl}">
                         </a>
                         <a class="user-avatar-a" th:if="${session.currentAccount} ne ${showAccount}">
-                            <img class="user-avatar-img profileImgUrl" th:if="" th:src="${showAccount.profileImgUrl}">
+                            <img class="user-avatar-img profileImgUrl" th:src="${showAccount.profileImgUrl}">
                         </a>
                     </div>
                     <div class="home-user">
@@ -317,9 +318,9 @@
                                     </div>
                                     <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.novelTitle}"></h4>
-                                        <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.chapterTitle}"></h4>
+                                        <h4 style="font-size: 15px;font-weight: 400;margin: 10px 0" th:text="${readHistory.chapterTitle}"></h4>
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.title}"></h4>
-                                        <p style="font-size: 10px;color: gray;margin-top: 10px;">
+                                        <p style="font-size: 10px;color: gray;margin-top: 10px;margin-bottom: 5px">
                                             <span class="book-rank-writer" th:text="${readHistory.authors}"></span>
                                             <city>|</city>
                                         </p>
@@ -347,7 +348,7 @@
                 <div id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title" th:if="${session.currentAccount} eq ${showAccount}">我的书架</h2>
                     <h2 class="shelf-title" th:if="${session.currentAccount} ne ${showAccount}">ta的书架</h2>
-                    <a href="javascript:;" th:if="${showAccount}eq null and ${session.currentAccount}eq null" id="addShelf">创建收藏夹</a>
+                    <a href="javascript:;" th:if="${showAccount} eq ${session.currentAccount}" id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
                         <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
                     </div>
@@ -359,7 +360,7 @@
                     <h2 class="work-title" th:if="${session.currentAccount} eq ${showAccount}">我的作品</h2>
                     <h2 class="work-title" th:if="${session.currentAccount} ne ${showAccount}">ta的作品</h2>
                     <div th:if="${session.currentAccount} eq ${showAccount}">
-                    <a class="blue-btn fl" style="background-color: greenyellow;color: black" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
+                    <a class="blue-btn fr" th:if="${session.currentAccount} eq ${showAccount}" th:href="@{/novel/create}">创建作品</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'RANDOM');" sortBy="RANDOM">随机排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'COPYRIGHT');" sortBy="COPYRIGHT">版权排序</a>
                     <a href="javascript:;" class="SortBy" onclick="$('#workList').empty();if($('#pd').text()=='false')getAccountAllNovel(1,'PUBDATE');" sortBy="PUBDATE">发布日期排序</a>
@@ -428,20 +429,20 @@
                     <div id="setAvatarForm" action="">
                         <div id="avatarChoose" class="avatar-choose">
                             <img class="avatar-show" style="float: left;margin-left: 40px;" id="profileImgUrl" th:src="${user.profileImgUrl}" alt="书友的头像">
-                            <img id="image-to-crop" style="float: left;width: 80px;height: 80px" onclick="document.getElementById('img-input').click()" class="preview-img" th:src="@{/resources/img/addimg.png}" />
+                            <img id="image-to-crop" style="float: left;width: 150px;height: 150px" onclick="document.getElementById('img-input').click()" class="preview-img" th:src="@{/resources/img/addimg.png}" />
                             <noscript>You need to enable JavaScript to run this app.</noscript>
                             <div id="upload-part" class="upload-img">
                                 <label for="img-input">选择图片</label><br />
-                                <input type="file" accept="image/*" id="img-input"></input>
+                                <input type="file" accept="image/*" id="img-input" style="margin: 16px 0"></input>
                                 <br />
                                 <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 100%;"></input>
                                 <br />
-                                <button class="blue-btn" id="confirm-btn">确认并上传</button>
+                                <button class="blue-btn" id="confirm-btn" style="margin: 20px 5px">确认并上传</button>
                             </div>
-                            <div class="progress">
-                                <!-- 可以替换成进度条之类的 -->
-                                <h1>请稍后...</h1>
-                            </div>
+<!--                            <div class="progress">-->
+<!--                                &lt;!&ndash; 可以替换成进度条之类的 &ndash;&gt;-->
+<!--                                <h1>请稍后...</h1>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -923,12 +924,12 @@
                             "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
                             "<div style='margin-left: 90px' class=\"our-say cf\"\n" +
                             "<h4>\n" +
-                            "<a href=\"###\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
+                            "<a href=\"#\">"+""+data[i].userName+""+"</a><a href='###' class='as' style='margin-left: 10px'>等级："+""+data[i].level+""+"</a>\n" +
                             "</h4>\n" +
-                            "<p id=\"\">"+""+data[i].text+""+"</p>\n" +
+                            "<p id=\"\"style='border: 1px solid;width: 211px;padding: 4px;margin: 10px 0'>"+""+data[i].text+""+"</p>\n" +
                             "<p>评分："+""+data[i].rating+""+"</p>\n" +
                             "<a type=\"button\" class=\"remove\" commentId='"+""+data[i].uniqueId+""+"' style=\"color: rgb(179, 174, 174);font-size: 14px;cursor: pointer;\">删除</a>\n" +
-                            "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
+                            "<a href='#' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
                             "</li>");
                     }
                 },
@@ -967,7 +968,6 @@
                 error: function(data) {
                     console.log(data);
                 }
-
             })
         }
         if($("#pd").text()=="false" && JSON.stringify(currentAccount)==JSON.stringify(showAccount)) {
@@ -1015,8 +1015,11 @@
             })
         }
         $("#clearAllHistory").click(function() {
+            var clearAllHistory=confirm("确定清空所有历史吗？");
+            if(clearAllHistory==true){
                 removeAllHistory();
                 $(".readHistory").remove();
+            }
             })
             //更改邮箱时获取验证码
         $("#get-code").click(function() {

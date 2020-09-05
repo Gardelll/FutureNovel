@@ -76,5 +76,23 @@ window.onload = function() {
     slider.onmouseover = stop;
     slider.onmouseout = play;
     play();
+// 按照时间搜索
+    function dateForm(){
+        var after = document.getElementById("after");
+        var before = document.getElementById("before");
+        var timeBtn = document.getElementById("timeBtn");
+        timeBtn.onclick = function () {
+            var afterStr = after.value.split("-");
+            var afterValue = afterStr[0] + "年" + afterStr[1] + "月" + afterStr[2] + "日 00:00:00";
+            var beforeStr = before.value.split("-");
+            var beforeValue = beforeStr[0] + "年" + beforeStr[1] + "月" + beforeStr[2] + "日 00:00:00";
+
+            $("input[name='after']").attr("value", afterValue)
+            console.log($("#after").attr("value"))
+            $("input[name='before']").attr("value", beforeValue)
+
+        }
+    }
+    dateForm();
 
 };

@@ -69,8 +69,8 @@
                     </li>
                     <li class="avatar" th:each="user:${session.currentAccount}">
                         <a th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}" target="_blank">
-                            <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%">
-                            <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;">
+                            <img th:if="${session.currentAccount} eq null" src="../../resources/img/avatar.png" th:src="@{/resources/img/avatar.png}" style="border-radius: 50%;position: relative;top: 3px">
+                            <img th:if="${session.currentAccount} ne null" th:src="${user.profileImgUrl}" style="border-radius: 50%;width: 40px;height: 40px;position: relative;top: 3px">
                         </a>
                     </li>
                 </ul>

@@ -74,7 +74,7 @@
 
  #create-work {
     padding: 8px 50px;
-    background-color: rgb(31, 169, 255);
+     background: #2470bf;
     border: none;
     outline: none;
     transition: 0.5s;
@@ -204,6 +204,7 @@
     left: 0;
     right: 583px;
     width: 500px;
+    height: 230px;
     max-width: 75%;
     max-height: 100%;
     margin: 20px auto;

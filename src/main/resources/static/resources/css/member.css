@@ -395,13 +395,13 @@ textarea {
 
 /*头像设置*/
 
-.avatar-choose {
-    padding: 25px 0px 40px;
-}
+/*.avatar-choose {*/
+/*    padding: 25px 0px 40px;*/
+/*}*/
 
 .avatar-show {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
     border-radius: 4px;
 }
 
@@ -464,7 +464,6 @@ input[type=radio] {
     line-height: 40px;
     top: -60px;
     right: 40px;
-    border: red 1px solid;
     background-color: rgb(191, 44, 36);
 }
 
@@ -472,7 +471,7 @@ input[type=radio] {
     line-height: 25px;
     font-size: 10px;
     height: 25px;
-    width: 45px;
+    width: 50px;
     right: 40px;
     top: -114px;
     color: white;
@@ -533,9 +532,9 @@ input[type=radio] {
     display: none;
 }
 
-.book-rank-writer {
-    margin: 0 5px;
-}
+/*.book-rank-writer {*/
+/*    margin: 0 5px;*/
+/*}*/
 
 .book-rank-synopsis {
     height: 107px;
@@ -565,7 +564,7 @@ input[type=radio] {
 }
 
 .input {
-    padding: 10px;
+    padding: 7px;
     border: 1px solid #e0e0e0;
     width: 149px;
 }
@@ -584,6 +583,7 @@ input[type=radio] {
 }
 #ShelfBox{
     display: none;
+    margin: 10px 0;
 }
 .NovelList{
     margin: 20px 0;
@@ -599,8 +599,8 @@ input[type=radio] {
 .upload-img {
     display: block;
     max-width: 75%;
-    height: 108px;
-    margin: 100px auto 0 auto;
+    height: 277px;
+    margin: 40px;
 }
 .preview-img {
     display: block;
@@ -633,4 +633,5 @@ input[type=radio] {
 }
 .cropper-container{
     margin-top: 100px;
+    height: 310px;
 }

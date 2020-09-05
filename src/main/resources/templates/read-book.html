@@ -17,6 +17,11 @@
 
 <body>
     <!-- 导航栏 -->
+    <div class="btn-box">
+        <!-- 这个是向上和向下的按钮 -->
+        <img id="shang" src="../static/resources/img/shang.png" th:src="@{/resources/img/shang.png}" height="200" width="200"/>
+        <img id="xia" src="../static/resources/img/xia.png" th:src="@{/resources/img/xia.png}" height="200" width="200"/>
+    </div>
     <div class="read-header">
         <div class="wrap-center" id="readHeader">
             <h1 class="top-logo">未来小说网</h1>
@@ -218,6 +223,8 @@
 </body>
 <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 <script>
+    $('#shang').click(function(){$('html,body').animate({scrollTop: '0px'}, 1000);return false;});
+    $('#xia').click(function(){$('html,body').animate({scrollTop: $('#commentSure').offset().top},1000);return false;});
     window.onmouseover = function() {
         var navCatalogBtn = document.getElementById("navCatalogBtn");
         var catalog = document.getElementById("catalog");

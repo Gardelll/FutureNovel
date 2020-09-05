@@ -16,8 +16,10 @@
 		<p id="SectionId" style="display: none">
 
 		</p>
+
 		<div class="modify-chapter">
 			<div class="box4">
+				<p id="SID"></p>
 			<input type="text" id="modify-chapter-name" class="form-inputs">
 			<button class="btn-sure">确定修改</button>
 			</div>
@@ -263,8 +265,8 @@
 							text:text,
 						}),
 						success:function (data) {
-							title
-							$()
+							$("#SID").text(data.title);
+							alert($("#SID").text());
 							getTitleId(data.uniqueId);
 							popup_over('icon-happy-l','#00ff0f',"添加小节成功");
 						$(".box").css("display","none");
@@ -500,7 +502,7 @@
 					AddSection(str);
 					$(_this).parent().append("<div class='sec' >\n" +
 							"\t\t\t\t\t\t\t\t<div class='works-content'>\n" +
-							"\t\t\t\t\t\t\t\t\t<span class=\"neirong\">" + "" + $("#title-name").val() + "" + "</span>\n" +
+							"\t\t\t\t\t\t\t\t\t<span class=\"neirong\">" + "" + $("#SID").text() + "" + "</span>\n" +
 							"\t\t\t\t\t\t\t\t\t<button class=\"modify2\">修改</button>\n" +
 							"\t\t\t\t\t\t\t\t\t<button class=\"delete2\">删除</button>\n" +
 							"\t\t\t\t\t\t\t\t</div>\n" +

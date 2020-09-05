@@ -663,3 +663,16 @@
 #comment li{
     border-bottom: 1px solid #d4d4d4;
 }
+.btn-box{
+    width: 50px;
+    position: fixed;
+    bottom: 100px;
+    right: 100px;
+}
+.btn-box img{
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin: 10px 0;
+    cursor: pointer;
+}

@@ -250,6 +250,7 @@
                                 <a target="_blank"
                                    th:href="${#request.contextPath}+'/novel/'+${novelrec.uniqueId.toString()}+'/view'">
                                     <img th:src="${novelrec.coverImgUrl}">
+                                    <p th:text="${novelrec.coverImgUrl}"></p>
                                 </a>
                             </div>
                             <div class="book-info">
@@ -646,32 +647,34 @@
     // 图片加载不出来时
     //11111111111
     // $("img").each(function () {
-    //     var errorimg = $(this).attr("th:src");
+    //     var errorimg = $(this).attr("src");
     //     console.log(errorimg);
     //     if (errorimg == undefined || errorimg == "" || errorimg.length < 1) {
-    //         console.log("test");
+    //        // console.log("test");
     //         errorimg =/*[[@{/resources/img/loading.jpg}]]*/ "../../resources/img/loading.jpg";
-    //         console.log(errorimg);
+    //        // console.log(errorimg);
     //     }
     // });
-    //222222222222
-    // $("img").each(function(){
-    //     var me = $(this);
-    //     if(me.is("[src!='']")){
-    //         return true;
-    //     }else{
-    //         me.is("[src=../../resources/img/loading.jpg]")
-    //     }
-    // });
-    //3333333333333
-    // window.onload = function () {
-    //     var objArry = document.getElementsByTagName("img");
-    //     for (var i = 0; i < objArry.length; i++) {
-    //         if (objArry[i].src == undefined || objArry[i].src == "" || objArry[i].src.length < 1) {
-    //             objArry[i].src = "../../resources/img/loading.jpg";
-    //         }
-    //     }
-    // }
+   // 222222222222
+   //  $("img").each(function(){
+   //      var me = $(this);
+   //      if(me.is("[src!='']")){
+   //          return true;
+   //      }else{
+   //          me.is("[src=../../resources/img/loading.jpg]")
+   //      }
+   //  });
+   // // 3333333333333
+    window.onload = function () {
+        var objArry = document.getElementsByTagName("img");
+        for (var i = 0; i < objArry.length; i++) {
+            console.log(objArry[i].src);
+            if (objArry[i].src == ""||objArry[i].src == undefined || objArry[i].src == "" || objArry[i].src.length < 1) {
+               console.log(objArry[i].src);
+                objArry[i].src = /*[[@{/resources/img/loading.jpg}]]*/"../../resources/img/loading.jpg";
+            }
+        }
+    }
 </script>
 <script type="text/javascript">
     function checked_one() {
@@ -685,8 +688,6 @@
             return false;
         }
     }
-
-
     window.onload = function(){
         var after = document.getElementById("after");
         var before = document.getElementById("before");

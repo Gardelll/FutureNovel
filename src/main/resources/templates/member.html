@@ -18,7 +18,7 @@
 
 <body>
     <p style="display: none" th:if="${session.currentAccount} ne null" id="AccoundId" th:text="${session.currentAccount.uid}"></p>
-     <p style="display: none" id="pd" th:text="session.currentAccount eq null"></p>
+     <p style="display: none" id="pd" th:text="${session.currentAccount} eq null"></p>
     <div class="wrap">
         <!-- 导航条 -->
         <div class="fixed-nav">
@@ -179,7 +179,7 @@
                         </a>
                     </div>
                     <div class="home-user">
-                        <div class="blue-btn-little" th:if="${showAccount} eq null">
+                        <div class="blue-btn-little">
                             <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
@@ -237,7 +237,7 @@
                 <div id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title">我的书架</h2>
                     <a href="javascript:;" th:if="${session.currentAccount} ne null" id="addShelf">创建收藏夹</a>
-                    <a  th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th id="addShelf">创建收藏夹</a>
+                    <a  th:if="${session.currentAccount} eq null and ${showAccount}eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}" th id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
                         <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
                     </div>
@@ -275,14 +275,14 @@
                 <div class="home-user-wrap">
                     <div class="home-user-avatar">
                         <a class="user-avatar-a" th:if="${session.currentAccount} eq ${showAccount}">
-                            <img class="user-avatar-img profileImgUrl" th:src="${user.profileImgUrl}">
+                            <img class="user-avatar-img profileImgUrl" th:if="${user.profileImgUrl}ne null" th:src="${user.profileImgUrl}">
                         </a>
                         <a class="user-avatar-a" th:if="${session.currentAccount} ne ${showAccount}">
-                            <img class="user-avatar-img profileImgUrl" th:src="${showAccount.profileImgUrl}">
+                            <img class="user-avatar-img profileImgUrl" th:if="" th:src="${showAccount.profileImgUrl}">
                         </a>
                     </div>
                     <div class="home-user">
-                        <div class="blue-btn-little" th:if="${showAccount} eq null">
+                        <div class="blue-btn-little" th:if="${showAccouunt}eq null">
                             <a href="javascript:open()" class="button-a button-icon">
                                 <i class="fa fa-cog" style="font-size:16px"></i>
                             </a>
@@ -347,7 +347,7 @@
                 <div id="addToShelf" method="post" class="shelf-main">
                     <h2 class="shelf-title" th:if="${session.currentAccount} eq ${showAccount}">我的书架</h2>
                     <h2 class="shelf-title" th:if="${session.currentAccount} ne ${showAccount}">ta的书架</h2>
-                    <a href="javascript:;" th:if="${showAccount} eq ${session.currentAccount}" id="addShelf">创建收藏夹</a>
+                    <a href="javascript:;" th:if="${showAccount}eq null and ${session.currentAccount}eq null" id="addShelf">创建收藏夹</a>
                     <div id="ShelfBox">
                         <input type="text" class="input"style="border: 1px solid rgb(68,119,222)" id="addShelfInput"><button type="button" id="SureToAddShelf" class="blue-btn">确定</button>
                     </div>
@@ -387,6 +387,7 @@
             <div class="tabs" id="tabView">
                 <a class="tabTarget1 checked">基本设置</a>
                 <a class="tabTarget2">头像设置</a>
+                <a class="tabTarget3">修改密码</a>
                 <a href="javascript:close()" id="close-setting" style="display: none;float: right;"><i class="fa fa-close" style="font-size:16px"></i></a>
             </div>
             <div class="tab-contents" id="tabContents" th:each="user:${session.currentAccount}">
@@ -409,7 +410,7 @@
                             <dl class="form-higher">
                                 <dt>验证码：</dt>
                                 <input name="activateCode" class="input" type="text" placeholder="请输入验证码" style="width: 149px;" autocomplete="off">
-                                <button type="button" id="get-code">获取验证码</button>
+                                <input type="button" id="get-code" value="获取验证码">
                             </dl>
                             <dl class="form-higher">
                                 <dt></dt>
@@ -442,6 +443,27 @@
                                 <h1>请稍后...</h1>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div id="tabTarget3" class="tab-content">
+                    <div class="tab-form">
+                            <input type="hidden" name="csrfToken" value="" class="elCsrf">
+                            <dl >
+                                <dt>新的密码：</dt>
+                                <input type="text" id="password1" class="input" value="">
+                            </dl>
+                            <dl class="form-higher">
+                                <dt>再次输入：</dt>
+                                <input type="text" id="password2" class="input" value="">
+                            </dl>
+                            <dl class="form-higher">
+                                <dt>验证码：</dt>
+                                <input name="activateCode" id="get-code2" class="input" type="text" placeholder="请输入验证码" style="width: 149px;" autocomplete="off">
+                                <button type="button" class="button" id="get-code2">获取验证码</button>
+                            </dl>
+                        <dl class="form-higher">
+                                <button id="set2" style="margin-left: 70px" type="button" class="button">确定</button>
+                        </dl>
                     </div>
                 </div>
             </div>
@@ -576,12 +598,24 @@
             $("#tabTarget2").removeClass("checked");
             $("#tabTarget1").addClass("checked");
             $(".tabTarget2").removeClass("checked");
+            $("#tabTarget3").removeClass("checked");
+            $(".tabTarget3").removeClass("checked");
         });
         $(".tabTarget2").click(function() {
             $(".tabTarget1").removeClass("checked");
             $(".tabTarget2").addClass("checked");
             $("#tabTarget1").removeClass("checked");
             $("#tabTarget2").addClass("checked");
+            $("#tabTarget3").removeClass("checked");
+            $(".tabTarget3").removeClass("checked");
+        });
+        $(".tabTarget3").click(function() {
+            $(".tabTarget1").removeClass("checked");
+            $(".tabTarget2").removeClass("checked");
+            $("#tabTarget1").removeClass("checked");
+            $("#tabTarget2").removeClass("checked");
+            $("#tabTarget3").addClass("checked");
+            $(".tabTarget3").addClass("checked");
         });
         $("#history").click(function() {
             $("#addToHistory").css("display", "block");
@@ -616,7 +650,9 @@
         $("#set").click(function() {
             tabAccountInfo();
         })
-
+        $("#set2").click(function() {
+            tabAccountInfo2();
+        })
         function tabAccountInfo() {
             const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
             $.ajax({
@@ -642,6 +678,38 @@
                     console.log(data);
                 }
             })
+        }
+        function tabAccountInfo2() {
+            const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+            if($("#password1").val().length<8||$("#password1").val().length>16){
+                popup_over('icon-sad','#d81e06',"请输入8-16位密码");
+            }else if($("#password1").val()!=$("#password2").val()){
+                popup_over('icon-sad','#d81e06',"前后密码输入不一致");
+            }else if($("#get-code2").val().length==0){
+                popup_over('icon-sad','#d81e06',"验证码不能为空");
+            }
+            else{
+            $.ajax({
+                url: contextPath+"/api/account/edit",
+                type: "POST",
+                datatype: "json",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                   password:$("#password1").val(),
+                    activateCode:$("#get-code2").val()
+                }),
+                success: function(data) {
+                    //          console.log(data);
+                    popup_over('icon-happy-l','#00ff0f',"修改成功");
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1500)
+                },
+                err: function(data) {
+                    console.log(data);
+                }
+            })
+            }
         }
         //获取浏览历史
         function getReadHistory() {
@@ -882,6 +950,7 @@
                     page: page
                 },
                 success: function(data) {
+                    if(data!=undefined){
                     for(var i=0;i<data.length;i++){
                         $("#commentHistory").append("<li>\n" +
                             "<img src='" + "" + data[i].profileImgUrl+ "" + "' class=\"profileImgUrl\" style='float: left'>\n" +
@@ -894,10 +963,11 @@
                             "<a href='###' class='as' style='float: right'>"+""+data[i].createTime+""+"</a></div>\n" +
                             "</li>");
                     }
-                },
+                }},
                 error: function(data) {
                     console.log(data);
                 }
+
             })
         }
         if($("#pd").text()=="false" && JSON.stringify(currentAccount)==JSON.stringify(showAccount)) {
@@ -982,6 +1052,42 @@
                     const data = JSON.parse(jqXHR.responseText);
                     alert("发送失败，请稍候再试:" + data.errorMessage);
                     $("#get-code").attr('disabled', false).html("发送");
+                }
+            });
+        });
+        $("#get-code2").click(function() {
+            const email = $("#txtemailnumber").val();
+            if (!$("#txtemailnumber").val().match(/^(\w){3,}(\.\w+)*@(\w){2,}((\.\w+)+)$/)) {
+                alert("请填写正确的邮箱地址");
+                return;
+            }
+            $("#get-code2").attr('disabled', true).html("30秒后可重试");
+            $.ajax({
+                url: /*[[${#request.getContextPath()} + '/api/sendCaptcha']]*/ "/",
+                type: 'POST',
+                dataType: "JSON",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    email: email
+                }),
+                success: function() {
+                    $("#get-code2").attr('disabled', true).html("30秒后可重试");
+                    const interval = setInterval(function() {
+                        const htmlobj = $("#get-code2");
+                        let remaintime = parseInt(htmlobj.html().substr(0, 2));
+                        remaintime--;
+                        if (remaintime < 10) remaintime = "0" + remaintime;
+                        htmlobj.html(remaintime + "秒后可重试");
+                    }, 1000);
+                    setTimeout(function() {
+                        $("#get-code2").attr('disabled', false).html('重新发送');
+                        clearInterval(interval);
+                    }, 30000);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    const data = JSON.parse(jqXHR.responseText);
+                    alert("发送失败，请稍候再试:" + data.errorMessage);
+                    $("#get-code2").attr('disabled', false).html("发送");
                 }
             });
         });

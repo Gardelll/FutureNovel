@@ -85,7 +85,8 @@
             <div class="book-information cf" th:object="${novel}">
                 <div class="book-img">
                     <a id="bookImg">
-                        <img src="../../resources/img/万族之劫.jpg" th:src="*{coverImgUrl}">
+                        <img th:if="*{coverImgUrl}" th:src="*{coverImgUrl}"/>
+                        <img th:unless="*{coverImgUrl}" th:src="@{/resources/img/loading.jpg}"/>
                     </a>
                 </div>
                 <div class="book-info">
@@ -105,8 +106,8 @@
                         <a class="blue-btn" href="#freeRead">免费试读</a>
                         <a class="blue-btn add-book"  th:if="${session.currentAccount} ne null"  href="javascript:;" id="addBookBtn">加入书架</a>
                         <a class="blue-btn add-book" id="addBookBtn" th:if="${session.currentAccount} eq null" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">加入书架</a>
-                        <div id="box">
-                            <select id="Shelf" style="width:110px;margin-top:3px;float:left" class="blue-btn">
+                        <div id="box" style="margin: 10px 3px">
+                            <select id="Shelf" style="width:110px;margin-top:3px;float:left;border-radius: 0" class="blue-btn">
                                 <option selected>请选择收藏夹</option>
                             </select>
                             <button style="margin-top:3px;float: left" id="sureAdd" class="blue-btn" type="button">确定</button>
@@ -140,7 +141,7 @@
                                 <b>出版社</b>
                                 <div class="detail">
                                     <strong th:text="${novel.publisher}"></strong>
-                                    <p class="honor-icon cf" style="font-size: 12px;" th:text="${novel.pubdate}"></p>
+                                    <p class="honor-icon cf" style="font-size: 12px;" th:text="${{novel.pubdate}}"></p>
                                 </div>
                             </li>
                             <li class="update">
@@ -238,7 +239,6 @@
 </body>
 <script th:inline="javascript" async></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script src="../../resources/js/search.js" th:src="@{/resources/js/search.js}"></script>
 <script th:inline="javascript" async>
     function popup_over(icon, color, contant) {
         $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');

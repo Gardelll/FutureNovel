@@ -168,7 +168,7 @@
     font-size: 14px;
     overflow: hidden;
     height: 26px;
-    margin-bottom: 48px;
+    margin-bottom: 35px;
     color: rgba(0, 0, 0, .4);
 }
 
@@ -178,7 +178,6 @@
 }
 
 .book-cover-wrap .info-list {
-    width: 385px;
     margin: 0 auto 48px;
 }
 

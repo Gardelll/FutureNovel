@@ -94,5 +94,17 @@ window.onload = function() {
         }
     }
     dateForm();
-
+    //时间搜索、热度搜索，输入框可无值
+    function checked_one() {
+        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal = $('input:radio[value="HOT"]:checked').val();
+        var submit_input = $(".submit-input").val();
+        if (timeVal != null || hotVal != null) {
+            return true;
+        }
+        if (submit_input == "") {
+            return false;
+        }
+    }
+    checked_one()
 };

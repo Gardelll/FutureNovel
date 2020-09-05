@@ -68,7 +68,8 @@
                     <p style="display: none" id="getNovelId" th:text="*{uniqueId}"></p>
                     <div class="book-cover-wrap">
                         <div class="book-photo">
-                            <img src="../../resources/img/万族之劫.jpg" th:src="*{coverImgUrl}" />
+                            <img th:if="*{coverImgUrl}" th:src="*{coverImgUrl}"/>
+                            <img th:unless="*{coverImgUrl}" th:src="@{/resources/img/loading.jpg}"/>
                         </div>
                         <h1 th:text="*{title}">万族之劫</h1>
                         <h2 th:each="author : *{authors}">
@@ -76,25 +77,20 @@
                         </h2>
                         <div class="info-list cf">
                             <ul>
-                                <li>
-                                    <p>都市</p>
+                                <li style="width: 200px;text-align: center">
+                                    <p th:text="*{tags}">都市</p>
                                     <span>类型</span>
                                 </li>
-                                <li>
-                                    <p>2020.02.06</p>
+                                <li style="width: 230px;text-align: center;">
+                                    <p th:text="*{{pubdate}}">2020.02.06</p>
                                     <span>上架</span>
                                 </li>
-                                <li>
-                                    <p><i>330.67</i>万</p>
+                                <li style="width: 100px;text-align: center">
+                                    <p><i th:text="|${section.text.length()}|">330.67</i></p>
                                     <span>连载（字）</span>
                                 </li>
                             </ul>
                         </div>
-<!--                        <h3>与<span>203.03万</span>位书友共同开启《万族之劫》的都市之旅</h3>-->
-<!--                        <h4>-->
-<!--                            <em>「</em>盟主<em>」</em><a target="_blank">壶中日月，袖里乾坤。</a>-->
-<!--                            <em>「</em>盟主<em>」</em><a target="_blank">幻羽</a>-->
-<!--                        </h4>-->
                     </div>
                 </div>
                 <!-- 中间阅读章节内容 -->
@@ -122,8 +118,7 @@
                                 <div class=""></div>
                             </div>
                         </div>
-                        <div class="read-content" th:utext="${section.text}">
-                        </div>
+                        <div class="read-content" th:utext="${section.text}"></div>
                         <div class="admire-wrap">
 <!--                            <a class="report-btn" id="reportBtn"><i class="fa fa-exclamation-triangle" style="font-size:18px;display: inline-block;min-width: 18px;margin-right: 3px;vertical-align: -2px;"></i>举报</a>-->
                             <div class="read-btn-box">

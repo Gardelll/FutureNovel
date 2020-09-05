@@ -203,7 +203,8 @@
                             <li style="margin: 10px 0" th:each="readHistory:${readHistory}">
                                 <div class="book-rank-list" style="overflow: hidden;">
                                     <div class="book-rank-img">
-                                        <img th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
+                                        <img th:if="${readHistory.coverImgUrl}" th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
+                                        <img th:unless="${readHistory.coverImgUrl}" th:src="@{/resources/img/loading.jpg}" style="width: 100px;float: left;" />
                                     </div>
                                     <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.novelTitle}"></h4>
@@ -314,7 +315,8 @@
                             <li style="margin: 10px 0" th:each="readHistory:${readHistory}">
                                 <div class="book-rank-list" style="overflow: hidden;">
                                     <div class="book-rank-img">
-                                        <img th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
+                                        <img th:if="${readHistory.coverImgUrl}" th:src="${readHistory.coverImgUrl}" style="width: 100px;float: left;" />
+                                        <img th:unless="${readHistory.coverImgUrl}" th:src="@{/resources/img/loading.jpg}" style="width: 100px;float: left;" />
                                     </div>
                                     <div class="book-rank-list-text" style="width:425px;float:left;margin:5px 0 0 20px;">
                                         <h4 style="font-size: 15px;font-weight: 400;" th:text="${readHistory.novelTitle}"></h4>
@@ -874,6 +876,9 @@
                     if(data!=undefined){
                         console.log(data);
                         for (var i = 0; i < data.length; i++) {
+                            if( data[i].novels[j].coverImgUrl==null){
+                            data[i].novels[j].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
+                        }
                             $("#workList").append("<li>\n" +
                                 "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                                 "                                <div class=\"book-rank-img\">\n" +
@@ -1110,6 +1115,9 @@
                         $("#shelfList").append("<button class='removeSelf blue-btn' uniqueId='" + "" + data[i].uniqueId + "" + "'>删除</button><a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
                             "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList' id='NovelList" + "" + data[i].uniqueId + "" + "'></ul>");
                         for (let j = 0; j < data[i].novels.length; j++) {
+                            if( data[i].novels[j].coverImgUrl==null){
+                                data[i].novels[j].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
+                            }
                             $("#NovelList"+data[i].uniqueId).append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
                                 "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                                 "                                <div class=\"book-rank-img\">\n" +
@@ -1154,6 +1162,9 @@
                         $("#shelfList").append("<a href=\"javascript:;\" uniqueId='" + "" + data[i].uniqueId + "" + "'  class=\"slidPar\">" + "" + data[i].title + "" + "</a>" +
                             "<ul uniqueId='" + "" + data[i].uniqueId + "" + "' class='NovelList' id='NovelList" + "" + data[i].uniqueId + "" + "'></ul>");
                         for (let j = 0; j < data[i].novels.length; j++) {
+                            if( data[i].novels[j].coverImgUrl==null){
+                                data[i].novels[j].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
+                            }
                             $("#NovelList"+data[i].uniqueId).append("<li style=\"margin: 10px 0\" class='a' uniqueId='" + "" + data[i].uniqueId + "" + "' >\n" +
                                 "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                                 "                                <div class=\"book-rank-img\">\n" +

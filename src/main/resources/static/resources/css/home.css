@@ -1304,6 +1304,8 @@
 .update-wrap .update-list-wrap .update-list table td {
     border-bottom: 1px solid #ebebeb;
     padding: 0 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .update-wrap .update-list-wrap .update-list table td a.classify {

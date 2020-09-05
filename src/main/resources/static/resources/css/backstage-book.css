@@ -82,7 +82,8 @@
 
 table tbody {
   display: block;
-  height: 195px;
+  min-height: 250px;
+  max-height: 413px;
   overflow-y: scroll;
   overflow-x: hidden;
   border-bottom: 1px solid #BBBBBB; 

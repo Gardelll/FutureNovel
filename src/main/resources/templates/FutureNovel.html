@@ -528,7 +528,7 @@
     let contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 //标签的图片
     function popup_over(icon, color, contant) {
-        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
+        $('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="fa ' + icon + '" style="font-size: 30px;color: ' + color + ';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> ' + contant + '</span></div>');
         setTimeout(function () {
             $('.popup_over').remove();
         }, 1500)
@@ -566,7 +566,7 @@
             contentType: "application/json;charset=UTF-8",
             data: {},
             success: function (data) {
-                popup_over('icon-happy-l', '#00ff0f', "退出成功");
+                popup_over('fa-thumbs-up', '#00ff0f', "退出成功");
                 setTimeout(function () {
                     window.location.reload();
                 }, 1500)

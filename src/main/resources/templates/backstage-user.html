@@ -28,7 +28,7 @@
                     <li class="s-name fl"></li>
                     <li class="admin fl" id="admin"><span th:text="${user.userName}"></span><i class="iconfont icon-downarrow"></i>
                         <ul class="dropdown" id="dropdown" style="display: none;">
-                            <li><a th:href="'http://localhost:8080/future-novel/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
+                            <li><a th:href="${#request.contextPath}+'/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
                             <li><a href="login.html" th:href="@{/login}">切换账号</a></li>
                             <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
                         </ul>
@@ -106,6 +106,10 @@
     var curPage=1,
         onepage=$('#change_item_user').find('option:selected').val();
     $(document).ready(function(){
+        //用户名查重
+        $('#popup_userName_add').change(function(){
+
+        })
         //转换部分返回值为中文
         function permission(permission){
             if(permission=='USER'){
@@ -160,7 +164,7 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
+                                        // <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;" class="user_exper";>${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>

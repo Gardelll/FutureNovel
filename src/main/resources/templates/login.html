@@ -51,6 +51,7 @@
 </body>
 <script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 <script th:inline="javascript" async>
+    let contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
     $(document).ready(function() {
         $('#login').on('click', function() {
             let us = $('#us').val(),

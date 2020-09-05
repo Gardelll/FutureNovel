@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
-    <title>Future book</title>
+    <title>未来小说网</title>
 </head>
 <!-- 作为公共部分分离 -->
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
@@ -27,7 +27,7 @@
                 <li class="s-name fl"></li>
                 <li class="admin fl" id="admin"><span th:text="${user.userName}"></span><i class="iconfont icon-downarrow"></i>
                     <ul class="dropdown" id="dropdown" style="display: none;">
-                        <li><a th:href="'/future-novel/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
+                        <li><a th:href="'/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
                         <li><a href="login.html" th:href="@{/login}">切换账号</a></li>
                         <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
                     </ul>
@@ -39,7 +39,7 @@
     <div class="catalog" id="catalog">
     <div class="side fl">
         <div class="logo">
-            <span>future book</span>
+            <span>未来小说网</span>
         </div>
         <ul>
             <li><a href="backstage-book.html" th:href="@{/admin/books}">书籍管理</a></li>
@@ -50,7 +50,7 @@
     </div>
     </div>
     <div class="contant" id="contant">
-        <span>欢迎来到future book</span>
+        <span>欢迎来到 未来小说网</span>
     </div>
 <!-- 作为公共部分分离/ -->
 </body>
@@ -59,4 +59,7 @@
 </script>
 <script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 <!-- 作为公共部分分离/ -->
+<script th:inline="javascript" async> 
+const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+</script>
 </html>

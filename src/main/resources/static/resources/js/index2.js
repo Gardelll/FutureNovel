@@ -99,7 +99,6 @@ function posters_put(index,url){
 // };
 //搜索用户
 function seek(){
-
         var sstxt=$('#seek_phone').val();
         var sstxt2=$('#seek_per').find('option:selected').val();
         $('table tbody tr').hide()
@@ -198,6 +197,7 @@ function popup_book(id,name,publisher){
                                     <span class="">
                                     <select name="status" class="item" id="popup_copyright" οnchange="checkinfo_location();" >
                                     <option value="REPRINT" >reprint</option>
+                                    <option value="ORIGINAL" >original</option>
                                     <option value="NO_COPYRIGHT" >无版权</option>
                                     </select>
                                     </div>
@@ -222,7 +222,7 @@ function popup_user_add(){
                             <div class="item">
                                 <label class="">用户名</label>
                                 <span class="">
-                                    <input type="text" class="" id="popup_user_add" name="user" placeholder="输入用户名"></span></div>
+                                    <input type="text" class="" id="popup_userName_add" name="user" placeholder="输入用户名"></span></div>
                                     <div class="item">
                                         <label>邮箱</label>
                                         <span class="">
@@ -638,7 +638,7 @@ function refresh_comment(){
 //批量添加用户ajax
 function user_add(){
     let Arr=[],
-        userName=$('#popup_user_add').val(),
+        userName=$('#popup_userName_add').val(),
         userEmail=$('input[name="email"]').val(),
         password=$('input[name="pas"]').val(),
         phone=$('input[name="phone"]').val();
@@ -941,7 +941,7 @@ function logout_user(){
         error: function(jqXHR){
             popup_over('icon-sad','#d81e06','退出失败');
             console.log(jqXHR.responseJSON.errorMessage);
-        }
+        }   
     })
 }
 //判断当前图片是否存在

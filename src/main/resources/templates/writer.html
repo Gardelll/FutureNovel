@@ -222,7 +222,7 @@
 					datatype:"json",
 					contentType: "application/json;charset=UTF-8",
 					data: JSON.stringify({
-						title:$("#book-name2").val(),
+						title:$("#book-name2").val().length==0?null:$("#book-name2").val().length,
 					}),success:function (data) {
 						//保存章节id和小说id
 						//localStorage.setItem("parentUUID",data.parentUUID);
@@ -263,6 +263,8 @@
 							text:text,
 						}),
 						success:function (data) {
+							title
+							$()
 							getTitleId(data.uniqueId);
 							popup_over('icon-happy-l','#00ff0f',"添加小节成功");
 						$(".box").css("display","none");
@@ -481,12 +483,9 @@
 				})
 			}
 			$("#sure-bookName").click(function () {
-				if($("#book-name2").val().length==0){
-					popup_over('icon-sad','#d81e06',"章节名称不能为空");
-				}else{
 					//创建章节的交互
 					AddTitle();
-				}
+
 			});
 			$(".writer-list").on('click','.first',function(){
 				$(this).next(".sec").slideToggle("slow");

@@ -8,7 +8,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../../resources/css/WorkInformation.css" th:href="@{/resources/css/WorkInformation.css}">
@@ -102,18 +102,17 @@
         $("#create-work").click(function() {
             if ($("#book-name").val().length > 15) {
                 popup_over('icon-sad','#d81e06',"书名不能超过15个字");
-            } else if ($("#book-type").val().length == "") {
+            } else if ($("#book-type").val() == "") {
                 popup_over('icon-sad','#d81e06',"书名不能为空");
-            } else if ($("#book-type").val().length == "") {
+            } else if ($("#book-type").val() == "") {
                 popup_over('icon-sad','#d81e06',"书品系列不能为空");
             } else if ($("#copyright").val() == "-请选择-") {
                 popup_over('icon-sad','#d81e06',"请选择版权");
             } else if ($("#book-press").val() == "") {
                 popup_over('icon-sad','#d81e06',"请输入出版社");
-            }else if($("#image-to-crop").attr("src")=="/resources/img/addimg.png"){
-                popup_over('icon-sad','#d81e06',"请选择封面图");
             }
             else {
+                const str = $("#image-to-crop").attr("src").endsWith("/img/addimg.png")?null:$("#image-to-crop").attr("src");
                 var  $inputArr  =  $('.tags-text');
                 var  result  =   [];
                 $inputArr.each(function() {
@@ -142,7 +141,7 @@
                         "series": $("#book-type").val(),
                         "publisher": $("#book-press").val(),
                         "pubdate": getNowFormatDate(),
-                        "coverImgUrl":$("#image-to-crop").attr("src")
+                        "coverImgUrl":str
                     }),
                     success: function(data) {
                         $("#TEXT").html("创建成功");

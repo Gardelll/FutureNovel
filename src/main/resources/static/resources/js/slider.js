@@ -11,11 +11,11 @@ window.onload = function() {
         var newLeft = parseInt(list1.style.left) + offset;
         list1.style.left = newLeft + 'px';
         //无限滚动判断
-        if (newLeft > -748) {
-            list1.style.left = -3740 + 'px';
+        if (newLeft > 0) {
+            list1.style.left = -2992 + 'px';
         }
-        if (newLeft < -3740) {
-            list1.style.left = -748 + 'px';
+        if (newLeft < -2992) {
+            list1.style.left = 0 + 'px';
         }
     }
 

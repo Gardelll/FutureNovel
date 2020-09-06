@@ -113,9 +113,9 @@
                     <div class="focus_slider clearfix">
                         <div class="sliderBW">
                             <div id="slider_con1">
-                                <div id="list1" style="left: -748px;">
-                                       <img th:each="imgurl : ${covers}" th:src="${imgurl}"
-                                             th:if="${imgurlStat.index} lt 6">
+                                <div id="list1" style="left: 0px;">
+                                       <img class="CoverImg" th:each="imgurl : ${covers}" th:src="${imgurl.key}"
+                                             th:if="${imgurlStat.index} lt 6" th:attr="novelID=${imgurl.value}">
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>
@@ -566,6 +566,9 @@
         "fa fa-database",
         "fa fa-flash",
     ]
+    $(".CoverImg").click(function () {
+        window.location.href=contextPath+"/novel/"+$(this).attr("novelID")+"/view";
+    })
     const list = document.getElementsByClassName("classify-list")[0].getElementsByTagName("cite")
     for (let i = 0; i < list.length; i++) {
         const iconElement = list[i].getElementsByTagName("i")[0];

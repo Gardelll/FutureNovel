@@ -226,7 +226,7 @@ function refresh_user(onepage) {
                         $('#a').append(`<tr>
                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                         <th style="width: 13%;">${data[i].userName}</th>
-                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
+                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                         <th style="width: 4%;">${data[i].experience}</th>
                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -262,7 +262,7 @@ function refresh_user(onepage) {
                             $('#a').append(`<tr>
                                 <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                 <th style="width: 13%;">${data[i].userName}</th>
-                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
+                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                                 <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                 <th style="width: 4%;">${data[i].experience}</th>
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -299,7 +299,7 @@ function refresh_user(onepage) {
                             $('#a').append(`<tr>
                                 <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                 <th style="width: 13%;">${data[i].userName}</th>
-                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
+                                <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                                 <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                 <th style="width: 4%;">${data[i].experience}</th>
                                 <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -334,7 +334,7 @@ function refresh_user(onepage) {
                                 $('#a').append(`<tr>
                                     <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                     <th style="width: 13%;">${data[i].userName}</th>
-                                    <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../resources/img/avatar.png'"></img></th>
+                                    <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                                     <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                     <th style="width: 4%;">${data[i].experience}</th>
                                     <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>
@@ -600,8 +600,17 @@ function user_add() {
             data: JSON.stringify(Arr),
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                popup_over('icon-happy-l', '#1afa29', '添加成功');
-                console.log(data);
+                let x=data.failed[0].error.errorMessage;
+                if(data.failed.length==0){
+                    popup_over('icon-happy-l','#00ff0f',"添加成功");
+                }else{
+                    popup_over('icon-sad', '#d81e06', x);
+                    console.log(x);
+                }
+                // console.log(data);
+                // console.log(data[1]);
+                // console.log(data.failed)
+                // console.log(data.failed[0])
                 refresh_user(onepage)
             },
             error: function (jqXHR) {

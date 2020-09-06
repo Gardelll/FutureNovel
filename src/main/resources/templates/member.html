@@ -822,7 +822,9 @@
                 success: function(data) {
                      if(data!=undefined){
                     for (var i = 0; i < data.length; i++) {
-
+                        if( data[i].coverImgUrl==null){
+                            data[i].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
+                        }
                         $("#workList").append("<li>\n" +
                             "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                             "                                <div class=\"book-rank-img\">\n" +
@@ -873,9 +875,9 @@
                     if(data!=undefined){
                         console.log(data);
                         for (var i = 0; i < data.length; i++) {
-                            if( data[i].novels[j].coverImgUrl==null){
-                            data[i].novels[j].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
-                        }
+                            if( data[i].coverImgUrl==null){
+                            data[i].coverImgUrl=/*[[@{/resources/img/loading.jpg}]]*/'';
+                            }
                             $("#workList").append("<li>\n" +
                                 "                            <div class=\"book-rank-list\" style=\"overflow: hidden;\">\n" +
                                 "                                <div class=\"book-rank-img\">\n" +

@@ -114,8 +114,8 @@
                         <div class="sliderBW">
                             <div id="slider_con1">
                                 <div id="list1" style="left: -748px;">
-                                    <img th:each="imgurl : ${covers}" th:src="${imgurl}"
-                                         th:if="${imgurlStat.index} lt 6">
+                                       <img th:each="imgurl : ${covers}" th:src="${imgurl}"
+                                             th:if="${imgurlStat.index} lt 6">
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>
@@ -538,7 +538,18 @@
             $('.popup_over').remove();
         }, 1500)
     };
-
+    //时间搜索、热度搜索，输入框可无值
+    function checked_one() {
+        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal = $('input:radio[value="HOT"]:checked').val();
+        var submit_input = $(".submit-input").val();
+        if (timeVal != null || hotVal != null) {
+            return true;
+        }
+        if (submit_input == "") {
+            return false;
+        }
+    }
     const classify_icons = [
         "fa fa-fire",
         "fa fa-diamond",

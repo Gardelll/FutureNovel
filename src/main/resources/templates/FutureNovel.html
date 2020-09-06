@@ -100,7 +100,7 @@
                             <i class="fa fa-fire" style="float: left;margin: 5px 12px 5px 0;"></i>
                             <span class="info">
                                     <i class="getText" th:text="${tag}"></i>
-                                </span>
+                            </span>
                         </cite>
                     </a>
                 </dd>
@@ -623,9 +623,9 @@
         }
     });
     // 按标签搜索
-    $(".search-bt").click(function () {
-        console.log($(this).children().children(".info").children().text());
-        $("#goSearch1").attr("value", $(this).children().children(".info").children().text());
+    $(".info").click(function () {
+        console.log($(this).children().text());
+        $("#goSearch1").attr("value", $(this).children().text());
         $("#form").submit();
     });
 

@@ -73,8 +73,6 @@ window.onload = function() {
         })(i)
     }
 
-    slider.onmouseover = stop;
-    slider.onmouseout = play;
     play();
 // 按照时间搜索
     function dateForm(){

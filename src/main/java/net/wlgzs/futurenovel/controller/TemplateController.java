@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -147,8 +148,8 @@ public class TemplateController extends AbstractAppController implements ErrorCo
 
         all.sort((o1, o2) -> Long.compare(o2.getHot(), o1.getHot()));
 
-        var covers = settingService.get("covers", List.class);
-        if (covers != null) {
+        var covers = settingService.get("covers", Map.class);
+        if (covers != null && !covers.isEmpty()) {
             model.addAttribute("covers", covers);
         } else {
             HashSet<String> covers2 = all.stream()

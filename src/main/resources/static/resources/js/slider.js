@@ -88,23 +88,11 @@ window.onload = function() {
             var beforeValue = beforeStr[0] + "年" + beforeStr[1] + "月" + beforeStr[2] + "日 00:00:00";
 
             $("input[name='after']").attr("value", afterValue)
-            console.log($("#after").attr("value"))
+            // console.log($("#after").attr("value"))
             $("input[name='before']").attr("value", beforeValue)
 
         }
     }
     dateForm();
-    //时间搜索、热度搜索，输入框可无值
-    function checked_one() {
-        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
-        var hotVal = $('input:radio[value="HOT"]:checked').val();
-        var submit_input = $(".submit-input").val();
-        if (timeVal != null || hotVal != null) {
-            return true;
-        }
-        if (submit_input == "") {
-            return false;
-        }
-    }
-    checked_one()
+
 };

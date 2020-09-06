@@ -20,13 +20,13 @@
             <div class="nav-list site-nav fl">
                 <ul>
                     <li th:each="tagTwo:${tags}" th:if="${tagTwoStat.index} lt 6">
-                        <a th:text="${tagTwo}"></a>
+                        <a class="search-info" th:text="${tagTwo}"></a>
                     </li>
                     <li class="more">
                         <a>更多<span></span></a>
                         <div class="dropdown">
-                            <a target="_blank">全部作品</a>
-                            <a target="_blank" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
+                            <a>全部作品</a>
+                            <a class="search-info" th:each=" tagTwo: ${tags}" th:if="${tagTwoStat.index} gt 5" th:text="${tagTwo}"></a>
                         </div>
                     </li>
                 </ul>
@@ -35,12 +35,12 @@
                 <ul>
                     <p id="pd" style="display: none" th:text="${session.currentAccount} eq null"></p>
                     <li id="min-search">
-                        <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}">
-                            <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." onkeyup="doSearch(event)" style="padding: 5px;">
+                        <form id="form" method="POST" th:action="@{/search(page=1,per_page=5)}">
+                            <input class="search-box" id="goSearch" name="keywords" type="text" placeholder="请输入..." value="" style="padding: 5px;">
                             <input id="keyword" class="fixed-input hide" style="margin-left: 10px;margin-right: 4px;" type="hidden" name="searchBy" value="KEYWORDS">
                             <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
                             <button id="search-btn" for="searchSubmit" type="submit" style="background-color: #2470bf;">
-								<a onclick="doSearch(null)" style="padding-left: 5px;">
+								<a style="padding-left: 5px;">
 									<i class="fa fa-search" style="font-size:16px;color: #ffffff;margin: 16px 20px 0 0;"></i>
 								 </a>
 							</button>
@@ -348,6 +348,12 @@
     $(".SortBy").click(function () {
         $("#searchSubmitType").attr("value",$(this).attr("SortBy"));
     })
+    // 按照标签搜索
+    $(".search-info").click(function () {
+        console.log($(this).text());
+        $("#goSearch").attr("value", $(this).text());
+        $("#form").submit();
+    });
 </script>
 
 </html>

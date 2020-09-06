@@ -32,7 +32,7 @@
                 <form id="form" method="POST" target="_blank" th:action="@{/search(page=1,per_page=5)}"
                       onsubmit="checked_one()">
                     <p>
-                        <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入...">
+                        <input class="search-box" id="goSearch1" name="keywords" type="text" placeholder="请输入..." value="">
                     </p>
                     <input class="submit-input" type="hidden" id="searchSubmitType" name="sortBy" value="BEST_MATCH">
                     <input class="submit-input" type="hidden" id="searchSubmitHot" name="sortBy" value="HOT">
@@ -592,6 +592,18 @@
             }
         });
     }
+    //时间搜索、热度搜索，输入框可无值
+    function checked_one() {
+        var timeVal = $('input:radio[value="PUBDATE"]:checked').val();
+        var hotVal = $('input:radio[value="HOT"]:checked').val();
+        var submit_input = $(".submit-input").val();
+        if (timeVal != null || hotVal != null) {
+            return true;
+        }
+        if (submit_input == "") {
+            return false;
+        }
+    }
 </script>
 <script th:inline="javascript" type="text/javascript" async>
     $(".time-tip").click(function () {
@@ -607,6 +619,7 @@
             $("#goSearch1").val('ignored');
         }
     });
+    // 按标签搜索
     $(".search-bt").click(function () {
         console.log($(this).children().children(".info").children().text());
         $("#goSearch1").attr("value", $(this).children().children(".info").children().text());

@@ -69,6 +69,7 @@
                 <option value="5" >第五张</option>
             </select>
             <span style="font-size: 14px;">(选择页码)</span>
+            <button id="bind-btn" onclick="popup_bind()">绑定书籍</button>
         </div>
         <div class='progress-mask'>
         </div>
@@ -140,7 +141,7 @@ function show_progress(value) {
                           success(data) {
                             console.log(data.url);
                             cropper.destroy();
-                            posters_put($('#posters_page').find('option:selected').val(),data.url);
+                            posters_put($('#posters_page').find('option:selected').val(),data.url,$('#bind-btn').name());
                             image.setAttribute('src', data.url);
                             show_progress(false);
                           },

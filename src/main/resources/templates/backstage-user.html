@@ -63,7 +63,7 @@
                     <button type="button" class="btn-add" onclick="popup_user_add()">添加</button>
                     <button type="button" class="btn-del" onclick="yes_no('确认删除吗？','user_del')">删除</button>
                 </div>
-                <table>
+                <table class="data_dispaly">
                     <thead>
                         <tr>
                             <th style="width: 4%;"><input type="checkbox" id="all-check" name="all-check"  value="del" style="zoom: 1.5;"></th>
@@ -106,10 +106,7 @@
     var curPage=1,
         onepage=$('#change_item_user').find('option:selected').val();
     $(document).ready(function(){
-        //用户名查重
-        $('#popup_userName_add').change(function(){
-
-        })
+        
         //转换部分返回值为中文
         function permission(permission){
             if(permission=='USER'){
@@ -164,7 +161,7 @@
                                         $('#a').append(`<tr>
                                         <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uid}" style="zoom: 1.5;"></th>
                                         <th style="width: 13%;">${data[i].userName}</th>
-                                        // <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
+                                        <th style="width: 5%;"><img src="${data[i].profileImgUrl}" onerror="this.src='../../future-novel/resources/img/avatar.png';onerror=null"></img></th>
                                         <th style="width: 20%;" class="user_phone";>${data[i].phone}</th>
                                         <th style="width: 4%;" class="user_exper";>${data[i].experience}</th>
                                         <th style="width: 13%;" class="user_per">${permission(data[i].permission)}</th>

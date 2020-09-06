@@ -6,7 +6,7 @@ function del_num(){
 
 }
 //上传海报地址
-function posters_put(index,url){
+function posters_put(index,url,novel){
     // $.ajax({         
     //     url:contextPath+"/api/settings/remove",
     //     type: 'DELETE',
@@ -36,13 +36,13 @@ function posters_put(index,url){
                         console.log(data);
                         //确定修改的位置
                         if(index == 5){
-                            data[parseInt(index)]=url;
-                            data[0]=url;
+                            data[parseInt(index)]=url+':'+novel;
+                            data[0]=url+':'+novel;
                         }else if(index== 1){
-                            data[parseInt(index)]=url;
-                            data[6]=url;
+                            data[parseInt(index)]=url+':'+novel;
+                            data[6]=url+':'+novel;
                         }else{
-                            data[parseInt(index)]=url;
+                            data[parseInt(index)]=url+':'+novel;
                         }
                         $.ajax({        
                                     url:contextPath+"/api/settings/put",
@@ -112,6 +112,15 @@ function seek_book(){
 
     let sstxt=$('#seek_novel').val();
     var sstxt2=$('#seek_per').find('option:selected').val();
+    $('table tbody tr').hide()
+    setTimeout(function(){
+         $(".novel_name").filter(":contains('"+sstxt+"')").parent().show()
+        //$(".user_phone").filter(":contains('"+sstxt+"')").parent().find('th').eq(5).filter(":contains('"+sstxt2+"')").show()
+    },100)     
+}
+function seek_book2(){
+
+    let sstxt=$('#seek_novel2').val();
     $('table tbody tr').hide()
     setTimeout(function(){
          $(".novel_name").filter(":contains('"+sstxt+"')").parent().show()
@@ -196,8 +205,9 @@ function popup_book(id,name,publisher){
                                     <label class="">版权</label>
                                     <span class="">
                                     <select name="status" class="item" id="popup_copyright" οnchange="checkinfo_location();" >
-                                    <option value="REPRINT" >reprint</option>
-                                    <option value="ORIGINAL" >original</option>
+                                    <option value="REPRINT" >转载</option>
+                                    <option value="ORIGINAL" >原创</option>
+                                    <option value="FAN_FICTION" >同人</option>
                                     <option value="NO_COPYRIGHT" >无版权</option>
                                     </select>
                                     </div>
@@ -240,6 +250,98 @@ function popup_user_add(){
                                                     <span style="bottom: 10px; right: 15px; position: absolute;">
                                                         <button style="margin-right: 10px;"onclick="user_add();">提交</button>
                                                         <button type="button" class="btn" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>`)
+}
+//海报绑定小说弹窗
+function popup_bind(){
+    $('body').append(`<div class="popup_mod" style="  width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div>
+    <div class="popup_mod" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 500px; height: 450px;">
+        <p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px; margin-bottom: 20px;">
+            <span style="margin-left: 10px;">选择小说</span>
+            <span style="right: 10px; position: absolute; cursor: pointer;">
+                <a style="color: #000; text-decoration: none;" onclick="$(\'.popup_mod\').remove()">X</a></span></p>
+                <div class="">
+                    
+                        <div class="item">
+                        <div class="function">
+                        <span>小说名</span> <input type="text" class="seek" id="seek_phone" placeholder="请输入">
+                        
+                        <button type="button" class="btn-seek" onclick="seek_book2()" style="width: 40px;"><i class="iconfont icon-iconseach"></i></button>
+                    </div>
+                            </div>
+                                <div class="item book">
+                                <table class="data_dispaly" style="width: 300px;max-height: 250px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;"><input type="checkbox" id="all-check" name="all-check"  value="del" style="zoom: 1.5;"></th>
+                                        <th style="width: 100px;">小说名</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody class="tbody" id="a" style="max-height: 290px;">
+                                
+                                </tbody>
+                            </table>
+                                    </div>
+                                        
+                                            
+                                                <span class="">
+                                                    
+                                                    </span>
+                                                    <span class="">
+                                                        
+                                                        </span>
+                                                </div>
+                                                <span style="bottom: 10px; right: 15px; position: absolute;">
+                                                    <button type="button" class="btn" id="submit-user" style="margin-right: 10px;" onclick="tijiao_poster();$('.popup_mod').remove();" >提交</button>
+                                                    <button type="button" class="btn" onClick="$(\'.popup_mod\').remove();">取消</button></span></div>`)
+                                                    $.ajax({
+                                                        url:contextPath+"/api/admin/novel/all/pages" ,
+                                                        type:'GET',
+                                                        data:{
+                                                            per_page: Number(100)
+                                                        },
+                                        
+                                                        success: function(data){
+                                                            let allPage=data.pages;
+                                                            console.log(data)
+                                                            $.ajax({
+                                                                url:contextPath+"/api/admin/novel/all" ,
+                                                                type:'GET',
+                                                                data:{
+                                                                    per_page: Number(100),
+                                                                    page: Number(1)
+                                                                },
+                                                                success: function(data){
+                                                                    $('#a').empty();
+                                                                    $.each(data,function(i){
+                                                                        $('#a').append(`<tr>
+                                                                        
+                                                                        <th style="width: 4%;"><input type="checkbox" class="check" name="check"  value="${data[i].uniqueId}" style="zoom: 1.5;"></th>
+                                                                        <th style="width: 13%;" class='novel_name2'>${data[i].title}</th>
+                                                                                
+                                                                            </tr>`)
+                                                                            })
+                                                                    
+                                                                    console.log(data)
+                                                                },
+                                                                error: function(jqXHR) {
+                                                                    //const data = JSON.parse(jqXHR.responseText);
+                                                                    let mes = JSON.parse(jqXHR.responseText);
+                                                                    popup_over('icon-sad','#d81e06',mes.errorMessage);
+                                                                }
+                                                            })
+                                                        },
+                                                        error: function(jqXHR) {
+                                                            let data = JSON.parse(jqXHR.responseText);
+                                                            popup_over('icon-sad','#d81e06',data.errorMessage);
+                                                        }
+                                                    })
+                                                }
+function tijiao_poster(){
+    let id=$("input[name='check']:checked").val()
+    let name=$("input[name='check']:checked").parent().next().html()
+    $('#bind-btn').attr('name',''+id+'');
+    $('#bind-btn').html(''+name+'')
 }
 //重新获取用户数据
 function refresh_user(onepage){
@@ -442,6 +544,17 @@ function refresh_book(onepage){
     $('#gonext').off('click');
     $('#gopre').off('click');
     $('#gogogo').off('click');
+    function copyright(copyright){
+        if(copyright=='REPRINT'){
+            return '转载'
+        }else if(copyright=='ORIGINAL'){
+            return '原创'
+        }else if(copyright=='FAN_FICTION'){
+            return '同人'
+        }else{
+            return '无版权'
+        }
+    }
     $.ajax({
         url:contextPath+"/api/admin/novel/all/pages" ,
         type:'GET',
@@ -468,7 +581,7 @@ function refresh_book(onepage){
                                 <th style="width: 4%;">${data[i].hot}</th>
                                 <th style="width: 13%;">${data[i].series}</th>
                                 <th style="width: 15%;">${data[i].pubdate}</th>
-                                <th style="width: 13%;">${data[i].copyright}</th>
+                                <th style="width: 13%;">${copyright(data[i].copyright)}</th>
                                 <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                             </tr>`)
                             })

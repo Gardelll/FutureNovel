@@ -67,7 +67,7 @@
                         <th style="width: 20%;">作者</th>
                         <th style="width: 4%;">热度</th>
                         <th style="width: 13%;">系列</th>
-                        <th style="width: 15%;">加入时间</th>
+                        <th style="width: 15%;">发布时间</th>
                         <th style="width: 13%;">版权</th>
                         <th style="width: 24%;">操作</th>
                     </tr>
@@ -102,8 +102,19 @@
     const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
     var curPage=1,
         onepage=$('#change_item').find('option:selected').val();
-        
+        function copyright(copyright){
+            if(copyright=='REPRINT'){
+                return '转载'
+            }else if(copyright=='ORIGINAL'){
+                return '原创'
+            }else if(copyright=='FAN_FICTION'){
+                return '同人'
+            }else{
+                return '无版权'
+            }
+        }
     $(document).ready(function(){
+
         $.ajax({
                 url:contextPath+"/api/admin/novel/all/pages" ,
                 type:'GET',
@@ -130,7 +141,7 @@
                                         <th style="width: 4%;">${data[i].hot}</th>
                                         <th style="width: 13%;">${data[i].series}</th>
                                         <th style="width: 15%;">${data[i].pubdate}</th>
-                                        <th style="width: 13%;">${data[i].copyright}</th>
+                                        <th style="width: 13%;">${copyright(data[i].copyright)}</th>
                                         <th style="width: 24%;"><span class="modify-user" onclick="popup_book('${data[i].uniqueId}','${data[i].title}','${data[i].publisher}')"><i class="iconfont icon-xiugai"> 编辑</i></span> <span class="modify-user" style="background-color: #FF5722;" onclick="yes_no('确认删除吗？','book_del','${data[i].uniqueId}')"><i class="iconfont icon-shanchu"> 删除</i></span></th>
                                     </tr>`)
                                     })

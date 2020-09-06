@@ -47,6 +47,9 @@
   color: black;
 }
 
+.shortcut .icon-downarrow{
+  display: inline-block;
+}
 .shortcut .w .fr .fl:hover {
   border-top: 2px solid black;
   transition: border .2s;
@@ -62,7 +65,7 @@
   position: relative;
 }
 
-.shortcut .w .fr .admin .dropdown {
+.shortcut .w .fr .admin .dropdown,#dropdown2 {
   z-index: 99;
   line-height: 35px;
   left: 0px;
@@ -75,7 +78,7 @@
   box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);
 }
 
-.shortcut .w .fr .admin .dropdown li:hover {
+.shortcut .w .fr .admin .dropdown li:hover,#dropdown2 li:hover {
   background-color: #F2F2F2;
   transition: .2s;
 }
@@ -127,7 +130,7 @@
 
 .catalog { 
   display: block;
-  position: absolute;
+  position: fixed;
   top: 0px;
   bottom: 0;
   left: 0;

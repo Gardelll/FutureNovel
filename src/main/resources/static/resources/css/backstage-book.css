@@ -164,7 +164,7 @@ input[type=checkbox]:checked::after{
 }
 /* 针对头像的样式 */
 tbody img{
-  width: 45;
+  
   height: 45px;
   border-radius: 50%;
 }
@@ -226,4 +226,8 @@ box-shadow: 0 0 10px rgba(0,0,0,.5);
 .progress {
   
   visibility: hidden;
+}
+/* 修改细节 */
+.data_dispaly{
+  margin-bottom: 10px;
 }

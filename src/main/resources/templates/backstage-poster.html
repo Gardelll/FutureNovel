@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
     <title>海报管理</title>
 </head>
 <!-- 作为公共部分分离 -->
@@ -16,29 +17,30 @@
 <link href="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.css" rel="stylesheet">
 <body>
 <!-- 作为公共部分分离 -->
-    <div class="shortcut">
-        <div class="w">
-            <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
-            <ul class="fl left" >
-                <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
-                <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
-            </ul>
-            <ul class="fr" th:each="user:${session.currentAccount}">
-                <li class="message fl"><i class="iconfont icon-Message"></i></li>
-                <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
-                <li class="s-name fl"></li>
-                <li class="admin fl" id="admin"><span th:text="${user.userName}"></span><i class="iconfont icon-downarrow"></i>
-                    <ul class="dropdown" id="dropdown" style="display: none;">
-                        <li><a th:href="'/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
-                        <li><a href="login.html" th:href="@{/login}">切换账号</a></li>
-                        <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out" >退出</a></li>
-                    </ul>
-                </li>
-                
-            </ul>
-        </div>
+<div class="shortcut">
+    <div class="w">
+        <!-- <ul class="fl"><a href="javascript:">future book</a></ul> -->
+        <ul class="fl left">
+            <li class="fl" id="pngfix"><a href="javascript:"><i class="iconfont icon-cebianlanshousuo"></i></a></li>
+            <li class="fl"><a href="FutureNovel.html" th:href="@{/index}"><i class="iconfont icon-earth"></i></a></li>
+        </ul>
+        <ul class="fr" th:each="user:${session.currentAccount}">
+            <li class="message fl"><i class="iconfont icon-Message"></i></li>
+            <li class="skin fl"><i class="iconfont icon-ColorLens"></i></li>
+            <li class="s-name fl"></li>
+            <li class="admin fl" id="admin"><span th:text="${user.userName}"></span><i
+                    class="iconfont icon-downarrow"></i>
+                <ul class="dropdown" id="dropdown" style="display: none;">
+                    <li><a th:href="'/user/'+${session.currentAccount.uid.toString()}">个人信息</a></li>
+                    <li><a href="login.html" th:href="@{/login}">切换账号</a></li>
+                    <li onclick="yes_no('确认退出吗','logout_user')"><a href="javascript:" id="out">退出</a></li>
+                </ul>
+            </li>
+
+        </ul>
     </div>
-    <div class="catalog" id="catalog">
+</div>
+<div class="catalog" id="catalog">
     <div class="side fl">
         <div class="logo">
             <span>未来小说网</span>
@@ -50,155 +52,324 @@
             <li class="active"><a href="backstage-poster.html" th:href="@{/admin/posters}">海报管理</a></li>
         </ul>
     </div>
+</div>
+<div class="contant" id="contant">
+    <div id="upload-part" class="upload-img">
+        <p>双击切换选择与移动，支持拖动</p>
+        <img id="image-to-crop" onclick="document.getElementById('img-input').click()" class="preview-img"
+             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAE2UlEQVR4nO3d4W3jNhiA4RvhRsgI3iAexZtYI3iDbqJPmuC6SUdwfyQFUrn6TlJpU2KeB+CfHMKQpl7gICX2jx8AAAAAAAAAAAAAAAAAAItFxGUcx+s4jteIOH/5+ts/X186IuKy5OesmO88N9/aucZxvCZrO+9gr28zc5U+hy17fdo5TK6/2XVXExFDRNw/R/fl6+cvX186hoU/Z+nokvnWznVP5up2sNfzzFylz2HLXp92DpPXanbd1YRABCKQeTEfyOnz39aMW/Jzbhvmu/xm3atGMtdlB3s9zcxV+hy27PVp53DYQOAVBAIJgUBCIJAQCCQEAgmBQEIgkBAIJI4QyCU+fv2gi+SX0uAZJtffpfZ6AAAAAOCAIuI2DEMMwxBus/Fqk+tv9g+9qvGgkJqO8KBQIFQjEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSRwjkFB9vsX+OmQ9xgWeZXH//+Q73AAAAAB93Efq+f+/7/t1dLF5tcv3t7y6W5yDUdITnIAKhGoFAQiCQEAgkBAIJgUBCIJAQCCQE0qBxHK+/G+GNwBcRSIO+vF7ZGGqv8wgE0iCBlHOEQG6fixz8t2AZgZQzuf729/kgrCcQSAgEEgKBhEAgIRBICOQbCR8DvZpAygkfA90egZQTB3hQKJCVBFKOQBokkHIE0iCBlCOQBgmkHIE0SCDlCKRBAilHIA0SSDkCaZBAyhFIgwRSjkAaJJByBNIggZRzhEAuEdF9jnPt9RyBQMqZXH+X2uuhAIFAQiCQEAgkBMKhxJe/SnvFWBLIMAx/vXhNl9rnwE7Fv28VftfR1T6HJkUDz0FCIPdo4+yG2ut5EAJpZXS1z2GLEMjzhUDu0cbZDbXX8yAE0sroap/DFiGQ5wuB3KONsxtqr+dBCKSV0dU+hy1CIM8XArlHG2c31F7PgxBIK6OrfQ5bhECeLyJOEXF+4Vhywf754jW91T6HLQTSoIWBDLXXeQQCaZBAyhFIgwRSjkAaJJBydh8I6wkEEgKBhEAgIRBICAQSAvlGIuIyjuN1HMdreGfFRQRSzuT6u9Rez4PwHGQ1gZQTe38OIpD1BFKOQBokkHIE0iCBlCOQBgmkHIE0SCDlCKRBAilHIA0SSDkCaZBAyhFIgwRSjkAaJJByBNIggZRzhEBun4scYo+/LLZDAilncv3daq+HAgQCCYFAQiAAALBdRNx8GD21TK6//d3m9aCQmo7woFAgVCMQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBJHCOQUEefP8VZ7PXwvk+vvVHs9AAAAwF5FxKnv+/e+79/dxeLVJtff/u5ieQ5CTUd4DiIQqhEIJAQCCYFAQiCQEAgkBAIJgUBCIJAQCCQEAgmBQGL3gQAAAADA/kXEZRzH6ziO14g4114P38vk+rvUXs8Dz0GoaffPQQRCTYcKZBiGP5a8BUt8eauWpSMifs7Nt3auvu/fk7W9bVjbW8m1ze01In5umKv0ORTd6/89h2EYfh0mkMkYNnxPNs7JfGvnuidzdRvm60qubW6v8fEO5mvnKn0ORfda+Bxm91pN8iIPG74nG+dkvtoH05Vc29xeQyCb91pN8iIPG74nG+dkvtoH05Vc29xeQyCb9woAAAAAAAAAAAAAAAAA8OhvSHNNId8FMJUAAAAASUVORK5CYII="/>
+        <label for="img-input">选择图片</label><br/>
+        <input type="file" accept="image/*" id="img-input"></input>
+        <br/>
+        <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 100%;"></input>
+        <br/>
+        <button id="confirm-btn">确认并上传</button>
+        <select name="status" class="item" id="posters_page" onchange="displayPreview()">
+            <option value="1">第一张</option>
+            <option value="2">第二张</option>
+            <option value="3">第三张</option>
+            <option value="4">第四张</option>
+            <option value="5">第五张</option>
+        </select>
+        <span style="font-size: 14px;">(选择页码)</span>
+        <button id="bind-btn" onclick="popup_bind()">绑定书籍</button>
     </div>
-    <div class="contant" id="contant">
-        <div id="upload-part" class="upload-img">
-            <p>双击切换选择与移动，支持拖动</p>
-            <img id="image-to-crop" onclick="document.getElementById('img-input').click()" class="preview-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAE2UlEQVR4nO3d4W3jNhiA4RvhRsgI3iAexZtYI3iDbqJPmuC6SUdwfyQFUrn6TlJpU2KeB+CfHMKQpl7gICX2jx8AAAAAAAAAAAAAAAAAAItFxGUcx+s4jteIOH/5+ts/X186IuKy5OesmO88N9/aucZxvCZrO+9gr28zc5U+hy17fdo5TK6/2XVXExFDRNw/R/fl6+cvX186hoU/Z+nokvnWznVP5up2sNfzzFylz2HLXp92DpPXanbd1YRABCKQeTEfyOnz39aMW/Jzbhvmu/xm3atGMtdlB3s9zcxV+hy27PVp53DYQOAVBAIJgUBCIJAQCCQEAgmBQEIgkBAIJI4QyCU+fv2gi+SX0uAZJtffpfZ6AAAAAOCAIuI2DEMMwxBus/Fqk+tv9g+9qvGgkJqO8KBQIFQjEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSRwjkFB9vsX+OmQ9xgWeZXH//+Q73AAAAAB93Efq+f+/7/t1dLF5tcv3t7y6W5yDUdITnIAKhGoFAQiCQEAgkBAIJgUBCIJAQCCQE0qBxHK+/G+GNwBcRSIO+vF7ZGGqv8wgE0iCBlHOEQG6fixz8t2AZgZQzuf729/kgrCcQSAgEEgKBhEAgIRBICOQbCR8DvZpAygkfA90egZQTB3hQKJCVBFKOQBokkHIE0iCBlCOQBgmkHIE0SCDlCKRBAilHIA0SSDkCaZBAyhFIgwRSjkAaJJByBNIggZRzhEAuEdF9jnPt9RyBQMqZXH+X2uuhAIFAQiCQEAgkBMKhxJe/SnvFWBLIMAx/vXhNl9rnwE7Fv28VftfR1T6HJkUDz0FCIPdo4+yG2ut5EAJpZXS1z2GLEMjzhUDu0cbZDbXX8yAE0sroap/DFiGQ5wuB3KONsxtqr+dBCKSV0dU+hy1CIM8XArlHG2c31F7PgxBIK6OrfQ5bhECeLyJOEXF+4Vhywf754jW91T6HLQTSoIWBDLXXeQQCaZBAyhFIgwRSjkAaJJBydh8I6wkEEgKBhEAgIRBICAQSAvlGIuIyjuN1HMdreGfFRQRSzuT6u9Rez4PwHGQ1gZQTe38OIpD1BFKOQBokkHIE0iCBlCOQBgmkHIE0SCDlCKRBAilHIA0SSDkCaZBAyhFIgwRSjkAaJJByBNIggZRzhEBun4scYo+/LLZDAilncv3daq+HAgQCCYFAQiAAALBdRNx8GD21TK6//d3m9aCQmo7woFAgVCMQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBJHCOQUEefP8VZ7PXwvk+vvVHs9AAAAwF5FxKnv+/e+79/dxeLVJtff/u5ieQ5CTUd4DiIQqhEIJAQCCYFAQiCQEAgkBAIJgUBCIJAQCCQEAgmBQGL3gQAAAADA/kXEZRzH6ziO14g4114P38vk+rvUXs8Dz0GoaffPQQRCTYcKZBiGP5a8BUt8eauWpSMifs7Nt3auvu/fk7W9bVjbW8m1ze01In5umKv0ORTd6/89h2EYfh0mkMkYNnxPNs7JfGvnuidzdRvm60qubW6v8fEO5mvnKn0ORfda+Bxm91pN8iIPG74nG+dkvtoH05Vc29xeQyCb91pN8iIPG74nG+dkvtoH05Vc29xeQyCb9woAAAAAAAAAAAAAAAAA8OhvSHNNId8FMJUAAAAASUVORK5CYII=" />
-            <label for="img-input">选择图片</label><br />
-            <input type="file" accept="image/*" id="img-input"></input>
-            <br />
-            <input type="range" min="0" value="0" max="360" id="rotate-input" style="width: 100%;"></input>
-            <br />
-            <button id="confirm-btn">确认并上传</button>
-            <select name="status" class="item" id="posters_page" οnchange="checkinfo_location();" >
-                <option value="1" >第一张</option>
-                <option value="2" >第二张</option>
-                <option value="3" >第三张</option>
-                <option value="4" >第四张</option>
-                <option value="5" >第五张</option>
-            </select>
-            <span style="font-size: 14px;">(选择页码)</span>
-            <button id="bind-btn" onclick="popup_bind()">绑定书籍</button>
-        </div>
-        <div class='progress-mask'>
-        </div>
-        <div class="progress">
-            <div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont icon-happy-l" style="font-size: 30px;color: #1afa29;"></i><span style="font-size: 16px; position: relative; bottom: 5px;">请稍后</span></div>
-        </div>
+    <div class='progress-mask'>
     </div>
-<!-- 作为公共部分分离/ -->
-</body>
-<script th:inline="javascript" async>
-//头像预览
-// $('#file').change(function () {
-//     var file = $(this)[0].files[0];
-//     //通过FileReader读取选中图片
-//     var reader = new FileReader();
-//     reader.readAsDataURL(file);
-//     reader.onload = function () {
-//         //result中存放了选中的文件的二进制数据
-//         $('#avatar_img')[0].src = this.result
-//     }
-// });
-let contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
-            
-                
-function show_progress(value) {
-                document.getElementsByClassName("progress-mask")[0].style.visibility = value ? 'visible' : 'hidden';
-                document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
-            }
-            const image = document.getElementById('image-to-crop');
-            $('#img-input').change(function() {
-                var path = this.value;
-                if (path == undefined || path == null || path == '') {
-                    popup_over('icon-sad','#d81e06','未选择文件');
-                    return;
-                }
-                const cropper = image.cropper;
-                if (cropper != undefined) {
-                    cropper.destroy();
-                }
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    image.setAttribute('src', e.target.result);
-                    const cropper = new Cropper(image, {
-                      aspectRatio: 1123/614,
-                      viewMode: 1,
-                      rotatable: true
-                    });
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-            $('#rotate-input').change(function() {
-                const cropper = image.cropper;
-                if (cropper != undefined) {
-                    cropper.rotateTo(this.value);
-                }
-            });
-            $('#confirm-btn').click(function() {
-                const cropper = image.cropper;
-                if (cropper != undefined) {
-					show_progress(true);
-                    cropper.getCroppedCanvas().toBlob(function(blob) {
-                      const formData = new FormData();
-                      formData.append('file', blob);
-                      $.ajax(contextPath+"/api/img/upload", {
-                          method: 'PUT',
-                          data: formData,
-                          processData: false,
-                          contentType: false,
-                          success(data) {
-                            console.log(data.url);
-                            cropper.destroy();
-                            posters_put($('#posters_page').find('option:selected').val(),data.url,$('#bind-btn').name());
-                            image.setAttribute('src', data.url);
-                            show_progress(false);
-                          },
-                          error(jqXHR) {
-                            const data = JSON.parse(jqXHR.responseText);
-                            console.log(data);
-                            alert(data.errorMessage);
-                            show_progress(false);
-							// ========== 测试行为 
-							var reader = new FileReader();
-							reader.onload = function(e) {
-								image.setAttribute('src', e.target.result);
-								cropper.destroy();
-							}
-							reader.readAsDataURL(blob);
-							// ==========
-                          }
-                        });
-                    });
-                } else {
-					popup_over('icon-sad','#d81e06','未选择文件');
-				}
-            });
-            const uploadDropBox = document.getElementById("upload-part");
-            function doNothing(e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            uploadDropBox.addEventListener('dragenter', doNothing, false);
-            uploadDropBox.addEventListener('dragover', doNothing, false);
-            uploadDropBox.addEventListener('drop', function(e) {
-                doNothing(e);
-                const dt = e.dataTransfer;
-                if (dt.files == undefined || dt.files.length == 0) return;
-                const imgFile = dt.files[0];
-                if (imgFile != undefined && imgFile.type.startsWith('image/')) {
-                    const cropper = image.cropper;
-                    if (cropper != undefined) {
-                        cropper.destroy();
-                    }
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        image.setAttribute('src', e.target.result);
-                        const cropper = new Cropper(image, {
-                          aspectRatio: 1,
-                          viewMode: 1,
-                          rotatable: true
-                        });
-                    }
-                    reader.readAsDataURL(imgFile);
-                }
-            }, false);
-</script>
-<!-- 作为公共部分分离 -->
-<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}">
-</script>
-<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
+    <div class="progress">
+        <div class="popup_over"
+             style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;">
+            <i class="iconfont icon-happy-l" style="font-size: 30px;color: #1afa29;"></i><span
+                style="font-size: 16px; position: relative; bottom: 5px;">请稍后</span></div>
+    </div>
+</div>
 <!-- 作为公共部分分离/ -->
 <script src="https://cdn.bootcdn.net/ajax/libs/cropperjs/1.5.7/cropper.min.js"></script>
+</body>
+<script th:inline="javascript" async>
+    const contextPath =/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+
+    function show_progress(value) {
+        document.getElementsByClassName("progress-mask")[0].style.visibility = value ? 'visible' : 'hidden';
+        document.getElementsByClassName("progress")[0].style.visibility = value ? 'visible' : 'hidden';
+    }
+
+    const image = document.getElementById('image-to-crop');
+    const covers = [];
+    var totalPage = 0;
+    $('#img-input').change(function () {
+        var path = this.value;
+        if (path == undefined || path == null || path == '') {
+            popup_over('icon-sad', '#d81e06', '未选择文件');
+            return;
+        }
+        const cropper = image.cropper;
+        if (cropper != undefined) {
+            cropper.destroy();
+        }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            image.setAttribute('src', e.target.result);
+            const cropper = new Cropper(image, {
+                aspectRatio: 1123 / 614,
+                viewMode: 1,
+                rotatable: true
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+    $('#rotate-input').change(function () {
+        const cropper = image.cropper;
+        if (cropper != undefined) {
+            cropper.rotateTo(this.value);
+        }
+    });
+    $('#confirm-btn').click(function () {
+        const cropper = image.cropper;
+        if (cropper != undefined) {
+            show_progress(true);
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('file', blob);
+                $.ajax(contextPath + "/api/img/upload", {
+                    method: 'PUT',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success(data) {
+                        console.log(data.url);
+                        cropper.destroy();
+                        var i = $('#posters_page').find('option:selected').val() - 1;
+                        covers[i]["url"] = data.url
+                        posters_put();
+                        image.setAttribute('src', data.url);
+                        show_progress(false);
+                    },
+                    error(jqXHR) {
+                        const data = JSON.parse(jqXHR.responseText);
+                        console.log(data);
+                        alert(data.errorMessage);
+                        show_progress(false);
+                        // ========== 测试行为
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            image.setAttribute('src', e.target.result);
+                            cropper.destroy();
+                        }
+                        reader.readAsDataURL(blob);
+                        // ==========
+                    }
+                });
+            });
+        } else {
+            posters_put();
+        }
+    });
+    const uploadDropBox = document.getElementById("upload-part");
+
+    function doNothing(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    uploadDropBox.addEventListener('dragenter', doNothing, false);
+    uploadDropBox.addEventListener('dragover', doNothing, false);
+    uploadDropBox.addEventListener('drop', function (e) {
+        doNothing(e);
+        const dt = e.dataTransfer;
+        if (dt.files == undefined || dt.files.length == 0) return;
+        const imgFile = dt.files[0];
+        if (imgFile != undefined && imgFile.type.startsWith('image/')) {
+            const cropper = image.cropper;
+            if (cropper != undefined) {
+                cropper.destroy();
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                image.setAttribute('src', e.target.result);
+                const cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    rotatable: true
+                });
+            }
+            reader.readAsDataURL(imgFile);
+        }
+    }, false);
+
+    $(document).ready(updateCovers)
+
+    function updateCovers() {
+        $.ajax({
+            url: contextPath + "/api/settings/get",
+            type: 'GET',
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                key: 'covers',
+            },
+            success(data) {
+                for (var i = 0; i < covers.length; i++) delete covers[i];
+                $.extend(covers, data);
+                displayPreview();
+            },
+            error(jqXHR) {
+                let mes = JSON.parse(jqXHR.responseText);
+                console.log(mes);
+            }
+        });
+    }
+
+    function displayPreview() {
+        var i = $('#posters_page').find('option:selected').val() - 1;
+        image.setAttribute('src', covers[i]["url"]);
+        $('#bind-btn').text("绑定书籍")
+    }
+
+    //海报绑定小说弹窗
+    function popup_bind() {
+        $('body').append(`<div class="popup_mod"
+     style="  width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div>
+<div class="popup_mod"
+     style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 500px; height: 450px;">
+    <p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px; margin-bottom: 20px;">
+        <span style="margin-left: 10px;">选择小说</span>
+        <span style="right: 10px; position: absolute; cursor: pointer;">
+                <a style="color: #000; text-decoration: none;" onclick="$('.popup_mod').remove()">X</a></span></p>
+    <div class="">
+
+        <div class="item">
+            <div class="function">
+                <span>小说名</span> <input type="text" class="seek" id="seek_phone" placeholder="请输入">
+
+                <button type="button" class="btn-seek" onclick="seek_book2()" style="width: 40px;"><i
+                        class="iconfont icon-iconseach"></i></button>
+            </div>
+        </div>
+        <div class="item book">
+            <table class="data_dispaly" style="width: 300px;max-height: 250px;">
+                <thead>
+                <tr>
+                    <th style="width: 40px;">选择</th>
+                    <th style="width: 100px;">小说名</th>
+                </tr>
+                </thead>
+                <tbody class="tbody" id="a" style="max-height: 290px;">
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <span class="">
+
+                                                    </span>
+        <span class="">
+
+                                                        </span>
+    </div>
+    <span style="bottom: 10px; right: 15px; position: absolute;">
+                                                    <button type="button" class="btn" id="next-page-btn" data-page="1"
+                                                            style="margin-right: 10px;"
+                                                            onclick="getPage()">下一页</button>
+                                                    <button type="button" class="btn" id="submit-user"
+                                                            style="margin-right: 10px;"
+                                                            onclick="tijiao_poster();$('.popup_mod').remove();">提交</button>
+                                                    <button type="button" class="btn"
+                                                            onClick="$('.popup_mod').remove();">取消</button></span></div>`);
+        getTotalPage();
+        getPage();
+    }
+
+    function getPage() {
+        var jq_btn = $('#next-page-btn');
+        const index = Number(jq_btn.attr("data-page")) + 1;
+        jq_btn.attr("data-page", (index > totalPage) ? 1 : index);
+        $.ajax({
+            url: contextPath + "/api/admin/novel/all",
+            type: 'GET',
+            data: {
+                per_page: Number(10),
+                page: Number(index)
+            },
+            success: function (data) {
+                $('#a').empty();
+                $.each(data, function (i) {
+                    $('#a').append(`<tr>
+
+                                                                        <th style="width: 4%;"><input type="radio" class="check" name="check"  value="${data[i].uniqueId}" style="zoom: 1.5;"></th>
+                                                                        <th style="width: 13%;" class='novel_name2'>${data[i].title}</th>
+
+                                                                            </tr>`)
+                })
+                console.log(data)
+            },
+            error: function (jqXHR) {
+                //const data = JSON.parse(jqXHR.responseText);
+                let mes = JSON.parse(jqXHR.responseText);
+                popup_over('icon-sad', '#d81e06', mes.errorMessage);
+            }
+        })
+    }
+
+    function getTotalPage() {
+        $.ajax({
+            url: contextPath + "/api/admin/novel/all/pages",
+            type: 'GET',
+            data: {
+                per_page: Number(10)
+            },
+            success: function (data) {
+                totalPage = data.pages;
+            },
+            error: function (jqXHR) {
+                let data = JSON.parse(jqXHR.responseText);
+                popup_over('icon-sad', '#d81e06', data.errorMessage);
+            }
+        })
+    }
+
+    function seek_book2() {
+        let sstxt = $('#seek_novel2').val();
+        $('table tbody tr').hide()
+        setTimeout(function () {
+            $(".novel_name").filter(":contains('" + sstxt + "')").parent().show()
+            //$(".user_phone").filter(":contains('"+sstxt+"')").parent().find('th').eq(5).filter(":contains('"+sstxt2+"')").show()
+        }, 100)
+    }
+
+    function tijiao_poster() {
+        let id = $("input[name='check']:checked").val()
+        console.log(id);
+        let name = $("input[name='check']:checked").parent().next().html()
+        $('#bind-btn').text(name)
+        var i = $('#posters_page').find('option:selected').val() - 1;
+        covers[i]["novelId"] = id;
+    }
+
+    //上传海报地址
+    function posters_put() {
+        $.ajax({
+            url: contextPath + "/api/settings/put",
+            type: 'POST',
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                key: 'covers',
+                value: covers
+            }),
+            success(data) {
+                popup_over('icon-happy-l', '#1afa29', '添加成功');
+            },
+            error(jqXHR) {
+                let mes = JSON.parse(jqXHR.responseText);
+                console.log(mes);
+                popup_over('icon-happy-l', '#1afa29', mes.errorMessage);
+            }
+        });
+    }
+
+</script>
+<!-- 作为公共部分分离 -->
+<script src="../../resources/js/index.js" th:src="@{/resources/js/index.js}"></script>
+<script src="../../resources/js/index2.js" th:src="@{/resources/js/index2.js}"></script>
 </html>

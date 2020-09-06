@@ -667,12 +667,12 @@
     width: 50px;
     position: fixed;
     bottom: 100px;
-    right: 100px;
+    right: 225px;
 }
 .btn-box img{
     float: left;
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     margin: 10px 0;
     cursor: pointer;
 }

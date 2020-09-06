@@ -81,6 +81,7 @@
 .book-information .book-info .tag span.blue {
     color: #3f5a93;
     border-color: #9fadc9;
+    line-height: 23px;
 }
 
 .book-information .book-info .tag a.red,

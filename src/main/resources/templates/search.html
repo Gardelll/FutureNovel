@@ -111,7 +111,9 @@
                     <span th:if="${#lists.isEmpty(novelIndexList)}" th:text="无搜索结果"></span>
                     <div class="book-rank-list" style="overflow: hidden;">
                         <div class="book-rank-img">
-                            <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
+<!--                            <img th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />-->
+                            <img th:if="${novel.coverImgUrl}" th:src="${novel.coverImgUrl}" style="width: 100px;float: left;" />
+                            <img th:unless="${novel.coverImgUrl}" th:src="@{/resources/img/loading.jpg}" style="width: 100px;float: left;" />
                         </div>
                         <div class="book-rank-list-text">
                             <h4 style="font-size: 15px;font-weight: 400;" th:text="${novel.title}"></h4>

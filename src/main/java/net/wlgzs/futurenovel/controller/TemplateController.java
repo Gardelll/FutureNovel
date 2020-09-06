@@ -473,7 +473,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
             case HOT: {
                 long total = novelService.countAllNovelIndex();
                 List<NovelIndex> result = novelService.getAllNovelIndex(offset, perPage, Requests.SearchNovelRequest.SortBy.HOT_DESC.getOrderBy());
-                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
+                model.addAttribute("totalPage", countPage(total, perPage));
                 model.addAttribute("novelIndexList", result);
                 break;
             }
@@ -490,7 +490,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 log.info("query = {}", query);
                 long total = novelService.searchNovelIndexGetCount(query);
                 List<NovelIndex> result = novelService.searchNovelIndex(query, offset, perPage, req.sortBy.getOrderBy());
-                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
+                model.addAttribute("totalPage", countPage(total, perPage));
                 model.addAttribute("novelIndexList", result);
                 break;
             }
@@ -554,7 +554,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                 if (!result.isEmpty()) {
                     accountService.updateAccountExperience(currentAccount);
                 }
-                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
+                model.addAttribute("totalPage", countPage(total, perPage));
                 model.addAttribute("sectionList", result);
                 List<UUID> chapterIds = result.stream()
                     .map(Section::getFromChapter)
@@ -576,7 +576,7 @@ public class TemplateController extends AbstractAppController implements ErrorCo
                     throw new FutureNovelException(FutureNovelException.Error.ILLEGAL_ARGUMENT, getMessage("search.empty_time_duration"));
                 long total = novelService.countNovelIndexByPubDate(req.after, req.before);
                 List<NovelIndex> result = novelService.findNovelIndexByPubDate(req.after, req.before, offset, perPage, req.sortBy.getOrderBy());
-                model.addAttribute("totalPage", (total / perPage + (total >= perPage ? 0 : 1)));
+                model.addAttribute("totalPage", countPage(total, perPage));
                 model.addAttribute("novelIndexList", result);
                 break;
             }

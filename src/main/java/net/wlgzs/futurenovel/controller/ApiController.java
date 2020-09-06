@@ -851,7 +851,7 @@ public class ApiController extends AbstractAppController {
         long total = novelService.countAllNovelIndex();
         return Map.of(
             "per_page", perPage,
-            "pages", (total / perPage + (total >= perPage ? 0 : 1)),
+            "pages", countPage(total, perPage),
             "timestamp", System.currentTimeMillis()
         );
     }
@@ -893,7 +893,7 @@ public class ApiController extends AbstractAppController {
         long total = novelService.countNovelIndexByUploader(UUID.fromString(accountId));
         return Map.of(
             "per_page", perPage,
-            "pages", (total / perPage + (total >= perPage ? 0 : 1)),
+            "pages", countPage(total, perPage),
             "timestamp", System.currentTimeMillis()
         );
     }

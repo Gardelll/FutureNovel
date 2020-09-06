@@ -225,6 +225,12 @@ public abstract class AbstractAppController {
         else return path;
     }
 
+    public long countPage(long total, int perPage) {
+        long pages = total / perPage;
+        if (total % perPage != 0) pages++;
+        return pages;
+    }
+
     /**
      * 根据目录索引填充完整的目录信息
      *

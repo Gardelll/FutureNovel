@@ -77,7 +77,9 @@ public class AccountService {
 
     public int getAllAccountPages(int perPage) {
         long total = size();
-        return (int) (total / perPage + (total >= perPage ? 0 : 1));
+        long pages = total / perPage;
+        if (total % perPage != 0) pages++;
+        return Math.toIntExact(pages);
     }
 
     public long size() {

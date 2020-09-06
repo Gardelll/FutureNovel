@@ -114,8 +114,8 @@
                         <div class="sliderBW">
                             <div id="slider_con1">
                                 <div id="list1" style="left: 0px;">
-                                       <img class="CoverImg" th:each="imgurl : ${covers}" th:src="${imgurl.key}"
-                                             th:if="${imgurlStat.index} lt 6" th:attr="novelID=${imgurl.value}">
+                                       <img class="CoverImg" th:each="imgurl : ${covers}" th:src="${imgurl.url}"
+                                             th:if="${imgurlStat.index} lt 6" th:attr="novelID=${imgurl.novelId}">
                                 </div>
                                 <div id="buttons">
                                     <span index="1" class="on"></span>

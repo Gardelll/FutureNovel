@@ -33,15 +33,15 @@
                     <input type="text" name="us" placeholder="username" class="input-item username" id="us">
                     <input type="password" name="ps" placeholder="password" class="input-item psw" id="ps">
                     <button class="btn" id="login" th:href="@{/login(redirectTo=${@templateController.getRequestUri()})}">登录</button>
-                    <button class="btn" id="logon">注册</button>
+                    <a th:href="@{/register}"><button class="btn" id="reg">注册</button></a>
                     <div class="icon">
                         
-                        <ul>
-                            <li class="iconfont icon-twitter"></li>
-                            <li class="iconfont icon-icon_facebook"></li>
-                            <li class="iconfont icon-ins"></li>
-                            <li class="iconfont icon-emailFilled"></li>
-                        </ul>
+<!--                        <ul>-->
+<!--                            <li class="iconfont icon-twitter"></li>-->
+<!--                            <li class="iconfont icon-icon_facebook"></li>-->
+<!--                            <li class="iconfont icon-ins"></li>-->
+<!--                            <li class="iconfont icon-emailFilled"></li>-->
+<!--                        </ul>-->
                     </div>
                 </div>
             </div>
@@ -58,8 +58,8 @@
                 ps = $('#ps').val();
             if (us == '' || ps == '') {
                 popup_over('icon-sad', '#d81e06', "输入内容不能为空");
-            } else if (us.length < 4 || ps.length < 4) {
-                popup_over('icon-sad', '#d81e06', "输入内容太短了吧");
+            } else if ( ps.length < 6) {
+                popup_over('icon-sad', '#d81e06', "密码至少6位");
             } else {
                 $.ajax({
                     url: /*[[${#request.getContextPath()} + '/api/login']]*/'',

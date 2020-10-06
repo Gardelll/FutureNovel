@@ -1,6 +1,12 @@
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- 数据库： `novel_db`
 --
@@ -138,6 +144,17 @@ CREATE TABLE `section`
 
 -- 如果使用 Mysql: ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 
+--
+-- 表的结构 `settings`
+--
+
+CREATE TABLE `settings`
+(
+    `uniqueId`      int(11) UNSIGNED NOT NULL,
+    `setting_key`   varchar(255)     NOT NULL,
+    `setting_value` text DEFAULT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -224,6 +241,12 @@ ALTER TABLE `section`
 
 -- 如果使用 Mysql: ALTER TABLE `section` ADD FULLTEXT KEY `fulltext_index` (`title`,`text`) WITH PARSER ngram;
 
+--
+-- 表的索引 `settings`
+--
+ALTER TABLE `settings`
+    ADD PRIMARY KEY (`uniqueId`),
+    ADD UNIQUE KEY `key_index` (`setting_key`);
 
 --
 -- 表的索引 `token_store`
@@ -231,4 +254,17 @@ ALTER TABLE `section`
 ALTER TABLE `token_store`
     ADD PRIMARY KEY (`token`);
 
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `settings`
+--
+ALTER TABLE `settings`
+    MODIFY `uniqueId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

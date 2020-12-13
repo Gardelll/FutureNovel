@@ -1,19 +1,8 @@
 //判断
 function yes_no(contant, name, id) {
     $('body').append('<div class="yes_no" style=" width: 100%; height: 100%; position: absolute; top: 0; z-index:10; background-color:#000; opacity:0.3;"></div><div class="yes_no" style="z-index: 11; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: absolute; width: 260px; height: 150px;"><p style="height: 40px; background-color: #F8F8F8; line-height: 40px; font-size: 16px;"><span style="margin-left: 10px;">信息</span> <span style="right: 10px; position: absolute; cursor: pointer;"><a style="color: #000; text-decoration: none;" onclick="$(\'.yes_no\').remove()">X</a></span></p><p style="height: 110px;"> <span style="font-size: 16px; top: 15px; left: 15px; position: relative;">' + contant + '</span><span style="bottom: 10px; right: 15px; position: absolute;"><button type="button" class="btn btn-info btn-sm" style="margin-right: 10px;" onclick="' + name + '(\'' + id + '\');$(\'.yes_no\').remove()">确认</button><button type="button" class="btn btn-sm" onclick="$(\'.yes_no\').remove();">取消</button></span></p></div>');
-};
-
-function del_num() {
-
 }
 
-//搜索用户内容
-// function seek(){
-//     $(".user_phone").keyup(function(){
-//     $("table tbody tr").hide().filter(":contains('"+($('#seek_phone').val() )+"')").show();
-// }).keyup();
-// };
-//搜索用户
 function seek() {
     var sstxt = $('#seek_phone').val();
     var sstxt2 = $('#seek_per').find('option:selected').val();
@@ -53,7 +42,7 @@ function popup_over(icon, color, contant) {
         $('.popup_over').remove();
         // clear('.popup_over');
     }, 1500)
-};
+}
 
 //添加
 function popup_mod(id) {
@@ -607,10 +596,6 @@ function user_add() {
                     popup_over('icon-sad', '#d81e06', x);
                     console.log(x);
                 }
-                // console.log(data);
-                // console.log(data[1]);
-                // console.log(data.failed)
-                // console.log(data.failed[0])
                 refresh_user(onepage)
             },
             error: function (jqXHR) {

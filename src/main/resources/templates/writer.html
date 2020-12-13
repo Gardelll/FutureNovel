@@ -8,8 +8,9 @@
 		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 		<link rel="stylesheet" href="../../resources/font/iconfont.css" th:href="@{/resources/font/iconfont.css}">
 		<link rel="stylesheet" href="../../resources/css/writer.css" th:href="@{/resources/css/writer.css}">
-		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
-		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
+		<script th:inline="javascript">
+			let contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
+		</script>
 			<!--这里设置 class="content" 套用TinyMCE编辑器-->
 	</head>
 	<body style="background-color: rgb(245,245,245);">
@@ -142,6 +143,8 @@
 				</form>
 			</div>
 		</div>
+		<script src="../../resources/js/writer.js" th:src="@{/resources/js/writer.js}"></script>
+		<script src="../../resources/tinymce/tinymce.min.js" th:src="@{/resources/tinymce/tinymce.min.js}"></script>
 		<script th:inline="javascript" async>
 			function popup_over(icon,color,contant){
 				$('body').append('<div class="popup_over" style="text-align: center; line-height: 80px; left: 50%; top: 50%; transform: translate(-50%,-50%); background-color: white; position: fixed; width: 180px; height: 80px; border: 1px solid #D5D6D5; z-index: 1000;"><i class="iconfont '+icon+'" style="font-size: 30px;color: '+color+';"></i><span style="font-size: 16px; position: relative; bottom: 5px;"> '+contant+'</span></div>');
@@ -211,7 +214,7 @@
 					error: function(data) {
 					}
 				})
-			};
+			}
 		//	GetAllInfo();
 			//添加章节
 			function AddTitle(){
@@ -464,7 +467,7 @@
 					alert("发送失败，请稍候再试:" + data.errorMessage);
 					}
 				})
-			};
+			}
 			function getContent(uniqueId){
 				const contextPath=/*[[${#request.getContextPath()}]]*/'http://localhost:8080/future-novel';
 				$.ajax({
@@ -535,10 +538,6 @@
 			})
 
 
-
-
-
-
 			//富文本编辑器
 			tinymce.init({
 				selector:'textarea.content',
@@ -550,8 +549,8 @@
 				language:"zh_CN",//名称前后显示，影响控件显示位置
 			});
             // 图片加载不出来时
-			$("img").one("error", function(){
-				$(this).attr("th:src", "@{/img/loading.jpg");
+			$("img").on("error", function(){
+				$(this).attr("src", contextPath + "/img/loading.jpg");
 			});
 		</script>
 	</body>

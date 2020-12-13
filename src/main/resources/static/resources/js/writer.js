@@ -7,7 +7,7 @@ window.onload = function () {
         var formData = new FormData ;
         formData.append("file",$("#file")[0].files[0]);
         $.ajax({
-            url: "http://localhost:8080/future-novel/api/img/upload",
+            url: contextPath + "/api/img/upload",
             type: "put",
             dataType: "JSON",
             data:formData,

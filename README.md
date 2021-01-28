@@ -12,9 +12,6 @@
 
 [![图片](https://blog.gardel.top/wp-content/uploads/2020/10/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE-2020-10-06-165235.png)](https://gardel.top/future-novel/)
 
-> **网文不仅仅是一种娱乐，也是一种文化。**  
-未来小说网旨在为广大阅读爱好者提供在线观看书籍，写作以及与作家和读者交流的平台。该网站的用户可以观看书籍、和书友分享心得，以及尽情地展示自己的文采。
-
 ## 项目结构说明
 >- src 项目源代码  
 >  - main
@@ -96,6 +93,12 @@ future: # 应用相关配置，详情见 `net.wlgzs.futurenovel.AppProperties`
     expire: 7 # token 过期时间，单位 天
     cookieExpire: 30 # token 浏览器 Cookie 过期时间，单位 天
 
+```
+
++ 安装分词器（如果使用mariadb）
+
+```shell
+apt install mariadb-plugin-mroonga groonga-tokenizer-mecab
 ```
 
 + 导入数据结构

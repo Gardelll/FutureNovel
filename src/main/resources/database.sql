@@ -216,7 +216,7 @@ ALTER TABLE `novel_index`
     ADD KEY `createTime_index` (`createTime`);
 
 ALTER TABLE `novel_index`
-    ADD FULLTEXT KEY `info_fulltext_index` (`title`, `authors`, `description`, `tags`, `series`, `publisher`) COMMENT ='tokenizer "TokenMecab"';
+    ADD FULLTEXT KEY `info_fulltext_index` (`title`, `authors`, `description`, `tags`, `series`, `publisher`) COMMENT 'tokenizer "TokenMecab"';
 
 -- 如果使用 Mysql: ALTER TABLE `novel_index` ADD FULLTEXT KEY `info_fulltext_index` (`title`,`authors`,`description`,`tags`,`series`,`publisher`) WITH PARSER ngram;
 
@@ -237,7 +237,7 @@ ALTER TABLE `section`
     ADD KEY `fromChapter_index` (`fromChapter`);
 
 ALTER TABLE `section`
-    ADD FULLTEXT KEY `fulltext_index` (`title`, `text`) COMMENT ='tokenizer "TokenMecab"';
+    ADD FULLTEXT KEY `fulltext_index` (`title`, `text`) COMMENT 'tokenizer "TokenMecab"';
 
 -- 如果使用 Mysql: ALTER TABLE `section` ADD FULLTEXT KEY `fulltext_index` (`title`,`text`) WITH PARSER ngram;
 
